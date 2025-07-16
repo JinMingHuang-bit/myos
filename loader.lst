@@ -1,0 +1,832 @@
+     1                                  ;/***************************************************
+     2                                  ;		版权声明
+     3                                  ;
+     4                                  ;	本操作系统名为：MINE
+     5                                  ;	该操作系统未经授权不得以盈利或非盈利为目的进行开发，
+     6                                  ;	只允许个人学习以及公开交流使用
+     7                                  ;
+     8                                  ;	代码最终所有权及解释权归田宇所有；
+     9                                  ;
+    10                                  ;	本模块作者：	田宇
+    11                                  ;	EMail:		345538255@qq.com
+    12                                  ;
+    13                                  ;
+    14                                  ;***************************************************/
+    15                                  
+    16                                  org	10000h
+    17 00000000 E9(0000)                	jmp	Label_Start
+    18                                  
+    19                                  %include	"fat12.inc"
+     1                              <1> ;/***************************************************
+     2                              <1> ;		版权声明
+     3                              <1> ;
+     4                              <1> ;	本操作系统名为：MINE
+     5                              <1> ;	该操作系统未经授权不得以盈利或非盈利为目的进行开发，
+     6                              <1> ;	只允许个人学习以及公开交流使用
+     7                              <1> ;
+     8                              <1> ;	代码最终所有权及解释权归田宇所有；
+     9                              <1> ;
+    10                              <1> ;	本模块作者：	田宇
+    11                              <1> ;	EMail:		345538255@qq.com
+    12                              <1> ;
+    13                              <1> ;
+    14                              <1> ;***************************************************/
+    15                              <1> 
+    16                              <1> RootDirSectors	equ	14
+    17                              <1> SectorNumOfRootDirStart	equ	19
+    18                              <1> SectorNumOfFAT1Start	equ	1
+    19                              <1> SectorBalance	equ	17	
+    20                              <1> 
+    21 00000003 4D494E45626F6F74    <1> 	BS_OEMName	db	'MINEboot'
+    22 0000000B 0002                <1> 	BPB_BytesPerSec	dw	512
+    23 0000000D 01                  <1> 	BPB_SecPerClus	db	1
+    24 0000000E 0100                <1> 	BPB_RsvdSecCnt	dw	1
+    25 00000010 02                  <1> 	BPB_NumFATs	db	2
+    26 00000011 E000                <1> 	BPB_RootEntCnt	dw	224
+    27 00000013 400B                <1> 	BPB_TotSec16	dw	2880
+    28 00000015 F0                  <1> 	BPB_Media	db	0xf0
+    29 00000016 0900                <1> 	BPB_FATSz16	dw	9
+    30 00000018 1200                <1> 	BPB_SecPerTrk	dw	18
+    31 0000001A 0200                <1> 	BPB_NumHeads	dw	2
+    32 0000001C 00000000            <1> 	BPB_hiddSec	dd	0
+    33 00000020 00000000            <1> 	BPB_TotSec32	dd	0
+    34 00000024 00                  <1> 	BS_DrvNum	db	0
+    35 00000025 00                  <1> 	BS_Reserved1	db	0
+    36 00000026 29                  <1> 	BS_BootSig	db	29h
+    37 00000027 00000000            <1> 	BS_VolID	dd	0
+    38 0000002B 626F6F74206C6F6164- <1> 	BS_VolLab	db	'boot loader'
+    38 00000034 6572                <1>
+    39 00000036 4641543132202020    <1> 	BS_FileSysType	db	'FAT12   '
+    20                                  
+    21                                  BaseOfKernelFile	equ	0x00
+    22                                  OffsetOfKernelFile	equ	0x100000
+    23                                  
+    24                                  BaseTmpOfKernelAddr	equ	0x00
+    25                                  OffsetTmpOfKernelFile	equ	0x7E00
+    26                                  
+    27                                  MemoryStructBufferAddr	equ	0x7E00
+    28                                  
+    29                                  [SECTION gdt]
+    30                                  
+    31 00000000 0000000000000000        LABEL_GDT:		dd	0,0
+    32 00000008 FFFF0000009ACF00        LABEL_DESC_CODE32:	dd	0x0000FFFF,0x00CF9A00
+    33 00000010 FFFF00000092CF00        LABEL_DESC_DATA32:	dd	0x0000FFFF,0x00CF9200
+    34                                  
+    35                                  GdtLen	equ	$ - LABEL_GDT
+    36 00000018 1700                    GdtPtr	dw	GdtLen - 1
+    37 0000001A [00000000]              	dd	LABEL_GDT	;be carefull the address(after use org)!!!!!!
+    38                                  
+    39                                  SelectorCode32	equ	LABEL_DESC_CODE32 - LABEL_GDT
+    40                                  SelectorData32	equ	LABEL_DESC_DATA32 - LABEL_GDT
+    41                                  
+    42                                  [SECTION gdt64]
+    43                                  
+    44 00000000 0000000000000000        LABEL_GDT64:		dq	0x0000000000000000
+    45 00000008 0000000000982000        LABEL_DESC_CODE64:	dq	0x0020980000000000
+    46 00000010 0000000000920000        LABEL_DESC_DATA64:	dq	0x0000920000000000
+    47                                  
+    48                                  GdtLen64	equ	$ - LABEL_GDT64
+    49 00000018 1700                    GdtPtr64	dw	GdtLen64 - 1
+    50 0000001A [00000000]              		dd	LABEL_GDT64
+    51                                  
+    52                                  SelectorCode64	equ	LABEL_DESC_CODE64 - LABEL_GDT64
+    53                                  SelectorData64	equ	LABEL_DESC_DATA64 - LABEL_GDT64
+    54                                  
+    55                                  [SECTION .s16]
+    56                                  [BITS 16]
+    57                                  
+    58                                  Label_Start:
+    59                                  
+    60 00000000 8CC8                    	mov	ax,	cs
+    61 00000002 8ED8                    	mov	ds,	ax
+    62 00000004 8EC0                    	mov	es,	ax
+    63 00000006 B80000                  	mov	ax,	0x00
+    64 00000009 8ED0                    	mov	ss,	ax
+    65 0000000B BC007C                  	mov	sp,	0x7c00
+    66                                  
+    67                                  ;=======	display on screen : Start Loader......
+    68                                  
+    69 0000000E B80113                  	mov	ax,	1301h
+    70 00000011 BB0F00                  	mov	bx,	000fh
+    71 00000014 BA0002                  	mov	dx,	0200h		;row 2
+    72 00000017 B90C00                  	mov	cx,	12
+    73 0000001A 50                      	push	ax
+    74 0000001B 8CD8                    	mov	ax,	ds
+    75 0000001D 8EC0                    	mov	es,	ax
+    76 0000001F 58                      	pop	ax
+    77 00000020 BD[5703]                	mov	bp,	StartLoaderMessage
+    78 00000023 CD10                    	int	10h
+    79                                  
+    80                                  ;=======	open address A20
+    81 00000025 50                      	push	ax
+    82 00000026 E492                    	in	al,	92h
+    83 00000028 0C02                    	or	al,	00000010b
+    84 0000002A E692                    	out	92h,	al
+    85 0000002C 58                      	pop	ax
+    86                                  
+    87 0000002D FA                      	cli
+    88                                  
+    89 0000002E 0F0116[1800]            	lgdt	[GdtPtr]	
+    90                                  
+    91 00000033 0F20C0                  	mov	eax,	cr0
+    92 00000036 6683C801                	or	eax,	1
+    93 0000003A 0F22C0                  	mov	cr0,	eax
+    94                                  
+    95 0000003D B81000                  	mov	ax,	SelectorData32
+    96 00000040 8EE0                    	mov	fs,	ax
+    97 00000042 0F20C0                  	mov	eax,	cr0
+    98 00000045 24FE                    	and	al,	11111110b
+    99 00000047 0F22C0                  	mov	cr0,	eax
+   100                                  
+   101 0000004A FB                      	sti
+   102                                  
+   103                                  ;=======	reset floppy
+   104                                  
+   105 0000004B 30E4                    	xor	ah,	ah
+   106 0000004D 30D2                    	xor	dl,	dl
+   107 0000004F CD13                    	int	13h
+   108                                  
+   109                                  ;=======	search kernel.bin
+   110 00000051 C706[4403]1300          	mov	word	[SectorNo],	SectorNumOfRootDirStart
+   111                                  
+   112                                  Lable_Search_In_Root_Dir_Begin:
+   113                                  
+   114 00000057 833E[4203]00            	cmp	word	[RootDirSizeForLoop],	0
+   115 0000005C 744A                    	jz	Label_No_LoaderBin
+   116 0000005E FF0E[4203]              	dec	word	[RootDirSizeForLoop]	
+   117 00000062 B80000                  	mov	ax,	00h
+   118 00000065 8EC0                    	mov	es,	ax
+   119 00000067 BB0080                  	mov	bx,	8000h
+   120 0000006A A1[4403]                	mov	ax,	[SectorNo]
+   121 0000006D B101                    	mov	cl,	1
+   122 0000006F E8(0000)                	call	Func_ReadOneSector
+   123 00000072 BE[7803]                	mov	si,	KernelFileName
+   124 00000075 BF0080                  	mov	di,	8000h
+   125 00000078 FC                      	cld
+   126 00000079 BA1000                  	mov	dx,	10h
+   127                                  	
+   128                                  Label_Search_For_LoaderBin:
+   129                                  
+   130 0000007C 83FA00                  	cmp	dx,	0
+   131 0000007F 7420                    	jz	Label_Goto_Next_Sector_In_Root_Dir
+   132 00000081 4A                      	dec	dx
+   133 00000082 B90B00                  	mov	cx,	11
+   134                                  
+   135                                  Label_Cmp_FileName:
+   136                                  
+   137 00000085 83F900                  	cmp	cx,	0
+   138 00000088 7437                    	jz	Label_FileName_Found
+   139 0000008A 49                      	dec	cx
+   140 0000008B AC                      	lodsb	
+   141 0000008C 263A05                  	cmp	al,	byte	[es:di]
+   142 0000008F 7402                    	jz	Label_Go_On
+   143 00000091 EB03                    	jmp	Label_Different
+   144                                  
+   145                                  Label_Go_On:
+   146                                  	
+   147 00000093 47                      	inc	di
+   148 00000094 EBEF                    	jmp	Label_Cmp_FileName
+   149                                  
+   150                                  Label_Different:
+   151                                  
+   152 00000096 83E7E0                  	and	di,	0FFE0h
+   153 00000099 83C720                  	add	di,	20h
+   154 0000009C BE[7803]                	mov	si,	KernelFileName
+   155 0000009F EBDB                    	jmp	Label_Search_For_LoaderBin
+   156                                  
+   157                                  Label_Goto_Next_Sector_In_Root_Dir:
+   158                                  	
+   159 000000A1 8306[4403]01            	add	word	[SectorNo],	1
+   160 000000A6 EBAF                    	jmp	Lable_Search_In_Root_Dir_Begin
+   161                                  	
+   162                                  ;=======	display on screen : ERROR:No KERNEL Found
+   163                                  
+   164                                  Label_No_LoaderBin:
+   165                                  
+   166 000000A8 B80113                  	mov	ax,	1301h
+   167 000000AB BB8C00                  	mov	bx,	008Ch
+   168 000000AE BA0003                  	mov	dx,	0300h		;row 3
+   169 000000B1 B91500                  	mov	cx,	21
+   170 000000B4 50                      	push	ax
+   171 000000B5 8CD8                    	mov	ax,	ds
+   172 000000B7 8EC0                    	mov	es,	ax
+   173 000000B9 58                      	pop	ax
+   174 000000BA BD[6303]                	mov	bp,	NoLoaderMessage
+   175 000000BD CD10                    	int	10h
+   176 000000BF EBFE                    	jmp	$
+   177                                  
+   178                                  ;=======	found loader.bin name in root director struct
+   179                                  
+   180                                  Label_FileName_Found:
+   181 000000C1 B80E00                  	mov	ax,	RootDirSectors
+   182 000000C4 83E7E0                  	and	di,	0FFE0h
+   183 000000C7 83C71A                  	add	di,	01Ah
+   184 000000CA 268B0D                  	mov	cx,	word	[es:di]
+   185 000000CD 51                      	push	cx
+   186 000000CE 01C1                    	add	cx,	ax
+   187 000000D0 83C111                  	add	cx,	SectorBalance
+   188 000000D3 66B800000000            	mov	eax,	BaseTmpOfKernelAddr;BaseOfKernelFile
+   189 000000D9 8EC0                    	mov	es,	eax
+   190 000000DB BB007E                  	mov	bx,	OffsetTmpOfKernelFile;OffsetOfKernelFile
+   191 000000DE 89C8                    	mov	ax,	cx
+   192                                  
+   193                                  Label_Go_On_Loading_File:
+   194 000000E0 50                      	push	ax
+   195 000000E1 53                      	push	bx
+   196 000000E2 B40E                    	mov	ah,	0Eh
+   197 000000E4 B02E                    	mov	al,	'.'
+   198 000000E6 B30F                    	mov	bl,	0Fh
+   199 000000E8 CD10                    	int	10h
+   200 000000EA 5B                      	pop	bx
+   201 000000EB 58                      	pop	ax
+   202                                  
+   203 000000EC B101                    	mov	cl,	1
+   204 000000EE E8(0000)                	call	Func_ReadOneSector
+   205 000000F1 58                      	pop	ax
+   206                                  
+   207                                  ;;;;;;;;;;;;;;;;;;;;;;;	
+   208 000000F2 51                      	push	cx
+   209 000000F3 6650                    	push	eax
+   210 000000F5 0FA0                    	push	fs
+   211 000000F7 6657                    	push	edi
+   212 000000F9 1E                      	push	ds
+   213 000000FA 6656                    	push	esi
+   214                                  
+   215 000000FC B90002                  	mov	cx,	200h
+   216 000000FF B80000                  	mov	ax,	BaseOfKernelFile
+   217 00000102 8EE0                    	mov	fs,	ax
+   218 00000104 668B3E[4703]            	mov	edi,	dword	[OffsetOfKernelFileCount]
+   219                                  
+   220 00000109 B80000                  	mov	ax,	BaseTmpOfKernelAddr
+   221 0000010C 8ED8                    	mov	ds,	ax
+   222 0000010E 66BE007E0000            	mov	esi,	OffsetTmpOfKernelFile
+   223                                  
+   224                                  Label_Mov_Kernel:	;------------------
+   225                                  	
+   226 00000114 3E678A06                	mov	al,	byte	[ds:esi]
+   227 00000118 64678807                	mov	byte	[fs:edi],	al
+   228                                  
+   229 0000011C 6646                    	inc	esi
+   230 0000011E 6647                    	inc	edi
+   231                                  
+   232 00000120 E2F2                    	loop	Label_Mov_Kernel
+   233                                  
+   234 00000122 66B800100000            	mov	eax,	0x1000
+   235 00000128 8ED8                    	mov	ds,	eax
+   236                                  
+   237 0000012A 66893E[4703]            	mov	dword	[OffsetOfKernelFileCount],	edi
+   238                                  
+   239 0000012F 665E                    	pop	esi
+   240 00000131 1F                      	pop	ds
+   241 00000132 665F                    	pop	edi
+   242 00000134 0FA1                    	pop	fs
+   243 00000136 6658                    	pop	eax
+   244 00000138 59                      	pop	cx
+   245                                  ;;;;;;;;;;;;;;;;;;;;;;;	
+   246                                  
+   247 00000139 E8(3200)                	call	Func_GetFATEntry
+   248 0000013C 3DFF0F                  	cmp	ax,	0FFFh
+   249 0000013F 740B                    	jz	Label_File_Loaded
+   250 00000141 50                      	push	ax
+   251 00000142 BA0E00                  	mov	dx,	RootDirSectors
+   252 00000145 01D0                    	add	ax,	dx
+   253 00000147 83C011                  	add	ax,	SectorBalance
+   254                                  ;	add	bx,	[BPB_BytesPerSec]	
+   255                                  
+   256 0000014A EB94                    	jmp	Label_Go_On_Loading_File
+   257                                  
+   258                                  Label_File_Loaded:
+   259                                  		
+   260 0000014C B800B8                  	mov	ax, 0B800h
+   261 0000014F 8EE8                    	mov	gs, ax
+   262 00000151 B40F                    	mov	ah, 0Fh				; 0000: 黑底    1111: 白字
+   263 00000153 B047                    	mov	al, 'G'
+   264 00000155 65A34E00                	mov	[gs:((80 * 0 + 39) * 2)], ax	; 屏幕第 0 行, 第 39 列。
+   265                                  
+   266                                  KillMotor:
+   267                                  	
+   268 00000159 52                      	push	dx
+   269 0000015A BAF203                  	mov	dx,	03F2h
+   270 0000015D B000                    	mov	al,	0	
+   271 0000015F EE                      	out	dx,	al
+   272 00000160 5A                      	pop	dx
+   273                                  
+   274                                  ;=======	get memory address size type
+   275                                  
+   276 00000161 B80113                  	mov	ax,	1301h
+   277 00000164 BB0F00                  	mov	bx,	000Fh
+   278 00000167 BA0004                  	mov	dx,	0400h		;row 4
+   279 0000016A B92C00                  	mov	cx,	44
+   280 0000016D 50                      	push	ax
+   281 0000016E 8CD8                    	mov	ax,	ds
+   282 00000170 8EC0                    	mov	es,	ax
+   283 00000172 58                      	pop	ax
+   284 00000173 BD[8403]                	mov	bp,	StartGetMemStructMessage
+   285 00000176 CD10                    	int	10h
+   286                                  
+   287 00000178 66BB00000000            	mov	ebx,	0
+   288 0000017E B80000                  	mov	ax,	0x00
+   289 00000181 8EC0                    	mov	es,	ax
+   290 00000183 BF007E                  	mov	di,	MemoryStructBufferAddr	
+   291                                  
+   292                                  Label_Get_Mem_Struct:
+   293                                  
+   294 00000186 66B820E80000            	mov	eax,	0x0E820
+   295 0000018C 66B914000000            	mov	ecx,	20
+   296 00000192 66BA50414D53            	mov	edx,	0x534D4150
+   297 00000198 CD15                    	int	15h
+   298 0000019A 7210                    	jc	Label_Get_Mem_Fail
+   299 0000019C 83C714                  	add	di,	20
+   300 0000019F 66FF06[4B03]            	inc	dword	[MemStructNumber]
+   301                                  
+   302 000001A4 6683FB00                	cmp	ebx,	0
+   303 000001A8 75DC                    	jne	Label_Get_Mem_Struct
+   304 000001AA EB20                    	jmp	Label_Get_Mem_OK
+   305                                  
+   306                                  Label_Get_Mem_Fail:
+   307                                  
+   308 000001AC 66C706[4B03]000000-     	mov	dword	[MemStructNumber],	0
+   308 000001B4 00                 
+   309                                  
+   310 000001B5 B80113                  	mov	ax,	1301h
+   311 000001B8 BB8C00                  	mov	bx,	008Ch
+   312 000001BB BA0005                  	mov	dx,	0500h		;row 5
+   313 000001BE B91700                  	mov	cx,	23
+   314 000001C1 50                      	push	ax
+   315 000001C2 8CD8                    	mov	ax,	ds
+   316 000001C4 8EC0                    	mov	es,	ax
+   317 000001C6 58                      	pop	ax
+   318 000001C7 BD[B003]                	mov	bp,	GetMemStructErrMessage
+   319 000001CA CD10                    	int	10h
+   320                                  
+   321                                  Label_Get_Mem_OK:
+   322                                  	
+   323 000001CC B80113                  	mov	ax,	1301h
+   324 000001CF BB0F00                  	mov	bx,	000Fh
+   325 000001D2 BA0006                  	mov	dx,	0600h		;row 6
+   326 000001D5 B91D00                  	mov	cx,	29
+   327 000001D8 50                      	push	ax
+   328 000001D9 8CD8                    	mov	ax,	ds
+   329 000001DB 8EC0                    	mov	es,	ax
+   330 000001DD 58                      	pop	ax
+   331 000001DE BD[C703]                	mov	bp,	GetMemStructOKMessage
+   332 000001E1 CD10                    	int	10h	
+   333                                  
+   334                                  ;=======	get SVGA information
+   335                                  
+   336 000001E3 B80113                  	mov	ax,	1301h
+   337 000001E6 BB0F00                  	mov	bx,	000Fh
+   338 000001E9 BA0008                  	mov	dx,	0800h		;row 8
+   339 000001EC B91700                  	mov	cx,	23
+   340 000001EF 50                      	push	ax
+   341 000001F0 8CD8                    	mov	ax,	ds
+   342 000001F2 8EC0                    	mov	es,	ax
+   343 000001F4 58                      	pop	ax
+   344 000001F5 BD[E403]                	mov	bp,	StartGetSVGAVBEInfoMessage
+   345 000001F8 CD10                    	int	10h
+   346                                  
+   347 000001FA B80000                  	mov	ax,	0x00
+   348 000001FD 8EC0                    	mov	es,	ax
+   349 000001FF BF0080                  	mov	di,	0x8000
+   350 00000202 B8004F                  	mov	ax,	4F00h
+   351                                  
+   352 00000205 CD10                    	int	10h
+   353                                  
+   354 00000207 83F84F                  	cmp	ax,	004Fh
+   355                                  
+   356 0000020A 7419                    	jz	.KO
+   357                                  	
+   358                                  ;=======	Fail
+   359                                  
+   360 0000020C B80113                  	mov	ax,	1301h
+   361 0000020F BB8C00                  	mov	bx,	008Ch
+   362 00000212 BA0009                  	mov	dx,	0900h		;row 9
+   363 00000215 B91700                  	mov	cx,	23
+   364 00000218 50                      	push	ax
+   365 00000219 8CD8                    	mov	ax,	ds
+   366 0000021B 8EC0                    	mov	es,	ax
+   367 0000021D 58                      	pop	ax
+   368 0000021E BD[FB03]                	mov	bp,	GetSVGAVBEInfoErrMessage
+   369 00000221 CD10                    	int	10h
+   370                                  
+   371 00000223 EBFE                    	jmp	$
+   372                                  
+   373                                  .KO:
+   374                                  
+   375 00000225 B80113                  	mov	ax,	1301h
+   376 00000228 BB0F00                  	mov	bx,	000Fh
+   377 0000022B BA000A                  	mov	dx,	0A00h		;row 10
+   378 0000022E B91D00                  	mov	cx,	29
+   379 00000231 50                      	push	ax
+   380 00000232 8CD8                    	mov	ax,	ds
+   381 00000234 8EC0                    	mov	es,	ax
+   382 00000236 58                      	pop	ax
+   383 00000237 BD[1204]                	mov	bp,	GetSVGAVBEInfoOKMessage
+   384 0000023A CD10                    	int	10h
+   385                                  
+   386                                  ;=======	Get SVGA Mode Info
+   387                                  
+   388 0000023C B80113                  	mov	ax,	1301h
+   389 0000023F BB0F00                  	mov	bx,	000Fh
+   390 00000242 BA000C                  	mov	dx,	0C00h		;row 12
+   391 00000245 B91800                  	mov	cx,	24
+   392 00000248 50                      	push	ax
+   393 00000249 8CD8                    	mov	ax,	ds
+   394 0000024B 8EC0                    	mov	es,	ax
+   395 0000024D 58                      	pop	ax
+   396 0000024E BD[2F04]                	mov	bp,	StartGetSVGAModeInfoMessage
+   397 00000251 CD10                    	int	10h
+   398                                  
+   399                                  
+   400 00000253 B80000                  	mov	ax,	0x00
+   401 00000256 8EC0                    	mov	es,	ax
+   402 00000258 BE0E80                  	mov	si,	0x800e
+   403                                  
+   404 0000025B 26668B34                	mov	esi,	dword	[es:si]
+   405 0000025F 66BF00820000            	mov	edi,	0x8200
+   406                                  
+   407                                  Label_SVGA_Mode_Info_Get:
+   408                                  
+   409 00000265 26678B0E                	mov	cx,	word	[es:esi]
+   410                                  
+   411                                  ;=======	display SVGA mode information
+   412                                  
+   413 00000269 50                      	push	ax
+   414                                  	
+   415 0000026A B80000                  	mov	ax,	00h
+   416 0000026D 88E8                    	mov	al,	ch
+   417 0000026F E8(7E00)                	call	Label_DispAL
+   418                                  
+   419 00000272 B80000                  	mov	ax,	00h
+   420 00000275 88C8                    	mov	al,	cl	
+   421 00000277 E8(7E00)                	call	Label_DispAL
+   422                                  	
+   423 0000027A 58                      	pop	ax
+   424                                  
+   425                                  ;=======
+   426                                  	
+   427 0000027B 83F9FF                  	cmp	cx,	0FFFFh
+   428 0000027E 7435                    	jz	Label_SVGA_Mode_Info_Finish
+   429                                  
+   430 00000280 B8014F                  	mov	ax,	4F01h
+   431 00000283 CD10                    	int	10h
+   432                                  
+   433 00000285 83F84F                  	cmp	ax,	004Fh
+   434                                  
+   435 00000288 7512                    	jnz	Label_SVGA_Mode_Info_FAIL	
+   436                                  
+   437 0000028A 66FF06[4F03]            	inc	dword		[SVGAModeCounter]
+   438 0000028F 6683C602                	add	esi,	2
+   439 00000293 6681C700010000          	add	edi,	0x100
+   440                                  
+   441 0000029A EBC9                    	jmp	Label_SVGA_Mode_Info_Get
+   442                                  		
+   443                                  Label_SVGA_Mode_Info_FAIL:
+   444                                  
+   445 0000029C B80113                  	mov	ax,	1301h
+   446 0000029F BB8C00                  	mov	bx,	008Ch
+   447 000002A2 BA000D                  	mov	dx,	0D00h		;row 13
+   448 000002A5 B91800                  	mov	cx,	24
+   449 000002A8 50                      	push	ax
+   450 000002A9 8CD8                    	mov	ax,	ds
+   451 000002AB 8EC0                    	mov	es,	ax
+   452 000002AD 58                      	pop	ax
+   453 000002AE BD[4704]                	mov	bp,	GetSVGAModeInfoErrMessage
+   454 000002B1 CD10                    	int	10h
+   455                                  
+   456                                  Label_SET_SVGA_Mode_VESA_VBE_FAIL:
+   457                                  
+   458 000002B3 EBFE                    	jmp	$
+   459                                  
+   460                                  Label_SVGA_Mode_Info_Finish:
+   461                                  
+   462 000002B5 B80113                  	mov	ax,	1301h
+   463 000002B8 BB0F00                  	mov	bx,	000Fh
+   464 000002BB BA000E                  	mov	dx,	0E00h		;row 14
+   465 000002BE B91E00                  	mov	cx,	30
+   466 000002C1 50                      	push	ax
+   467 000002C2 8CD8                    	mov	ax,	ds
+   468 000002C4 8EC0                    	mov	es,	ax
+   469 000002C6 58                      	pop	ax
+   470 000002C7 BD[5F04]                	mov	bp,	GetSVGAModeInfoOKMessage
+   471 000002CA CD10                    	int	10h
+   472                                  
+   473                                  ;=======	set the SVGA mode(VESA VBE)
+   474                                  
+   475 000002CC B8024F                  	mov	ax,	4F02h
+   476 000002CF BB8041                  	mov	bx,	4180h	;========================mode : 0x180 or 0x143
+   477 000002D2 CD10                    	int 	10h
+   478                                  
+   479 000002D4 83F84F                  	cmp	ax,	004Fh
+   480 000002D7 75DA                    	jnz	Label_SET_SVGA_Mode_VESA_VBE_FAIL
+   481                                  
+   482                                  ;=======	init IDT GDT goto protect mode 
+   483                                  
+   484 000002D9 FA                      	cli			;======close interrupt
+   485                                  
+   486 000002DA 0F0116[1800]            	lgdt	[GdtPtr]
+   487                                  
+   488                                  ;	lidt	[IDT_POINTER]
+   489                                  
+   490 000002DF 0F20C0                  	mov	eax,	cr0
+   491 000002E2 6683C801                	or	eax,	1
+   492 000002E6 0F22C0                  	mov	cr0,	eax	
+   493                                  
+   494 000002E9 66EA[00000000]0800      	jmp	dword SelectorCode32:GO_TO_TMP_Protect
+   495                                  
+   496                                  [SECTION .s32]
+   497                                  [BITS 32]
+   498                                  
+   499                                  GO_TO_TMP_Protect:
+   500                                  
+   501                                  ;=======	go to tmp long mode
+   502                                  
+   503 00000000 66B81000                	mov	ax,	0x10
+   504 00000004 8ED8                    	mov	ds,	ax
+   505 00000006 8EC0                    	mov	es,	ax
+   506 00000008 8EE0                    	mov	fs,	ax
+   507 0000000A 8ED0                    	mov	ss,	ax
+   508 0000000C BC007E0000              	mov	esp,	7E00h
+   509                                  	
+   510 00000011 E8B0000000              	call	support_long_mode
+   511 00000016 85C0                    	test	eax,	eax
+   512                                  
+   513 00000018 0F84CB000000            	jz	no_support
+   514                                  
+   515                                  ;=======	init temporary page table 0x90000
+   516                                  
+   517 0000001E C70500000900071009-     	mov	dword	[0x90000],	0x91007
+   517 00000027 00                 
+   518 00000028 C70500080900071009-     	mov	dword	[0x90800],	0x91007		
+   518 00000031 00                 
+   519                                  
+   520 00000032 C70500100900072009-     	mov	dword	[0x91000],	0x92007
+   520 0000003B 00                 
+   521                                  
+   522 0000003C C70500200900830000-     	mov	dword	[0x92000],	0x000083
+   522 00000045 00                 
+   523                                  
+   524 00000046 C70508200900830020-     	mov	dword	[0x92008],	0x200083
+   524 0000004F 00                 
+   525                                  
+   526 00000050 C70510200900830040-     	mov	dword	[0x92010],	0x400083
+   526 00000059 00                 
+   527                                  
+   528 0000005A C70518200900830060-     	mov	dword	[0x92018],	0x600083
+   528 00000063 00                 
+   529                                  
+   530 00000064 C70520200900830080-     	mov	dword	[0x92020],	0x800083
+   530 0000006D 00                 
+   531                                  
+   532 0000006E C705282009008300A0-     	mov	dword	[0x92028],	0xa00083
+   532 00000077 00                 
+   533                                  	
+   534                                  ;=======	load GDTR
+   535                                  	
+   536 00000078 0F0115[18000000]        	lgdt	[GdtPtr64]
+   537 0000007F 66B81000                	mov	ax,	0x10
+   538 00000083 8ED8                    	mov	ds,	ax
+   539 00000085 8EC0                    	mov	es,	ax
+   540 00000087 8EE0                    	mov	fs,	ax
+   541 00000089 8EE8                    	mov	gs,	ax
+   542 0000008B 8ED0                    	mov	ss,	ax
+   543                                  
+   544 0000008D BC007E0000              	mov	esp,	7E00h
+   545                                  	
+   546                                  ;=======	open PAE
+   547                                  
+   548 00000092 0F20E0                  	mov	eax,	cr4
+   549 00000095 0FBAE805                	bts	eax,	5
+   550 00000099 0F22E0                  	mov	cr4,	eax
+   551                                  
+   552                                  ;=======	load	cr3
+   553                                  
+   554 0000009C B800000900              	mov	eax,	0x90000
+   555 000000A1 0F22D8                  	mov	cr3,	eax
+   556                                  
+   557                                  ;=======	enable long-mode
+   558                                  
+   559 000000A4 B9800000C0              	mov	ecx,	0C0000080h		;IA32_EFER
+   560 000000A9 0F32                    	rdmsr
+   561                                  
+   562 000000AB 0FBAE808                	bts	eax,	8
+   563 000000AF 0F30                    	wrmsr
+   564                                  
+   565                                  ;=======	open PE and paging
+   566                                  
+   567 000000B1 0F20C0                  	mov	eax,	cr0
+   568 000000B4 0FBAE800                	bts	eax,	0
+   569 000000B8 0FBAE81F                	bts	eax,	31
+   570 000000BC 0F22C0                  	mov	cr0,	eax
+   571                                  
+   572 000000BF EA000010000800          	jmp	SelectorCode64:OffsetOfKernelFile
+   573                                  
+   574                                  ;=======	test support long mode or not
+   575                                  
+   576                                  support_long_mode:
+   577                                  
+   578 000000C6 B800000080              	mov	eax,	0x80000000
+   579 000000CB 0FA2                    	cpuid
+   580 000000CD 3D01000080              	cmp	eax,	0x80000001
+   581 000000D2 0F93C0                  	setnb	al	
+   582 000000D5 720E                    	jb	support_long_mode_done
+   583 000000D7 B801000080              	mov	eax,	0x80000001
+   584 000000DC 0FA2                    	cpuid
+   585 000000DE 0FBAE21D                	bt	edx,	29
+   586 000000E2 0F92C0                  	setc	al
+   587                                  support_long_mode_done:
+   588                                  	
+   589 000000E5 0FB6C0                  	movzx	eax,	al
+   590 000000E8 C3                      	ret
+   591                                  
+   592                                  ;=======	no support
+   593                                  
+   594                                  no_support:
+   595 000000E9 EBFE                    	jmp	$
+   596                                  
+   597                                  ;=======	read one sector from floppy
+   598                                  
+   599                                  [SECTION .s116]
+   600                                  [BITS 16]
+   601                                  
+   602                                  Func_ReadOneSector:
+   603                                  	
+   604 00000000 55                      	push	bp
+   605 00000001 89E5                    	mov	bp,	sp
+   606 00000003 6683EC02                	sub	esp,	2
+   607 00000007 884EFE                  	mov	byte	[bp - 2],	cl
+   608 0000000A 53                      	push	bx
+   609 0000000B 8A1E[1800]              	mov	bl,	[BPB_SecPerTrk]
+   610 0000000F F6F3                    	div	bl
+   611 00000011 FEC4                    	inc	ah
+   612 00000013 88E1                    	mov	cl,	ah
+   613 00000015 88C6                    	mov	dh,	al
+   614 00000017 D0E8                    	shr	al,	1
+   615 00000019 88C5                    	mov	ch,	al
+   616 0000001B 80E601                  	and	dh,	1
+   617 0000001E 5B                      	pop	bx
+   618 0000001F 8A16[2400]              	mov	dl,	[BS_DrvNum]
+   619                                  Label_Go_On_Reading:
+   620 00000023 B402                    	mov	ah,	2
+   621 00000025 8A46FE                  	mov	al,	byte	[bp - 2]
+   622 00000028 CD13                    	int	13h
+   623 0000002A 72F7                    	jc	Label_Go_On_Reading
+   624 0000002C 6683C402                	add	esp,	2
+   625 00000030 5D                      	pop	bp
+   626 00000031 C3                      	ret
+   627                                  
+   628                                  ;=======	get FAT Entry
+   629                                  
+   630                                  Func_GetFATEntry:
+   631                                  
+   632 00000032 06                      	push	es
+   633 00000033 53                      	push	bx
+   634 00000034 50                      	push	ax
+   635 00000035 B80000                  	mov	ax,	00
+   636 00000038 8EC0                    	mov	es,	ax
+   637 0000003A 58                      	pop	ax
+   638 0000003B C606[4603]00            	mov	byte	[Odd],	0
+   639 00000040 BB0300                  	mov	bx,	3
+   640 00000043 F7E3                    	mul	bx
+   641 00000045 BB0200                  	mov	bx,	2
+   642 00000048 F7F3                    	div	bx
+   643 0000004A 83FA00                  	cmp	dx,	0
+   644 0000004D 7405                    	jz	Label_Even
+   645 0000004F C606[4603]01            	mov	byte	[Odd],	1
+   646                                  
+   647                                  Label_Even:
+   648                                  
+   649 00000054 31D2                    	xor	dx,	dx
+   650 00000056 8B1E[0B00]              	mov	bx,	[BPB_BytesPerSec]
+   651 0000005A F7F3                    	div	bx
+   652 0000005C 52                      	push	dx
+   653 0000005D BB0080                  	mov	bx,	8000h
+   654 00000060 83C001                  	add	ax,	SectorNumOfFAT1Start
+   655 00000063 B102                    	mov	cl,	2
+   656 00000065 E898FF                  	call	Func_ReadOneSector
+   657                                  	
+   658 00000068 5A                      	pop	dx
+   659 00000069 01D3                    	add	bx,	dx
+   660 0000006B 268B07                  	mov	ax,	[es:bx]
+   661 0000006E 803E[4603]01            	cmp	byte	[Odd],	1
+   662 00000073 7503                    	jnz	Label_Even_2
+   663 00000075 C1E804                  	shr	ax,	4
+   664                                  
+   665                                  Label_Even_2:
+   666 00000078 25FF0F                  	and	ax,	0FFFh
+   667 0000007B 5B                      	pop	bx
+   668 0000007C 07                      	pop	es
+   669 0000007D C3                      	ret
+   670                                  
+   671                                  ;=======	display num in al
+   672                                  
+   673                                  Label_DispAL:
+   674                                  
+   675 0000007E 6651                    	push	ecx
+   676 00000080 6652                    	push	edx
+   677 00000082 6657                    	push	edi
+   678                                  	
+   679 00000084 668B3E[5303]            	mov	edi,	[DisplayPosition]
+   680 00000089 B40F                    	mov	ah,	0Fh
+   681 0000008B 88C2                    	mov	dl,	al
+   682 0000008D C0E804                  	shr	al,	4
+   683 00000090 66B902000000            	mov	ecx,	2
+   684                                  .begin:
+   685                                  
+   686 00000096 240F                    	and	al,	0Fh
+   687 00000098 3C09                    	cmp	al,	9
+   688 0000009A 7704                    	ja	.1
+   689 0000009C 0430                    	add	al,	'0'
+   690 0000009E EB04                    	jmp	.2
+   691                                  .1:
+   692                                  
+   693 000000A0 2C0A                    	sub	al,	0Ah
+   694 000000A2 0441                    	add	al,	'A'
+   695                                  .2:
+   696                                  
+   697 000000A4 65678907                	mov	[gs:edi],	ax
+   698 000000A8 6683C702                	add	edi,	2
+   699                                  	
+   700 000000AC 88D0                    	mov	al,	dl
+   701 000000AE E2E6                    	loop	.begin
+   702                                  
+   703 000000B0 66893E[5303]            	mov	[DisplayPosition],	edi
+   704                                  
+   705 000000B5 665F                    	pop	edi
+   706 000000B7 665A                    	pop	edx
+   707 000000B9 6659                    	pop	ecx
+   708                                  	
+   709 000000BB C3                      	ret
+   710                                  
+   711                                  
+   712                                  ;=======	tmp IDT
+   713                                  
+   714                                  IDT:
+   715 000000BC 0000000000000000-       	times	0x50	dq	0
+   715 000000BC <rep 50h>          
+   716                                  IDT_END:
+   717                                  
+   718                                  IDT_POINTER:
+   719 0000033C 7F02                    		dw	IDT_END - IDT - 1
+   720 0000033E [BC000000]              		dd	IDT
+   721                                  
+   722                                  ;=======	tmp variable
+   723                                  
+   724 00000342 0E00                    RootDirSizeForLoop	dw	RootDirSectors
+   725 00000344 0000                    SectorNo		dw	0
+   726 00000346 00                      Odd			db	0
+   727 00000347 00001000                OffsetOfKernelFileCount	dd	OffsetOfKernelFile
+   728                                  
+   729 0000034B 00000000                MemStructNumber		dd	0
+   730                                  
+   731 0000034F 00000000                SVGAModeCounter		dd	0
+   732                                  
+   733 00000353 00000000                DisplayPosition		dd	0
+   734                                  
+   735                                  ;=======	display messages
+   736                                  
+   737 00000357 5374617274204C6F61-     StartLoaderMessage:	db	"Start Loader"
+   737 00000360 646572             
+   738 00000363 4552524F523A4E6F20-     NoLoaderMessage:	db	"ERROR:No KERNEL Found"
+   738 0000036C 4B45524E454C20466F-
+   738 00000375 756E64             
+   739 00000378 4B45524E454C202042-     KernelFileName:		db	"KERNEL  BIN",0
+   739 00000381 494E00             
+   740 00000384 537461727420476574-     StartGetMemStructMessage:	db	"Start Get Memory Struct (address,size,type)."
+   740 0000038D 204D656D6F72792053-
+   740 00000396 747275637420286164-
+   740 0000039F 64726573732C73697A-
+   740 000003A8 652C74797065292E   
+   741 000003B0 476574204D656D6F72-     GetMemStructErrMessage:	db	"Get Memory Struct ERROR"
+   741 000003B9 792053747275637420-
+   741 000003C2 4552524F52         
+   742 000003C7 476574204D656D6F72-     GetMemStructOKMessage:	db	"Get Memory Struct SUCCESSFUL!"
+   742 000003D0 792053747275637420-
+   742 000003D9 535543434553534655-
+   742 000003E2 4C21               
+   743                                  
+   744 000003E4 537461727420476574-     StartGetSVGAVBEInfoMessage:	db	"Start Get SVGA VBE Info"
+   744 000003ED 205356474120564245-
+   744 000003F6 20496E666F         
+   745 000003FB 476574205356474120-     GetSVGAVBEInfoErrMessage:	db	"Get SVGA VBE Info ERROR"
+   745 00000404 56424520496E666F20-
+   745 0000040D 4552524F52         
+   746 00000412 476574205356474120-     GetSVGAVBEInfoOKMessage:	db	"Get SVGA VBE Info SUCCESSFUL!"
+   746 0000041B 56424520496E666F20-
+   746 00000424 535543434553534655-
+   746 0000042D 4C21               
+   747                                  
+   748 0000042F 537461727420476574-     StartGetSVGAModeInfoMessage:	db	"Start Get SVGA Mode Info"
+   748 00000438 2053564741204D6F64-
+   748 00000441 6520496E666F       
+   749 00000447 476574205356474120-     GetSVGAModeInfoErrMessage:	db	"Get SVGA Mode Info ERROR"
+   749 00000450 4D6F646520496E666F-
+   749 00000459 204552524F52       
+   750 0000045F 476574205356474120-     GetSVGAModeInfoOKMessage:	db	"Get SVGA Mode Info SUCCESSFUL!"
+   750 00000468 4D6F646520496E666F-
+   750 00000471 205355434345535346-
+   750 0000047A 554C21             
+   751                                  
+   752                                  
+   753                                  
+   754                                  

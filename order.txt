@@ -1,0 +1,21 @@
+for boot4.bin:
+dd if=myos/boot4.bin of=boot.img bs=512 count=1 conv=notrunc
+	
+for loader.bin:
+cd ..
+sudo mount boot.img /media/ -t vfat -o loop
+cd myos
+sudo cp loader.bin /media/
+sudo sync
+sudo umount /media/
+
+for bochs:
+bochs -f ./bochsrc
+
+for kernel.bin
+cd ~
+sudo mount boot.img /media/ -t vfat -o loop
+cd myos/kernel
+sudo cp kernel.bin /media/
+sudo sync
+sudo umount /media/
