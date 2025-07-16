@@ -491,7 +491,7 @@ Label_SVGA_Mode_Info_Finish:
 	mov	eax,	cr0
 	or	eax,	1
 	mov	cr0,	eax	
-
+	;0x10369
 	jmp	dword SelectorCode32:GO_TO_TMP_Protect
 
 [SECTION .s32]
@@ -500,8 +500,9 @@ Label_SVGA_Mode_Info_Finish:
 GO_TO_TMP_Protect:
 
 ;=======	go to tmp long mode
-
+	;0x10374
 	mov	ax,	0x10
+	;0x10378
 	mov	ds,	ax
 	mov	es,	ax
 	mov	fs,	ax
@@ -569,7 +570,7 @@ GO_TO_TMP_Protect:
 	bts	eax,	0
 	bts	eax,	31
 	mov	cr0,	eax
-
+	;0x10433
 	jmp	SelectorCode64:OffsetOfKernelFile
 
 ;=======	test support long mode or not

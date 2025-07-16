@@ -116,7 +116,7 @@ _start:
 
     movq $0x101000,%rax
     movq %rax,%cr3
-
+// start  error here:bx_dbg_read_linear: physical address not available for linear 0x000000000010003e
     movq switch_seg(%rip),%rax
 
 

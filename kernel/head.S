@@ -64,21 +64,21 @@ __PDPTE:
 __PDE:
     // 1MB large Page map with flag bit 83 for Present, Writable, and Page Size
     .quad	0x000083
-    .quad	0x20083
-    .quad	0x40083
-    .quad	0x60083
-    .quad	0x80083
+    .quad	0x200083
+    .quad	0x400083
+    .quad	0x600083
+    .quad	0x800083
     // 0x a00000
     // A large 1MB page starting at 0xe00000
-    .quad	0xe000083
-    .quad	0xe020083
-    .quad	0xe040083
+    .quad	0xe0000083
+    .quad	0xe0200083
+    .quad	0xe0400083
     // 0x1000000
-    .quad	0xe060083
-    .quad	0xe080083
-    .quad	0xe0a0083
-    .quad	0xe0c0083
-    .quad	0xe0e0083
+    .quad	0xe0600083
+    .quad	0xe0800083
+    .quad	0xe0a00083
+    .quad	0xe0c00083
+    .quad	0xe0e00083
     .fill   499,8,0  
     
 .section .text
@@ -87,6 +87,7 @@ __PDE:
 
 _start:
     // 0x10 is a segment selector
+    // 0x100000
     mov $0x10,%ax
     mov %ax,%ds
     mov %ax,%es
@@ -112,7 +113,9 @@ _start:
     movq	%rax,%cr3
     // rip is Instruction Pointer Register
     movq	switch_seg(%rip),%rax 
-    
+    pushq	$0x08
+	pushq	%rax
+	lretq
     
 switch_seg:
     .quad	entry64
@@ -133,11 +136,3 @@ entry64:
     
 go_to_kernel:
     .quad	Start_kernel
-    
-    
-    
-
-    
-
-
-    
