@@ -1,30 +1,61 @@
 #!/bin/bash
+# 自动挂载boot.img镜像，复制loader.bin文件并卸载的脚本
+# 用法：sudo ./copy_loader.sh
 
-# 脚本名称：automount_copy.sh
-# 功能：自动挂载boot.img，拷贝loader.bin文件，然后卸载
+# 检查root权限
+if [ "$(id -u)" -ne 0 ]; then
+    echo "错误：必须使用sudo或root权限运行此脚本" >&2
+    exit 1
+fi
 
-# 切换到上级目录
-echo "切换到上级目录..."
-cd ~ || { echo "cd ~ 失败"; exit 1; }
+# 定义目录路径
+PARENT_DIR="$(dirname "$(pwd)")"
+MOUNT_POINT="/media"
+SOURCE_FILE="/home/student/myos/loader.bin"  # 使用完整绝对路径
+IMAGE_FILE="boot.img"
 
-# 挂载boot.img到/media/
-echo "挂载boot.img..."
-sudo mount boot.img /media/ -t vfat -o loop || { echo "挂载失败"; exit 1; }
+# 检查boot.img是否存在
+if [ ! -f "$PARENT_DIR/$IMAGE_FILE" ]; then
+    echo "错误：未找到$IMAGE_FILE文件" >&2
+    exit 1
+fi
 
-# 切换回myos目录
-echo "切换回myos目录..."
-cd myos || { echo "cd myos 失败"; exit 1; }
+# 创建挂载点（确保目录存在）
+mkdir -p "$MOUNT_POINT"
+echo "使用挂载点：$MOUNT_POINT"
 
-# 拷贝loader.bin文件
-echo "拷贝loader.bin到/media/"
-sudo cp loader.bin /media/ || { echo "拷贝失败"; sudo umount /media/; exit 1; }
+# 检查并卸载已挂载的设备
+if mount | grep -q "$MOUNT_POINT"; then
+    echo "卸载已挂载的设备..."
+    umount "$MOUNT_POINT" 2>/dev/null
+fi
 
-# 同步文件系统
-echo "同步文件系统..."
-sudo sync
+# 挂载镜像文件
+echo "挂载 $IMAGE_FILE 到 $MOUNT_POINT..."
+mount -t vfat -o loop "$PARENT_DIR/$IMAGE_FILE" "$MOUNT_POINT"
+if [ $? -ne 0 ]; then
+    echo "错误：挂载失败" >&2
+    exit 1
+fi
 
-# 卸载/media/
-echo "卸载/media/"
-sudo umount /media/ || { echo "卸载失败"; exit 1; }
+# 复制文件（使用正确的源文件路径）
+echo "复制 $SOURCE_FILE 到挂载点..."
+cp "$SOURCE_FILE" "$MOUNT_POINT/"
+if [ $? -ne 0 ]; then
+    echo "错误：文件复制失败" >&2
+    umount "$MOUNT_POINT"
+    exit 1
+fi
 
-echo "所有操作已完成！"
+# 确保数据写入
+echo "同步数据..."
+sync
+
+# 卸载设备
+umount "$MOUNT_POINT"
+if [ $? -eq 0 ]; then
+    echo "操作成功完成！$SOURCE_FILE 已写入镜像"
+else
+    echo "警告：卸载失败，请手动检查" >&2
+    exit 1
+fi
