@@ -469,7 +469,7 @@ Label_SVGA_Mode_Info_Finish:
 	lgdt [GdtPtr]
 
 	; db 0x66
-	lidt [IDT_POINTER]
+	;lidt [IDT_POINTER]
 
 	mov eax,cr0
 	or eax,1
@@ -522,7 +522,7 @@ Lable_Search_In_Root_Dir_Begin:
 
 [SECTION .s32]
 [BITS 32]
-;0x103d0
+;0x103cc
 GO_TO_TMP_Protect:
 	;go to tmp long mode
 	;Points to a 32-bit data segment descriptor in GDT
