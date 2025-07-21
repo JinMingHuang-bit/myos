@@ -90,7 +90,7 @@ Label_Start:
 
     cli
 
-    ; db 0x66
+    db 0x66
     lgdt [GdtPtr]
     ;enable protected mode
     mov eax,cr0
@@ -263,6 +263,16 @@ Func_ReadOneSector:
     ;DL is the drive letter for the BIOS disk read (INT 13h) (e.g. 0x00 for floppy, 0x80 for hard disk).
 	mov	dl,	[BS_DrvNum]
 
+Label_Go_On_Reading:
+	mov	ah,	2
+	mov	al,	byte	[bp - 2]
+	int	13h
+	jc	Label_Go_On_Reading
+	add	esp,	2
+	pop	bp
+	ret
+
+
 Label_File_Loaded:
     mov ax,0B800h
     mov gs,ax
@@ -434,48 +444,48 @@ Label_SVGA_Mode_Info_Get:
 	add	edi,	0x100
 	jmp	Label_SVGA_Mode_Info_Get
 
-Label_SVGA_Mode_Info_Finish:
+; Label_SVGA_Mode_Info_Finish:
 	
-	mov	ax,	1301h
-	mov	bx,	000Fh
-	mov	dx,	0E00h		;row 14
-	mov	cx,	34
-	push	ax
-	mov	ax,	ds
-	mov	es,	ax
-	pop	ax
-	mov	bp,	GetSVGAModeInfoOKMessage
-	int	10h
+; 	mov	ax,	1301h
+; 	mov	bx,	000Fh
+; 	mov	dx,	0E00h		;row 14
+; 	mov	cx,	34
+; 	push	ax
+; 	mov	ax,	ds
+; 	mov	es,	ax
+; 	pop	ax
+; 	mov	bp,	GetSVGAModeInfoOKMessage
+; 	int	10h
 
-	;set SVGA mode
-	;mode : 0x180 or 0x143
-	; mov ax,4F02h
-	; mov bx,4180h
-	; int	10h
-	mov ax, 4F02h       ; VBE设置显示模式功能
-	mov bx, 0101h       ; 原始模式号 (0x180)
-	; or  bx, 8000h       ;n 启用LFB（线性帧缓冲区）
-	or  bx, 4000h       ; ← 关键添加：设置"不清除显存"标志 (VBE 3.0+)
-	int 10h
+; 	;set SVGA mode
+; 	;mode : 0x180 or 0x143
+; 	; mov ax,4F02h
+; 	; mov bx,4180h
+; 	; int	10h
+; 	mov ax, 4F02h       ; VBE设置显示模式功能
+; 	mov bx, 0101h       ; 原始模式号 (0x180)
+; 	; or  bx, 8000h       ;n 启用LFB（线性帧缓冲区）
+; 	or  bx, 4000h       ; ← 关键添加：设置"不清除显存"标志 (VBE 3.0+)
+; 	int 10h
 
-	cmp	ax,	004Fh
-	jnz Label_SET_SVGA_MODE_VESA_VBE_FAIL
+; 	cmp	ax,	004Fh
+; 	jnz Label_SET_SVGA_MODE_VESA_VBE_FAIL
 
-	;init IDT GDT goto protect mode
-	cli ;close interrupt
-;This is an operand size prefix that forces lgdt to interpret GdtPtr in 32-bit mode (even if the current mode is still 16-bit real mode)
+; 	;init IDT GDT goto protect mode
+; 	cli ;close interrupt
+; ;This is an operand size prefix that forces lgdt to interpret GdtPtr in 32-bit mode (even if the current mode is still 16-bit real mode)
 	
-	; db 0x66
-	lgdt [GdtPtr]
+; 	db 0x66
+; 	lgdt [GdtPtr]
 
-	; db 0x66
-	;lidt [IDT_POINTER]
+; 	db 0x66
+; 	lidt [IDT_POINTER]	;can not ignore
 
-	mov eax,cr0
-	or eax,1
-	mov cr0,eax
-	;0x1036f
-	jmp dword SelectorCode32:GO_TO_TMP_Protect ;selectors:
+; 	mov eax,cr0
+; 	or eax,1
+; 	mov cr0,eax
+; 	;0x1036c
+; 	jmp dword SelectorCode32:GO_TO_TMP_Protect ;selectors:
 
 Label_SET_SVGA_MODE_VESA_VBE_FAIL:
 	mov	ax,	1301h
@@ -520,9 +530,70 @@ Lable_Search_In_Root_Dir_Begin:
 	cld
 	mov	dx,	10h
 
+; ===== 添加的内层循环开始 =====
+Label_Check_Entry:
+    push    si
+    push    di
+    mov     cx, 11      ; 文件名长度11字节
+    repe    cmpsb       ; 比较文件名
+    pop     di
+    pop     si
+    je      Label_FileName_Found  ; 找到匹配项
+    
+    add     di, 32      ; 移动到下一个目录项
+    dec     dx          ; 目录项计数器减1
+    jnz     Label_Check_Entry  ; 继续检查当前扇区的下一个项
+    
+    ; 当前扇区无匹配，跳到下一个扇区
+    jmp     Label_Goto_Next_Sector_In_Root_Dir
+; ===== 添加的内层循环结束 =====
+
+Label_SVGA_Mode_Info_Finish:
+	
+	mov	ax,	1301h
+	mov	bx,	000Fh
+	mov	dx,	0E00h		;row 14
+	mov	cx,	34
+	push	ax
+	mov	ax,	ds
+	mov	es,	ax
+	pop	ax
+	mov	bp,	GetSVGAModeInfoOKMessage
+	int	10h
+
+	;set SVGA mode
+	;mode : 0x180 or 0x143
+	; mov ax,4F02h
+	; mov bx,4180h
+	; int	10h
+	mov ax, 4F02h       ; VBE设置显示模式功能
+	mov bx, 0101h       ; 原始模式号 (0x180)
+	; or  bx, 8000h       ;n 启用LFB（线性帧缓冲区）
+	or  bx, 4000h       ; ← 关键添加：设置"不清除显存"标志 (VBE 3.0+)
+	int 10h
+
+	cmp	ax,	004Fh
+	jnz Label_SET_SVGA_MODE_VESA_VBE_FAIL
+
+	;init IDT GDT goto protect mode
+	cli ;close interrupt
+;This is an operand size prefix that forces lgdt to interpret GdtPtr in 32-bit mode (even if the current mode is still 16-bit real mode)
+	
+	db 0x66
+	lgdt [GdtPtr]
+
+	db 0x66
+	lidt [IDT_POINTER]	;can not ignore
+
+	mov eax,cr0
+	or eax,1
+	mov cr0,eax
+	;0x1036c
+	jmp dword SelectorCode32:GO_TO_TMP_Protect ;selectors:
+
 [SECTION .s32]
 [BITS 32]
-;0x103cc
+;0x103e8
 GO_TO_TMP_Protect:
 	;go to tmp long mode
 	;Points to a 32-bit data segment descriptor in GDT
@@ -563,7 +634,7 @@ GO_TO_TMP_Protect:
 	mov dword	[0x9202C],  0x000000
 
 	;load GDTR
-	; db 0x66
+	db 0x66
 	lgdt [GdtPtr64]
 	mov ax,0x10
 	mov ds,ax
@@ -582,6 +653,7 @@ GO_TO_TMP_Protect:
 	;load cr3
 	mov eax, 0x90000
 	mov cr3, eax
+
 	;open long mode
 	xor ecx, ecx
 	mov ecx, 0C0000080h
@@ -594,12 +666,13 @@ GO_TO_TMP_Protect:
 	mov eax, cr0
 	bts eax, 0
 	bts eax, 31
-	;0x104e9
+	;0x10501
 	mov cr0, eax
-	;0x104ec
+	;0x104e7
 	;jmp far 0008:00100000
 	jmp SelectorCode64:OffsetOfKernelFile
 	;after jump,address:0008:0000000000100000
+
 ;test support long mode or not
 support_long_mode:
 	mov eax, 0x80000000
