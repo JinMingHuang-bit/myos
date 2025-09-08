@@ -189,7 +189,7 @@ Label_Go_On_Loading_File:
 	call	Func_ReadOneSector
 	pop	ax
 
-;;;;;;;;;;;;;;;;;;;;;;;	
+
 	push	cx
 	push	eax
 	push	fs
