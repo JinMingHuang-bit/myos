@@ -531,21 +531,21 @@ Lable_Search_In_Root_Dir_Begin:
 	mov	dx,	10h
 
 ; ===== 添加的内层循环开始 =====
-Label_Check_Entry:
-    push    si
-    push    di
-    mov     cx, 11      ; 文件名长度11字节
-    repe    cmpsb       ; 比较文件名
-    pop     di
-    pop     si
-    je      Label_FileName_Found  ; 找到匹配项
+; Label_Check_Entry:
+;     push    si
+;     push    di
+;     mov     cx, 11      ; 文件名长度11字节
+;     repe    cmpsb       ; 比较文件名
+;     pop     di
+;     pop     si
+;     je      Label_FileName_Found  ; 找到匹配项
     
-    add     di, 32      ; 移动到下一个目录项
-    dec     dx          ; 目录项计数器减1
-    jnz     Label_Check_Entry  ; 继续检查当前扇区的下一个项
+;     add     di, 32      ; 移动到下一个目录项
+;     dec     dx          ; 目录项计数器减1
+;     jnz     Label_Check_Entry  ; 继续检查当前扇区的下一个项
     
-    ; 当前扇区无匹配，跳到下一个扇区
-    jmp     Label_Goto_Next_Sector_In_Root_Dir
+;     ; 当前扇区无匹配，跳到下一个扇区
+;     jmp     Label_Goto_Next_Sector_In_Root_Dir
 ; ===== 添加的内层循环结束 =====
 
 Label_SVGA_Mode_Info_Finish:

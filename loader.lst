@@ -112,7 +112,7 @@
    111 00000052 C706[C602]1300          	mov	word	[SectorNo],	SectorNumOfRootDirStart
    112                                  Label_Goto_Next_Sector_In_Root_Dir:
    113 00000058 8306[C602]01                add word [SectorNo],1
-   114 0000005D E99302                      jmp Lable_Search_In_Root_Dir_Begin
+   114 0000005D E99102                      jmp Lable_Search_In_Root_Dir_Begin
    115                                  Label_No_KernelBin:
    116 00000060 B80113                  	mov	ax,	1301h
    117 00000063 BB0C00                  	mov	bx,	000ch
@@ -436,14 +436,14 @@
    435                                  	;Check whether each pattern is available.
    436                                  	;0xFFFF is the end tag of the list of VESA patterns, indicating that the list is terminated
    437 000002A5 83F9FF                  	cmp	cx,	0FFFFh
-   438 000002A8 0F848400                	jz	Label_SVGA_Mode_Info_Finish
-   439 000002AC B8014F                  	mov	ax,	4F01h
-   440 000002AF CD10                    	int	10h
-   441 000002B1 83F84F                  	cmp	ax,	004Fh
-   442 000002B4 7526                    	jnz	Label_SVGA_Mode_Info_FAIL	
-   443 000002B6 6683C602                	add	esi,	2
-   444 000002BA 6681C700010000          	add	edi,	0x100
-   445 000002C1 EBCC                    	jmp	Label_SVGA_Mode_Info_Get
+   438 000002A8 746E                    	jz	Label_SVGA_Mode_Info_Finish
+   439 000002AA B8014F                  	mov	ax,	4F01h
+   440 000002AD CD10                    	int	10h
+   441 000002AF 83F84F                  	cmp	ax,	004Fh
+   442 000002B2 7526                    	jnz	Label_SVGA_Mode_Info_FAIL	
+   443 000002B4 6683C602                	add	esi,	2
+   444 000002B8 6681C700010000          	add	edi,	0x100
+   445 000002BF EBCE                    	jmp	Label_SVGA_Mode_Info_Get
    446                                  
    447                                  ; Label_SVGA_Mode_Info_Finish:
    448                                  	
@@ -489,108 +489,108 @@
    488                                  ; 	jmp dword SelectorCode32:GO_TO_TMP_Protect ;selectors:
    489                                  
    490                                  Label_SET_SVGA_MODE_VESA_VBE_FAIL:
-   491 000002C3 B80113                  	mov	ax,	1301h
-   492 000002C6 BB0F00                  	mov	bx,	000fh
+   491 000002C1 B80113                  	mov	ax,	1301h
+   492 000002C4 BB0F00                  	mov	bx,	000fh
    493                                  	;row 15
-   494 000002C9 BA000F                  	mov	dx,	0F00h
-   495 000002CC B91F00                  	mov	cx,	31
-   496 000002CF 50                      	push	ax
+   494 000002C7 BA000F                  	mov	dx,	0F00h
+   495 000002CA B91F00                  	mov	cx,	31
+   496 000002CD 50                      	push	ax
    497                                  	;Let ES = DS to ensure that ES:BP correctly refers to the string
-   498 000002D0 8CD8                    	mov	ax,	ds
-   499 000002D2 8EC0                    	mov	es,	ax
-   500 000002D4 58                      	pop	ax
-   501 000002D5 BD[C902]                	mov	bp, SETSVGAMODEVESAVBEFAILMessage
-   502 000002D8 CD10                    	int	10h
-   503 000002DA EBFE                    	jmp $
+   498 000002CE 8CD8                    	mov	ax,	ds
+   499 000002D0 8EC0                    	mov	es,	ax
+   500 000002D2 58                      	pop	ax
+   501 000002D3 BD[C902]                	mov	bp, SETSVGAMODEVESAVBEFAILMessage
+   502 000002D6 CD10                    	int	10h
+   503 000002D8 EBFE                    	jmp $
    504                                  
    505                                  Label_SVGA_Mode_Info_FAIL:
-   506 000002DC B80113                  	mov	ax,	1301h
-   507 000002DF BB0F00                  	mov	bx,	000Fh
-   508 000002E2 BA000D                  	mov	dx,	0D00h		;row 10
-   509 000002E5 B91C00                  	mov	cx,	28
-   510 000002E8 50                      	push	ax
-   511 000002E9 8CD8                    	mov	ax,	ds
-   512 000002EB 8EC0                    	mov	es,	ax
-   513 000002ED 58                      	pop	ax
-   514 000002EE BD[3403]                	mov	bp,	GetSVGAModeInfoErrMessage
-   515 000002F1 CD10                    	int	10h
+   506 000002DA B80113                  	mov	ax,	1301h
+   507 000002DD BB0F00                  	mov	bx,	000Fh
+   508 000002E0 BA000D                  	mov	dx,	0D00h		;row 10
+   509 000002E3 B91C00                  	mov	cx,	28
+   510 000002E6 50                      	push	ax
+   511 000002E7 8CD8                    	mov	ax,	ds
+   512 000002E9 8EC0                    	mov	es,	ax
+   513 000002EB 58                      	pop	ax
+   514 000002EC BD[3403]                	mov	bp,	GetSVGAModeInfoErrMessage
+   515 000002EF CD10                    	int	10h
    516                                  
    517                                  Lable_Search_In_Root_Dir_Begin:
    518                                  
-   519 000002F3 833E[C402]00            	cmp	word	[RootDirSizeForLoop],	0
-   520 000002F8 0F8464FD                	jz	Label_No_KernelBin
-   521 000002FC FF0E[C402]              	dec	word	[RootDirSizeForLoop]	
-   522 00000300 B80000                  	mov	ax,	00h
-   523 00000303 8EC0                    	mov	es,	ax
-   524 00000305 BB0080                  	mov	bx,	8000h
-   525 00000308 A1[C602]                	mov	ax,	[SectorNo]
-   526 0000030B B101                    	mov	cl,	1
-   527 0000030D E842FE                  	call	Func_ReadOneSector
-   528 00000310 BE[DA03]                	mov	si,	KernelFileName
-   529 00000313 BF0080                  	mov	di,	8000h
-   530 00000316 FC                      	cld
-   531 00000317 BA1000                  	mov	dx,	10h
+   519 000002F1 833E[C402]00            	cmp	word	[RootDirSizeForLoop],	0
+   520 000002F6 0F8466FD                	jz	Label_No_KernelBin
+   521 000002FA FF0E[C402]              	dec	word	[RootDirSizeForLoop]	
+   522 000002FE B80000                  	mov	ax,	00h
+   523 00000301 8EC0                    	mov	es,	ax
+   524 00000303 BB0080                  	mov	bx,	8000h
+   525 00000306 A1[C602]                	mov	ax,	[SectorNo]
+   526 00000309 B101                    	mov	cl,	1
+   527 0000030B E844FE                  	call	Func_ReadOneSector
+   528 0000030E BE[DA03]                	mov	si,	KernelFileName
+   529 00000311 BF0080                  	mov	di,	8000h
+   530 00000314 FC                      	cld
+   531 00000315 BA1000                  	mov	dx,	10h
    532                                  
    533                                  ; ===== 添加的内层循环开始 =====
-   534                                  Label_Check_Entry:
-   535 0000031A 56                          push    si
-   536 0000031B 57                          push    di
-   537 0000031C B90B00                      mov     cx, 11      ; 文件名长度11字节
-   538 0000031F F3A6                        repe    cmpsb       ; 比较文件名
-   539 00000321 5F                          pop     di
-   540 00000322 5E                          pop     si
-   541 00000323 0F8452FD                    je      Label_FileName_Found  ; 找到匹配项
+   534                                  ; Label_Check_Entry:
+   535                                  ;     push    si
+   536                                  ;     push    di
+   537                                  ;     mov     cx, 11      ; 文件名长度11字节
+   538                                  ;     repe    cmpsb       ; 比较文件名
+   539                                  ;     pop     di
+   540                                  ;     pop     si
+   541                                  ;     je      Label_FileName_Found  ; 找到匹配项
    542                                      
-   543 00000327 83C720                      add     di, 32      ; 移动到下一个目录项
-   544 0000032A 4A                          dec     dx          ; 目录项计数器减1
-   545 0000032B 75ED                        jnz     Label_Check_Entry  ; 继续检查当前扇区的下一个项
+   543                                  ;     add     di, 32      ; 移动到下一个目录项
+   544                                  ;     dec     dx          ; 目录项计数器减1
+   545                                  ;     jnz     Label_Check_Entry  ; 继续检查当前扇区的下一个项
    546                                      
-   547                                      ; 当前扇区无匹配，跳到下一个扇区
-   548 0000032D E928FD                      jmp     Label_Goto_Next_Sector_In_Root_Dir
+   547                                  ;     ; 当前扇区无匹配，跳到下一个扇区
+   548                                  ;     jmp     Label_Goto_Next_Sector_In_Root_Dir
    549                                  ; ===== 添加的内层循环结束 =====
    550                                  
    551                                  Label_SVGA_Mode_Info_Finish:
    552                                  	
-   553 00000330 B80113                  	mov	ax,	1301h
-   554 00000333 BB0F00                  	mov	bx,	000Fh
-   555 00000336 BA000E                  	mov	dx,	0E00h		;row 14
-   556 00000339 B92200                  	mov	cx,	34
-   557 0000033C 50                      	push	ax
-   558 0000033D 8CD8                    	mov	ax,	ds
-   559 0000033F 8EC0                    	mov	es,	ax
-   560 00000341 58                      	pop	ax
-   561 00000342 BD[6803]                	mov	bp,	GetSVGAModeInfoOKMessage
-   562 00000345 CD10                    	int	10h
+   553 00000318 B80113                  	mov	ax,	1301h
+   554 0000031B BB0F00                  	mov	bx,	000Fh
+   555 0000031E BA000E                  	mov	dx,	0E00h		;row 14
+   556 00000321 B92200                  	mov	cx,	34
+   557 00000324 50                      	push	ax
+   558 00000325 8CD8                    	mov	ax,	ds
+   559 00000327 8EC0                    	mov	es,	ax
+   560 00000329 58                      	pop	ax
+   561 0000032A BD[6803]                	mov	bp,	GetSVGAModeInfoOKMessage
+   562 0000032D CD10                    	int	10h
    563                                  
    564                                  	;set SVGA mode
    565                                  	;mode : 0x180 or 0x143
    566                                  	; mov ax,4F02h
    567                                  	; mov bx,4180h
    568                                  	; int	10h
-   569 00000347 B8024F                  	mov ax, 4F02h       ; VBE设置显示模式功能
-   570 0000034A BB0101                  	mov bx, 0101h       ; 原始模式号 (0x180)
+   569 0000032F B8024F                  	mov ax, 4F02h       ; VBE设置显示模式功能
+   570 00000332 BB0101                  	mov bx, 0101h       ; 原始模式号 (0x180)
    571                                  	; or  bx, 8000h       ;n 启用LFB（线性帧缓冲区）
-   572 0000034D 81CB0040                	or  bx, 4000h       ; ← 关键添加：设置"不清除显存"标志 (VBE 3.0+)
-   573 00000351 CD10                    	int 10h
+   572 00000335 81CB0040                	or  bx, 4000h       ; ← 关键添加：设置"不清除显存"标志 (VBE 3.0+)
+   573 00000339 CD10                    	int 10h
    574                                  
-   575 00000353 83F84F                  	cmp	ax,	004Fh
-   576 00000356 0F8569FF                	jnz Label_SET_SVGA_MODE_VESA_VBE_FAIL
+   575 0000033B 83F84F                  	cmp	ax,	004Fh
+   576 0000033E 7581                    	jnz Label_SET_SVGA_MODE_VESA_VBE_FAIL
    577                                  
    578                                  	;init IDT GDT goto protect mode
-   579 0000035A FA                      	cli ;close interrupt
+   579 00000340 FA                      	cli ;close interrupt
    580                                  ;This is an operand size prefix that forces lgdt to interpret GdtPtr in 32-bit mode (even if the current mode is still 16-bit real mode)
    581                                  	
-   582 0000035B 66                      	db 0x66
-   583 0000035C 0F0116[1800]            	lgdt [GdtPtr]
+   582 00000341 66                      	db 0x66
+   583 00000342 0F0116[1800]            	lgdt [GdtPtr]
    584                                  
-   585 00000361 66                      	db 0x66
-   586 00000362 0F011E[BE02]            	lidt [IDT_POINTER]	;can not ignore
+   585 00000347 66                      	db 0x66
+   586 00000348 0F011E[BE02]            	lidt [IDT_POINTER]	;can not ignore
    587                                  
-   588 00000367 0F20C0                  	mov eax,cr0
-   589 0000036A 6683C801                	or eax,1
-   590 0000036E 0F22C0                  	mov cr0,eax
+   588 0000034D 0F20C0                  	mov eax,cr0
+   589 00000350 6683C801                	or eax,1
+   590 00000354 0F22C0                  	mov cr0,eax
    591                                  	;0x1036c
-   592 00000371 66EA[00000000]0800      	jmp dword SelectorCode32:GO_TO_TMP_Protect ;selectors:
+   592 00000357 66EA[00000000]0800      	jmp dword SelectorCode32:GO_TO_TMP_Protect ;selectors:
    593                                  
    594                                  [SECTION .s32]
    595                                  [BITS 32]

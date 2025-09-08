@@ -185,7 +185,7 @@ Label_FileName_Found:
 	push	cx
 	add	cx,	ax
 	add	cx,	SectorBalance
-	mov	eax,	BaseTmpOfKernelAddr;BaseOfKernelFile
+	mov	eax,BaseTmpOfKernelAddr;BaseOfKernelFile
 	mov	es,	eax
 	mov	bx,	OffsetTmpOfKernelFile;OffsetOfKernelFile
 	mov	ax,	cx
