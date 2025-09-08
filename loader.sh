@@ -1,6 +1,6 @@
 #!/bin/bash
 # 自动挂载boot.img镜像，复制loader.bin文件并卸载的脚本
-# 用法：sudo ./copy_loader.sh
+# 用法：sudo ./loader.sh
 
 # 检查root权限
 if [ "$(id -u)" -ne 0 ]; then
@@ -10,7 +10,7 @@ fi
 
 # 定义目录路径
 PARENT_DIR="$(dirname "$(pwd)")"
-MOUNT_POINT="/media"
+MOUNT_POINT="/media"l
 SOURCE_FILE="/home/student/myos/loader.bin"  # 使用完整绝对路径
 IMAGE_FILE="boot.img"
 

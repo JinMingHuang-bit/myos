@@ -1,45 +1,25 @@
-org 10000h
-    jmp Label_Start
-RootDirSectors	equ	14
-SectorNumOfRootDirStart	equ	19
-SectorNumOfFAT1Start	equ	1
-SectorBalance	equ	17	
+org	10000h
+	jmp	Label_Start
 
-	BS_OEMName	db	'myosboot'
-	BPB_BytesPerSec	dw	512
-	BPB_SecPerClus	db	1
-	BPB_RsvdSecCnt	dw	1
-	BPB_NumFATs	db	2
-	BPB_RootEntCnt	dw	224
-	BPB_TotSec16	dw	2880
-	BPB_Media	db	0xf0
-	BPB_FATSz16	dw	9
-	BPB_SecPerTrk	dw	18
-	BPB_NumHeads	dw	2
-	BPB_hiddSec	dd	0
-	BPB_TotSec32	dd	0
-	BS_DrvNum	db	0
-	BS_Reserved1	db	0
-	BS_BootSig	db	29h
-	BS_VolID	dd	0
-	BS_VolLab	db	'boot loader'
-	BS_FileSysType	db	'FAT12   '
+%include	"fat12.inc"
 
-BaseOfKernelFile equ 0x00
-OffsetOfKernelFile equ 0x100000
-BaseTmpOfKernelAddr equ 0x00
-OffsetTmpOfKernelFile equ 0x7E00
-MemoryStructBufferAddr equ 0x7E00
+BaseOfKernelFile	equ	0x00
+OffsetOfKernelFile	equ	0x100000
+
+BaseTmpOfKernelAddr	equ	0x00
+OffsetTmpOfKernelFile	equ	0x7E00
+
+MemoryStructBufferAddr	equ	0x7E00
 
 [SECTION gdt]
 
-LABEL_GDT:		dd	0,0  ; 定义第一个描述符（8字节全0），这是GDT强制要求的空描述符（不可用）
-LABEL_DESC_CODE32:	dd	0x0000FFFF,0x00CF9A00	; 定义32位代码段描述符（8字节
-LABEL_DESC_DATA32:	dd	0x0000FFFF,0x00CF9200   ;定义32位数据段描述符（8字节）
+LABEL_GDT:		dd	0,0
+LABEL_DESC_CODE32:	dd	0x0000FFFF,0x00CF9A00
+LABEL_DESC_DATA32:	dd	0x0000FFFF,0x00CF9200
 
-GdtLen	equ	$ - LABEL_GDT 
-GdtPtr	dw	GdtLen - 1	; GDTR的低16位：GDT长度-1（界限）
-	dd	LABEL_GDT		; GDTR的高32位：GDT的基地址
+GdtLen	equ	$ - LABEL_GDT
+GdtPtr	dw	GdtLen - 1
+	dd	LABEL_GDT	;be carefull the address(after use org)!!!!!!
 
 SelectorCode32	equ	LABEL_DESC_CODE32 - LABEL_GDT
 SelectorData32	equ	LABEL_DESC_DATA32 - LABEL_GDT
@@ -61,463 +41,63 @@ SelectorData64	equ	LABEL_DESC_DATA64 - LABEL_GDT64
 [BITS 16]
 
 Label_Start:
-	;0x10080
-    mov ax,cs
-    mov ds,ax
-    mov es,ax
-    mov ax,0x00
-    mov ss,ax
-    mov sp,0x7c00
 
-;display
-    mov ax,1301h
-    mov bx,000fh
-    mov dx,0200h
-    mov cx,13
-    push ax
-    mov ax,ds
-    mov es,ax
-    pop ax
-    mov bp,startLoaderMessage
-    int 10h
+	mov	ax,	cs
+	mov	ds,	ax
+	mov	es,	ax
+	mov	ax,	0x00
+	mov	ss,	ax
+	mov	sp,	0x7c00
 
-;open address A20
-    push ax
-    in al,92h
-    or al,00000010b
-    out 92h,al
-    pop ax
+;=======	display on screen : Start Loader......
 
-    cli
+	mov	ax,	1301h
+	mov	bx,	000fh
+	mov	dx,	0200h		;row 2
+	mov	cx,	12
+	push	ax
+	mov	ax,	ds
+	mov	es,	ax
+	pop	ax
+	mov	bp,	StartLoaderMessage
+	int	10h
 
-    db 0x66
-    lgdt [GdtPtr]
-    ;enable protected mode
-    mov eax,cr0
-    or eax,1
-    mov cr0,eax
-    mov ax,SelectorData32
-    mov fs,ax
-   ;return to 16 bit mode
-    mov eax,cr0
-    and al,11111110b
-    mov cr0,eax
-    sti
+;=======	open address A20
+	push	ax
+	in	al,	92h
+	or	al,	00000010b
+	out	92h,	al
+	pop	ax
+
+	cli
+
+	lgdt	[GdtPtr]	
+
+	mov	eax,	cr0
+	or	eax,	1
+	mov	cr0,	eax
+
+	mov	ax,	SelectorData32
+	mov	fs,	ax
+	mov	eax,	cr0
+	and	al,	11111110b
+	mov	cr0,	eax
+
+	sti
+
 ;=======	reset floppy
+
 	xor	ah,	ah
 	xor	dl,	dl
 	int	13h
+
 ;=======	search kernel.bin
 	mov	word	[SectorNo],	SectorNumOfRootDirStart
-Label_Goto_Next_Sector_In_Root_Dir:
-    add word [SectorNo],1
-    jmp Lable_Search_In_Root_Dir_Begin
-Label_No_KernelBin:
-	mov	ax,	1301h
-	mov	bx,	000ch
-	mov	dx,	0300h
-	mov	cx,	21
-	push	ax
-	mov	ax,	ds
-	mov	es,	ax
-	pop	ax
-	mov	bp,	NoKernelMessage
-	int	10h
-	jmp	$
-
-Label_FileName_Found:
-    mov ax, RootDirSectors
- 	and di, 0FFE0h
-    ;Points to the starting cluster number field of the directory entry
-    add	di,	01Ah
-    mov	cx,	word [es:di]
-    push	cx
-    add	cx,ax
-    add	cx,SectorBalance
-    ;get kernel file base
-    mov eax,BaseTmpOfKernelAddr
-    mov es,eax
-    ;get kernel file offset
-    mov bx,OffsetTmpOfKernelFile
-    mov ax,cx
-
-Label_Go_On_Loading_File:
-    push	ax
-	push	bx
-	mov	ah,	0eh
-	mov	al,	'.'
-	mov	bl,	0fh
-	int	10h
-	pop	bx
-	pop	ax
-    mov	cl,1
-    call	Func_ReadOneSector
-    pop	ax
-
-    push cx
-    push eax
-    push fs
-    push edi
-    push ds
-    push esi
-    mov cx,200h
-    mov ax,BaseOfKernelFile
-    mov fs,ax
-    mov edi,dword [OffsetOfKernelFileCount]
-    mov ax,BaseTmpOfKernelAddr
-    mov ds,ax
-    mov esi,OffsetTmpOfKernelFile
-
-Label_Mov_Kernel:
-    mov	al,byte [ds:esi]
-    mov	byte [fs:edi],al
-    inc	esi
-    inc	edi
-    loop Label_Mov_Kernel
-    mov eax,0x1000
-    mov ds,eax
-    mov dword [OffsetOfKernelFileCount],edi
-    pop esi
-    pop ds
-    pop edi
-    pop fs
-    pop eax
-    pop cx
-    call Func_GetFATEntry
-    cmp	ax,	0fffh
-	jz	Label_File_Loaded
-	push	ax
-	mov	dx,	RootDirSectors
-	add	ax,	dx
-	add	ax,	SectorBalance
-    ;	add	bx,	[BPB_BytesPerSec]
-    jmp	Label_Go_On_Loading_File
-
-;=======	get FAT Entry
-Func_GetFATEntry:
-
-	push	es
-	push	bx
-	push	ax
-	mov	ax,	00
-	mov	es,	ax
-	pop	ax
-	mov	byte	[Odd],	0
-    ;FAT12 takes 1.5 bytes per entry, so:
-    ;The FAT table for cluster number N is offset by = N * 1.5 (that is, N + N/2 = N * 3/2)
-	mov	bx,	3
-	mul	bx
-	mov	bx,	2
-	div	bx
-	cmp	dx,	0
-	jz	Label_Even
-	mov	byte	[Odd],	1
-Label_Even:
-
-	xor	dx,	dx
-	mov	bx,	[BPB_BytesPerSec]
-    ;Calculate the sector number + byte offset of the FAT entry
-	div	bx
-	push	dx
-    ;0x0000:0x8000 (physical address 0x08000) is usually located in the free memory area and neither corrupts the interrupt table nor affects subsequent bootloaders or kernel loads.
-	mov	bx,	8000h
-	add	ax,	SectorNumOfFAT1Start
-    ;Set the number of sectors read to 2 (FAT entries may span sectors, so 2 sectors must be read consecutively to ensure coverage)
-	mov	cl,	2
-	call	Func_ReadOneSector
-    ;call Func_ReadOneSector The wrapper function that calls the BIOS interrupt INT 13h
-	pop	dx
-	add	bx,	dx
-	mov	ax,	[es:bx]
-	cmp	byte	[Odd],	1
-    ;if not equal,jmp
-	jnz	Label_Even_2
-	shr	ax,	4
-
-Label_Even_2:
-	and	ax,	0fffh
-	pop	bx
-	pop	es
-	ret
-
-Func_ReadOneSector:
-	
-	push	bp
-    ;BP is the base pointer used to locate variables on the stack.
-    ;MOV BP, SP makes BP point to the top of the current stack to facilitate subsequent access to local variables
-	mov	bp,	sp
-	sub	esp,	2
-	mov	byte	[bp - 2],	cl
-	push	bx
-	mov	bl,	[BPB_SecPerTrk]
-    ;Calculate track (cylinder) and sector offsets.
-	div	bl
-	inc	ah
-	mov	cl,	ah
-	mov	dh,	al
-    ;Calculate cylinder number (higher 8 bits of track number)
-	shr	al,	1
-	mov	ch,	al
-	and	dh,	1
-	pop	bx
-    ;DL is the drive letter for the BIOS disk read (INT 13h) (e.g. 0x00 for floppy, 0x80 for hard disk).
-	mov	dl,	[BS_DrvNum]
-
-Label_Go_On_Reading:
-	mov	ah,	2
-	mov	al,	byte	[bp - 2]
-	int	13h
-	jc	Label_Go_On_Reading
-	add	esp,	2
-	pop	bp
-	ret
-
-
-Label_File_Loaded:
-    mov ax,0B800h
-    mov gs,ax
-    mov ah,0fh
-    mov al,'G'
-    mov [gs:((80*0+39)*2)],ax
-
-KillMotor:
-    push dx
-    mov dx,03F2h
-    mov al,0
-    out dx,al
-    pop dx
-
-	mov	ax,	1301h
-	mov	bx,	000fh
-	;row 5
-	mov	dx,	0500h
-	mov	cx,	20
-	push	ax
-	;Let ES = DS to ensure that ES:BP correctly refers to the string
-	mov	ax,	ds
-	mov	es,	ax
-	pop	ax
-	mov	bp,	StartGetMemStructMessage
-	int	10h
-
-	;Prepare to receive BIOS memory detection results
-	mov ebx,0
-	mov	ax,0x00
-	mov	es,	ax
-	mov di,MemoryStructBufferAddr
-
-Label_Get_Mem_Struct:
-	;Call E820 function of BIOS INT 15h (get memory mapping)
-	mov eax,0x0E820
-	;The size of the memory structure expected to be returned by the BIOS
-	mov ecx,20
-	;Signature verification,The BIOS checks whether EDX is equal to "SMAP" to make sure the call is valid
-	mov edx,0x534D4150
-	;Memory check
-	int 15h
-	;if fail
-	jc Label_Get_Mem_Fail
-	;Moving buffer Pointer
-	add di,20
-	cmp ebx,0
-	jne Label_Get_Mem_Struct
-	jmp Label_Get_Mem_OK
-Label_Get_Mem_Fail:
-	mov	ax,	1301h
-	mov	bx,	000fh
-	;row 6
-	mov	dx,	0600h
-	mov	cx,	28
-	push	ax
-	;Let ES = DS to ensure that ES:BP correctly refers to the string
-	mov	ax,	ds
-	mov	es,	ax
-	pop	ax
-	mov	bp, GetMemStructErrMessage
-	int	10h
-
-Label_Get_Mem_OK:
-	mov	ax,	1301h
-	mov	bx,	000fh
-	;row 7
-	mov	dx,	0700h
-	mov	cx,	24
-	push	ax
-	;Let ES = DS to ensure that ES:BP correctly refers to the string
-	mov	ax,	ds
-	mov	es,	ax
-	pop	ax
-	mov	bp, GetMemStructOKMessage
-	int	10h
-	
-	;get SVGA
-	mov	ax,	1301h
-	mov	bx,	000Fh
-	mov	dx,	0800h		;row 8
-	mov	cx,	16
-	push	ax
-	mov	ax,	ds
-	mov	es,	ax
-	pop	ax
-	mov	bp,	StartGetSVGAVBEInfoMessage
-	int	10h
-
-	;Call VESA function 00h (get VBE controller information)
-	mov	ax,	0x00
-	mov	es,	ax
-	mov	di,	0x8000
-	mov	ax,	4F00h
-	int	10h
-	cmp	ax,	004Fh
-	jz	.KO
-
-	;if fail
-	mov	ax,	1301h
-	mov	bx,	000Fh
-	mov	dx,	0900h		;row 9
-	mov	cx,	27
-	push	ax
-	mov	ax,	ds
-	mov	es,	ax
-	pop	ax
-	mov	bp,	GetSVGAVBEInfoErrMessage
-	int	10h
-
-	jmp $
-.KO:
-	mov	ax,	1301h
-	mov	bx,	000Fh
-	mov	dx,	0A00h		;row 10
-	mov	cx,	33
-	push	ax
-	mov	ax,	ds
-	mov	es,	ax
-	pop	ax
-	mov	bp,	GetSVGAVBEInfoOKMessage
-	int	10h
-	;get svga mode info
-
-	
-	mov	ax,	1301h
-	mov	bx,	000Fh
-	mov	dx,	0C00h		;row 12
-	mov	cx,	24
-	push	ax
-	mov	ax,	ds
-	mov	es,	ax
-	pop	ax
-	mov	bp,	StartGetSVGAModeInfoMessage
-	int	10h
-
-	mov	ax,	0x00
-	mov	es,	ax
-	mov	si,	0x800e
-
-	mov	esi,	dword	[es:si]
-	;The VESA schema information is subsequently copied or parsed
-	mov	edi,	0x8200
-
-Label_SVGA_Mode_Info_Get:
-
-	mov	cx,	word	[es:esi]
-
-;=======	display SVGA mode information
-
-	push	ax
-	mov	ax,	00h
-	mov	al,	ch
-	call	Label_DispAL
-	mov	ax,	00h
-	mov	al,	cl	
-	call	Label_DispAL
-	pop	ax
-
-	;Check whether each pattern is available.
-	;0xFFFF is the end tag of the list of VESA patterns, indicating that the list is terminated
-	cmp	cx,	0FFFFh
-	jz	Label_SVGA_Mode_Info_Finish
-	mov	ax,	4F01h
-	int	10h
-	cmp	ax,	004Fh
-	jnz	Label_SVGA_Mode_Info_FAIL	
-	add	esi,	2
-	add	edi,	0x100
-	jmp	Label_SVGA_Mode_Info_Get
-
-; Label_SVGA_Mode_Info_Finish:
-	
-; 	mov	ax,	1301h
-; 	mov	bx,	000Fh
-; 	mov	dx,	0E00h		;row 14
-; 	mov	cx,	34
-; 	push	ax
-; 	mov	ax,	ds
-; 	mov	es,	ax
-; 	pop	ax
-; 	mov	bp,	GetSVGAModeInfoOKMessage
-; 	int	10h
-
-; 	;set SVGA mode
-; 	;mode : 0x180 or 0x143
-; 	; mov ax,4F02h
-; 	; mov bx,4180h
-; 	; int	10h
-; 	mov ax, 4F02h       ; VBE设置显示模式功能
-; 	mov bx, 0101h       ; 原始模式号 (0x180)
-; 	; or  bx, 8000h       ;n 启用LFB（线性帧缓冲区）
-; 	or  bx, 4000h       ; ← 关键添加：设置"不清除显存"标志 (VBE 3.0+)
-; 	int 10h
-
-; 	cmp	ax,	004Fh
-; 	jnz Label_SET_SVGA_MODE_VESA_VBE_FAIL
-
-; 	;init IDT GDT goto protect mode
-; 	cli ;close interrupt
-; ;This is an operand size prefix that forces lgdt to interpret GdtPtr in 32-bit mode (even if the current mode is still 16-bit real mode)
-	
-; 	db 0x66
-; 	lgdt [GdtPtr]
-
-; 	db 0x66
-; 	lidt [IDT_POINTER]	;can not ignore
-
-; 	mov eax,cr0
-; 	or eax,1
-; 	mov cr0,eax
-; 	;0x1036c
-; 	jmp dword SelectorCode32:GO_TO_TMP_Protect ;selectors:
-
-Label_SET_SVGA_MODE_VESA_VBE_FAIL:
-	mov	ax,	1301h
-	mov	bx,	000fh
-	;row 15
-	mov	dx,	0F00h
-	mov	cx,	31
-	push	ax
-	;Let ES = DS to ensure that ES:BP correctly refers to the string
-	mov	ax,	ds
-	mov	es,	ax
-	pop	ax
-	mov	bp, SETSVGAMODEVESAVBEFAILMessage
-	int	10h
-	jmp $
-
-Label_SVGA_Mode_Info_FAIL:
-	mov	ax,	1301h
-	mov	bx,	000Fh
-	mov	dx,	0D00h		;row 10
-	mov	cx,	28
-	push	ax
-	mov	ax,	ds
-	mov	es,	ax
-	pop	ax
-	mov	bp,	GetSVGAModeInfoErrMessage
-	int	10h
 
 Lable_Search_In_Root_Dir_Begin:
 
 	cmp	word	[RootDirSizeForLoop],	0
-	jz	Label_No_KernelBin
+	jz	Label_No_LoaderBin
 	dec	word	[RootDirSizeForLoop]	
 	mov	ax,	00h
 	mov	es,	ax
@@ -529,31 +109,345 @@ Lable_Search_In_Root_Dir_Begin:
 	mov	di,	8000h
 	cld
 	mov	dx,	10h
+	
+Label_Search_For_LoaderBin:
 
-; ===== 添加的内层循环开始 =====
-; Label_Check_Entry:
-;     push    si
-;     push    di
-;     mov     cx, 11      ; 文件名长度11字节
-;     repe    cmpsb       ; 比较文件名
-;     pop     di
-;     pop     si
-;     je      Label_FileName_Found  ; 找到匹配项
-    
-;     add     di, 32      ; 移动到下一个目录项
-;     dec     dx          ; 目录项计数器减1
-;     jnz     Label_Check_Entry  ; 继续检查当前扇区的下一个项
-    
-;     ; 当前扇区无匹配，跳到下一个扇区
-;     jmp     Label_Goto_Next_Sector_In_Root_Dir
-; ===== 添加的内层循环结束 =====
+	cmp	dx,	0
+	jz	Label_Goto_Next_Sector_In_Root_Dir
+	dec	dx
+	mov	cx,	11
 
-Label_SVGA_Mode_Info_Finish:
+Label_Cmp_FileName:
+
+	cmp	cx,	0
+	jz	Label_FileName_Found
+	dec	cx
+	lodsb	
+	cmp	al,	byte	[es:di]
+	jz	Label_Go_On
+	jmp	Label_Different
+
+Label_Go_On:
+	
+	inc	di
+	jmp	Label_Cmp_FileName
+
+Label_Different:
+
+	and	di,	0FFE0h
+	add	di,	20h
+	mov	si,	KernelFileName
+	jmp	Label_Search_For_LoaderBin
+
+Label_Goto_Next_Sector_In_Root_Dir:
+	
+	add	word	[SectorNo],	1
+	jmp	Lable_Search_In_Root_Dir_Begin
+	
+;=======	display on screen : ERROR:No KERNEL Found
+
+Label_No_LoaderBin:
+
+	mov	ax,	1301h
+	mov	bx,	008Ch
+	mov	dx,	0300h		;row 3
+	mov	cx,	21
+	push	ax
+	mov	ax,	ds
+	mov	es,	ax
+	pop	ax
+	mov	bp,	NoLoaderMessage
+	int	10h
+	jmp	$
+
+;=======	found loader.bin name in root director struct
+
+Label_FileName_Found:
+	mov	ax,	RootDirSectors
+	and	di,	0FFE0h
+	add	di,	01Ah
+	mov	cx,	word	[es:di]
+	push	cx
+	add	cx,	ax
+	add	cx,	SectorBalance
+	mov	eax,BaseTmpOfKernelAddr;BaseOfKernelFile
+	mov	es,	eax
+	mov	bx,	OffsetTmpOfKernelFile;OffsetOfKernelFile
+	mov	ax,	cx
+
+Label_Go_On_Loading_File:
+	push	ax
+	push	bx
+	mov	ah,	0Eh
+	mov	al,	'.'
+	mov	bl,	0Fh
+	int	10h
+	pop	bx
+	pop	ax
+
+	mov	cl,	1
+	call	Func_ReadOneSector
+	pop	ax
+
+;;;;;;;;;;;;;;;;;;;;;;;	
+	push	cx
+	push	eax
+	push	fs
+	push	edi
+	push	ds
+	push	esi
+
+	mov	cx,	200h
+	mov	ax,	BaseOfKernelFile
+	mov	fs,	ax
+	mov	edi,	dword	[OffsetOfKernelFileCount]
+
+	mov	ax,	BaseTmpOfKernelAddr
+	mov	ds,	ax
+	mov	esi,	OffsetTmpOfKernelFile
+
+Label_Mov_Kernel:	;------------------
+	
+	mov	al,	byte	[ds:esi]
+	mov	byte	[fs:edi],	al
+
+	inc	esi
+	inc	edi
+
+	loop	Label_Mov_Kernel
+
+	mov	eax,	0x1000
+	mov	ds,	eax
+
+	mov	dword	[OffsetOfKernelFileCount],	edi
+
+	pop	esi
+	pop	ds
+	pop	edi
+	pop	fs
+	pop	eax
+	pop	cx
+;;;;;;;;;;;;;;;;;;;;;;;	
+
+	call	Func_GetFATEntry
+	cmp	ax,	0FFFh
+	jz	Label_File_Loaded
+	push	ax
+	mov	dx,	RootDirSectors
+	add	ax,	dx
+	add	ax,	SectorBalance
+;	add	bx,	[BPB_BytesPerSec]	
+
+	jmp	Label_Go_On_Loading_File
+
+Label_File_Loaded:
+		
+	mov	ax, 0B800h
+	mov	gs, ax
+	mov	ah, 0Fh				; 0000: 黑底    1111: 白字
+	mov	al, 'G'
+	mov	[gs:((80 * 0 + 39) * 2)], ax	; 屏幕第 0 行, 第 39 列。
+
+KillMotor:
+	
+	push	dx
+	mov	dx,	03F2h
+	mov	al,	0	
+	out	dx,	al
+	pop	dx
+
+;=======	get memory address size type
+
+	mov	ax,	1301h
+	mov	bx,	000Fh
+	mov	dx,	0400h		;row 4
+	mov	cx,	44
+	push	ax
+	mov	ax,	ds
+	mov	es,	ax
+	pop	ax
+	mov	bp,	StartGetMemStructMessage
+	int	10h
+
+	mov	ebx,	0
+	mov	ax,	0x00
+	mov	es,	ax
+	mov	di,	MemoryStructBufferAddr	
+
+Label_Get_Mem_Struct:
+
+	mov	eax,	0x0E820
+	mov	ecx,	20
+	mov	edx,	0x534D4150
+	int	15h
+	jc	Label_Get_Mem_Fail
+	add	di,	20
+	inc	dword	[MemStructNumber]
+
+	cmp	ebx,	0
+	jne	Label_Get_Mem_Struct
+	jmp	Label_Get_Mem_OK
+
+Label_Get_Mem_Fail:
+
+	mov	dword	[MemStructNumber],	0
+
+	mov	ax,	1301h
+	mov	bx,	008Ch
+	mov	dx,	0500h		;row 5
+	mov	cx,	23
+	push	ax
+	mov	ax,	ds
+	mov	es,	ax
+	pop	ax
+	mov	bp,	GetMemStructErrMessage
+	int	10h
+
+Label_Get_Mem_OK:
 	
 	mov	ax,	1301h
 	mov	bx,	000Fh
+	mov	dx,	0600h		;row 6
+	mov	cx,	29
+	push	ax
+	mov	ax,	ds
+	mov	es,	ax
+	pop	ax
+	mov	bp,	GetMemStructOKMessage
+	int	10h	
+
+;=======	get SVGA information
+
+	mov	ax,	1301h
+	mov	bx,	000Fh
+	mov	dx,	0800h		;row 8
+	mov	cx,	23
+	push	ax
+	mov	ax,	ds
+	mov	es,	ax
+	pop	ax
+	mov	bp,	StartGetSVGAVBEInfoMessage
+	int	10h
+
+	mov	ax,	0x00
+	mov	es,	ax
+	mov	di,	0x8000
+	mov	ax,	4F00h
+
+	int	10h
+
+	cmp	ax,	004Fh
+
+	jz	.KO
+	
+;=======	Fail
+
+	mov	ax,	1301h
+	mov	bx,	008Ch
+	mov	dx,	0900h		;row 9
+	mov	cx,	23
+	push	ax
+	mov	ax,	ds
+	mov	es,	ax
+	pop	ax
+	mov	bp,	GetSVGAVBEInfoErrMessage
+	int	10h
+
+	jmp	$
+
+.KO:
+
+	mov	ax,	1301h
+	mov	bx,	000Fh
+	mov	dx,	0A00h		;row 10
+	mov	cx,	29
+	push	ax
+	mov	ax,	ds
+	mov	es,	ax
+	pop	ax
+	mov	bp,	GetSVGAVBEInfoOKMessage
+	int	10h
+
+;=======	Get SVGA Mode Info
+
+	mov	ax,	1301h
+	mov	bx,	000Fh
+	mov	dx,	0C00h		;row 12
+	mov	cx,	24
+	push	ax
+	mov	ax,	ds
+	mov	es,	ax
+	pop	ax
+	mov	bp,	StartGetSVGAModeInfoMessage
+	int	10h
+
+
+	mov	ax,	0x00
+	mov	es,	ax
+	mov	si,	0x800e
+
+	mov	esi,	dword	[es:si]
+	mov	edi,	0x8200
+
+Label_SVGA_Mode_Info_Get:
+
+	mov	cx,	word	[es:esi]
+
+;=======	display SVGA mode information
+
+	push	ax
+	
+	mov	ax,	00h
+	mov	al,	ch
+	call	Label_DispAL
+
+	mov	ax,	00h
+	mov	al,	cl	
+	call	Label_DispAL
+	
+	pop	ax
+
+;=======
+	
+	cmp	cx,	0FFFFh
+	jz	Label_SVGA_Mode_Info_Finish
+
+	mov	ax,	4F01h
+	int	10h
+
+	cmp	ax,	004Fh
+
+	jnz	Label_SVGA_Mode_Info_FAIL	
+
+	inc	dword		[SVGAModeCounter]
+	add	esi,	2
+	add	edi,	0x100
+
+	jmp	Label_SVGA_Mode_Info_Get
+		
+Label_SVGA_Mode_Info_FAIL:
+
+	mov	ax,	1301h
+	mov	bx,	008Ch
+	mov	dx,	0D00h		;row 13
+	mov	cx,	24
+	push	ax
+	mov	ax,	ds
+	mov	es,	ax
+	pop	ax
+	mov	bp,	GetSVGAModeInfoErrMessage
+	int	10h
+
+Label_SET_SVGA_Mode_VESA_VBE_FAIL:
+
+	jmp	$
+
+Label_SVGA_Mode_Info_Finish:
+
+	mov	ax,	1301h
+	mov	bx,	000Fh
 	mov	dx,	0E00h		;row 14
-	mov	cx,	34
+	mov	cx,	30
 	push	ax
 	mov	ax,	ds
 	mov	es,	ax
@@ -561,189 +455,251 @@ Label_SVGA_Mode_Info_Finish:
 	mov	bp,	GetSVGAModeInfoOKMessage
 	int	10h
 
-	;set SVGA mode
-	;mode : 0x180 or 0x143
-	; mov ax,4F02h
-	; mov bx,4180h
-	; int	10h
-	mov ax, 4F02h       ; VBE设置显示模式功能
-	mov bx, 0101h       ; 原始模式号 (0x180)
-	; or  bx, 8000h       ;n 启用LFB（线性帧缓冲区）
-	or  bx, 4000h       ; ← 关键添加：设置"不清除显存"标志 (VBE 3.0+)
-	int 10h
+;=======	set the SVGA mode(VESA VBE)
+
+	mov	ax,	4F02h
+	; mov	bx,	4180h
+	mov bx, 0101h    	;========================mode : 0x180 or 0x143
+	int 	10h
 
 	cmp	ax,	004Fh
-	jnz Label_SET_SVGA_MODE_VESA_VBE_FAIL
+	jnz	Label_SET_SVGA_Mode_VESA_VBE_FAIL
 
-	;init IDT GDT goto protect mode
-	cli ;close interrupt
-;This is an operand size prefix that forces lgdt to interpret GdtPtr in 32-bit mode (even if the current mode is still 16-bit real mode)
-	
-	db 0x66
-	lgdt [GdtPtr]
+;=======	init IDT GDT goto protect mode 
 
-	db 0x66
-	lidt [IDT_POINTER]	;can not ignore
+	cli			;======close interrupt
 
-	mov eax,cr0
-	or eax,1
-	mov cr0,eax
-	;0x1036c
-	jmp dword SelectorCode32:GO_TO_TMP_Protect ;selectors:
+	lgdt	[GdtPtr]
+
+;	lidt	[IDT_POINTER]
+
+	mov	eax,	cr0
+	or	eax,	1
+	mov	cr0,	eax	
+	;0x10369
+	jmp	dword SelectorCode32:GO_TO_TMP_Protect
 
 [SECTION .s32]
 [BITS 32]
-;0x103e8
+
 GO_TO_TMP_Protect:
-	;go to tmp long mode
-	;Points to a 32-bit data segment descriptor in GDT
-	mov ax,0x10
-	mov ds,ax
-	mov es,ax
-	mov fs,ax
-	mov ss,ax
-	mov esp,7E00h
 
-	call support_long_mode
-	;The test directive is the logical equivalent of AND but does not store the result but only updates the flag bits.
-	test eax, eax
-	jz no_support
+;=======	go to tmp long mode
+	;0x10374
+	mov	ax,	0x10
+	;0x10378
+	mov	ds,	ax
+	mov	es,	ax
+	mov	fs,	ax
+	mov	ss,	ax
+	mov	esp,	7E00h
+	
+	call	support_long_mode
+	test	eax,	eax
 
-	;init template page table 0x90000
-	;A four-level page table structure
-	; PML4
+	jz	no_support
+
+;=======	init temporary page table 0x90000
+
 	mov	dword	[0x90000],	0x91007
-	mov dword	[0x90004],  0x00000
-	mov	dword	[0x90800],	0x91007
-	mov dword	[0x90804],  0x00000
-	;PDPT		
+	mov	dword	[0x90800],	0x91007		
+
 	mov	dword	[0x91000],	0x92007
-	mov dword	[0x91004],  0x00000
-	;PDT->PT
+
 	mov	dword	[0x92000],	0x000083
-	mov dword	[0x92004],  0x000000
+
 	mov	dword	[0x92008],	0x200083
-	mov dword	[0x9200C],  0x000000
+
 	mov	dword	[0x92010],	0x400083
-	mov dword	[0x92014],  0x000000
+
 	mov	dword	[0x92018],	0x600083
-	mov dword	[0x9201C],  0x000000
+
 	mov	dword	[0x92020],	0x800083
-	mov dword	[0x92024],  0x000000
+
 	mov	dword	[0x92028],	0xa00083
-	mov dword	[0x9202C],  0x000000
+	
+;=======	load GDTR
+	
+	lgdt	[GdtPtr64]
+	mov	ax,	0x10
+	mov	ds,	ax
+	mov	es,	ax
+	mov	fs,	ax
+	mov	gs,	ax
+	mov	ss,	ax
 
-	;load GDTR
-	db 0x66
-	lgdt [GdtPtr64]
-	mov ax,0x10
-	mov ds,ax
-	mov es,ax
-	mov fs,ax
-	mov ss,ax
-	mov gs,ax
+	mov	esp,	7E00h
+	
+;=======	open PAE
 
-	mov esp,7E00h
+	mov	eax,	cr4
+	bts	eax,	5
+	mov	cr4,	eax
 
-	;open PAE
-	mov eax, cr4
-	bts eax, 5
-	mov cr4, eax
+;=======	load	cr3
 
-	;load cr3
-	mov eax, 0x90000
-	mov cr3, eax
+	mov	eax,	0x90000
+	mov	cr3,	eax
 
-	;open long mode
-	xor ecx, ecx
-	mov ecx, 0C0000080h
+;=======	enable long-mode
+
+	mov	ecx,	0C0000080h		;IA32_EFER
 	rdmsr
 
-	bts eax, 8
+	bts	eax,	8
 	wrmsr
 
-	;open PE and paging
-	mov eax, cr0
-	bts eax, 0
-	bts eax, 31
-	;0x10501
-	mov cr0, eax
-	;0x104e7
-	;jmp far 0008:00100000
-	jmp SelectorCode64:OffsetOfKernelFile
-	;after jump,address:0008:0000000000100000
+;=======	open PE and paging
 
-;test support long mode or not
+	mov	eax,	cr0
+	bts	eax,	0
+	bts	eax,	31
+	mov	cr0,	eax
+	;0x10433
+	jmp	SelectorCode64:OffsetOfKernelFile
+
+;=======	test support long mode or not
+
 support_long_mode:
-	mov eax, 0x80000000
-	;The CPUID command returns the following value:
-	;EAX = maximum supported extension number (e.g., EAX >= 0x80000001 if 0x80000001 is supported
-	cpuid
-	cmp eax, 0x80000001
-	setnb al;Set if Not Below
-	;If EAX >= 0x80000001 (that is, extended functionality is supported), AL=1.
-	;Otherwise AL is equal to 0.
-	;bt (Bit Test) :
-	;The 29th Bit (counting from 0) of the EDX register is tested, which is the long mode support bit (LM Bit).
-	;The result is stored in CF (Carry Flag).
-	jb support_long_mode_done
-	mov eax, 0x80000001
-	cpuid
-	bt edx, 29
-	;Set if Carry) :
-;If CF=1 (that is, EDX[29]=1, long mode is supported), then AL=1.
-;Otherwise AL is equal to 0.
-	setc al
 
+	mov	eax,	0x80000000
+	cpuid
+	cmp	eax,	0x80000001
+	setnb	al	
+	jb	support_long_mode_done
+	mov	eax,	0x80000001
+	cpuid
+	bt	edx,	29
+	setc	al
 support_long_mode_done:
-	movzx eax, al
+	
+	movzx	eax,	al
 	ret
+
+;=======	no support
+
 no_support:
-	jmp $
+	jmp	$
 
-; A section of code that defines a 16-bit real pattern
-;Declare the subsequent code to be 16 bits
-[SECTION .s16lib]
+;=======	read one sector from floppy
+
+[SECTION .s116]
 [BITS 16]
-;display num at al
+
+Func_ReadOneSector:
+	
+	push	bp
+	mov	bp,	sp
+	sub	esp,	2
+	mov	byte	[bp - 2],	cl
+	push	bx
+	mov	bl,	[BPB_SecPerTrk]
+	div	bl
+	inc	ah
+	mov	cl,	ah
+	mov	dh,	al
+	shr	al,	1
+	mov	ch,	al
+	and	dh,	1
+	pop	bx
+	mov	dl,	[BS_DrvNum]
+Label_Go_On_Reading:
+	mov	ah,	2
+	mov	al,	byte	[bp - 2]
+	int	13h
+	jc	Label_Go_On_Reading
+	add	esp,	2
+	pop	bp
+	ret
+
+;=======	get FAT Entry
+
+Func_GetFATEntry:
+
+	push	es
+	push	bx
+	push	ax
+	mov	ax,	00
+	mov	es,	ax
+	pop	ax
+	mov	byte	[Odd],	0
+	mov	bx,	3
+	mul	bx
+	mov	bx,	2
+	div	bx
+	cmp	dx,	0
+	jz	Label_Even
+	mov	byte	[Odd],	1
+
+Label_Even:
+
+	xor	dx,	dx
+	mov	bx,	[BPB_BytesPerSec]
+	div	bx
+	push	dx
+	mov	bx,	8000h
+	add	ax,	SectorNumOfFAT1Start
+	mov	cl,	2
+	call	Func_ReadOneSector
+	
+	pop	dx
+	add	bx,	dx
+	mov	ax,	[es:bx]
+	cmp	byte	[Odd],	1
+	jnz	Label_Even_2
+	shr	ax,	4
+
+Label_Even_2:
+	and	ax,	0FFFh
+	pop	bx
+	pop	es
+	ret
+
+;=======	display num in al
+
 Label_DispAL:
-	push ecx
-	push edx
-	push edi
-	mov edi,[DisplayPosition]
-	mov ah,0fh
-	mov dl,al
-	shr al,4
-	mov ecx,2
 
+	push	ecx
+	push	edx
+	push	edi
+	
+	mov	edi,	[DisplayPosition]
+	mov	ah,	0Fh
+	mov	dl,	al
+	shr	al,	4
+	mov	ecx,	2
 .begin:
-	and al,0fh
-	cmp al,9
-	ja .1
-	add al,'0'
-	jmp .2
-.1:
-	sub al,0Ah
-	add al,'A'
-.2:
-	mov [gs:edi],ax
-	add edi,2
-	mov al,dl
-	loop .begin
-	mov [DisplayPosition],edi
-	pop edi
-	pop edx
-	pop ecx
 
+	and	al,	0Fh
+	cmp	al,	9
+	ja	.1
+	add	al,	'0'
+	jmp	.2
+.1:
+
+	sub	al,	0Ah
+	add	al,	'A'
+.2:
+
+	mov	[gs:edi],	ax
+	add	edi,	2
+	
+	mov	al,	dl
+	loop	.begin
+
+	mov	[DisplayPosition],	edi
+
+	pop	edi
+	pop	edx
+	pop	ecx
+	
 	ret
 
 
 ;=======	tmp IDT
-;An empty IDT is initialized
 
 IDT:
-;Each interrupt descriptor (or gate descriptor) occupies 8 bytes, so this IDT can accommodate 80 interrupt/exception handler entries
-	times	0x50	dq	0 ;allocate 8 bit
+	times	0x50	dq	0
 IDT_END:
 
 IDT_POINTER:
@@ -755,18 +711,27 @@ IDT_POINTER:
 RootDirSizeForLoop	dw	RootDirSectors
 SectorNo		dw	0
 Odd			db	0
-SETSVGAMODEVESAVBEFAILMessage db "Ops,SET SVGA MODE VESA VBE FAIL"
-GetSVGAVBEInfoErrMessage:	db	"Ops,Get SVGA VBE Info ERROR" ;27
-GetSVGAVBEInfoOKMessage:	db	"Wow,Get SVGA VBE Info SUCCESSFUL!" ;33
-StartGetSVGAVBEInfoMessage db "Get SVGA Info..."  ;16
-GetSVGAModeInfoErrMessage:	db	"Ops,Get SVGA Mode Info ERROR" ;28
-StartGetSVGAModeInfoMessage:	db	"Start Get SVGA Mode Info" ;24
-GetSVGAModeInfoOKMessage:	db	"Wow,Get SVGA Mode Info SUCCESSFUL!" ;34
 OffsetOfKernelFileCount	dd	OffsetOfKernelFile
-StartGetMemStructMessage db "Get Memory Struct..." ;20
-GetMemStructErrMessage db "Ops,Get Memory Struct Failed" ;28
-GetMemStructOKMessage db "Wow,Get Memory Struct OK" ;24
+
+MemStructNumber		dd	0
+
+SVGAModeCounter		dd	0
+
 DisplayPosition		dd	0
+
+;=======	display messages
+
+StartLoaderMessage:	db	"Start Loader"
+NoLoaderMessage:	db	"ERROR:No KERNEL Found"
 KernelFileName:		db	"KERNEL  BIN",0
-startLoaderMessage: db "os Loading..." ;13
-NoKernelMessage:	db	"ERROR:No Kernel Found" ;21
+StartGetMemStructMessage:	db	"Start Get Memory Struct (address,size,type)."
+GetMemStructErrMessage:	db	"Get Memory Struct ERROR"
+GetMemStructOKMessage:	db	"Get Memory Struct SUCCESSFUL!"
+
+StartGetSVGAVBEInfoMessage:	db	"Start Get SVGA VBE Info"
+GetSVGAVBEInfoErrMessage:	db	"Get SVGA VBE Info ERROR"
+GetSVGAVBEInfoOKMessage:	db	"Get SVGA VBE Info SUCCESSFUL!"
+
+StartGetSVGAModeInfoMessage:	db	"Start Get SVGA Mode Info"
+GetSVGAModeInfoErrMessage:	db	"Get SVGA Mode Info ERROR"
+GetSVGAModeInfoOKMessage:	db	"Get SVGA Mode Info SUCCESSFUL!"
