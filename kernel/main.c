@@ -9,9 +9,10 @@ The kernel is typically mapped to the Higher Half.
 //jmp    ffff800000100094 <Start_kernel+0x1c>
 void Start_Kernel(void)
 {
+    // if there is a problem,try 640*20,otherwise use 1440*20
     int *addr=(int *)0xffff800000a00000;
     int i;
-    for(i=0;i<1440*20;i++){
+    for(i=0;i<640*20;i++){
         *((char*)addr+0)=(char)0x00;
         *((char*)addr+1)=(char)0x00;
         *((char*)addr+2)=(char)0xff;
@@ -19,7 +20,7 @@ void Start_Kernel(void)
         addr=addr+1;
 
     }
-    for(i=0;i<1440*20;i++){
+    for(i=0;i<640*20;i++){
         *((char*)addr+0)=(char)0x00;
         *((char*)addr+1)=(char)0xff;
         *((char*)addr+2)=(char)0x00;
@@ -27,14 +28,14 @@ void Start_Kernel(void)
         addr=addr+1;
 
     }
-    for(i=0;i<1440*20;i++){
+    for(i=0;i<640*20;i++){
         *((char*)addr+0)=(char)0xff;
         *((char*)addr+1)=(char)0x00;
         *((char*)addr+2)=(char)0x00;
         *((char*)addr+3)=(char)0x00;
         addr=addr+1;
     }
-    for(i=0;i<1440*20;i++){
+    for(i=0;i<640*20;i++){
         *((char*)addr+0)=(char)0xff;
         *((char*)addr+1)=(char)0xff;
         *((char*)addr+2)=(char)0xff;

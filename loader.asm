@@ -454,12 +454,12 @@ Label_SVGA_Mode_Info_Finish:
 	pop	ax
 	mov	bp,	GetSVGAModeInfoOKMessage
 	int	10h
-
+;========================mode : 0x180 or 0x143
 ;=======	set the SVGA mode(VESA VBE)
 
 	mov	ax,	4F02h
 	; mov	bx,	4180h
-	mov bx, 0101h    	;========================mode : 0x180 or 0x143
+	mov bx, 0101h    	
 	int 	10h
 
 	cmp	ax,	004Fh
