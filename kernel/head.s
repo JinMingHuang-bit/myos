@@ -27,7 +27,9 @@ GDT_BASE: .quad GDT_Table
 .globl IDT_Table
 
 IDT_Table:
-    .fill 256, 8, 0
+
+ .fill 256, 8, 0
+
 IDT_END:
 
 IDT_POINTER:
@@ -63,28 +65,29 @@ __PML4E:
 __PDPTE:
 
     .quad 0x103003
-    .fill 255,8,0
+ .fill 511,8,0
+
 
 .org 0x3000
 
 __PDE:
 
     .quad 0x000083
-    .quad 0x20083
-    .quad 0x40083
-    .quad 0x60083
-    .quad 0x80083
+    .quad 0x200083
+    .quad 0x400083
+    .quad 0x600083
+    .quad 0x800083
 
 
-    .quad 0xe000083
-    .quad 0xe020083
-    .quad 0xe040083
+    .quad 0xe0000083
+    .quad 0xe0200083
+    .quad 0xe0400083
 
-    .quad 0xe060083
-    .quad 0xe080083
-    .quad 0xe0a0083
-    .quad 0xe0c0083
-    .quad 0xe0e0083
+    .quad 0xe0600083
+    .quad 0xe0800083
+    .quad 0xe0a00083
+    .quad 0xe0c00083
+    .quad 0xe0e00083
     .fill 499,8,0
 
 .section .text
@@ -92,6 +95,7 @@ __PDE:
 .globl _start
 
 _start:
+
 
     mov $0x10,%ax
     mov %ax,%ds
@@ -116,9 +120,11 @@ _start:
 
     movq $0x101000,%rax
     movq %rax,%cr3
-// start  error here:bx_dbg_read_linear: physical address not available for linear 0x000000000010003e
-    movq switch_seg(%rip),%rax
 
+    movq switch_seg(%rip),%rax
+    pushq $0x08
+ pushq %rax
+ lretq
 
 switch_seg:
     .quad entry64

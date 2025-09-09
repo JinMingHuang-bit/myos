@@ -21,7 +21,9 @@ GDT_BASE:  .quad GDT_Table
 .globl	IDT_Table
 
 IDT_Table:
-    .fill 256, 8, 0
+	//an error occur because this caused the address counter to advance too far, exceeding the address that the subsequent .org 0x1000 instruction intended to set.
+	.fill 256, 8, 0 
+    //.fill 511, 8, 0
 IDT_END:
 
 IDT_POINTER:
@@ -57,7 +59,8 @@ __PML4E:
 __PDPTE:
     //  The first PDPT entry points to PD (0x3000) with the flag bit 003 for Present, Writable
     .quad	0x103003
-    .fill   255,8,0
+	.fill   511,8,0
+    //.fill   255,8,0
 
 .org		0x3000
 

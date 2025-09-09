@@ -19,7 +19,7 @@ LABEL_DESC_DATA32:	dd	0x0000FFFF,0x00CF9200
 
 GdtLen	equ	$ - LABEL_GDT
 GdtPtr	dw	GdtLen - 1
-	dd	LABEL_GDT	;be carefull the address(after use org)!!!!!!
+	dd	LABEL_GDT	
 
 SelectorCode32	equ	LABEL_DESC_CODE32 - LABEL_GDT
 SelectorData32	equ	LABEL_DESC_DATA32 - LABEL_GDT
