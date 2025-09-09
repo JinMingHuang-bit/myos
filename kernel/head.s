@@ -65,8 +65,8 @@ __PML4E:
 __PDPTE:
 
     .quad 0x103003
- .fill 511,8,0
 
+    .fill 255,8,0
 
 .org 0x3000
 

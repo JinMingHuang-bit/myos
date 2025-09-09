@@ -21,7 +21,9 @@ GDT_BASE:  .quad GDT_Table
 .globl	IDT_Table
 
 IDT_Table:
-    .fill 256, 8, 0
+	//an error occur because this caused the address counter to advance too far, exceeding the address that the subsequent .org 0x1000 instruction intended to set.
+	.fill 256, 8, 0 
+    //.fill 511, 8, 0
 IDT_END:
 
 IDT_POINTER:
@@ -57,6 +59,7 @@ __PML4E:
 __PDPTE:
     //  The first PDPT entry points to PD (0x3000) with the flag bit 003 for Present, Writable
     .quad	0x103003
+	//.fill   511,8,0
     .fill   255,8,0
 
 .org		0x3000
@@ -64,21 +67,21 @@ __PDPTE:
 __PDE:
     // 1MB large Page map with flag bit 83 for Present, Writable, and Page Size
     .quad	0x000083
-    .quad	0x20083
-    .quad	0x40083
-    .quad	0x60083
-    .quad	0x80083
+    .quad	0x200083
+    .quad	0x400083
+    .quad	0x600083
+    .quad	0x800083
     // 0x a00000
     // A large 1MB page starting at 0xe00000
-    .quad	0xe000083
-    .quad	0xe020083
-    .quad	0xe040083
+    .quad	0xe0000083
+    .quad	0xe0200083
+    .quad	0xe0400083
     // 0x1000000
-    .quad	0xe060083
-    .quad	0xe080083
-    .quad	0xe0a0083
-    .quad	0xe0c0083
-    .quad	0xe0e0083
+    .quad	0xe0600083
+    .quad	0xe0800083
+    .quad	0xe0a00083
+    .quad	0xe0c00083
+    .quad	0xe0e00083
     .fill   499,8,0  
     
 .section .text
@@ -113,7 +116,9 @@ _start:
     movq	%rax,%cr3
     // rip is Instruction Pointer Register
     movq	switch_seg(%rip),%rax 
-    
+    pushq	$0x08
+	pushq	%rax
+	lretq
     
 switch_seg:
     .quad	entry64

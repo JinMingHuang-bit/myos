@@ -59,8 +59,8 @@ __PML4E:
 __PDPTE:
     //  The first PDPT entry points to PD (0x3000) with the flag bit 003 for Present, Writable
     .quad	0x103003
-	.fill   511,8,0
-    //.fill   255,8,0
+	//.fill   511,8,0
+    .fill   255,8,0
 
 .org		0x3000
 
