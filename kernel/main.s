@@ -5,9 +5,9 @@
 # GGC heuristics: --param ggc-min-expand=91 --param ggc-min-heapsize=114976
 # options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -fno-builtin -fasynchronous-unwind-tables -fstack-protector-strong -fstack-clash-protection -fcf-protection
 	.text
-	.globl	Start_kernel
-	.type	Start_kernel, @function
-Start_kernel:
+	.globl	Start_Kernel
+	.type	Start_Kernel, @function
+Start_Kernel:
 .LFB0:
 	.cfi_startproc
 	endbr64	
@@ -153,7 +153,7 @@ Start_kernel:
 	jmp	.L10	#
 	.cfi_endproc
 .LFE0:
-	.size	Start_kernel, .-Start_kernel
+	.size	Start_Kernel, .-Start_Kernel
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"

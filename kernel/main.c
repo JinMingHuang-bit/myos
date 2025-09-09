@@ -7,7 +7,7 @@ The kernel is typically mapped to the Higher Half.
 */ 
 
 //jmp    ffff800000100094 <Start_kernel+0x1c>
-void Start_kernel(void)
+void Start_Kernel(void)
 {
     int *addr=(int *)0xffff800000a00000;
     int i;
