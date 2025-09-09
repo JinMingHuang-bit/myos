@@ -22,8 +22,7 @@ GDT_BASE:  .quad GDT_Table
 
 IDT_Table:
 	//an error occur because this caused the address counter to advance too far, exceeding the address that the subsequent .org 0x1000 instruction intended to set.
-	.fill 256, 8, 0 
-    //.fill 511, 8, 0
+    .fill 511, 8, 0
 IDT_END:
 
 IDT_POINTER:
@@ -59,8 +58,7 @@ __PML4E:
 __PDPTE:
     //  The first PDPT entry points to PD (0x3000) with the flag bit 003 for Present, Writable
     .quad	0x103003
-	//.fill   511,8,0
-    .fill   255,8,0
+	.fill   511,8,0
 
 .org		0x3000
 
@@ -96,7 +94,7 @@ _start:
     mov %ax,%es
     mov %ax,%fs
     mov %ax,%ss
-    mov $0x7e00,%esp
+    mov $0x7E00,%esp
     // load GDTR
     lgdt GDT_POINTER(%rip)
     // load IDTR
@@ -113,20 +111,7 @@ _start:
     movq	$0x7E00, %rsp
     // load cr3,cr3 is used to store the physical address of the top-level page table (PML4/PDPT) of the current process
     movq	$0x101000,%rax
-    movq	%rax,%cr3
-	// add code here
-	 # Enable Long Mode
-    movl    $0xC0000080, %ecx   # EFER MSR
-    rdmsr
-    orl     $0x100, %eax        # Set LME bit
-    wrmsr
-
-    # Enable Paging
-    # Enable Paging
-    movq    %cr0, %rax
-    btsq    $31, %rax   # 设置PG位（第31位）
-    movq    %rax, %cr0
-	
+    movq	%rax,%cr3	
     // rip is Instruction Pointer Register
     movq	switch_seg(%rip),%rax 
     pushq	$0x08
@@ -147,8 +132,8 @@ entry64:
     movq	go_to_kernel(%rip), %rax
     pushq	$0x08
     pushq	%rax
-    
+    lretq
     
     
 go_to_kernel:
-    .quad	Start_kernel
+    .quad	Start_Kernel

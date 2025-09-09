@@ -2,7 +2,7 @@
 # GNU C17 (Ubuntu 13.3.0-6ubuntu2~24.04) version 13.3.0 (x86_64-linux-gnu)
 #	compiled by GNU C version 13.3.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version isl-0.26-GMP
 
-# GGC heuristics: --param ggc-min-expand=91 --param ggc-min-heapsize=114976
+# GGC heuristics: --param ggc-min-expand=91 --param ggc-min-heapsize=114975
 # options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -fno-builtin -fasynchronous-unwind-tables -fstack-protector-strong -fstack-clash-protection -fcf-protection
 	.text
 	.globl	Start_Kernel
@@ -116,9 +116,9 @@ Start_Kernel:
 # main.c:30:     for(i=0;i<1440*20;i++){
 	cmpl	$28799, -12(%rbp)	#, i
 	jle	.L7	#,
-# main.c:37:         for(i=0;i<1440*20;i++){
+# main.c:37:     for(i=0;i<1440*20;i++){
 	movl	$0, -12(%rbp)	#, i
-# main.c:37:         for(i=0;i<1440*20;i++){
+# main.c:37:     for(i=0;i<1440*20;i++){
 	jmp	.L8	#
 .L9:
 # main.c:38:         *((char*)addr+0)=(char)0xff;
@@ -141,10 +141,10 @@ Start_Kernel:
 	movb	$0, (%rax)	#, *_12
 # main.c:42:         addr=addr+1;
 	addq	$4, -8(%rbp)	#, addr
-# main.c:37:         for(i=0;i<1440*20;i++){
+# main.c:37:     for(i=0;i<1440*20;i++){
 	addl	$1, -12(%rbp)	#, i
 .L8:
-# main.c:37:         for(i=0;i<1440*20;i++){
+# main.c:37:     for(i=0;i<1440*20;i++){
 	cmpl	$28799, -12(%rbp)	#, i
 	jle	.L9	#,
 .L10:
