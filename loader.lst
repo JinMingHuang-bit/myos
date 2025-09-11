@@ -44,7 +44,7 @@
     19                                  
     20                                  GdtLen	equ	$ - LABEL_GDT
     21 00000018 1700                    GdtPtr	dw	GdtLen - 1
-    22 0000001A [00000000]              	dd	LABEL_GDT	;be carefull the address(after use org)!!!!!!
+    22 0000001A [00000000]              	dd	LABEL_GDT	
     23                                  
     24                                  SelectorCode32	equ	LABEL_DESC_CODE32 - LABEL_GDT
     25                                  SelectorData32	equ	LABEL_DESC_DATA32 - LABEL_GDT
@@ -214,7 +214,7 @@
    189 000000EE E8(0000)                	call	Func_ReadOneSector
    190 000000F1 58                      	pop	ax
    191                                  
-   192                                  ;;;;;;;;;;;;;;;;;;;;;;;	
+   192                                  
    193 000000F2 51                      	push	cx
    194 000000F3 6650                    	push	eax
    195 000000F5 0FA0                    	push	fs
@@ -480,12 +480,12 @@
    454 000002C6 58                      	pop	ax
    455 000002C7 BD[5F04]                	mov	bp,	GetSVGAModeInfoOKMessage
    456 000002CA CD10                    	int	10h
-   457                                  
+   457                                  ;========================mode : 0x180 or 0x143
    458                                  ;=======	set the SVGA mode(VESA VBE)
    459                                  
    460 000002CC B8024F                  	mov	ax,	4F02h
    461                                  	; mov	bx,	4180h
-   462 000002CF BB0101                  	mov bx, 0101h    	;========================mode : 0x180 or 0x143
+   462 000002CF BB0101                  	mov bx, 0101h    	
    463 000002D2 CD10                    	int 	10h
    464                                  
    465 000002D4 83F84F                  	cmp	ax,	004Fh
