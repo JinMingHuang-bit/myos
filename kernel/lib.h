@@ -53,14 +53,14 @@ inline void list_init(struct List *list)
     list->prev = list;
 }
 
-inline void list_add_to_behind(struct List *entry struct List *new)
+inline void list_add_to_behind(struct List *entry,struct List *new)
 {
     new->next = entry->next;
     new->prev = entry;
     entry->next->prev = new;
     entry->next = new;
 }
-inline void list_add_to_before(struct List *entry struct List*new ){
+inline void list_add_to_before(struct List *entry,struct List*new ){
     new->next = entry;
     new->prev = entry->prev;
     entry->prev->next = new;
@@ -97,5 +97,15 @@ inline struct List *list_next(struct List *entry){
         return NULL;
     }
 }
-
+inline void *memcpy(void *From,void *To,long Num){
+    int d0,d1,d2;
+    __asm__ __volatile__(
+        "cld \n\t"
+        "rep \n\t"
+        "movsq \n\t"
+        :"=&c"(d0),"=&D"(d1),"=&S"(d2)
+        :"a"(From),"d"(To),"c"(Num)
+        :"memory"
+    );
+}
 #endif
