@@ -103,9 +103,22 @@ inline void *memcpy(void *From,void *To,long Num){
         "cld \n\t"
         "rep \n\t"
         "movsq \n\t"
+        "testb $4,%b4 \n\t"
+        "jz 1f \n\t"
+        "movsl \n\t"
+        "1:"
+        "testb $2,%b4 \n\t"
+        "jz 2f \n\t"
+        "movsw \n\t"
+        "2:"
+        "testb $1,%b4 \n\t"
+        "jz 3f \n\t"
+        "movsb \n\t"
+        "3:"
         :"=&c"(d0),"=&D"(d1),"=&S"(d2)
-        :"a"(From),"d"(To),"c"(Num)
+        :"0"(Num/8),"q"(Num),"1"(To),"2"(From)
         :"memory"
     );
+    return To;
 }
 #endif
