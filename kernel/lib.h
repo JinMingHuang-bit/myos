@@ -106,19 +106,59 @@ inline void *memcpy(void *From,void *To,long Num){
         "testb $4,%b4 \n\t"
         "jz 1f \n\t"
         "movsl \n\t"
-        "1:"
+        "1: \n\t"
         "testb $2,%b4 \n\t"
         "jz 2f \n\t"
         "movsw \n\t"
         "2:"
         "testb $1,%b4 \n\t"
-        "jz 3f \n\t"
+        "je 3f \n\t"
         "movsb \n\t"
-        "3:"
+        "3:  \n\t"
         :"=&c"(d0),"=&D"(d1),"=&S"(d2)
         :"0"(Num/8),"q"(Num),"1"(To),"2"(From)
         :"memory"
     );
     return To;
+}
+
+
+inline int *memcmp(void* FirstPart,void* SecondPart,long Count){
+    register int __res;
+    __asm__ __volatile__(
+        "cld \n\t"      //clean direction
+        "repe \n\t"     // 重复执行下条指令直到ecx=0或ZF=0
+        "cmpsb \n\t"    // 比较[esi]和[edi]的字节，同时递增指针
+        "je 1f \n\t"     // 如果全部相等，跳转到标签1
+        "movl $1,%%eax \n\t" // 设置eax=1（FirstPart > SecondPart）
+        "jl 1f \n\t"    // 如果小于，跳转到标签1（保持eax=1）
+        "negl %%eax \n\t"   // 否则取反eax（eax=-1，FirstPart < SecondPart）
+        "1:"
+        :"=a"(__res)
+        :"0"(0),            //0：内存块相等
+        "D"(FirstPart),
+        "S"(SecondPart),
+        "c"(Count)
+        :
+    );
+    return __res;
+}
+
+inline void *memset(void *Address,unsigned char C,long Count){
+    int d0,d1;
+    //将单字节值复制到64位值的每个字节中
+    unsigned long tmp=C*0x0101010101010101UL;
+    __asm__ __volatile__(
+        "cld \n\t"
+        "rep \n\t"
+        "stosq \n\t"
+        "testb $4,%b3 \n\t"
+        "je 1f \n\t"
+        "stosl \n\t"
+        "1:"
+        :"=&c"(d0),"=&D"(d1)
+        :"a"(tmp),"q"(Count),"0"(Count/8),"1"(Address)
+        :"memory"
+    );
 }
 #endif
