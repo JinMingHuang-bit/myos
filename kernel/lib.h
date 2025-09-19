@@ -26,12 +26,12 @@ rather than remaining in the register cache.
  At the same time, it will also prevent the compiler from mistakenly using the old values 
  of the cached memory in the registers after this assembly instruction.
 */
-#define sti()       __asm__ __volatile__("sti \n\t":::"memory")
+#define sti()       __asm__ __volatile__ ("sti \n\t":::"memory")
 // disable interrupt
 #define cli()	 	__asm__ __volatile__ ("cli	\n\t":::"memory")
 /*nop:The program counter (PC) increments by one (indicating the next instruction) 
 and consumes one instruction cycle of time.*/
-#define nop()       __asm__ __volatile__("nop \n\t":::"memory")
+#define nop()       __asm__ __volatile__ ("nop \n\t":::"memory")
 //确保所有在 mfence 指令之前发出的内存加载（load/读）和存储（store/写）操作，
 //都在 mfence 指令之后发出的任何内存操作之前完成
 #define io_mfence() 	__asm__ __volatile__ ("mfence	\n\t":::"memory")
@@ -99,16 +99,15 @@ inline struct List *list_next(struct List *entry){
 }
 inline void *memcpy(void *From,void *To,long Num){
     int d0,d1,d2;
-    __asm__ __volatile__(
-        "cld \n\t"
+    __asm__ __volatile__ ("cld \n\t"
         "rep \n\t"
         "movsq \n\t"
         "testb $4,%b4 \n\t"
-        "jz 1f \n\t"
+        "je 1f \n\t"
         "movsl \n\t"
         "1: \n\t"
         "testb $2,%b4 \n\t"
-        "jz 2f \n\t"
+        "je 2f \n\t"
         "movsw \n\t"
         "2:"
         "testb $1,%b4 \n\t"
@@ -125,8 +124,7 @@ inline void *memcpy(void *From,void *To,long Num){
 
 inline int *memcmp(void* FirstPart,void* SecondPart,long Count){
     register int __res;
-    __asm__ __volatile__(
-        "cld \n\t"      //clean direction
+    __asm__ __volatile__ ("cld \n\t"      //clean direction
         "repe \n\t"     // 重复执行下条指令直到ecx=0或ZF=0
         "cmpsb \n\t"    // 比较[esi]和[edi]的字节，同时递增指针
         "je 1f \n\t"     // 如果全部相等，跳转到标签1
@@ -148,17 +146,69 @@ inline void *memset(void *Address,unsigned char C,long Count){
     int d0,d1;
     //将单字节值复制到64位值的每个字节中
     unsigned long tmp=C*0x0101010101010101UL;
-    __asm__ __volatile__(
-        "cld \n\t"
+    __asm__ __volatile__ ("cld \n\t"
         "rep \n\t"
         "stosq \n\t"
         "testb $4,%b3 \n\t"
         "je 1f \n\t"
         "stosl \n\t"
-        "1:"
+        "1: \n\t"
+        "testb $2,%b3 \n\t"
+        "je 2f \n\t"
+        "stosw \n\t"
+        "2:"
+        "testb $1,%b3 \n\t"
+        "je 3f \n\t"
+        "stosb \n\t"
+        "3: \n\t"
         :"=&c"(d0),"=&D"(d1)
         :"a"(tmp),"q"(Count),"0"(Count/8),"1"(Address)
         :"memory"
     );
+    return Address;
 }
+
+inline char * strcpy(char * Dest,char * Src){
+    __asm__ __volatile__ (  "cld \n\t"
+        "1: \n\t"
+        "lodsb \n\t"
+        "stosb \n\t"
+        "testb %%al, %%al \n\t"
+        "jne 1b \n\t"
+        :
+        :"S"(Src),"D"(Dest)
+        :
+    );
+    return Dest ;
+}
+
+// lodsb作用: 从[ESI]加载一个字节到AL寄存器，并递增ESI
+// stosb 作用: 将AL寄存器的值存储到[EDI]，并递增EDI
+
+inline char * strncpy(char * Dest,char * Src,long Count){
+    __asm__ __volatile__( "cld \n\t"
+        "1: \n\t"
+        "decq %2 \n\t"
+        "js 2f \n\t"
+        "lodsb \n\t"
+        "stosb  \n\t"
+        "testb  %%al, %%al \n\t"
+        "jne 1b \n\t"
+        "rep \n\t"
+        "stosb \n\t"
+        "2: \n\t"
+        :
+        :"S"(Src),"D"(Dest),"c"(Count)
+        :
+        )
+}
+
+inline  char * strcat(char * Dest,char * Src){
+    __asm__ __volatile__("cld \n\t"
+        "repne \n\t"
+        "scasb"
+
+        )
+}
+
 #endif
