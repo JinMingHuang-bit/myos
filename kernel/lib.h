@@ -120,6 +120,41 @@ inline void *memcpy(void *From,void *To,long Num){
     );
     return To;
 }
+inline void * Cmemcpy(void *To, void *From, long Num)
+{
+    char *to = (char *)To;
+    char *from = (char *)From;
+    long remaining = Num;
+    
+    // 复制8字节块（64位）
+    while (remaining >= 8) {
+        *((long *)to) = *((long *)from);
+        to += 8;
+        from += 8;
+        remaining -= 8;
+    }
+    
+    // 检查是否需要复制4字节块
+    if (remaining & 4) {
+        *((int *)to) = *((int *)from);
+        to += 4;
+        from += 4;
+    }
+    
+    // 检查是否需要复制2字节块
+    if (remaining & 2) {
+        *((short *)to) = *((short *)from);
+        to += 2;
+        from += 2;
+    }
+    
+    // 检查是否需要复制1字节
+    if (remaining & 1) {
+        *to = *from;
+    }
+    
+    return To;
+}
 
 
 inline int *memcmp(void* FirstPart,void* SecondPart,long Count){
@@ -131,7 +166,7 @@ inline int *memcmp(void* FirstPart,void* SecondPart,long Count){
         "movl $1,%%eax \n\t" // 设置eax=1（FirstPart > SecondPart）
         "jl 1f \n\t"    // 如果小于，跳转到标签1（保持eax=1）
         "negl %%eax \n\t"   // 否则取反eax（eax=-1，FirstPart < SecondPart）
-        "1:"
+        "1: \n\t"
         :"=a"(__res)
         :"0"(0),            //0：内存块相等
         "D"(FirstPart),
@@ -140,6 +175,24 @@ inline int *memcmp(void* FirstPart,void* SecondPart,long Count){
         :
     );
     return __res;
+}
+inline int Cmemcmp(void *FirstPart, void *SecondPart, long Count)
+{
+    unsigned char *p1 = (unsigned char *)FirstPart;
+    unsigned char *p2 = (unsigned char *)SecondPart;
+    
+    // 逐字节比较
+    while (Count-- > 0) {
+        if (*p1 != *p2) {
+            // 返回差值（符号表示大小关系）
+            return (*p1 > *p2) ? 1 : -1;
+        }
+        p1++;
+        p2++;
+    }
+    
+    // 所有字节都相等
+    return 0;
 }
 
 inline void *memset(void *Address,unsigned char C,long Count){
@@ -167,7 +220,52 @@ inline void *memset(void *Address,unsigned char C,long Count){
     );
     return Address;
 }
-
+inline void * Cmemset(void *Address, unsigned char C, long Count)
+{
+    unsigned char *ptr = (unsigned char *)Address;
+    unsigned long pattern = C;
+    
+    // 扩展单字节到8字节模式（0x0101010101010101乘法效果）
+    //这样可以用64位写入代替逐字节写入
+    //按位或运算符（|）
+    /*
+    0 | 0 = 0
+    0 | 1 = 1
+    1 | 0 = 1
+    1 | 1 = 1
+    */
+    pattern |= (pattern << 8);
+    pattern |= (pattern << 16);
+    pattern |= (pattern << 32);
+    
+    long remaining = Count;
+    
+    // 先按8字节块填充（64位）
+    while (remaining >= 8) {
+        *((unsigned long *)ptr) = pattern;
+        ptr += 8;
+        remaining -= 8;
+    }
+    
+    // 检查是否需要填充4字节
+    if (remaining & 4) {
+        *((unsigned int *)ptr) = (unsigned int)pattern;
+        ptr += 4;
+    }
+    
+    // 检查是否需要填充2字节
+    if (remaining & 2) {
+        *((unsigned short *)ptr) = (unsigned short)pattern;
+        ptr += 2;
+    }
+    
+    // 检查是否需要填充1字节
+    if (remaining & 1) {
+        *ptr = C;
+    }
+    
+    return Address;
+}
 inline char * strcpy(char * Dest,char * Src){
     __asm__ __volatile__ (  "cld \n\t"
         "1: \n\t"
@@ -181,7 +279,20 @@ inline char * strcpy(char * Dest,char * Src){
     );
     return Dest ;
 }
-
+inline char * Cstrcpy(char *Dest, char *Src)
+{
+    char *dest_ptr = Dest;
+    char *src_ptr = Src;
+    
+    // 逐字节复制，直到遇到空字符
+    do {
+        *dest_ptr = *src_ptr;
+        dest_ptr++;
+        src_ptr++;
+    } while (*(src_ptr - 1) != '\0');  // 检查刚刚复制的字符是否为结束符
+    
+    return Dest;
+}
 // lodsb作用: 从[ESI]加载一个字节到AL寄存器，并递增ESI
 // stosb 作用: 将AL寄存器的值存储到[EDI]，并递增EDI
 
@@ -202,13 +313,207 @@ inline char * strncpy(char * Dest,char * Src,long Count){
         :
         )
 }
+inline char * Cstrncpy(char *Dest, char *Src, long Count)
+{
+    char *dest_ptr = Dest;
+    char *src_ptr = Src;
+    long remaining = Count;
+    
+    // 复制字符直到遇到空字符或达到Count
+    while (remaining > 0 && *src_ptr != '\0') {
+        *dest_ptr++ = *src_ptr++;
+        remaining--;
+    }
+    
+    // 如果还有剩余空间，用空字符填充
+    while (remaining > 0) {
+        *dest_ptr++ = '\0';
+        remaining--;
+    }
+    
+    return Dest;
+}
 
 inline  char * strcat(char * Dest,char * Src){
     __asm__ __volatile__("cld \n\t"
         "repne \n\t"
-        "scasb"
-
+        "scasb \n\t"
+        "decq %1 \n\t"
+        "1: \n\t"
+        "lodsb \n\t"
+        "stosb \n\t"
+        "testb  %%al , %%al\n\t"
+        "jne 1b \n\t"
+        :
+        :"S"(Src),"D"(Dest),"a"(0),"c"(0xffffffff)
+        :
         )
+}
+
+inline char * Cstrcat(char *Dest, char *Src)
+{
+    char *dest_ptr = Dest;
+    
+    // 找到Dest字符串的结尾（空字符位置）
+    while (*dest_ptr != '\0') {
+        dest_ptr++;
+    }
+    
+    // 将Src字符串复制到Dest的结尾
+    while (*Src != '\0') {
+        *dest_ptr++ = *Src++;
+    }
+    
+    // 添加字符串结束符
+    *dest_ptr = '\0';
+    
+    return Dest;
+}
+
+inline int strcmp(char * FirstPart,char * SecondPart)
+{
+    register int __res;
+    __asm__ __volatile__    (   "cld    \n\t"
+                    "1: \n\t"
+                    "lodsb  \n\t"
+                    "scasb  \n\t"
+                    "jne    2f  \n\t"
+                    "testb  %%al,   %%al    \n\t"
+                    "jne    1b  \n\t"
+                    "xorl   %%eax,  %%eax   \n\t"
+                    "jmp    3f  \n\t"
+                    "2: \n\t"
+                    "movl   $1, %%eax   \n\t"
+                    "jl 3f  \n\t"
+                    "negl   %%eax   \n\t"
+                    "3: \n\t"
+                    :"=a"(__res)
+                    :"D"(FirstPart),"S"(SecondPart)
+                    :                   
+                );
+    return __res;
+}
+inline int Cstrcmp(char *FirstPart, char *SecondPart)
+{
+    unsigned char *p1 = (unsigned char *)FirstPart;
+    unsigned char *p2 = (unsigned char *)SecondPart;
+    
+    // 逐字节比较，直到遇到不相等的字符或字符串结束
+    while (*p1 != '\0' && *p1 == *p2) {
+        p1++;
+        p2++;
+    }
+    
+    // 返回差值（符号表示大小关系）
+    if (*p1 == *p2) {
+        return 0;  // 字符串完全相等
+    } else if (*p1 < *p2) {
+        return -1; // FirstPart < SecondPart
+    } else {
+        return 1;  // FirstPart > SecondPart
+    }
+}
+/*
+        string compare FirstPart and SecondPart with Count Bytes
+        FirstPart = SecondPart =>  0
+        FirstPart > SecondPart =>  1
+        FirstPart < SecondPart => -1
+*/
+
+inline int strncmp(char * FirstPart,char * SecondPart,long Count)
+{   
+    register int __res;
+    __asm__ __volatile__    (   "cld    \n\t"
+                    "1: \n\t"
+                    "decq   %3  \n\t"
+                    "js 2f  \n\t"
+                    "lodsb  \n\t"
+                    "scasb  \n\t"
+                    "jne    3f  \n\t"
+                    "testb  %%al,   %%al    \n\t"
+                    "jne    1b  \n\t"
+                    "2: \n\t"
+                    "xorl   %%eax,  %%eax   \n\t"
+                    "jmp    4f  \n\t"
+                    "3: \n\t"
+                    "movl   $1, %%eax   \n\t"
+                    "jl 4f  \n\t"
+                    "negl   %%eax   \n\t"
+                    "4: \n\t"
+                    :"=a"(__res)
+                    :"D"(FirstPart),"S"(SecondPart),"c"(Count)
+                    :
+                );
+    return __res;
+}
+
+inline int Cstrncmp(char *FirstPart, char *SecondPart, long Count)
+{
+    unsigned char *p1 = (unsigned char *)FirstPart;
+    unsigned char *p2 = (unsigned char *)SecondPart;
+    long remaining = Count;
+    
+    // 逐字节比较，直到遇到不相等的字符、字符串结束或达到Count
+    while (remaining > 0 && *p1 != '\0' && *p1 == *p2) {
+        p1++;
+        p2++;
+        remaining--;
+    }
+    
+    // 如果达到Count限制或两个字符串都结束，返回0
+    if (remaining == 0 || (*p1 == '\0' && *p2 == '\0')) {
+        return 0;
+    }
+    
+    // 返回差值（符号表示大小关系）
+    if (*p1 < *p2) {
+        return -1; // FirstPart < SecondPart
+    } else if (*p1 > *p2) {
+        return 1;  // FirstPart > SecondPart
+    }
+    
+    return 0; 
+}
+/*
+
+*/
+
+inline int strlen(char * String)
+{
+    register int __res;
+    __asm__ __volatile__    (   "cld    \n\t"
+                    "repne  \n\t"
+                    "scasb  \n\t"
+                    "notl   %0  \n\t"
+                    "decl   %0  \n\t"
+                    :"=c"(__res)
+                    :"D"(String),"a"(0),"0"(0xffffffff)
+                    :
+                );
+    return __res;
+}
+inline int Cstrlen(char *String)
+{
+    char *ptr = String;
+    
+    // 遍历字符串直到遇到空字符
+    while (*ptr != '\0') {
+        ptr++;
+    }
+    
+    // 计算长度（指针差值）
+    return ptr - String;
+}
+inline unsigned long bit_set(unsigned long *addr,unsigned long nr){
+    return *addr | (1UL << nr);
+}
+
+inline unsigned long bit_get(unsigned long *addr,unsigned long nr){
+    return *addr & (1UL << nr);
+}
+
+inline unsigned long bit_clean(unsigned long *addr,unsigned long nr){
+    return *addr | (1UL << nr);
 }
 
 #endif

@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <string.h>
+#include <stddef.h> // 添加 size_t 定义
 
-// 内联汇编实现的memcpy函数
-inline void *memcpy(void *From, void *To, long Num) {
+// 重命名函数以避免与标准库冲突
+    void *my_memcpy(void *To, const void *From, size_t Num) {
     int d0, d1, d2;
     __asm__ __volatile__ (
         "cld \n\t"
@@ -27,12 +28,15 @@ inline void *memcpy(void *From, void *To, long Num) {
     return To;
 }
 
-int main() {
+// 测试函数
+void test_memcpy() {
+    printf("=== Testing my_memcpy function ===\n\n");
+    
     // 测试1: 复制字符串
     char src1[] = "Hello, World!";
     char dest1[20] = {0};
     
-    memcpy(src1, dest1, strlen(src1) + 1); // 包括null终止符
+    my_memcpy(dest1, src1, strlen(src1) + 1); // 包括null终止符
     printf("Test 1 - String copy:\n");
     printf("Source: %s\n", src1);
     printf("Destination: %s\n\n", dest1);
@@ -40,9 +44,9 @@ int main() {
     // 测试2: 复制整型数组
     int src2[] = {1, 2, 3, 4, 5};
     int dest2[5] = {0};
-    long num_bytes = sizeof(src2);
+    size_t num_bytes = sizeof(src2);
     
-    memcpy(src2, dest2, num_bytes);
+    my_memcpy(dest2, src2, num_bytes);
     printf("Test 2 - Integer array copy:\n");
     printf("Source: ");
     for (int i = 0; i < 5; i++) printf("%d ", src2[i]);
@@ -54,7 +58,7 @@ int main() {
     char src3[] = "ABCDEFGHIJKLMNOP";
     char dest3[10] = {0};
     
-    memcpy(src3, dest3, 8); // 只复制前8个字节
+    my_memcpy(dest3, src3, 8); // 只复制前8个字节
     dest3[8] = '\0'; // 手动添加终止符
     printf("Test 3 - Partial copy:\n");
     printf("Source: %s\n", src3);
@@ -65,11 +69,11 @@ int main() {
     char dest4_asm[20] = {0};
     char dest4_std[20] = {0};
     
-    memcpy(src4, dest4_asm, sizeof(src4));
-    memcpy(src4, dest4_std, sizeof(src4)); // 使用标准库memcpy
+    my_memcpy(dest4_asm, src4, sizeof(src4));
+    memcpy(dest4_std, src4, sizeof(src4)); // 使用标准库memcpy
     
     printf("Test 4 - Comparison with standard memcpy:\n");
-    printf("Custom memcpy: %s\n", dest4_asm);
+    printf("Custom my_memcpy: %s\n", dest4_asm);
     printf("Standard memcpy: %s\n", dest4_std);
     printf("Results match: %s\n\n", 
            strcmp(dest4_asm, dest4_std) == 0 ? "Yes" : "No");
@@ -78,9 +82,14 @@ int main() {
     char src5[] = "Should not be copied";
     char dest5[20] = "Original text";
     
-    memcpy(src5, dest5, 0);
+    my_memcpy(dest5, src5, 0);
     printf("Test 5 - Zero byte copy:\n");
-    printf("Destination remains: %s\n", dest5);
+    printf("Destination remains: %s\n\n", dest5);
     
+    printf("All tests completed successfully!\n");
+}
+
+int main() {
+    test_memcpy();
     return 0;
 }
