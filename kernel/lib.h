@@ -504,16 +504,104 @@ inline int Cstrlen(char *String)
     // 计算长度（指针差值）
     return ptr - String;
 }
+
+//用于设置（置1）一个无符号长整型数中指定的位
 inline unsigned long bit_set(unsigned long *addr,unsigned long nr){
     return *addr | (1UL << nr);
 }
-
+//用于获取（读取）一个无符号长整型数中指定位的值。
 inline unsigned long bit_get(unsigned long *addr,unsigned long nr){
     return *addr & (1UL << nr);
 }
-
+//用于清除（置0）一个无符号长整型数中指定的位
 inline unsigned long bit_clean(unsigned long *addr,unsigned long nr){
-    return *addr | (1UL << nr);
+    return *addr & (~(1UL << nr));
 }
+
+inline unsigned char io_in8(unsigned short port){
+    unsigned char ret=0;
+    //mfence内存屏障指令，确保之前的I/O操作完成后才执行后续指令
+    //inb 将指定端口的数据读入累加器的低8位（AL寄存器）,%0输出操作数占位符
+    __asm__ __volatile__("inb %%dx,%0 \n\t"
+            "mfence \n\t"
+            :"=a"(ret)
+            :"d"(port)
+            :"memory"
+        );
+    return ret;
+}
+
+//short is 16bit
+inline unsigned short io_in16(unsigned short port)
+{
+    unsigned short ret = 0;
+    __asm__ __volatile__(   "inw    %%dx,   %0  \n\t"
+                "mfence         \n\t"
+                :"=a"(ret)
+                :"d"(port)
+                :"memory");
+    return ret;
+}
+
+
+inline unsigned int io_in32(unsigned short port){
+    unsigned int ret=0;
+    __asm__ __volatile__("inl %%dx,%0 \n\t"
+        "mfence \n\t"
+        :"=a"(ret)
+        :"d"(port)
+        :"memory"
+        );
+    return ret;
+}
+
+
+inline void io_out8(unsigned short port,unsigned char value){
+    __asm__ __volatile__("outb %0 , %%dx  \n\t"
+        "mfence \n\t"
+        :
+        :"a"(value),"d"(port)
+        :"memory"
+        );
+}
+
+inline void io_out16(unsigned short port,unsigned short value){
+    __asm__ __volatile__("outw %0 , %%dx  \n\t"
+        "mfence \n\t"
+        :
+        :"a"(value),"d"(port)
+        :"memory"
+        );
+}
+
+inline void io_out32(unsigned short port,unsigned int value){
+    __asm__ __volatile__("outl %0 , %%dx  \n\t"
+        "mfence \n\t"
+        :
+        :"a"(value),"d"(port)
+        :"memory"
+        );
+}
+
+#define port_insw(port,buffer,nr)   \
+__asm__ __volatile__("cld \n\t"        /* 清除方向标志，地址递增 */ \
+        "rep \n\t"                     /* 重复执行 */ \
+        "insw \n\t"                    /* 从端口读取字到内存 */ \
+        "mfence \n\t"                  /* 内存屏障 */ \
+        :                              /* 无输出操作数 */ \
+        :"d"(port),"D"(buffer),"c"(nr) /* 输入：端口、缓冲区、计数 */ \
+        :"memory"                      /* 破坏：内存内容 */ \
+    )
+
+#define port_outsw(port,buffer,nr) \
+__asm__ __volatile__("cld \n\t"
+        "rep \n\t"
+        "outsw \n\t"                    /* 从端口输出字到内存 */ \
+        "mfence \n\t"                  /* 内存屏障 */ \
+        :                              /* 无输出操作数 */ \
+        :"d"(port),"D"(buffer),"c"(nr) /* 输入：端口、缓冲区、计数 */ \
+        :"memory"                      /* 破坏：内存内容 */ \
+    )
+
 
 #endif
