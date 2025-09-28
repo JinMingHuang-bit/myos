@@ -9,6 +9,7 @@
 These constants are all powers of 2 (1, 2, 4, 8, 16, 32, 64), 
 so in the binary representation of each constant, only one bit is 1 and the rest are 0.
 */
+#define ZEROPAD 1
 #define SIGN    2       /* unsigned/signed long */
 #define PLUS    4       /* show plus */
 #define SPACE   8       /* space if plus */
