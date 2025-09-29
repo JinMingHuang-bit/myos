@@ -11,6 +11,27 @@ int color_printk(unsigned int FRcolor,unsigned int BKcolor,const char *fmt,...){
 	va_start(args,fmt);	
 }
 
+// int skip_atoi(const char **s){
+// 	int i=0;
+// 	while(is_digit(**s)){
+// 		// i=i*10+*((*s)++)-'0';
+// 		char current_char = **s;  // 获取当前字符
+// 		(*s)++;                   // 指针向后移动
+// 		i = i * 10 + (current_char - '0');  // 更新数值
+// 	}
+// 	return i;
+// }
+
+int skip_atoi(const char **s){
+ 	int i=0;
+ 	char current_char;
+ 	while(is_digit(current_char = **s)){
+ 		(*s)++;                   // 指针向后移动
+ 		i = i * 10 + (current_char - '0');  // 更新数值
+ 	}
+ 	return i;
+}
+
 int vsprintf(char * buf,const char *fmt,va_list args){
 	char *str;
 	char *s;
@@ -47,6 +68,7 @@ int vsprintf(char * buf,const char *fmt,va_list args){
 				flags |=ZEROPAD;
 				goto repeat;				
 			}
+	
 		field_width=-1;
 		if (is_digit=(*fmt))
 		{
@@ -79,9 +101,59 @@ int vsprintf(char * buf,const char *fmt,va_list args){
 			}
 		}
 		qualifier =-1;
+		//h - short类型:%hd
+		//l - long类型:%ld
+		//L - long long类型:%lld
+		//z - size_t类型
 		if(*fmt =='h' || *fmt =='l' || *fmt =='L'||*fmt =='z'){
 			qualifier =*fmt;
 			fmt++;
 	}
-	
+	switch (*fmt){
+			case 'c':
+				if(!(flags &LEFT)){
+					while(--field_width>0){
+						*str++ =' ';
+					}
+				}
+				*str++ =(unsigned char)va_arg(args,int);
+				while(--field_width>0){
+					*str++ =' ';
+				}
+				break;
+			case 's':
+				s=va_arg(args,char *);
+				if(!s){
+					s='\0';
+				}
+				// use C version here
+				len =Cstrlen(s);
+				if(precision <0){
+					precision=len;
+				}
+				else if(len >precision){
+					len=precision;	
+				}
+				if(!(flags &LEFT)){
+					while(len <field_width--){
+						*str++ =' ';
+					}
+				}
+				for(i=0;i<len;i++){
+						*str++ =*s++;
+					}
+				while(len <field_width--){
+						*str++ =' ';
+					}
+			break;
+			case 'o':
+			if(qualifier =='l'){
+				str=number(str,va_arg(args,unsigned long),8,field_width,precision,flags);
+			}
+			else{
+				str=number(str,va_arg(args,unsigned int),8,field_width,precision,flags);
+			}
+			break;
+	}
+}
 }
