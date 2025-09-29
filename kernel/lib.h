@@ -157,25 +157,51 @@ inline void * Cmemcpy(void *To, void *From, long Num)
 }
 
 
-inline int *memcmp(void* FirstPart,void* SecondPart,long Count){
+// inline int memcmp(void* FirstPart,void* SecondPart,long Count){
+//     register int __res;
+//     __asm__ __volatile__ ("cld \n\t"      //clean direction
+//         "repe \n\t"     // 重复执行下条指令直到ecx=0或ZF=0
+//         "cmpsb \n\t"    // 比较[esi]和[edi]的字节，同时递增指针
+//         "je 1f \n\t"     // 如果全部相等，跳转到标签1
+//         "movl $1,%%eax \n\t" // 设置eax=1（FirstPart > SecondPart）
+//         "jl 1f \n\t"    // 如果小于，跳转到标签1（保持eax=1）
+//         "negl %%eax \n\t"   // 否则取反eax（eax=-1，FirstPart < SecondPart）
+//         "1: \n\t"
+//         :"=a"(__res)
+//         :"0"(0),            //0：内存块相等
+//         "D"(FirstPart),
+//         "S"(SecondPart),
+//         "c"(Count)
+//         :
+//     );
+//     return __res;
+// }
+
+inline int memcmp(void* FirstPart, void* SecondPart, long Count) {
+    if (Count == 0) return 0;
+    
     register int __res;
-    __asm__ __volatile__ ("cld \n\t"      //clean direction
-        "repe \n\t"     // 重复执行下条指令直到ecx=0或ZF=0
-        "cmpsb \n\t"    // 比较[esi]和[edi]的字节，同时递增指针
-        "je 1f \n\t"     // 如果全部相等，跳转到标签1
-        "movl $1,%%eax \n\t" // 设置eax=1（FirstPart > SecondPart）
-        "jl 1f \n\t"    // 如果小于，跳转到标签1（保持eax=1）
-        "negl %%eax \n\t"   // 否则取反eax（eax=-1，FirstPart < SecondPart）
+    __asm__ __volatile__ (
+        "cld \n\t"
+        "repe \n\t"
+        "cmpsb \n\t"
+        "jne 1f \n\t"
+        "xorl %%eax, %%eax \n\t"  // 相等
+        "jmp 2f \n\t"
         "1: \n\t"
+        "movzbl -1(%%esi), %%edx \n\t"  // 第二个字符串的字符
+        "movzbl -1(%%edi), %%eax \n\t"  // 第一个字符串的字符  
+        "subl %%edx, %%eax \n\t"        // 计算差值
+        "2: \n\t"
         :"=a"(__res)
-        :"0"(0),            //0：内存块相等
-        "D"(FirstPart),
-        "S"(SecondPart),
-        "c"(Count)
-        :
+        :"D"(FirstPart),
+         "S"(SecondPart),
+         "c"(Count)
+        : "edx", "cc", "memory"
     );
     return __res;
 }
+
 inline int Cmemcmp(void *FirstPart, void *SecondPart, long Count)
 {
     unsigned char *p1 = (unsigned char *)FirstPart;
@@ -195,7 +221,7 @@ inline int Cmemcmp(void *FirstPart, void *SecondPart, long Count)
     return 0;
 }
 
-inline void *memset(void *Address,unsigned char C,long Count){
+inline void * memset(void *Address,unsigned char C,long Count){
     int d0,d1;
     //将单字节值复制到64位值的每个字节中
     unsigned long tmp=C*0x0101010101010101UL;
