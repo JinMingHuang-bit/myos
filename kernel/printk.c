@@ -47,6 +47,37 @@ int vsprintf(char * buf,const char *fmt,va_list args){
 				flags |=ZEROPAD;
 				goto repeat;				
 			}
+		field_width=-1;
+		if (is_digit=(*fmt))
+		{
+			field_width= skip_atoi(&fmt);
+		}
+		else if (*fmt == '*')
+		{
+			fmt++;
+			field_width=va_arg(args,int);
+			if (field_width <0)
+			{
+				field_width=-field_width
+				flags |=LEFT;
+			}
+			
+		}
+		precision =-1;
+		if(*fmt =='.'){
+			fmt++;
+			if (is_digit(*fmt))
+			{
+				precision=skip_atoi(&fmt);
+			}
+			else if(*fmt == '*'){
+				fmt++;
+				precision =va_arg(args,int);
+			}
+			if(precision <0){
+				precision=0;
+			}
+		}
 		
 	}
 	
