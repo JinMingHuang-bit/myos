@@ -78,7 +78,10 @@ int vsprintf(char * buf,const char *fmt,va_list args){
 				precision=0;
 			}
 		}
-		
+		qualifier =-1;
+		if(*fmt =='h' || *fmt =='l' || *fmt =='L'||*fmt =='z'){
+			qualifier =*fmt;
+			fmt++;
 	}
 	
 }
