@@ -32,6 +32,26 @@ int skip_atoi(const char **s){
  	return i;
 }
 
+static char *number(char *str,long num,int base,int size,int precision,int type){
+	char c,sign,tmp[50];
+	const char *digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	int i;
+	if(type & SMALL){
+		digits="0123456789abcdefghijklmnopqrstuvwxyz";
+	}
+	if(type & LEFT){
+		type &=~ZEROPAD;
+	}
+	if(base<2 || base>36){
+		return 0;	
+	}
+	c=(type & ZEROPAD) ? '0' : ' ';
+	sign=0;
+	if(type & SIGN  && num <0){
+		sign='-';
+		num=-num;
+	}
+}
 int vsprintf(char * buf,const char *fmt,va_list args){
 	char *str;
 	char *s;
