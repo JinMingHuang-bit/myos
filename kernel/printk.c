@@ -50,8 +50,38 @@ static char *number(char *str,long num,int base,int size,int precision,int type)
 	if(type & SIGN  && num <0){
 		sign='-';
 		num=-num;
+	}else{
+		sign=(type & PLUS)? '+':((type&SPACE)?'' :0);
+	}
+	//If there are symbols, reduce the size by 1
+	if(sign){
+		size--
+	}
+	if(type&SPECIAL){
+		if(base==16){
+			size=size-2;
+		}else if(base==8){
+			size=size-1;
+		}
+	}
+	int i=0;
+	if(num==0){
+		tmp[i++]='0';
+	}else while (num!=0){
+		tmp[i++]=digits[do_div(num,base)];
+	}
+	if(i>precision){
+		precision=i;
+	}
+	size-=precision;
+	if(!(type&(ZEROPAD+LEFT))){
+		while(size-- >0){
+			*str++='0';
+		}else if()
 	}
 }
+
+
 int vsprintf(char * buf,const char *fmt,va_list args){
 	char *str;
 	char *s;

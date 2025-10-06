@@ -66,4 +66,12 @@ __asm__("divq %%rcx \n\t"
 __res;
 })
 
+#define Cdo_div(n, base) ({ \
+    typeof(n) __n = (n); \
+    typeof(base) __base = (base); \
+    typeof(n) __res = __n % __base; \
+    (n) = __n / __base; \
+    __res; \
+})
+
 #endif
