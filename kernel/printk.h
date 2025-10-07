@@ -66,15 +66,15 @@ __asm__("divq %%rcx \n\t"
 __res;
 })
 
-#define do_div2(n,base)({ \
-int __res;\
-// 使用占位符 %4 引用第四个操作数，即 base
-__asm__("divq %%4 \n\t"
-        :"=a"(n),"=d"(__res)
-        :"0" (n),"1" (0),"r" (base)
-        :"cc"
-    ); \   
-__res;    
+// 第二个宏 - 使用自动寄存器分配（修复版本）
+#define do_div2(n, base) ({ \
+    int __res; \
+    __asm__("divq %[divisor]" \
+            : "=a"(n), "=d"(__res) \
+            : "0"(n), "1"(0), [divisor]"r"((unsigned long)base) \
+            : "cc" \
+    ); \
+    __res; \
 })
 
 #define Cdo_div(n, base) ({ \
