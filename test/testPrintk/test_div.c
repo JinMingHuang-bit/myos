@@ -1,25 +1,25 @@
 #include <stdio.h>
 
 // 第一个宏 - 使用固定rcx寄存器
-#define do_div(n,base)({ \
-int __res;\
-__asm__("divq %%rcx \n\t"\
-        :"=a"(n),"=d"(__res)\
-        :"0" (n),"1" (0),"c" (base)\
-        :"cc"\
-    ); \   
-__res;\
+#define do_div(n, base) ({ \
+    int __res; \
+    __asm__("divq %%rcx" \
+            : "=a"(n), "=d"(__res) \
+            : "0"(n), "1"(0), "c"(base) \
+            : "cc" \
+    ); \
+    __res; \
 })
 
-// 第二个宏 - 使用自动寄存器分配
-#define do_div2(n,base)({ \
-int __res;\
-__asm__("divq %%4 \n\t"\
-        :"=a"(n),"=d"(__res)\
-        :"0" (n),"1" (0),"r" (base)\
-        :"cc"\
-    ); \   
-__res;    \
+// 第二个宏 - 使用自动寄存器分配（修复版本）
+#define do_div2(n, base) ({ \
+    int __res; \
+    __asm__("divq %[divisor]" \
+            : "=a"(n), "=d"(__res) \
+            : "0"(n), "1"(0), [divisor]"r"((unsigned long)base) \
+            : "cc" \
+    ); \
+    __res; \
 })
 
 // 用于对比的标准除法函数
@@ -78,8 +78,8 @@ void test_edge_cases() {
 void test_consistency() {
     printf("\n=== 一致性测试 ===\n");
     
-    // 测试两个宏在相同输入下是否产生相同结果
-    int test_cases[][2] = {
+    // 修复：使用unsigned long类型的测试用例
+    unsigned long test_cases[][2] = {
         {100, 7},
         {0x12345678, 256},
         {999999, 333},
@@ -93,12 +93,12 @@ void test_consistency() {
     for (int i = 0; i < num_cases; i++) {
         unsigned long n1 = test_cases[i][0];
         unsigned long n2 = test_cases[i][0];
-        int base = test_cases[i][1];
+        unsigned long base = test_cases[i][1];
         
         int rem1 = do_div(n1, base);
         int rem2 = do_div2(n2, base);
         
-        printf("测试 %lu / %d: do_div商=%lu余%d, do_div2商=%lu余%d - %s\n",
+        printf("测试 %lu / %lu: do_div商=%lu余%d, do_div2商=%lu余%d - %s\n",
                test_cases[i][0], base, n1, rem1, n2, rem2,
                (n1 == n2 && rem1 == rem2) ? "匹配" : "不匹配");
         
