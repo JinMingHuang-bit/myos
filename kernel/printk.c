@@ -11,16 +11,16 @@ int color_printk(unsigned int FRcolor,unsigned int BKcolor,const char *fmt,...){
 	va_start(args,fmt);	
 }
 
-// int skip_atoi(const char **s){
-// 	int i=0;
-// 	while(is_digit(**s)){
-// 		// i=i*10+*((*s)++)-'0';
-// 		char current_char = **s;  // 获取当前字符
-// 		(*s)++;                   // 指针向后移动
-// 		i = i * 10 + (current_char - '0');  // 更新数值
-// 	}
-// 	return i;
-// }
+int skip_atoi2(const char **s){
+	int i=0;
+	while(is_digit(**s)){
+		// i=i*10+*((*s)++)-'0';
+		char current_char = **s;  // 获取当前字符
+		(*s)++;                   // 指针向后移动
+		i = i * 10 + (current_char - '0');  // 更新数值
+	}
+	return i;
+}
 
 int skip_atoi(const char **s){
  	int i=0;
@@ -30,6 +30,42 @@ int skip_atoi(const char **s){
  		i = i * 10 + (current_char - '0');  // 更新数值
  	}
  	return i;
+}
+
+int atoi(const char *str) {
+    int result = 0;      // 存储转换结果
+    int sign = 1;        // 符号位，1表示正数，-1表示负数
+    int i = 0;           // 字符串索引
+    
+    // 1. 跳过前导空白字符
+    while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || 
+           str[i] == '\r' || str[i] == '\f' || str[i] == '\v') {
+        i++;
+    }
+    
+    // 2. 处理可选的正负号
+    if (str[i] == '-') {
+        sign = -1;
+        i++;
+    } else if (str[i] == '+') {
+        sign = 1;
+        i++;
+    }
+    
+    // 3. 转换数字部分
+    while (is_digit(str[i])) {
+        // 检查是否会发生溢出
+        if (result > INT_MAX / 10 || 
+            (result == INT_MAX / 10 && (str[i] - '0') > INT_MAX % 10)) {
+            return (sign == 1) ? INT_MAX : INT_MIN;
+        }
+        
+        result = result * 10 + (str[i] - '0');
+        i++;
+    }
+    
+    // 4. 返回结果（考虑符号）
+    return sign * result;
 }
 
 static char *number(char *str,long num,int base,int size,int precision,int type){
