@@ -68,7 +68,8 @@ static char *number(char *str,long num,int base,int size,int precision,int type)
 	if(num==0){
 		tmp[i++]='0';
 	}else while (num!=0){
-		tmp[i++]=digits[do_div(num,base)];
+		// do_div(num,base) 返回num除以base的余数
+		tmp[i++]=digits[do_div2(num,base)];
 	}
 	if(i>precision){
 		precision=i;
@@ -76,9 +77,34 @@ static char *number(char *str,long num,int base,int size,int precision,int type)
 	size-=precision;
 	if(!(type&(ZEROPAD+LEFT))){
 		while(size-- >0){
-			*str++='0';
-		}else if()
+			*str++=' ';
+		}
 	}
+	if(sign){
+		*str++=sign;
+		}
+	if(type&SPECIAL){
+		if(base==8){
+			*str++='0';
+		}else if(base==16){
+			*str++='0';
+			*str++=digits[33];
+		}
+		}
+	if(!(type&LEFT)){
+		while(size-- >0){
+			*str++=c;
+	}
+	while(i<precision--){
+		*str++='0';
+	}
+	while(i-- >0){
+		*str++=tmp[i];
+	}
+	while(size-- >0){
+		*str++=' ';
+	}
+	return str;
 }
 
 

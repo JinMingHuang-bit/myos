@@ -66,6 +66,17 @@ __asm__("divq %%rcx \n\t"
 __res;
 })
 
+#define do_div2(n,base)({ \
+int __res;\
+// 使用占位符 %4 引用第四个操作数，即 base
+__asm__("divq %%4 \n\t"
+        :"=a"(n),"=d"(__res)
+        :"0" (n),"1" (0),"r" (base)
+        :"cc"
+    ); \   
+__res;    
+})
+
 #define Cdo_div(n, base) ({ \
     typeof(n) __n = (n); \
     typeof(base) __base = (base); \
