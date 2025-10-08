@@ -87,7 +87,7 @@ static char *number(char *str,long num,int base,int size,int precision,int type)
 		sign='-';
 		num=-num;
 	}else{
-		sign=(type & PLUS)? '+':((type&SPACE)?'' :0);
+		sign=(type & PLUS)? '+':((type&SPACE)?' ' :0);
 	}
 	//If there are symbols, reduce the size by 1
 	if(sign){
@@ -130,6 +130,7 @@ static char *number(char *str,long num,int base,int size,int precision,int type)
 	if(!(type&LEFT)){
 		while(size-- >0){
 			*str++=c;
+		}
 	}
 	while(i<precision--){
 		*str++='0';
@@ -259,13 +260,64 @@ int vsprintf(char * buf,const char *fmt,va_list args){
 					}
 			break;
 			case 'o':
-			if(qualifier =='l'){
-				str=number(str,va_arg(args,unsigned long),8,field_width,precision,flags);
-			}
-			else{
-				str=number(str,va_arg(args,unsigned int),8,field_width,precision,flags);
-			}
-			break;
+			/*
+			Check if there is a "long" type modifier 
+			If there is %lo, then handle the unsigned long type. 
+			If it is %o, then handle the unsigned int type.
+			*/
+				if(qualifier =='l'){
+					str=number(str,va_arg(args,unsigned long),8,field_width,precision,flags);
+				}
+				else{
+					str=number(str,va_arg(args,unsigned int),8,field_width,precision,flags);
+				}
+				break;
+			case 'p':
+				if(field_width ==-1){
+					//Automatically set the default width of the pointer as sizeof(void *) * 2
+					field_width=sizeof(void *)*2;
+					flags |=ZEROPAD;
+				}
+				str=number(str,(unsigned long)va_arg(args,void *),16,field_width,precision,flags);
+				break;
+			case 'x':
+				flags |=SMALL;
+			case 'X':
+				if(qualifier =='l'){
+					str=number(str,va_arg(args,unsigned long),16,field_width,precision,flags);	
+				}else{
+					str=number(str,va_arg(args,unsigned int),16,field_width,precision,flags);
+				}
+				break;
+			case 'd':
+			case 'i':
+				flags |=SIGN;
+			case 'u':
+				if(qualifier =='l'){
+					str=number(str,va_arg(args,unsigned long),10,field_width,precision,flags);
+				}else{
+					str=number(str,va_arg(args,unsigned int),10,field_width,precision,flags);
+				}
+				break;
+			case 'n':
+				if(qualifier =='l'){
+					long *ip=va_arg(args,long *);
+					*ip=(str-buf);
+				}else{
+					int *ip=va_arg(args,int *);
+					*ip=(str-buf);
+				}
+				break;
+			case '%':
+				*str++ ='%';
+				break;
+			default:
+				*str++ ='%';
+				if(*fmt)
+					*str++ =*fmt;
+				else
+					--fmt;
+				break;
 	}
 }
 }
