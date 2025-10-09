@@ -3,12 +3,41 @@
 #include"lib.h"
 #include"linkage.h"
 
+void putchar(unsigned int * fb,int Xsize,int x,int y,unsigned int FRcolor,unsigned int BKcolor,unsigned char font){
+	int i=0;
+	int j=0;
+	unsigned int *addr = NULL;
+	unsigned char *fontp = NULL;
+	int testval=0;
+	fontp=font_ascii[font];
+	for(i=0;i<16;i++){
+	//Shift the mask one position to the right. After the first cycle, it becomes 0x80, then 0x40, 0x20, ... until 0x01.
+		addr=fb+Xsize*(y+i)+x;
+		testval =0x100;
+		for(j=0;j<8;j++){
+			testval =testval >>1;
+			if(*fontp & testval){
+				*addr =FRcolor;
+			}else{
+				*addr =BKcolor;
+			}
+			addr++;
+		}
+		fontp++;
+	}
+}
+
 int color_printk(unsigned int FRcolor,unsigned int BKcolor,const char *fmt,...){
 	int i=0;
 	int count=0;
 	int line=0;
 	va_list args;
 	va_start(args,fmt);	
+	i=vsprintf(buf,fmt,args);
+	va_end(args);
+	for(count=0;count<i || line;count++){
+
+	}
 }
 
 int skip_atoi2(const char **s){
@@ -320,4 +349,6 @@ int vsprintf(char * buf,const char *fmt,va_list args){
 				break;
 	}
 }
+	*str = '\0';
+	return str - buf;
 }
