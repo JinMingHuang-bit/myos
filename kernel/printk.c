@@ -36,7 +36,14 @@ int color_printk(unsigned int FRcolor,unsigned int BKcolor,const char *fmt,...){
 	i=vsprintf(buf,fmt,args);
 	va_end(args);
 	for(count=0;count<i || line;count++){
-
+		if(line >0){
+			count--;
+			// goto Label_tab;
+		}
+		if((unsigned char)*(buf+count)=='\n'){
+			Pos.YPosition++;
+			Pos.XPosition=0;
+		}
 	}
 }
 
