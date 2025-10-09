@@ -43,10 +43,23 @@ int color_printk(unsigned int FRcolor,unsigned int BKcolor,const char *fmt,...){
 		if((unsigned char)*(buf+count)=='\n'){
 			Pos.YPosition++;
 			Pos.XPosition=0;
+		}else if((unsigned char)*(buf+count)=='\b'){
+			Pos.XPosition--;
+			if(Pos.XPosition<0){
+				Pos.XPosition=(Pos.XResolution/ Pos.XCharSize-1)*Pos.XCharSize;
+				Pos.YPosition--;
+				if(Pos.YPosition<0){
+					Pos.YPosition=(Pos.YResolution/ Pos.YCharSize-1)*Pos.YCharSize;
+			}
+			putchar(Pos.FB_addr,Pos.XResolution,Pos.XPosition*Pos.XCharSize,Pos.YPosition*Pos.YCharSize,FRcolor,BKcolor,' ');
+			}
 		}
 	}
 }
+	
+		
 
+	
 int skip_atoi2(const char **s){
 	int i=0;
 	while(is_digit(**s)){
