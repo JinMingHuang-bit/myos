@@ -7,6 +7,8 @@ The kernel is typically mapped to the Higher Half.
 */ 
 
 //jmp    ffff800000100094 <Start_kernel+0x1c>
+#include "lib.h"
+#include "printk.h"
 void Start_Kernel(void)
 {
     // if there is a problem,try 640*20,otherwise use 1440*20

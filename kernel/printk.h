@@ -48,11 +48,13 @@ char buf[4096]={0}
 void putchar(unsigned int *fb,int Xsize,int x,int y,unsigned int FRcolor,unsigned int BKcolor,unsigned char font);
 
 int skip_atoi(const char **s);
-
+int skip_atoi2(const char **s);
+int atoi(const char *str);
+void clear_screen();
 //precision 精度
-static char * number(char * str, long num, int base, int size, int precision ,int type);
+static char *number(char *str, long num, int base, int size, int precision ,int type);
 
-int vsprintf(char* buff,const char* fmt,va_list args);
+int vsprintf(char *buff,const char *fmt,va_list args);
 
 int color_printk(unsigned int FRcolor,unsigned int BKcolor,const char *fmt,...);
 

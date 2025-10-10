@@ -3,7 +3,7 @@
 #include"lib.h"
 #include"linkage.h"
 
-void putchar(unsigned int * fb,int Xsize,int x,int y,unsigned int FRcolor,unsigned int BKcolor,unsigned char font){
+void putchar(unsigned int *fb,int Xsize,int x,int y,unsigned int FRcolor,unsigned int BKcolor,unsigned char font){
 	int i=0;
 	int j=0;
 	unsigned int *addr = NULL;
@@ -229,7 +229,7 @@ static char *number(char *str,long num,int base,int size,int precision,int type)
 }
 
 
-int vsprintf(char * buf,const char *fmt,va_list args){
+int vsprintf(char *buf,const char *fmt,va_list args){
 	char *str;
 	char *s;
 	int flags;
