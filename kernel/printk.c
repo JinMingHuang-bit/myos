@@ -73,6 +73,7 @@ int color_printk(unsigned int FRcolor,unsigned int BKcolor,const char *fmt,...){
 			Pos.YPosition=0;
 		}
 }
+return i;
 }
 
 
@@ -87,7 +88,6 @@ void clear_screen() {
                    FRcolor, BKcolor, ' ');
         }
     }
-    
     // 重置光标位置
     Pos.XPosition = 0;
     Pos.YPosition = 0;
