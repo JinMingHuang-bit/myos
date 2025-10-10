@@ -9,6 +9,9 @@ main.o: main.c
 	gcc -mcmodel=large -fno-builtin -m64 -c main.c
 	gcc -mcmodel=large -fno-builtin -m64 -S -fverbose-asm main.c
 
+printk.o: printk.c
+	gcc -mcmodel=large -fno-builtin -m64 -c printk.c
+	gcc -mcmodel=large -fno-builtin -m64 -S -fverbose-asm printk.c
 system: head.o main.o
 	ld -b elf64-x86-64 -o system head.o main.o -T kernel.lds
 

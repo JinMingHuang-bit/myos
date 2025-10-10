@@ -11,9 +11,20 @@ The kernel is typically mapped to the Higher Half.
 #include "printk.h"
 void Start_Kernel(void)
 {
+    //the loader.asm now using 640×480;
     // if there is a problem,try 640*20,otherwise use 1440*20
+    //(1440*900)
     int *addr=(int *)0xffff800000a00000;
     int i;
+    Pos.XResolution=640;
+    Pos.YResolution=480;
+    Pos.XPosition=0;
+    Pos.YPosition=0;
+    Pos.XCharSize=8;
+    Pos.YCharSize=16;
+    Pos.FB_addr=(int *)0xffff800000a00000;
+    Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+
     for(i=0;i<640*20;i++){
         *((char*)addr+0)=(char)0x00;
         *((char*)addr+1)=(char)0x00;
@@ -45,6 +56,8 @@ void Start_Kernel(void)
         addr=addr+1;
 
     }
+
+    color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
     while (1)
     ;
      
