@@ -38,7 +38,7 @@ int color_printk(unsigned int FRcolor,unsigned int BKcolor,const char *fmt,...){
 	for(count=0;count<i || line;count++){
 		if(line >0){
 			count--;
-			// goto Label_tab;
+			goto Label_tab;
 		}
 		if((unsigned char)*(buf+count)=='\n'){
 			Pos.YPosition++;
@@ -51,8 +51,16 @@ int color_printk(unsigned int FRcolor,unsigned int BKcolor,const char *fmt,...){
 				if(Pos.YPosition<0){
 					Pos.YPosition=(Pos.YResolution/ Pos.YCharSize-1)*Pos.YCharSize;
 			}
-			putchar(Pos.FB_addr,Pos.XResolution,Pos.XPosition*Pos.XCharSize,Pos.YPosition*Pos.YCharSize,FRcolor,BKcolor,' ');
 			}
+			putchar(Pos.FB_addr,Pos.XResolution,Pos.XPosition*Pos.XCharSize,Pos.YPosition*Pos.YCharSize,FRcolor,BKcolor,' ');			
+		}else if((unsigned char)*(buf+count)=='\t'){
+				line =((Pos.XPosition+8)& ~(8-1))-Pos.XPosition;
+			Label_tab:
+				line--;
+				putchar(Pos.FB_addr,Pos.XResolution,Pos.XPosition*Pos.XCharSize,Pos.YPosition*Pos.YCharSize,FRcolor,BKcolor,' ');
+				Pos.XPosition++;
+		}else{
+			
 		}
 	}
 }
