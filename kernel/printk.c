@@ -54,17 +54,45 @@ int color_printk(unsigned int FRcolor,unsigned int BKcolor,const char *fmt,...){
 			}
 			putchar(Pos.FB_addr,Pos.XResolution,Pos.XPosition*Pos.XCharSize,Pos.YPosition*Pos.YCharSize,FRcolor,BKcolor,' ');			
 		}else if((unsigned char)*(buf+count)=='\t'){
+			//~7 的二进制是 11111000（假设8位）
+			//清除低3位（因为8=2³），实现8字节边界对齐
 				line =((Pos.XPosition+8)& ~(8-1))-Pos.XPosition;
 			Label_tab:
 				line--;
 				putchar(Pos.FB_addr,Pos.XResolution,Pos.XPosition*Pos.XCharSize,Pos.YPosition*Pos.YCharSize,FRcolor,BKcolor,' ');
 				Pos.XPosition++;
 		}else{
-			
+			putchar(Pos.FB_addr,Pos.XResolution,Pos.XPosition*Pos.XCharSize,Pos.YPosition*Pos.YCharSize,FRcolor,BKcolor,(unsigned char)*(buf+count));
+			Pos.XPosition++;
 		}
+		if(Pos.XPosition>=(Pos.XResolution/Pos.XCharSize)){
+			Pos.YPosition++;
+			Pos.XPosition=0;
 	}
+		if(Pos.YPosition>=(Pos.YResolution/Pos.YCharSize)){
+			Pos.YPosition=0;
+		}
 }
-	
+}
+
+
+void clear_screen() {
+    int cols = Pos.XResolution / Pos.XCharSize;
+    int rows = Pos.YResolution / Pos.YCharSize;
+    
+    // 遍历所有位置输出空格
+    for (int y = 0; y < rows; y++) {
+        for (int x = 0; x < cols; x++) {
+            putchar(Pos.FB_addr, Pos.XResolution, 
+                   x * Pos.XCharSize, y * Pos.YCharSize,
+                   FRcolor, BKcolor, ' ');
+        }
+    }
+    
+    // 重置光标位置
+    Pos.XPosition = 0;
+    Pos.YPosition = 0;
+}	
 		
 
 	
