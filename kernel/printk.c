@@ -79,7 +79,6 @@ int color_printk(unsigned int FRcolor,unsigned int BKcolor,const char *fmt,...){
 void clear_screen() {
     int cols = Pos.XResolution / Pos.XCharSize;
     int rows = Pos.YResolution / Pos.YCharSize;
-    
     // 遍历所有位置输出空格
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
