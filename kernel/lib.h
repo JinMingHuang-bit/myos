@@ -520,7 +520,8 @@ inline int strlen(char * String)
                 );
     return __res;
 }
-inline int Cstrlen(char *String)
+
+static inline int Cstrlen(char *String)
 {
     char *ptr = String;
     

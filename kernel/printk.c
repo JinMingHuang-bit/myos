@@ -77,21 +77,21 @@ return i;
 }
 
 
-void clear_screen() {
-    int cols = Pos.XResolution / Pos.XCharSize;
-    int rows = Pos.YResolution / Pos.YCharSize;
-    // 遍历所有位置输出空格
-    for (int y = 0; y < rows; y++) {
-        for (int x = 0; x < cols; x++) {
-            putchar(Pos.FB_addr, Pos.XResolution, 
-                   x * Pos.XCharSize, y * Pos.YCharSize,
-                   FRcolor, BKcolor, ' ');
-        }
-    }
-    // 重置光标位置
-    Pos.XPosition = 0;
-    Pos.YPosition = 0;
-}	
+// void clear_screen() {
+//     int cols = Pos.XResolution / Pos.XCharSize;
+//     int rows = Pos.YResolution / Pos.YCharSize;
+//     // 遍历所有位置输出空格
+//     for (int y = 0; y < rows; y++) {
+//         for (int x = 0; x < cols; x++) {
+//             putchar(Pos.FB_addr, Pos.XResolution, 
+//                    x * Pos.XCharSize, y * Pos.YCharSize,
+//                    FRcolor, BKcolor, ' ');
+//         }
+//     }
+//     // 重置光标位置
+//     Pos.XPosition = 0;
+//     Pos.YPosition = 0;
+// }	
 		
 
 	
@@ -116,46 +116,46 @@ int skip_atoi(const char **s){
  	return i;
 }
 
-int atoi(const char *str) {
-    int result = 0;      // 存储转换结果
-    int sign = 1;        // 符号位，1表示正数，-1表示负数
-    int i = 0;           // 字符串索引
+// int atoi(const char *str) {
+//     int result = 0;      // 存储转换结果
+//     int sign = 1;        // 符号位，1表示正数，-1表示负数
+//     int i = 0;           // 字符串索引
     
-    // 1. 跳过前导空白字符
-    while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || 
-           str[i] == '\r' || str[i] == '\f' || str[i] == '\v') {
-        i++;
-    }
+//     // 1. 跳过前导空白字符
+//     while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || 
+//            str[i] == '\r' || str[i] == '\f' || str[i] == '\v') {
+//         i++;
+//     }
     
-    // 2. 处理可选的正负号
-    if (str[i] == '-') {
-        sign = -1;
-        i++;
-    } else if (str[i] == '+') {
-        sign = 1;
-        i++;
-    }
+//     // 2. 处理可选的正负号
+//     if (str[i] == '-') {
+//         sign = -1;
+//         i++;
+//     } else if (str[i] == '+') {
+//         sign = 1;
+//         i++;
+//     }
     
-    // 3. 转换数字部分
-    while (is_digit(str[i])) {
-        // 检查是否会发生溢出
-        if (result > INT_MAX / 10 || 
-            (result == INT_MAX / 10 && (str[i] - '0') > INT_MAX % 10)) {
-            return (sign == 1) ? INT_MAX : INT_MIN;
-        }
+//     // 3. 转换数字部分
+//     while (is_digit(str[i])) {
+//         // 检查是否会发生溢出
+//         if (result > INT_MAX / 10 || 
+//             (result == INT_MAX / 10 && (str[i] - '0') > INT_MAX % 10)) {
+//             return (sign == 1) ? INT_MAX : INT_MIN;
+//         }
         
-        result = result * 10 + (str[i] - '0');
-        i++;
-    }
+//         result = result * 10 + (str[i] - '0');
+//         i++;
+//     }
     
-    // 4. 返回结果（考虑符号）
-    return sign * result;
-}
+//     // 4. 返回结果（考虑符号）
+//     return sign * result;
+// }
 
 static char *number(char *str,long num,int base,int size,int precision,int type){
 	char c,sign,tmp[50];
 	const char *digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	int i;
+	int i=0;
 	if(type & SMALL){
 		digits="0123456789abcdefghijklmnopqrstuvwxyz";
 	}
@@ -175,7 +175,7 @@ static char *number(char *str,long num,int base,int size,int precision,int type)
 	}
 	//If there are symbols, reduce the size by 1
 	if(sign){
-		size--
+		size--;
 	}
 	if(type&SPECIAL){
 		if(base==16){
@@ -184,7 +184,6 @@ static char *number(char *str,long num,int base,int size,int precision,int type)
 			size=size-1;
 		}
 	}
-	int i=0;
 	if(num==0){
 		tmp[i++]='0';
 	}else while (num!=0){
@@ -233,9 +232,10 @@ int vsprintf(char *buf,const char *fmt,va_list args){
 	char *str;
 	char *s;
 	int flags;
-	int flag_width;
+	int field_width;
 	int precision;
 	int len;
+	int i;
 	int qualifier;
 	for (str=buf;*fmt;fmt++)
 	{
@@ -267,7 +267,7 @@ int vsprintf(char *buf,const char *fmt,va_list args){
 			}
 	
 		field_width=-1;
-		if (is_digit=(*fmt))
+		if (is_digit(*fmt))
 		{
 			field_width= skip_atoi(&fmt);
 		}
@@ -277,7 +277,7 @@ int vsprintf(char *buf,const char *fmt,va_list args){
 			field_width=va_arg(args,int);
 			if (field_width <0)
 			{
-				field_width=-field_width
+				field_width=-field_width;
 				flags |=LEFT;
 			}
 			

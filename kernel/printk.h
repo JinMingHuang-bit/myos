@@ -27,7 +27,7 @@ so in the binary representation of each constant, only one bit is 1 and the rest
 #define INDIGO  0x0000ffff      //靛
 #define PURPLE  0x008000ff      //紫
 
-#define is_digit(c)((c)>='0'&&(c)<='9');
+#define is_digit(c)((c)>='0'&&(c)<='9')
 
 struct position
 {
@@ -43,7 +43,7 @@ struct position
 
 extern unsigned char font_ascii[256][16];
 // may need to change here
-char buf[4096]={0}
+char buf[4096]={0};
 
 void putchar(unsigned int *fb,int Xsize,int x,int y,unsigned int FRcolor,unsigned int BKcolor,unsigned char font);
 
@@ -60,12 +60,12 @@ int color_printk(unsigned int FRcolor,unsigned int BKcolor,const char *fmt,...);
 
 #define do_div(n,base)({ \
 int __res;\
-__asm__("divq %%rcx \n\t"
-        :"=a"(n),"=d"(__res)
-        :"0" (n),"1" (0),"c" (base)
-        :"cc"
-    ); \   
-__res;
+__asm__("divq %%rcx \n\t" \
+        :"=a"(n),"=d"(__res) \
+        :"0" (n),"1" (0),"c" (base) \
+        :"cc" \
+    ); \
+__res; \
 })
 
 // 第二个宏 - 使用自动寄存器分配（修复版本）

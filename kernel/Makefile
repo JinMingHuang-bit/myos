@@ -5,15 +5,16 @@ head.o: head.S
 	gcc -E head.S > head.s
 	as --64 -o head.o head.s
 
-main.o: main.c
-	gcc -mcmodel=large -fno-builtin -m64 -c main.c
+main.o:  main.c 
+	gcc -mcmodel=large -fno-builtin -m64 -fno-stack-protector -c main.c
 	gcc -mcmodel=large -fno-builtin -m64 -S -fverbose-asm main.c
 
-printk.o: printk.c
-	gcc -mcmodel=large -fno-builtin -m64 -c printk.c
+printk.o: printk.c printk.h lib.h
+	gcc -mcmodel=large -fno-builtin -m64 -fno-stack-protector -c  printk.c
 	gcc -mcmodel=large -fno-builtin -m64 -S -fverbose-asm printk.c
-system: head.o main.o
-	ld -b elf64-x86-64 -o system head.o main.o -T kernel.lds
+
+system: head.o main.o printk.o
+	ld -b elf64-x86-64 -z muldefs -o system head.o main.o printk.o -T kernel.lds
 
 clean:
 	rm -rf *.o *.s~ *.s *.S~ *.c~ *.h~ system  Makefile~ kernel.lds~ kernel.bin
