@@ -41,7 +41,7 @@ struct position
     unsigned long FB_length;
 }Pos;
 
-extern unsigned char font_ascii[256][5];
+extern unsigned char font_ascii[256][16];
 // may need to change here
 char buf[4096]={0}
 
