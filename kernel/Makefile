@@ -1,20 +1,53 @@
-all: system
-	objcopy -I elf64-x86-64 -S -R ".eh_frame" -R ".comment" -O binary system kernel.bin
+# 工具定义
+AS = as
+CC = gcc
+LD = ld
+OBJCOPY = objcopy
+OBJDUMP = objdump
 
+# 编译选项 - 全部开启 O2 优化(跑不动?)
+CFLAGS = -mcmodel=large -fno-builtin -m64 -fno-stack-protector -O1
+ASFLAGS = --64
+LDFLAGS = -b elf64-x86-64 -z muldefs
+OBJCOPYFLAGS = -I elf64-x86-64 -S -R ".eh_frame" -R ".comment" -O binary
+
+# 目标文件
+OBJS = head.o main.o printk.o
+
+# 默认目标
+all: system kernel.bin
+
+system: $(OBJS) kernel.lds
+	$(LD) $(LDFLAGS) -o system $(OBJS) -T kernel.lds
+
+kernel.bin: system
+	$(OBJCOPY) $(OBJCOPYFLAGS) system kernel.bin
+
+# 生成汇编预处理文件、目标文件和反汇编文件
 head.o: head.S
-	gcc -E head.S > head.s
-	as --64 -o head.o head.s
+	$(CC) -E head.S > head.s
+	$(AS) $(ASFLAGS) -o head.o head.s -ahls > head.lst
+	$(OBJDUMP) -d head.o > head.asm
 
-main.o:  main.c 
-	gcc -mcmodel=large -fno-builtin -m64 -fno-stack-protector -c main.c
-	gcc -mcmodel=large -fno-builtin -m64 -S -fverbose-asm main.c
+main.o: main.c
+	$(CC) $(CFLAGS) -c main.c -o main.o
+	$(CC) $(CFLAGS) -S -fverbose-asm main.c -o main.s
+	$(OBJDUMP) -d main.o > main.asm
+	$(AS) $(ASFLAGS) -o main.o main.s -ahls > main.lst
 
 printk.o: printk.c printk.h lib.h
-	gcc -mcmodel=large -fno-builtin -m64 -fno-stack-protector -c  printk.c
-	gcc -mcmodel=large -fno-builtin -m64 -S -fverbose-asm printk.c
+	$(CC) $(CFLAGS) -c printk.c -o printk.o
+	$(CC) $(CFLAGS) -S -fverbose-asm printk.c -o printk.s
+	$(OBJDUMP) -d printk.o > printk.asm
+	$(AS) $(ASFLAGS) -o printk.o printk.s -ahls > printk.lst
 
-system: head.o main.o printk.o
-	ld -b elf64-x86-64 -z muldefs -o system head.o main.o printk.o -T kernel.lds
+# 为最终系统文件生成反汇编
+system.asm: system
+	$(OBJDUMP) -d system > system.asm
 
+# 清理
 clean:
-	rm -rf *.o *.s~ *.s *.S~ *.c~ *.h~ system  Makefile~ kernel.lds~ kernel.bin
+	rm -rf *.o *.s~ *.s *.S~ *.c~ *.h~ system Makefile~ kernel.lds~ kernel.bin *.asm *.lst
+
+# 伪目标
+.PHONY: all clean
