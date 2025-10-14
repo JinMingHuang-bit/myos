@@ -458,10 +458,11 @@ Label_SVGA_Mode_Info_Finish:
 ;=======	set the SVGA mode(VESA VBE)
 
 	mov	ax,	4F02h
-	; mov	bx,	4180h
-	mov bx, 0101h    	
+	;
+	mov	bx,	4180h
+	;x 640, y 480
+	;mov bx, 0101h    	
 	int 	10h
-
 	cmp	ax,	004Fh
 	jnz	Label_SET_SVGA_Mode_VESA_VBE_FAIL
 

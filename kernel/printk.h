@@ -50,7 +50,7 @@ void putchar(unsigned int *fb,int Xsize,int x,int y,unsigned int FRcolor,unsigne
 int skip_atoi(const char **s);
 int skip_atoi2(const char **s);
 int atoi(const char *str);
-void clear_screen();
+void clear_screen(unsigned int FRcolor,unsigned int BKcolor);
 //precision 精度
 static char *number(char *str, long num, int base, int size, int precision ,int type);
 

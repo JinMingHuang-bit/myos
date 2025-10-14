@@ -77,21 +77,21 @@ return i;
 }
 
 
-// void clear_screen() {
-//     int cols = Pos.XResolution / Pos.XCharSize;
-//     int rows = Pos.YResolution / Pos.YCharSize;
-//     // 遍历所有位置输出空格
-//     for (int y = 0; y < rows; y++) {
-//         for (int x = 0; x < cols; x++) {
-//             putchar(Pos.FB_addr, Pos.XResolution, 
-//                    x * Pos.XCharSize, y * Pos.YCharSize,
-//                    FRcolor, BKcolor, ' ');
-//         }
-//     }
-//     // 重置光标位置
-//     Pos.XPosition = 0;
-//     Pos.YPosition = 0;
-// }	
+void clear_screen(unsigned int FRcolor,unsigned int BKcolor) {
+    int cols = Pos.XResolution / Pos.XCharSize;
+    int rows = Pos.YResolution / Pos.YCharSize;
+    // 遍历所有位置输出空格
+    for (int y = 0; y < rows; y++) {
+        for (int x = 0; x < cols; x++) {
+            putchar(Pos.FB_addr, Pos.XResolution, 
+                   x * Pos.XCharSize, y * Pos.YCharSize,
+                   FRcolor, BKcolor, ' ');
+        }
+    }
+    // 重置光标位置
+    Pos.XPosition = 0;
+    Pos.YPosition = 0;
+}	
 		
 
 	

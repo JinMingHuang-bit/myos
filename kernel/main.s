@@ -2,7 +2,7 @@
 # GNU C17 (Ubuntu 13.3.0-6ubuntu2~24.04) version 13.3.0 (x86_64-linux-gnu)
 #	compiled by GNU C version 13.3.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version isl-0.26-GMP
 
-# GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+# GGC heuristics: --param ggc-min-expand=91 --param ggc-min-heapsize=114976
 # options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -fno-builtin -fasynchronous-unwind-tables -fstack-protector-strong -fstack-clash-protection -fcf-protection
 	.text
 	.globl	font_ascii
@@ -3081,6 +3081,17 @@ buf:
 	.section	.rodata
 .LC0:
 	.string	"hello\t\t kernel!\n"
+.LC1:
+	.string	"hello,User\n"
+	.align 8
+.LC2:
+	.string	"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n"
+	.align 8
+.LC3:
+	.string	"I am the royal daughter who has broken the law!\n"
+	.align 8
+.LC4:
+	.string	"Hmm,there is still a problem here?"
 	.text
 	.globl	Start_Kernel
 	.type	Start_Kernel, @function
@@ -3094,189 +3105,111 @@ Start_Kernel:
 	movq	%rsp, %rbp	#,
 	.cfi_def_cfa_register 6
 	pushq	%r15	#
-	subq	$24, %rsp	#,
+	pushq	%rbx	#
+	subq	$16, %rsp	#,
 	.cfi_offset 15, -24
-.L11:
-	leaq	.L11(%rip), %rcx	#, tmp82
-	movabsq	$_GLOBAL_OFFSET_TABLE_-.L11, %r11	#,
-	addq	%r11, %rcx	#, tmp82
+	.cfi_offset 3, -32
+.L3:
+	leaq	.L3(%rip), %rbx	#, tmp82
+	movabsq	$_GLOBAL_OFFSET_TABLE_-.L3, %r11	#,
+	addq	%r11, %rbx	#, tmp82
 # main.c:17:     int *addr=(int *)0xffff800000a00000;
-	movabsq	$-140737477869568, %rsi	#, tmp130
-	movq	%rsi, -24(%rbp)	# tmp130, addr
-# main.c:19:     Pos.XResolution=640;
-	movabsq	$Pos@GOTOFF, %rax	#, tmp100
-	movl	$640, (%rcx,%rax)	#, Pos.XResolution
-# main.c:20:     Pos.YResolution=480;
-	movabsq	$Pos@GOTOFF, %rax	#, tmp101
-	movl	$480, 4(%rcx,%rax)	#, Pos.YResolution
+	movabsq	$-140737477869568, %rsi	#, tmp114
+	movq	%rsi, -24(%rbp)	# tmp114, addr
+# main.c:19:     Pos.XResolution=1440;
+	movabsq	$Pos@GOTOFF, %rax	#, tmp88
+	movl	$1440, (%rbx,%rax)	#, Pos.XResolution
+# main.c:20:     Pos.YResolution=900;
+	movabsq	$Pos@GOTOFF, %rax	#, tmp89
+	movl	$900, 4(%rbx,%rax)	#, Pos.YResolution
 # main.c:21:     Pos.XPosition=0;
-	movabsq	$Pos@GOTOFF, %rax	#, tmp102
-	movl	$0, 8(%rcx,%rax)	#, Pos.XPosition
+	movabsq	$Pos@GOTOFF, %rax	#, tmp90
+	movl	$0, 8(%rbx,%rax)	#, Pos.XPosition
 # main.c:22:     Pos.YPosition=0;
-	movabsq	$Pos@GOTOFF, %rax	#, tmp103
-	movl	$0, 12(%rcx,%rax)	#, Pos.YPosition
+	movabsq	$Pos@GOTOFF, %rax	#, tmp91
+	movl	$0, 12(%rbx,%rax)	#, Pos.YPosition
 # main.c:23:     Pos.XCharSize=8;
-	movabsq	$Pos@GOTOFF, %rax	#, tmp104
-	movl	$8, 16(%rcx,%rax)	#, Pos.XCharSize
+	movabsq	$Pos@GOTOFF, %rax	#, tmp92
+	movl	$8, 16(%rbx,%rax)	#, Pos.XCharSize
 # main.c:24:     Pos.YCharSize=16;
-	movabsq	$Pos@GOTOFF, %rax	#, tmp105
-	movl	$16, 20(%rcx,%rax)	#, Pos.YCharSize
+	movabsq	$Pos@GOTOFF, %rax	#, tmp93
+	movl	$16, 20(%rbx,%rax)	#, Pos.YCharSize
 # main.c:25:     Pos.FB_addr=(int *)0xffff800000a00000;
-	movabsq	$Pos@GOTOFF, %rax	#, tmp106
-	movq	%rsi, 24(%rcx,%rax)	# tmp131, Pos.FB_addr
+	movabsq	$Pos@GOTOFF, %rax	#, tmp94
+	movq	%rsi, 24(%rbx,%rax)	# tmp115, Pos.FB_addr
 # main.c:26:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
-	movabsq	$Pos@GOTOFF, %rax	#, tmp107
-	movl	(%rcx,%rax), %edx	# Pos.XResolution, _1
+	movabsq	$Pos@GOTOFF, %rax	#, tmp95
+	movl	(%rbx,%rax), %edx	# Pos.XResolution, _1
 # main.c:26:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
-	movabsq	$Pos@GOTOFF, %rax	#, tmp108
-	movl	4(%rcx,%rax), %eax	# Pos.YResolution, _2
+	movabsq	$Pos@GOTOFF, %rax	#, tmp96
+	movl	4(%rbx,%rax), %eax	# Pos.YResolution, _2
 # main.c:26:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
 	imull	%edx, %eax	# _1, _3
 # main.c:26:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
 	sall	$2, %eax	#, _4
 	cltq
 # main.c:26:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
-	movabsq	$Pos@GOTOFF, %rdx	#, tmp109
-	movq	%rax, 32(%rcx,%rdx)	# _5, Pos.FB_length
-# main.c:28:     for(i=0;i<640*20;i++){
-	movl	$0, -28(%rbp)	#, i
-# main.c:28:     for(i=0;i<640*20;i++){
-	jmp	.L2	#
-.L3:
-# main.c:29:         *((char*)addr+0)=(char)0x00;
-	movq	-24(%rbp), %rax	# addr, tmp110
-	movb	$0, (%rax)	#, MEM[(char *)addr_18]
-# main.c:30:         *((char*)addr+1)=(char)0x00;
-	movq	-24(%rbp), %rax	# addr, tmp111
-	addq	$1, %rax	#, _6
-# main.c:30:         *((char*)addr+1)=(char)0x00;
-	movb	$0, (%rax)	#, *_6
-# main.c:31:         *((char*)addr+2)=(char)0xff;
-	movq	-24(%rbp), %rax	# addr, tmp112
-	addq	$2, %rax	#, _7
-# main.c:31:         *((char*)addr+2)=(char)0xff;
-	movb	$-1, (%rax)	#, *_7
-# main.c:32:         *((char*)addr+3)=(char)0x00;
-	movq	-24(%rbp), %rax	# addr, tmp113
-	addq	$3, %rax	#, _8
-# main.c:32:         *((char*)addr+3)=(char)0x00;
-	movb	$0, (%rax)	#, *_8
-# main.c:33:         addr=addr+1;
-	addq	$4, -24(%rbp)	#, addr
-# main.c:28:     for(i=0;i<640*20;i++){
-	addl	$1, -28(%rbp)	#, i
-.L2:
-# main.c:28:     for(i=0;i<640*20;i++){
-	cmpl	$12799, -28(%rbp)	#, i
-	jle	.L3	#,
-# main.c:36:     for(i=0;i<640*20;i++){
-	movl	$0, -28(%rbp)	#, i
-# main.c:36:     for(i=0;i<640*20;i++){
-	jmp	.L4	#
-.L5:
-# main.c:37:         *((char*)addr+0)=(char)0x00;
-	movq	-24(%rbp), %rax	# addr, tmp114
-	movb	$0, (%rax)	#, MEM[(char *)addr_19]
-# main.c:38:         *((char*)addr+1)=(char)0xff;
-	movq	-24(%rbp), %rax	# addr, tmp115
-	addq	$1, %rax	#, _9
-# main.c:38:         *((char*)addr+1)=(char)0xff;
-	movb	$-1, (%rax)	#, *_9
-# main.c:39:         *((char*)addr+2)=(char)0x00;
-	movq	-24(%rbp), %rax	# addr, tmp116
-	addq	$2, %rax	#, _10
-# main.c:39:         *((char*)addr+2)=(char)0x00;
-	movb	$0, (%rax)	#, *_10
-# main.c:40:         *((char*)addr+3)=(char)0x00;
-	movq	-24(%rbp), %rax	# addr, tmp117
-	addq	$3, %rax	#, _11
-# main.c:40:         *((char*)addr+3)=(char)0x00;
-	movb	$0, (%rax)	#, *_11
-# main.c:41:         addr=addr+1;
-	addq	$4, -24(%rbp)	#, addr
-# main.c:36:     for(i=0;i<640*20;i++){
-	addl	$1, -28(%rbp)	#, i
-.L4:
-# main.c:36:     for(i=0;i<640*20;i++){
-	cmpl	$12799, -28(%rbp)	#, i
-	jle	.L5	#,
-# main.c:44:     for(i=0;i<640*20;i++){
-	movl	$0, -28(%rbp)	#, i
-# main.c:44:     for(i=0;i<640*20;i++){
-	jmp	.L6	#
-.L7:
-# main.c:45:         *((char*)addr+0)=(char)0xff;
-	movq	-24(%rbp), %rax	# addr, tmp118
-	movb	$-1, (%rax)	#, MEM[(char *)addr_20]
-# main.c:46:         *((char*)addr+1)=(char)0x00;
-	movq	-24(%rbp), %rax	# addr, tmp119
-	addq	$1, %rax	#, _12
-# main.c:46:         *((char*)addr+1)=(char)0x00;
-	movb	$0, (%rax)	#, *_12
-# main.c:47:         *((char*)addr+2)=(char)0x00;
-	movq	-24(%rbp), %rax	# addr, tmp120
-	addq	$2, %rax	#, _13
-# main.c:47:         *((char*)addr+2)=(char)0x00;
-	movb	$0, (%rax)	#, *_13
-# main.c:48:         *((char*)addr+3)=(char)0x00;
-	movq	-24(%rbp), %rax	# addr, tmp121
-	addq	$3, %rax	#, _14
-# main.c:48:         *((char*)addr+3)=(char)0x00;
-	movb	$0, (%rax)	#, *_14
-# main.c:49:         addr=addr+1;
-	addq	$4, -24(%rbp)	#, addr
-# main.c:44:     for(i=0;i<640*20;i++){
-	addl	$1, -28(%rbp)	#, i
-.L6:
-# main.c:44:     for(i=0;i<640*20;i++){
-	cmpl	$12799, -28(%rbp)	#, i
-	jle	.L7	#,
-# main.c:51:     for(i=0;i<640*20;i++){
-	movl	$0, -28(%rbp)	#, i
-# main.c:51:     for(i=0;i<640*20;i++){
-	jmp	.L8	#
-.L9:
-# main.c:52:         *((char*)addr+0)=(char)0xff;
-	movq	-24(%rbp), %rax	# addr, tmp122
-	movb	$-1, (%rax)	#, MEM[(char *)addr_21]
-# main.c:53:         *((char*)addr+1)=(char)0xff;
-	movq	-24(%rbp), %rax	# addr, tmp123
-	addq	$1, %rax	#, _15
-# main.c:53:         *((char*)addr+1)=(char)0xff;
-	movb	$-1, (%rax)	#, *_15
-# main.c:54:         *((char*)addr+2)=(char)0xff;
-	movq	-24(%rbp), %rax	# addr, tmp124
-	addq	$2, %rax	#, _16
-# main.c:54:         *((char*)addr+2)=(char)0xff;
-	movb	$-1, (%rax)	#, *_16
-# main.c:55:         *((char*)addr+3)=(char)0x00;
-	movq	-24(%rbp), %rax	# addr, tmp125
-	addq	$3, %rax	#, _17
-# main.c:55:         *((char*)addr+3)=(char)0x00;
-	movb	$0, (%rax)	#, *_17
-# main.c:56:         addr=addr+1;
-	addq	$4, -24(%rbp)	#, addr
-# main.c:51:     for(i=0;i<640*20;i++){
-	addl	$1, -28(%rbp)	#, i
-.L8:
-# main.c:51:     for(i=0;i<640*20;i++){
-	cmpl	$12799, -28(%rbp)	#, i
-	jle	.L9	#,
-# main.c:60:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
-	movabsq	$.LC0@GOTOFF, %rax	#, tmp127
-	leaq	(%rcx,%rax), %rax	#, tmp126
-	movq	%rax, %rdx	# tmp126,
+	movabsq	$Pos@GOTOFF, %rdx	#, tmp97
+	movq	%rax, 32(%rbx,%rdx)	# _5, Pos.FB_length
+# main.c:59:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
+	movabsq	$.LC0@GOTOFF, %rax	#, tmp99
+	leaq	(%rbx,%rax), %rax	#, tmp98
+	movq	%rax, %rdx	# tmp98,
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
-	movq	%rcx, %r15	# tmp82,
+	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %r8	#, tmp128
-	addq	%rcx, %r8	# tmp82, tmp128
-	call	*%r8	# tmp128
-.L10:
-# main.c:61:     while (1)
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp100
+	addq	%rbx, %rcx	# tmp82, tmp100
+	call	*%rcx	# tmp100
+# main.c:60:     color_printk(YELLOW,BLACK,"hello,User\n");
+	movabsq	$.LC1@GOTOFF, %rax	#, tmp102
+	leaq	(%rbx,%rax), %rax	#, tmp101
+	movq	%rax, %rdx	# tmp101,
+	movl	$0, %esi	#,
+	movl	$16776960, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp103
+	addq	%rbx, %rcx	# tmp82, tmp103
+	call	*%rcx	# tmp103
+# main.c:61:     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
+	movabsq	$.LC2@GOTOFF, %rax	#, tmp105
+	leaq	(%rbx,%rax), %rax	#, tmp104
+	movq	%rax, %rdx	# tmp104,
+	movl	$0, %esi	#,
+	movl	$16776960, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp106
+	addq	%rbx, %rcx	# tmp82, tmp106
+	call	*%rcx	# tmp106
+# main.c:62:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
+	movabsq	$.LC3@GOTOFF, %rax	#, tmp108
+	leaq	(%rbx,%rax), %rax	#, tmp107
+	movq	%rax, %rdx	# tmp107,
+	movl	$0, %esi	#,
+	movl	$16776960, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp109
+	addq	%rbx, %rcx	# tmp82, tmp109
+	call	*%rcx	# tmp109
+# main.c:64:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
+	movabsq	$.LC4@GOTOFF, %rax	#, tmp111
+	leaq	(%rbx,%rax), %rax	#, tmp110
+	movq	%rax, %rdx	# tmp110,
+	movl	$0, %esi	#,
+	movl	$16776960, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp112
+	addq	%rbx, %rcx	# tmp82, tmp112
+	call	*%rcx	# tmp112
+.L2:
+# main.c:65:     while (1)
 	nop	
-	jmp	.L10	#
+	jmp	.L2	#
 	.cfi_endproc
 .LFE34:
 	.size	Start_Kernel, .-Start_Kernel
