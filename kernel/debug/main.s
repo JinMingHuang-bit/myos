@@ -2,7 +2,7 @@
 # GNU C17 (Ubuntu 13.3.0-6ubuntu2~24.04) version 13.3.0 (x86_64-linux-gnu)
 #	compiled by GNU C version 13.3.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version isl-0.26-GMP
 
-# GGC heuristics: --param ggc-min-expand=91 --param ggc-min-heapsize=114975
+# GGC heuristics: --param ggc-min-expand=91 --param ggc-min-heapsize=114976
 # options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -O1 -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection
 	.text
 	.section	.rodata.str1.1,"aMS",@progbits,1
