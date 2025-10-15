@@ -1,7 +1,7 @@
 this software can only be compiled in linux environment because it base on gnu C and linux tools, if you want to use it in windows, please install wsl and compile it in wsl.
 
-you can change the code here in loader.asm to change the resolution
-in line :452
+you can change the code here in loader.asm to change the resolution 
+loader.asm in line :452
 ```assembly
 Label_SVGA_Mode_Info_Finish:
 
