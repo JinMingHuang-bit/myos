@@ -460,7 +460,9 @@ Label_SVGA_Mode_Info_Finish:
 	mov	ax,	4F02h
 	;
 	mov	bx,	4180h
-	;x 640, y 480
+	;mov bx, 4101h  
+	;mov bx, 4105h 
+	;x 640, y 480 graphic mode
 	;mov bx, 0101h    	
 	int 	10h
 	cmp	ax,	004Fh
