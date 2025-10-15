@@ -1,0 +1,1 @@
+cp -r /source_folder/* /destination_folder/
