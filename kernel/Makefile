@@ -50,8 +50,8 @@ main.o: main.c
 	$(AS) $(ASFLAGS) -o main.o main.s -ahls > main.lst
 
 printk.o: printk.c printk.h lib.h
-	$(CC) $(CFLAGSOs) -c printk.c -o printk.o
-	$(CC) $(CFLAGSOs) -S -fverbose-asm printk.c -o printk.s
+	$(CC) $(CFLAGSO2) -c printk.c -o printk.o
+	$(CC) $(CFLAGSO2) -S -fverbose-asm printk.c -o printk.s
 	$(OBJDUMP) -d printk.o > printk.asm
 	$(AS) $(ASFLAGS) -o printk.o printk.s -ahls > printk.lst
 
