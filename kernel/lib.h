@@ -47,31 +47,31 @@ struct List
     struct List *prev;
 };
 
-inline void list_init(struct List *list)
+static inline void list_init(struct List *list)
 {
     list->next = list;
     list->prev = list;
 }
 
-inline void list_add_to_behind(struct List *entry,struct List *new)
+static inline void list_add_to_behind(struct List *entry,struct List *new)
 {
     new->next = entry->next;
     new->prev = entry;
     entry->next->prev = new;
     entry->next = new;
 }
-inline void list_add_to_before(struct List *entry,struct List*new ){
+static inline void list_add_to_before(struct List *entry,struct List*new ){
     new->next = entry;
     new->prev = entry->prev;
     entry->prev->next = new;
     entry->prev = new;
 }
-inline void list_del(struct List *entry){
+static inline void list_del(struct List *entry){
     entry->prev->next = entry->next;
     entry->next->prev = entry->prev;
 }
 
-inline long list_is_empty(struct List *entry){
+static inline long list_is_empty(struct List *entry){
     if (entry->next == entry && entry->prev == entry)
     {
         return 1;
@@ -80,7 +80,7 @@ inline long list_is_empty(struct List *entry){
     }
 }
 
-inline struct List *list_prev(struct List *entry){
+static inline struct List *list_prev(struct List *entry){
     if (entry->prev != NULL)
     {
         return entry->prev;
@@ -89,7 +89,7 @@ inline struct List *list_prev(struct List *entry){
     }
 }
 
-inline struct List *list_next(struct List *entry){
+static inline struct List *list_next(struct List *entry){
     if (entry->next != NULL)
     {
         return entry->next;
@@ -97,7 +97,7 @@ inline struct List *list_next(struct List *entry){
         return NULL;
     }
 }
-inline void *memcpy(void *From,void *To,long Num){
+static inline void *memcpy(void *From,void *To,long Num){
     int d0,d1,d2;
     __asm__ __volatile__ ("cld \n\t"
         "rep \n\t"
@@ -120,7 +120,7 @@ inline void *memcpy(void *From,void *To,long Num){
     );
     return To;
 }
-inline void * Cmemcpy(void *To, void *From, long Num)
+static inline void * Cmemcpy(void *To, void *From, long Num)
 {
     char *to = (char *)To;
     char *from = (char *)From;
@@ -177,7 +177,7 @@ inline void * Cmemcpy(void *To, void *From, long Num)
 //     return __res;
 // }
 
-inline int memcmp(void* FirstPart, void* SecondPart, long Count) {
+static inline int memcmp(void* FirstPart, void* SecondPart, long Count) {
     if (Count == 0) return 0;
     
     register int __res;
@@ -202,7 +202,7 @@ inline int memcmp(void* FirstPart, void* SecondPart, long Count) {
     return __res;
 }
 
-inline int Cmemcmp(void *FirstPart, void *SecondPart, long Count)
+static inline int Cmemcmp(void *FirstPart, void *SecondPart, long Count)
 {
     unsigned char *p1 = (unsigned char *)FirstPart;
     unsigned char *p2 = (unsigned char *)SecondPart;
@@ -221,7 +221,7 @@ inline int Cmemcmp(void *FirstPart, void *SecondPart, long Count)
     return 0;
 }
 
-inline void * memset(void *Address,unsigned char C,long Count){
+static inline void * memset(void *Address,unsigned char C,long Count){
     int d0,d1;
     //将单字节值复制到64位值的每个字节中
     unsigned long tmp=C*0x0101010101010101UL;
@@ -246,7 +246,7 @@ inline void * memset(void *Address,unsigned char C,long Count){
     );
     return Address;
 }
-inline void * Cmemset(void *Address, unsigned char C, long Count)
+static inline void * Cmemset(void *Address, unsigned char C, long Count)
 {
     unsigned char *ptr = (unsigned char *)Address;
     unsigned long pattern = C;
@@ -292,7 +292,7 @@ inline void * Cmemset(void *Address, unsigned char C, long Count)
     
     return Address;
 }
-inline char * strcpy(char * Dest,char * Src){
+static inline char * strcpy(char * Dest,char * Src){
     __asm__ __volatile__ (  "cld \n\t"
         "1: \n\t"
         "lodsb \n\t"
@@ -305,7 +305,7 @@ inline char * strcpy(char * Dest,char * Src){
     );
     return Dest ;
 }
-inline char * Cstrcpy(char *Dest, char *Src)
+static inline char * Cstrcpy(char *Dest, char *Src)
 {
     char *dest_ptr = Dest;
     char *src_ptr = Src;
@@ -322,7 +322,7 @@ inline char * Cstrcpy(char *Dest, char *Src)
 // lodsb作用: 从[ESI]加载一个字节到AL寄存器，并递增ESI
 // stosb 作用: 将AL寄存器的值存储到[EDI]，并递增EDI
 
-inline char * strncpy(char * Dest,char * Src,long Count){
+static inline char * strncpy(char * Dest,char * Src,long Count){
     __asm__ __volatile__( "cld \n\t"
         "1: \n\t"
         "decq %2 \n\t"
@@ -340,7 +340,7 @@ inline char * strncpy(char * Dest,char * Src,long Count){
         );
     return Dest;
 }
-inline char * Cstrncpy(char *Dest, char *Src, long Count)
+static inline char * Cstrncpy(char *Dest, char *Src, long Count)
 {
     char *dest_ptr = Dest;
     char *src_ptr = Src;
@@ -361,7 +361,7 @@ inline char * Cstrncpy(char *Dest, char *Src, long Count)
     return Dest;
 }
 
-inline  char * strcat(char * Dest,char * Src){
+static inline  char * strcat(char * Dest,char * Src){
     __asm__ __volatile__("cld \n\t"
         "repne \n\t"
         "scasb \n\t"
@@ -378,7 +378,7 @@ inline  char * strcat(char * Dest,char * Src){
     return Dest;
 }
 
-inline char * Cstrcat(char *Dest, char *Src)
+static inline char * Cstrcat(char *Dest, char *Src)
 {
     char *dest_ptr = Dest;
     
@@ -398,7 +398,7 @@ inline char * Cstrcat(char *Dest, char *Src)
     return Dest;
 }
 
-inline int strcmp(char * FirstPart,char * SecondPart)
+static inline int strcmp(char * FirstPart,char * SecondPart)
 {
     register int __res;
     __asm__ __volatile__    (   "cld    \n\t"
@@ -421,7 +421,8 @@ inline int strcmp(char * FirstPart,char * SecondPart)
                 );
     return __res;
 }
-inline int Cstrcmp(char *FirstPart, char *SecondPart)
+
+static inline int Cstrcmp(char *FirstPart, char *SecondPart)
 {
     unsigned char *p1 = (unsigned char *)FirstPart;
     unsigned char *p2 = (unsigned char *)SecondPart;
@@ -448,7 +449,7 @@ inline int Cstrcmp(char *FirstPart, char *SecondPart)
         FirstPart < SecondPart => -1
 */
 
-inline int strncmp(char * FirstPart,char * SecondPart,long Count)
+static inline int strncmp(char * FirstPart,char * SecondPart,long Count)
 {   
     register int __res;
     __asm__ __volatile__    (   "cld    \n\t"
@@ -475,7 +476,7 @@ inline int strncmp(char * FirstPart,char * SecondPart,long Count)
     return __res;
 }
 
-inline int Cstrncmp(char *FirstPart, char *SecondPart, long Count)
+static inline int Cstrncmp(char *FirstPart, char *SecondPart, long Count)
 {
     unsigned char *p1 = (unsigned char *)FirstPart;
     unsigned char *p2 = (unsigned char *)SecondPart;
@@ -506,7 +507,7 @@ inline int Cstrncmp(char *FirstPart, char *SecondPart, long Count)
 
 */
 
-inline int strlen(char * String)
+static inline int strlen(char * String)
 {
     register int __res;
     __asm__ __volatile__    (   "cld    \n\t"
@@ -535,19 +536,19 @@ static inline int Cstrlen(char *String)
 }
 
 //用于设置（置1）一个无符号长整型数中指定的位
-inline unsigned long bit_set(unsigned long *addr,unsigned long nr){
+static inline unsigned long bit_set(unsigned long *addr,unsigned long nr){
     return *addr | (1UL << nr);
 }
 //用于获取（读取）一个无符号长整型数中指定位的值。
-inline unsigned long bit_get(unsigned long *addr,unsigned long nr){
+static inline unsigned long bit_get(unsigned long *addr,unsigned long nr){
     return *addr & (1UL << nr);
 }
 //用于清除（置0）一个无符号长整型数中指定的位
-inline unsigned long bit_clean(unsigned long *addr,unsigned long nr){
+static inline unsigned long bit_clean(unsigned long *addr,unsigned long nr){
     return *addr & (~(1UL << nr));
 }
 
-inline unsigned char io_in8(unsigned short port){
+static inline unsigned char io_in8(unsigned short port){
     unsigned char ret=0;
     //mfence内存屏障指令，确保之前的I/O操作完成后才执行后续指令
     //inb 将指定端口的数据读入累加器的低8位（AL寄存器）,%0输出操作数占位符
@@ -561,7 +562,7 @@ inline unsigned char io_in8(unsigned short port){
 }
 
 //short is 16bit
-inline unsigned short io_in16(unsigned short port)
+static inline unsigned short io_in16(unsigned short port)
 {
     unsigned short ret = 0;
     __asm__ __volatile__(   "inw    %%dx,   %0  \n\t"
@@ -573,7 +574,7 @@ inline unsigned short io_in16(unsigned short port)
 }
 
 
-inline unsigned int io_in32(unsigned short port){
+static inline unsigned int io_in32(unsigned short port){
     unsigned int ret=0;
     __asm__ __volatile__("inl %%dx,%0 \n\t"
         "mfence \n\t"
@@ -585,7 +586,7 @@ inline unsigned int io_in32(unsigned short port){
 }
 
 
-inline void io_out8(unsigned short port,unsigned char value){
+static inline void io_out8(unsigned short port,unsigned char value){
     __asm__ __volatile__("outb %0 , %%dx  \n\t"
         "mfence \n\t"
         :
@@ -594,7 +595,7 @@ inline void io_out8(unsigned short port,unsigned char value){
         );
 }
 
-inline void io_out16(unsigned short port,unsigned short value){
+static inline void io_out16(unsigned short port,unsigned short value){
     __asm__ __volatile__("outw %0 , %%dx  \n\t"
         "mfence \n\t"
         :
@@ -603,7 +604,7 @@ inline void io_out16(unsigned short port,unsigned short value){
         );
 }
 
-inline void io_out32(unsigned short port,unsigned int value){
+static inline void io_out32(unsigned short port,unsigned int value){
     __asm__ __volatile__("outl %0 , %%dx  \n\t"
         "mfence \n\t"
         :

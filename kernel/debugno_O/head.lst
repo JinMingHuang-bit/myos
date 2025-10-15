@@ -1,0 +1,263 @@
+GAS LISTING head.s 			page 1
+
+
+   1              	# 0 "head.S"
+   2              	# 0 "<built-in>"
+   3              	# 0 "<command-line>"
+   4              	# 1 "/usr/include/stdc-predef.h" 1 3 4
+   1              	/* Copyright (C) 1991-2024 Free Software Foundation, Inc.
+   0              	
+   1              	//The code section (_start) is located at the low memory address. 
+   2              	//The page table structure follows the code and starts at 0x1000. 
+   3              	//The data structures such as GDT, IDT and TSS are located at higher addresses (in the .data sectio
+   4              	
+   5              	
+   6              	.section .text
+   7              	.globl _start
+   8              	
+   9              	_start:
+  10              	
+  11 0000 66B81000 		mov	$0x10,	%ax
+  12 0004 8ED8     		mov	%ax,	%ds
+  13 0006 8EC0     		mov	%ax,	%es
+  14 0008 8EE0     		mov	%ax,	%fs
+  15 000a 8ED0     		mov	%ax,	%ss
+  16 000c BC007E00 		mov	$0x7E00,	%esp
+  16      00
+  17              	
+  18              	//=======	load GDTR
+  19              	
+  20 0011 0F011500 		lgdt	GDT_POINTER(%rip)
+  20      000000
+  21              	
+  22              	//=======	load	IDTR
+  23              	
+  24 0018 0F011D00 		lidt	IDT_POINTER(%rip)
+  24      000000
+  25              	
+  26 001f 66B81000 		mov	$0x10,	%ax
+  27 0023 8ED8     		mov	%ax,	%ds
+  28 0025 8EC0     		mov	%ax,	%es
+  29 0027 8EE0     		mov	%ax,	%fs
+  30 0029 8EE8     		mov	%ax,	%gs
+  31 002b 8ED0     		mov	%ax,	%ss
+  32              	
+  33 002d 48C7C400 		movq	$0x7E00,	%rsp
+  33      7E0000
+  34              	
+  35              	//=======	load	cr3
+  36              	
+  37 0034 48C7C000 		movq	$0x101000,	%rax
+  37      101000
+  38 003b 0F22D8   		movq	%rax,		%cr3
+  39 003e 488B0505 		movq	switch_seg(%rip),	%rax
+  39      000000
+  40 0045 6A08     		pushq	$0x08
+  41 0047 50       		pushq	%rax
+  42 0048 48CB     		lretq
+  43              	
+  44              	//=======	64-bit mode code
+  45              	
+GAS LISTING head.s 			page 2
+
+
+  46              	switch_seg:
+  47 004a 00000000 		.quad	entry64
+  47      00000000 
+  48              	
+  49              	entry64:
+  50 0052 48C7C010 		movq	$0x10,	%rax
+  50      000000
+  51 0059 8ED8     		movq	%rax,	%ds
+  52 005b 8EC0     		movq	%rax,	%es
+  53 005d 8EE8     		movq	%rax,	%gs
+  54 005f 8ED0     		movq	%rax,	%ss
+  55 0061 48BC007E 		movq	$0xffff800000007E00,	%rsp		/* rsp address */
+  55      00000080 
+  55      FFFF
+  56              	
+  57 006b 488B0505 		movq	go_to_kernel(%rip),	%rax		/* movq address */
+  57      000000
+  58 0072 6A08     		pushq	$0x08
+  59 0074 50       		pushq	%rax
+  60 0075 48CB     		lretq
+  61              	
+  62              	go_to_kernel:
+  63 0077 00000000 		.quad	Start_Kernel
+  63      00000000 
+  64              	
+  65              	//=======	init page
+  66 007f 90       	.align 8
+  67              	
+  68 0080 00000000 	.org	0x1000
+  68      00000000 
+  68      00000000 
+  68      00000000 
+  68      00000000 
+  69              	
+  70              	__PML4E:
+  71              	
+  72 1000 07201000 		.quad	0x102007
+  72      00000000 
+  73 1008 00000000 		.fill	255,8,0
+  73      00000000 
+  73      00000000 
+  73      00000000 
+  73      00000000 
+  74 1800 07201000 		.quad	0x102007
+  74      00000000 
+  75 1808 00000000 		.fill	255,8,0
+  75      00000000 
+  75      00000000 
+  75      00000000 
+  75      00000000 
+  76              	
+  77              	.org	0x2000
+  78              	
+  79              	__PDPTE:
+  80              		
+  81 2000 03301000 		.quad	0x103003
+  81      00000000 
+GAS LISTING head.s 			page 3
+
+
+  82 2008 00000000 		.fill	511,8,0
+  82      00000000 
+  82      00000000 
+  82      00000000 
+  82      00000000 
+  83              	
+  84              	.org	0x3000
+  85              	
+  86              	__PDE:
+  87              	
+  88 3000 83000000 		.quad	0x000083	
+  88      00000000 
+  89 3008 83002000 		.quad	0x200083
+  89      00000000 
+  90 3010 83004000 		.quad	0x400083
+  90      00000000 
+  91 3018 83006000 		.quad	0x600083
+  91      00000000 
+  92 3020 83008000 		.quad	0x800083
+  92      00000000 
+  93 3028 830000E0 		.quad	0xe0000083		/*0x a00000*/
+  93      00000000 
+  94 3030 830020E0 		.quad	0xe0200083
+  94      00000000 
+  95 3038 830040E0 		.quad	0xe0400083
+  95      00000000 
+  96 3040 830060E0 		.quad	0xe0600083		/*0x1000000*/
+  96      00000000 
+  97 3048 830080E0 		.quad	0xe0800083
+  97      00000000 
+  98 3050 8300A0E0 		.quad	0xe0a00083
+  98      00000000 
+  99 3058 8300C0E0 		.quad	0xe0c00083
+  99      00000000 
+ 100 3060 8300E0E0 		.quad	0xe0e00083
+ 100      00000000 
+ 101 3068 00000000 		.fill	499,8,0
+ 101      00000000 
+ 101      00000000 
+ 101      00000000 
+ 101      00000000 
+ 102              	
+ 103              	//=======	GDT_Table
+ 104              	
+ 105              	.section .data
+ 106              	
+ 107              	.globl GDT_Table
+ 108              	
+ 109              	GDT_Table:
+ 110 0000 00000000 		.quad	0x0000000000000000			/*0	NULL descriptor		       	00*/
+ 110      00000000 
+ 111 0008 00000000 		.quad	0x0020980000000000			/*1	KERNEL	Code	64-bit	Segment	08*/
+ 111      00982000 
+ 112 0010 00000000 		.quad	0x0000920000000000			/*2	KERNEL	Data	64-bit	Segment	10*/
+ 112      00920000 
+ 113 0018 00000000 		.quad	0x0020f80000000000			/*3	USER	Code	64-bit	Segment	18*/
+ 113      00F82000 
+GAS LISTING head.s 			page 4
+
+
+ 114 0020 00000000 		.quad	0x0000f20000000000			/*4	USER	Data	64-bit	Segment	20*/
+ 114      00F20000 
+ 115 0028 FFFF0000 		.quad	0x00cf9a000000ffff			/*5	KERNEL	Code	32-bit	Segment	28*/
+ 115      009ACF00 
+ 116 0030 FFFF0000 		.quad	0x00cf92000000ffff			/*6	KERNEL	Data	32-bit	Segment	30*/
+ 116      0092CF00 
+ 117 0038 00000000 		.fill	10,8,0					/*8 ~ 9	TSS (jmp one segment <7>) in long-mode 128-bit 40*/
+ 117      00000000 
+ 117      00000000 
+ 117      00000000 
+ 117      00000000 
+ 118              	GDT_END:
+ 119              	
+ 120              	GDT_POINTER:
+ 121 0088 8700     	GDT_LIMIT:	.word	GDT_END - GDT_Table - 1
+ 122 008a 00000000 	GDT_BASE:	.quad	GDT_Table
+ 122      00000000 
+ 123              	
+ 124              	//=======	IDT_Table
+ 125              	
+ 126              	.globl IDT_Table
+ 127              	
+ 128              	IDT_Table:
+ 129 0092 00000000 		.fill  512,8,0
+ 129      00000000 
+ 129      00000000 
+ 129      00000000 
+ 129      00000000 
+ 130              	IDT_END:
+ 131              	
+ 132              	IDT_POINTER:
+ 133 1092 FF0F     	IDT_LIMIT:	.word	IDT_END - IDT_Table - 1
+ 134 1094 00000000 	IDT_BASE:	.quad	IDT_Table
+ 134      00000000 
+ 135              	
+ 136              	//=======	TSS64_Table
+ 137              	
+ 138              	.globl	TSS64_Table
+ 139              	
+ 140              	TSS64_Table:
+ 141 109c 00000000 		.fill  13,8,0
+ 141      00000000 
+ 141      00000000 
+ 141      00000000 
+ 141      00000000 
+ 142              	TSS64_END:
+ 143              	
+ 144              	TSS64_POINTER:
+ 145 1104 6700     	TSS64_LIMIT:	.word	TSS64_END - TSS64_Table - 1
+ 146 1106 00000000 	TSS64_BASE:	.quad	TSS64_Table
+ 146      00000000 
+GAS LISTING head.s 			page 5
+
+
+DEFINED SYMBOLS
+              head.S:9      .text:0000000000000000 _start
+              head.S:120    .data:0000000000000088 GDT_POINTER
+              head.S:132    .data:0000000000001092 IDT_POINTER
+              head.S:46     .text:000000000000004a switch_seg
+              head.S:49     .text:0000000000000052 entry64
+              head.S:62     .text:0000000000000077 go_to_kernel
+              head.S:70     .text:0000000000001000 __PML4E
+              head.S:79     .text:0000000000002000 __PDPTE
+              head.S:86     .text:0000000000003000 __PDE
+              head.S:109    .data:0000000000000000 GDT_Table
+              head.S:118    .data:0000000000000088 GDT_END
+              head.S:121    .data:0000000000000088 GDT_LIMIT
+              head.S:122    .data:000000000000008a GDT_BASE
+              head.S:128    .data:0000000000000092 IDT_Table
+              head.S:130    .data:0000000000001092 IDT_END
+              head.S:133    .data:0000000000001092 IDT_LIMIT
+              head.S:134    .data:0000000000001094 IDT_BASE
+              head.S:140    .data:000000000000109c TSS64_Table
+              head.S:142    .data:0000000000001104 TSS64_END
+              head.S:144    .data:0000000000001104 TSS64_POINTER
+              head.S:145    .data:0000000000001104 TSS64_LIMIT
+              head.S:146    .data:0000000000001106 TSS64_BASE
+
+UNDEFINED SYMBOLS
+Start_Kernel
