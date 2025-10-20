@@ -11,10 +11,17 @@ The kernel is typically mapped to the Higher Half.
 #include "printk.h"
 void Start_Kernel(void)
 {
-    
+
     //the loader.asm now using 640×480;
     // if there is a problem,try 640*20,otherwise use 1440*20
     //(1440*900)
+    // 启用SSE异常处理
+    unsigned long cr4;
+    asm volatile("mov %%cr4, %0" : "=r"(cr4));
+    cr4 |= (1 << 9);  // 设置OSXMMEXCPT位
+    cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
+    asm volatile("mov %0, %%cr4" : : "r"(cr4));
+    
     int *addr=(int *)0xffff800000a00000;
     int i;
     Pos.XResolution=1440;

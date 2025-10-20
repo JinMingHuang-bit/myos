@@ -34,69 +34,83 @@ Start_Kernel:
 	leaq	.L3(%rip), %r15	#, tmp82
 	movabsq	$_GLOBAL_OFFSET_TABLE_-.L3, %r11	#,
 	addq	%r11, %r15	#, tmp82
-# main.c:19:     Pos.XResolution=1440;
-	movabsq	$Pos@GOTOFF, %rax	#, tmp83
+# main.c:20:     asm volatile("mov %%cr4, %0" : "=r"(cr4));
+#APP
+# 20 "main.c" 1
+	mov %cr4, %rax	# cr4
+# 0 "" 2
+# main.c:22:     cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
+#NO_APP
+	orb	$6, %ah	#, cr4
+# main.c:23:     asm volatile("mov %0, %%cr4" : : "r"(cr4));
+#APP
+# 23 "main.c" 1
+	mov %rax, %cr4	# cr4
+# 0 "" 2
+# main.c:27:     Pos.XResolution=1440;
+#NO_APP
+	movabsq	$Pos@GOTOFF, %rax	#, tmp87
 	movl	$1440, (%r15,%rax)	#, Pos.XResolution
-# main.c:20:     Pos.YResolution=900;
+# main.c:28:     Pos.YResolution=900;
 	movl	$900, 4(%r15,%rax)	#, Pos.YResolution
-# main.c:21:     Pos.XPosition=0;
+# main.c:29:     Pos.XPosition=0;
 	movl	$0, 8(%r15,%rax)	#, Pos.XPosition
-# main.c:22:     Pos.YPosition=0;
+# main.c:30:     Pos.YPosition=0;
 	movl	$0, 12(%r15,%rax)	#, Pos.YPosition
-# main.c:23:     Pos.XCharSize=8;
+# main.c:31:     Pos.XCharSize=8;
 	movl	$8, 16(%r15,%rax)	#, Pos.XCharSize
-# main.c:24:     Pos.YCharSize=16;
+# main.c:32:     Pos.YCharSize=16;
 	movl	$16, 20(%r15,%rax)	#, Pos.YCharSize
-# main.c:25:     Pos.FB_addr=(int *)0xffff800000a00000;
-	movabsq	$-140737477869568, %rsi	#, tmp108
-	movq	%rsi, 24(%rax,%r15)	# tmp108, Pos.FB_addr
-# main.c:26:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+# main.c:33:     Pos.FB_addr=(int *)0xffff800000a00000;
+	movabsq	$-140737477869568, %rsi	#, tmp112
+	movq	%rsi, 24(%rax,%r15)	# tmp112, Pos.FB_addr
+# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
 	movq	$5184000, 32(%r15,%rax)	#, Pos.FB_length
-# main.c:59:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
-	movabsq	$.LC0@GOTOFF, %rax	#, tmp93
-	leaq	(%r15,%rax), %rdx	#, tmp92
+# main.c:67:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
+	movabsq	$.LC0@GOTOFF, %rax	#, tmp97
+	leaq	(%r15,%rax), %rdx	#, tmp96
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp94
-	addq	%r15, %rcx	# tmp82, tmp94
-	call	*%rcx	# tmp94
-# main.c:60:     color_printk(YELLOW,BLACK,"hello,User\n");
-	movabsq	$.LC1@GOTOFF, %rax	#, tmp96
-	leaq	(%r15,%rax), %rdx	#, tmp95
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp98
+	addq	%r15, %rcx	# tmp82, tmp98
+	call	*%rcx	# tmp98
+# main.c:68:     color_printk(YELLOW,BLACK,"hello,User\n");
+	movabsq	$.LC1@GOTOFF, %rax	#, tmp100
+	leaq	(%r15,%rax), %rdx	#, tmp99
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp97
-	addq	%r15, %rcx	# tmp82, tmp97
-	call	*%rcx	# tmp97
-# main.c:61:     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
-	movabsq	$.LC2@GOTOFF, %rax	#, tmp99
-	leaq	(%r15,%rax), %rdx	#, tmp98
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp101
+	addq	%r15, %rcx	# tmp82, tmp101
+	call	*%rcx	# tmp101
+# main.c:69:     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
+	movabsq	$.LC2@GOTOFF, %rax	#, tmp103
+	leaq	(%r15,%rax), %rdx	#, tmp102
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp100
-	addq	%r15, %rcx	# tmp82, tmp100
-	call	*%rcx	# tmp100
-# main.c:62:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
-	movabsq	$.LC3@GOTOFF, %rax	#, tmp102
-	leaq	(%r15,%rax), %rdx	#, tmp101
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp104
+	addq	%r15, %rcx	# tmp82, tmp104
+	call	*%rcx	# tmp104
+# main.c:70:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
+	movabsq	$.LC3@GOTOFF, %rax	#, tmp106
+	leaq	(%r15,%rax), %rdx	#, tmp105
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp103
-	addq	%r15, %rcx	# tmp82, tmp103
-	call	*%rcx	# tmp103
-# main.c:64:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
-	movabsq	$.LC4@GOTOFF, %rax	#, tmp105
-	leaq	(%r15,%rax), %rdx	#, tmp104
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp107
+	addq	%r15, %rcx	# tmp82, tmp107
+	call	*%rcx	# tmp107
+# main.c:72:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
+	movabsq	$.LC4@GOTOFF, %rax	#, tmp109
+	leaq	(%r15,%rax), %rdx	#, tmp108
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp106
-	addq	%r15, %rcx	# tmp82, tmp106
-	call	*%rcx	# tmp106
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp110
+	addq	%r15, %rcx	# tmp82, tmp110
+	call	*%rcx	# tmp110
 .L2:
 	jmp	.L2	#
 	.cfi_endproc
