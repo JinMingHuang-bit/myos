@@ -44,8 +44,8 @@ head.o: head.S
 	$(OBJDUMP) -d head.o > head.asm
 
 main.o: main.c
-	$(CC) $(CFLAGSO1) -c main.c -o main.o
-	$(CC) $(CFLAGSO1) -S -fverbose-asm main.c -o main.s
+	$(CC) $(CFLAGSO2) -c main.c -o main.o
+	$(CC) $(CFLAGSO2) -S -fverbose-asm main.c -o main.s
 	$(OBJDUMP) -d main.o > main.asm
 	$(AS) $(ASFLAGS) -o main.o main.s -ahls > main.lst
 
