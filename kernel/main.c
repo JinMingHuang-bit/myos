@@ -11,6 +11,7 @@ The kernel is typically mapped to the Higher Half.
 #include "printk.h"
 void Start_Kernel(void)
 {
+    
     //the loader.asm now using 640×480;
     // if there is a problem,try 640*20,otherwise use 1440*20
     //(1440*900)

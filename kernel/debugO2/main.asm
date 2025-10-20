@@ -25,6 +25,9 @@ Disassembly of section .text:
   4a:	4c 01 fb             	add    %r15,%rbx
   4d:	48 83 ec 08          	sub    $0x8,%rsp
   51:	66 41 0f 6f 04 17    	movdqa (%r15,%rdx,1),%xmm0
+  /*00049935377e[CPU0  ] interrupt(long mode): gate descriptor is not valid sys seg
+   00049935377e[CPU0  ] interrupt(long mode): gate descriptor is not valid sys seg
+   00049935377e[CPU0  ] interrupt(long mode): gate descriptor is not valid sys seg*/
   57:	4a 89 4c 38 18       	mov    %rcx,0x18(%rax,%r15,1)
   5c:	48 ba 00 00 00 00 00 	movabs $0x0,%rdx
   63:	00 00 00 

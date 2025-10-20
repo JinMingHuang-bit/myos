@@ -557,6 +557,7 @@ GO_TO_TMP_Protect:
 	mov	eax,	cr0
 	bts	eax,	0
 	bts	eax,	31
+	;0x10430
 	mov	cr0,	eax
 	;0x10433
 	jmp	SelectorCode64:OffsetOfKernelFile

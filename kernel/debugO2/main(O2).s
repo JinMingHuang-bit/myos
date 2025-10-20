@@ -54,6 +54,7 @@ Start_Kernel:
 	subq	$8, %rsp	#,
 	.cfi_def_cfa_offset 32
 # main.c:19:     Pos.XResolution=1440;
+	#an error happen here
 	movdqa	(%r15,%rdx), %xmm0	#, tmp108
 # main.c:25:     Pos.FB_addr=(int *)0xffff800000a00000;
 	movq	%rcx, 24(%rax,%r15)	# tmp109, Pos.FB_addr
