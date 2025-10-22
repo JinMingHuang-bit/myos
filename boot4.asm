@@ -135,7 +135,7 @@ Label_No_LoaderBin:
 	mov	ax,	1301h
 	mov	bx,	000ch
 	mov	dx,	0100h
-	mov	cx,	21
+	mov	cx,	47
 	push	ax
 	mov	ax,	ds
 	mov	es,	ax
@@ -267,7 +267,7 @@ Odd			db	0
 ;=======	display messages
 
 StartBootMessage:	db	"hello myos"
-NoLoaderMessage:	db	"ERROR:No LOADER Found"
+NoLoaderMessage:	db	"ERROR:No LOADER Found,please contact the author"
 LoaderFileName:		db	"LOADER  BIN",0
 
 ;=======	fill zero until whole sector

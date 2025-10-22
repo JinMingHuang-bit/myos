@@ -151,7 +151,7 @@ Label_No_LoaderBin:
 	mov	ax,	1301h
 	mov	bx,	008Ch
 	mov	dx,	0300h		;row 3
-	mov	cx,	21
+	mov	cx,	47
 	push	ax
 	mov	ax,	ds
 	mov	es,	ax
@@ -726,7 +726,7 @@ DisplayPosition		dd	0
 ;=======	display messages
 
 StartLoaderMessage:	db	"Start Loader"
-NoLoaderMessage:	db	"ERROR:No KERNEL Found"
+NoLoaderMessage:	db	"ERROR:No KERNEL Found,please contact the author"
 KernelFileName:		db	"KERNEL  BIN",0
 StartGetMemStructMessage:	db	"Start Get Memory Struct (address,size,type)."
 GetMemStructErrMessage:	db	"Get Memory Struct ERROR"
