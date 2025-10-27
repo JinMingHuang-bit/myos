@@ -1,14 +1,20 @@
 
 	org	0x7c00	
-
+; Stack base address definition:
 BaseOfStack	equ	0x7c00
-
+; Loader memory location definition:
 BaseOfLoader	equ	0x1000
 OffsetOfLoader	equ	0x00
-
+; FAT12 Root Area Size:
+; The root directory occupies 14 sectors with 32 bytes per entry, for a total of 14*512/32=224 entries
 RootDirSectors	equ	14
+; Root start sector number:
+; The root directory area in FAT12 filesystems starts at sector 19 (zero-based).
 SectorNumOfRootDirStart	equ	19
+; FAT1 start sector number:
+; The first FAT table of the FAT12 filesystem starts at sector 1, immediately following the boot sector
 SectorNumOfFAT1Start	equ	1
+; Conversion base value from cluster number to physical sector:
 SectorBalance	equ	17	
 
 	jmp	short Label_Start
@@ -190,10 +196,12 @@ Label_File_Loaded:
 ;=======	read one sector from floppy
 
 Func_ReadOneSector:
-	
+	;A Stack Frame is created to save bp and adjust esp to reserve space for local variables
 	push	bp
 	mov	bp,	sp
+	;Allocate 2 bytes on the stack (for temporary variables [bp-2])
 	sub	esp,	2
+	;Calculate CHS parameters (cylinder, head, sector)
 	mov	byte	[bp - 2],	cl
 	push	bx
 	mov	bl,	[BPB_SecPerTrk]
@@ -201,12 +209,18 @@ Func_ReadOneSector:
 	inc	ah
 	mov	cl,	ah
 	mov	dh,	al
+	;Since cylinder number = track number / 2 (because BPB_NumHeads=2), shr al, 1 implements division directly
 	shr	al,	1
 	mov	ch,	al
 	and	dh,	1
 	pop	bx
+	;Setting the drive letter
 	mov	dl,	[BS_DrvNum]
 Label_Go_On_Reading:
+;Call the function number 02h (read sector) of BIOS INT 13h
+;INT 13h parameter:
+;ah = 02h: Read the sector.
+;al: The number of sectors to be read (specified by [bp-2])
 	mov	ah,	2
 	mov	al,	byte	[bp - 2]
 	int	13h
@@ -242,6 +256,7 @@ Label_Even:
 	push	dx
 	mov	bx,	8000h
 	add	ax,	SectorNumOfFAT1Start
+	  ;Set the number of sectors read to 2 (FAT entries may span sectors, so 2 sectors must be read consecutively to ensure coverage)
 	mov	cl,	2
 	call	Func_ReadOneSector
 	

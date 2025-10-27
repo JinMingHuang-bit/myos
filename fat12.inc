@@ -3,7 +3,7 @@ SectorNumOfRootDirStart	equ	19
 SectorNumOfFAT1Start	equ	1
 SectorBalance	equ	17	
 
-	BS_OEMName	db	'MINEboot'
+	BS_OEMName	db	'myosboot'
 	BPB_BytesPerSec	dw	512
 	BPB_SecPerClus	db	1
 	BPB_RsvdSecCnt	dw	1
