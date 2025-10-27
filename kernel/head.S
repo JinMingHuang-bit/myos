@@ -94,10 +94,10 @@ setup_IDT:
 	leaq    IDT_Table(%rip),%rdi
 	movq    $256,%rcx
 
-//将中断描述符（由RAX和RDX组成，共128位）填充到IDT（中断描述符表）中
+//将中断描述符(由RAX和RDX组成，共128)填充到IDT(中断描述符表)中
 rp_sidt:
 	movq    %rax,(%rdi)
-	//8(%rdi)：这是一个内存寻址表达式，表示以 %rdi 寄存器中存储的地址为基址，然后加上8字节的偏移量。
+//8(%rdi)：这是一个内存寻址表达式，表示以 %rdi 寄存器中存储的地址为基址，然后加上8字节的偏移量。
 	movq    %rdx,8(%rdi)
 	addq    $0x10,%rdi
 	dec 	%rcx
