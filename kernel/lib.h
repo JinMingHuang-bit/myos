@@ -449,6 +449,7 @@ static inline int Cstrcmp(char *FirstPart, char *SecondPart)
         FirstPart < SecondPart => -1
 */
 
+//same as linux code
 static inline int strncmp(char * FirstPart,char * SecondPart,long Count)
 {   
     register int __res;

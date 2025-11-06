@@ -66,11 +66,6 @@ entry64:
 	movq	%rax,	%ss
 	movq	$0xffff800000007E00,	%rsp		/* rsp address */
 
-	movq	go_to_kernel(%rip),	%rax		/* movq address */
-	pushq	$0x08
-	pushq	%rax
-	lretq
-
 setup_IDT:
     leaq ignore_int(%rip),%rdx
 	movq	$(0x08 << 16),%rax
@@ -109,9 +104,9 @@ setup_TSS64:
 	xorq	%rcx,%rcx
 	movq    $0x89,%rax
 	shlq	$40,%rax
-	movl    $edx,%ecx
+	movl    %edx,%ecx
 	shrl	$24,%ecx
-	shrlq   $56,%rcx
+	shlq    $56,%rcx
 	addq	%rcx,%rax
 	xorq	%rcx,%rcx
 	movl    %edx,%ecx
@@ -123,6 +118,15 @@ setup_TSS64:
 	movq    %rax,64(%rdi)
 	shrq	$32,%rdx
 	movq    %rdx,72(%rdi)
+/*
+	0x40 = 0100 0000b
+
+索引: 100b = 8 (GDT第8项)
+
+TI: 0 (使用GDT)
+
+RPL: 00 (特权级0)
+*/
 	mov     $0x40,%ax
 	ltr     %ax
 	movq    go_to_kernel(%rip),%rax
@@ -151,7 +155,6 @@ ignore_int:
 	pushq %r13
 	pushq %r14
 	pushq %r15
-
 	movq	%es,	%rax
 	pushq	%rax
 	movq	%ds,	%rax

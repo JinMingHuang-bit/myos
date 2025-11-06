@@ -11,6 +11,7 @@ MV = mv
 DEBUG_DIR = debug
 
 # 编译选项
+CFLAGS= -mcmodel=large -fno-builtin -m64 -fno-stack-protector 
 CFLAGSO1= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -O1
 CFLAGSO2= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -O2
 CFLAGSO3= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -O3
@@ -44,14 +45,14 @@ head.o: head.S
 	$(OBJDUMP) -d head.o > head.asm
 
 main.o: main.c
-	$(CC) $(CFLAGSOf) -c main.c -o main.o
-	$(CC) $(CFLAGSOf) -S -fverbose-asm main.c -o main.s
+	$(CC) $(CFLAGS) -c main.c -o main.o
+	$(CC) $(CFLAGS) -S -fverbose-asm main.c -o main.s
 	$(OBJDUMP) -d main.o > main.asm
 	$(AS) $(ASFLAGS) -o main.o main.s -ahls > main.lst
 
 printk.o: printk.c printk.h lib.h
-	$(CC) $(CFLAGSOf) -c printk.c -o printk.o
-	$(CC) $(CFLAGSOf) -S -fverbose-asm printk.c -o printk.s
+	$(CC) $(CFLAGS) -c printk.c -o printk.o
+	$(CC) $(CFLAGS) -S -fverbose-asm printk.c -o printk.s
 	$(OBJDUMP) -d printk.o > printk.asm
 	$(AS) $(ASFLAGS) -o printk.o printk.s -ahls > printk.lst
 
