@@ -16,12 +16,9 @@
 	.string	"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n"
 	.align 8
 .LC5:
-	.string	"I am the king of the world, the creator of the universe, and the destroyer of all evil.\n"
-	.align 8
-.LC6:
 	.string	"I am the royal daughter who has broken the law!\n"
 	.align 8
-.LC7:
+.LC6:
 	.string	"Hmm,there is still a problem here?"
 	.text
 	.p2align 4
@@ -43,84 +40,78 @@ Start_Kernel:
 	addq	%r11, %r15	#, tmp82
 	subq	$8, %rsp	#,
 	.cfi_def_cfa_offset 32
-# main.c:19:     asm volatile("mov %%cr4, %0" : "=r"(cr4));
+# main.c:20:     asm volatile("mov %%cr4, %0" : "=r"(cr4));
 #APP
-# 19 "main.c" 1
+# 20 "main.c" 1
 	mov %cr4, %rax	# cr4
 # 0 "" 2
-# main.c:21:     cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
+# main.c:22:     cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
 #NO_APP
 	orb	$6, %ah	#, cr4
-# main.c:22:     asm volatile("mov %0, %%cr4" : : "r"(cr4));
+# main.c:23:     asm volatile("mov %0, %%cr4" : : "r"(cr4));
 #APP
-# 22 "main.c" 1
+# 23 "main.c" 1
 	mov %rax, %cr4	# cr4
 # 0 "" 2
-# main.c:25:     Pos.XResolution=1440;
+# main.c:27:     Pos.XResolution=1440;
 #NO_APP
 	movabsq	$.LC0@GOTOFF, %rdx	#, tmp88
-# main.c:65:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
+# main.c:67:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
 	xorl	%esi, %esi	#
-# main.c:31:     Pos.FB_addr=(int *)0xffff800000a00000;
-	movabsq	$-140737477869568, %rcx	#, tmp116
-# main.c:25:     Pos.XResolution=1440;
+# main.c:27:     Pos.XResolution=1440;
 	movabsq	$Pos@GOTOFF, %rax	#, tmp87
-	movdqa	(%r15,%rdx), %xmm0	#, tmp115
-# main.c:31:     Pos.FB_addr=(int *)0xffff800000a00000;
-	movq	%rcx, 24(%rax,%r15)	# tmp116, Pos.FB_addr
-# main.c:29:     Pos.XCharSize=8;
+# main.c:33:     Pos.FB_addr=(int *)0xffff800000a00000;
+	movabsq	$-140737477869568, %rcx	#, tmp113
+# main.c:27:     Pos.XResolution=1440;
+	movdqa	(%r15,%rdx), %xmm0	#, tmp112
+# main.c:33:     Pos.FB_addr=(int *)0xffff800000a00000;
+	movq	%rcx, 24(%rax,%r15)	# tmp113, Pos.FB_addr
+# main.c:31:     Pos.XCharSize=8;
 	movabsq	$.LC1@GOTOFF, %rdx	#, tmp91
-# main.c:65:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
+# main.c:67:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
 	movabsq	$color_printk@PLTOFF, %rbx	#, tmp98
-# main.c:29:     Pos.XCharSize=8;
+# main.c:31:     Pos.XCharSize=8;
 	movq	(%r15,%rdx), %rdx	#, tmp92
-# main.c:65:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
+# main.c:67:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
 	addq	%r15, %rbx	# tmp82, tmp98
 	movl	$16776960, %edi	#,
-# main.c:32:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
 	movq	$5184000, 32(%r15,%rax)	#, Pos.FB_length
-# main.c:25:     Pos.XResolution=1440;
-	movaps	%xmm0, (%r15,%rax)	# tmp115, MEM <vector(4) int> [(int *)&Pos]
-# main.c:29:     Pos.XCharSize=8;
+# main.c:27:     Pos.XResolution=1440;
+	movaps	%xmm0, (%r15,%rax)	# tmp112, MEM <vector(4) int> [(int *)&Pos]
+# main.c:31:     Pos.XCharSize=8;
 	movq	%rdx, 16(%r15,%rax)	# tmp92, MEM <vector(2) int> [(int *)&Pos + 16B]
-# main.c:65:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
+# main.c:67:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
 	movabsq	$.LC2@GOTOFF, %rax	#, tmp97
 	leaq	(%r15,%rax), %rdx	#, tmp96
 	xorl	%eax, %eax	#
 	call	*%rbx	# tmp98
-# main.c:66:     color_printk(YELLOW,BLACK,"hello,User\n");
+# main.c:68:     color_printk(YELLOW,BLACK,"hello,User\n");
 	xorl	%esi, %esi	#
 	movl	$16776960, %edi	#,
 	movabsq	$.LC3@GOTOFF, %rax	#, tmp100
 	leaq	(%r15,%rax), %rdx	#, tmp99
 	xorl	%eax, %eax	#
 	call	*%rbx	# tmp98
-# main.c:67:     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
+# main.c:69:     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
 	xorl	%esi, %esi	#
 	movl	$16776960, %edi	#,
 	movabsq	$.LC4@GOTOFF, %rax	#, tmp103
 	leaq	(%r15,%rax), %rdx	#, tmp102
 	xorl	%eax, %eax	#
 	call	*%rbx	# tmp98
-# main.c:69:     color_printk(YELLOW,BLACK,"I am the king of the world, the creator of the universe, and the destroyer of all evil.\n");
+# main.c:71:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
 	xorl	%esi, %esi	#
 	movl	$16776960, %edi	#,
 	movabsq	$.LC5@GOTOFF, %rax	#, tmp106
 	leaq	(%r15,%rax), %rdx	#, tmp105
 	xorl	%eax, %eax	#
 	call	*%rbx	# tmp98
-# main.c:70:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
+# main.c:73:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
 	xorl	%esi, %esi	#
 	movl	$16776960, %edi	#,
 	movabsq	$.LC6@GOTOFF, %rax	#, tmp109
 	leaq	(%r15,%rax), %rdx	#, tmp108
-	xorl	%eax, %eax	#
-	call	*%rbx	# tmp98
-# main.c:72:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
-	xorl	%esi, %esi	#
-	movl	$16776960, %edi	#,
-	movabsq	$.LC7@GOTOFF, %rax	#, tmp112
-	leaq	(%r15,%rax), %rdx	#, tmp111
 	xorl	%eax, %eax	#
 	call	*%rbx	# tmp98
 .L2:
