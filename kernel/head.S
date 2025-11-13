@@ -66,6 +66,11 @@ entry64:
 	movq	%rax,	%ss
 	movq	$0xffff800000007E00,	%rsp		/* rsp address */
 
+	// movq	go_to_kernel(%rip),	%rax		/* movq address */
+	// pushq	$0x08
+	// pushq	%rax
+	// lretq
+
 setup_IDT:
     leaq ignore_int(%rip),%rdx
 	movq	$(0x08 << 16),%rax
@@ -89,10 +94,10 @@ setup_IDT:
 	leaq    IDT_Table(%rip),%rdi
 	movq    $256,%rcx
 
-//将中断描述符(由RAX和RDX组成，共128)填充到IDT(中断描述符表)中
+//将中断描述符（由RAX和RDX组成，共128位）填充到IDT（中断描述符表）中
 rp_sidt:
 	movq    %rax,(%rdi)
-//8(%rdi)：这是一个内存寻址表达式，表示以 %rdi 寄存器中存储的地址为基址，然后加上8字节的偏移量。
+	//8(%rdi)：这是一个内存寻址表达式，表示以 %rdi 寄存器中存储的地址为基址，然后加上8字节的偏移量。
 	movq    %rdx,8(%rdi)
 	addq    $0x10,%rdi
 	dec 	%rcx
@@ -106,6 +111,7 @@ setup_TSS64:
 	shlq	$40,%rax
 	movl    %edx,%ecx
 	shrl	$24,%ecx
+	// change here
 	shlq    $56,%rcx
 	addq	%rcx,%rax
 	xorq	%rcx,%rcx
@@ -118,15 +124,6 @@ setup_TSS64:
 	movq    %rax,64(%rdi)
 	shrq	$32,%rdx
 	movq    %rdx,72(%rdi)
-/*
-	0x40 = 0100 0000b
-
-索引: 100b = 8 (GDT第8项)
-
-TI: 0 (使用GDT)
-
-RPL: 00 (特权级0)
-*/
 	mov     $0x40,%ax
 	ltr     %ax
 	movq    go_to_kernel(%rip),%rax
@@ -155,6 +152,7 @@ ignore_int:
 	pushq %r13
 	pushq %r14
 	pushq %r15
+
 	movq	%es,	%rax
 	pushq	%rax
 	movq	%ds,	%rax
