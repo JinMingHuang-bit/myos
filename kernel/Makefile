@@ -45,14 +45,14 @@ head.o: head.S
 	$(OBJDUMP) -d head.o > head.asm
 
 main.o: main.c
-	$(CC) $(CFLAGS) -c main.c -o main.o
-	$(CC) $(CFLAGS) -S -fverbose-asm main.c -o main.s
+	$(CC) $(CFLAGSOf) -c main.c -o main.o
+	$(CC) $(CFLAGSOf) -S -fverbose-asm main.c -o main.s
 	$(OBJDUMP) -d main.o > main.asm
 	$(AS) $(ASFLAGS) -o main.o main.s -ahls > main.lst
 
 printk.o: printk.c printk.h lib.h
-	$(CC) $(CFLAGS) -c printk.c -o printk.o
-	$(CC) $(CFLAGS) -S -fverbose-asm printk.c -o printk.s
+	$(CC) $(CFLAGSOf) -c printk.c -o printk.o
+	$(CC) $(CFLAGSOf) -S -fverbose-asm printk.c -o printk.s
 	$(OBJDUMP) -d printk.o > printk.asm
 	$(AS) $(ASFLAGS) -o printk.o printk.s -ahls > printk.lst
 

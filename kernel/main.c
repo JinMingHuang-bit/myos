@@ -62,10 +62,10 @@ void Start_Kernel(void)
     //     addr=addr+1;
 
     // }
-    // i=1/0;
     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
     color_printk(YELLOW,BLACK,"hello,User\n");
     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
+    i=1/0;
     color_printk(YELLOW,BLACK,"I am the king of the world, the creator of the universe, and the destroyer of all evil.\n");
     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
     // clear_screen(YELLOW,BLACK);

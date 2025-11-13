@@ -88,362 +88,355 @@ GAS LISTING head.s 			page 1
   67      00000080 
   67      FFFF
   68              	
-  69 006b 488B05B1 		movq	go_to_kernel(%rip),	%rax		/* movq address */
-  69      000000
-  70 0072 6A08     		pushq	$0x08
-  71 0074 50       		pushq	%rax
-  72 0075 48CB     		lretq
-  73              	
-  74              	setup_IDT:
-  75 0077 488D15AD 	    leaq ignore_int(%rip),%rdx
-  75      000000
-  76 007e 48C7C000 		movq	$(0x08 << 16),%rax
-  76      000800
-  77 0085 6689D0   		movw    %dx,%ax
-  78 0088 48B90000 		movq    $(0x8E00 << 32),%rcx
-  78      0000008E 
-  78      0000
-  79 0092 4801C8   		addq    %rcx,%rax
-  80 0095 89D1     		movl    %edx,%ecx
-  81              		/*
-  82              		RAX = 已包含中断门描述符的部分内容：
-  83              	低16位：函数地址的低16位
-  84              	16-31位：段选择子(0x08)
-  85              	32-47位：门属性(0x8E00)
-  86              		*/
-  87              		//提取函数地址的16-31位
-  88 0097 C1E910   		shrl    $16,%ecx
-  89              		//将地址的16-31位移到描述符的48-63位位置
-  90 009a 48C1E130 		shlq	$48,%rcx
-  91              		//将地址的16-31位合并到中断门描述符中
-  92 009e 4801C8   		addq	%rcx,%rax
-  93 00a1 48C1EA20 		shrq	$32,%rdx
+  69              	setup_IDT:
+  70 006b 488D15AD 	    leaq ignore_int(%rip),%rdx
+  70      000000
+  71 0072 48C7C000 		movq	$(0x08 << 16),%rax
+  71      000800
+  72 0079 6689D0   		movw    %dx,%ax
+  73 007c 48B90000 		movq    $(0x8E00 << 32),%rcx
+  73      0000008E 
+  73      0000
+  74 0086 4801C8   		addq    %rcx,%rax
+  75 0089 89D1     		movl    %edx,%ecx
+  76              		/*
+  77              		RAX = 已包含中断门描述符的部分内容：
+  78              	低16位：函数地址的低16位
+  79              	16-31位：段选择子(0x08)
+  80              	32-47位：门属性(0x8E00)
+  81              		*/
+  82              		//提取函数地址的16-31位
+  83 008b C1E910   		shrl    $16,%ecx
+  84              		//将地址的16-31位移到描述符的48-63位位置
+  85 008e 48C1E130 		shlq	$48,%rcx
+  86              		//将地址的16-31位合并到中断门描述符中
+  87 0092 4801C8   		addq	%rcx,%rax
+  88 0095 48C1EA20 		shrq	$32,%rdx
+  89 0099 488D3D00 		leaq    IDT_Table(%rip),%rdi
+  89      000000
+  90 00a0 48C7C100 		movq    $256,%rcx
+  90      010000
+  91              	
+  92              	//将中断描述符(由RAX和RDX组成，共128)填充到IDT(中断描述符表)中
 GAS LISTING head.s 			page 3
 
 
-  94 00a5 488D3D00 		leaq    IDT_Table(%rip),%rdi
-  94      000000
-  95 00ac 48C7C100 		movq    $256,%rcx
-  95      010000
-  96              	
-  97              	//将中断描述符(由RAX和RDX组成，共128)填充到IDT(中断描述符表)中
-  98              	rp_sidt:
-  99 00b3 488907   		movq    %rax,(%rdi)
- 100              	//8(%rdi)：这是一个内存寻址表达式，表示以 %rdi 寄存器中存储的地址为基址
- 101 00b6 48895708 		movq    %rdx,8(%rdi)
- 102 00ba 4883C710 		addq    $0x10,%rdi
- 103 00be 48FFC9   		dec 	%rcx
- 104 00c1 75F0     		jne	rp_sidt
- 105              	
- 106              	setup_TSS64:
- 107 00c3 488D1500 		leaq	TSS64_Table(%rip),%rdx
- 107      000000
- 108 00ca 4831C0   		xorq	%rax,%rax
- 109 00cd 4831C9   		xorq	%rcx,%rcx
- 110 00d0 48C7C089 		movq    $0x89,%rax
- 110      000000
- 111 00d7 48C1E028 		shlq	$40,%rax
- 112 00db 89D1     		movl    %edx,%ecx
- 113 00dd C1E918   		shrl	$24,%ecx
- 114 00e0 48C1E138 		shlq    $56,%rcx
- 115 00e4 4801C8   		addq	%rcx,%rax
- 116 00e7 4831C9   		xorq	%rcx,%rcx
- 117 00ea 89D1     		movl    %edx,%ecx
- 118 00ec 81E1FFFF 		andl    $0xffffff,%ecx
- 118      FF00
- 119 00f2 48C1E110 		shlq	$16,%rcx
- 120 00f6 4801C8   		addq	%rcx,%rax
- 121 00f9 4883C067 		addq    $103,%rax
- 122 00fd 488D3D00 		leaq	GDT_Table(%rip),%rdi
- 122      000000
- 123 0104 48894740 		movq    %rax,64(%rdi)
- 124 0108 48C1EA20 		shrq	$32,%rdx
- 125 010c 48895748 		movq    %rdx,72(%rdi)
- 126              	/*
- 127              		0x40 = 0100 0000b
- 128              	
- 129              	索引: 100b = 8 (GDT第8项)
- 130              	
- 131              	TI: 0 (使用GDT)
- 132              	
- 133              	RPL: 00 (特权级0)
- 134              	*/
- 135 0110 66B84000 		mov     $0x40,%ax
- 136 0114 0F00D8   		ltr     %ax
- 137 0117 488B0505 		movq    go_to_kernel(%rip),%rax
- 137      000000
- 138 011e 6A08     		pushq	$0x08
- 139 0120 50       		pushq	%rax
- 140 0121 48CB     		lretq
- 141              	
- 142              	go_to_kernel:
- 143 0123 00000000 		.quad	Start_Kernel
+  93              	rp_sidt:
+  94 00a7 488907   		movq    %rax,(%rdi)
+  95              	//8(%rdi)：这是一个内存寻址表达式，表示以 %rdi 寄存器中存储的地址为基址
+  96 00aa 48895708 		movq    %rdx,8(%rdi)
+  97 00ae 4883C710 		addq    $0x10,%rdi
+  98 00b2 48FFC9   		dec 	%rcx
+  99 00b5 75F0     		jne	rp_sidt
+ 100              	
+ 101              	setup_TSS64:
+ 102 00b7 488D1500 		leaq	TSS64_Table(%rip),%rdx
+ 102      000000
+ 103 00be 4831C0   		xorq	%rax,%rax
+ 104 00c1 4831C9   		xorq	%rcx,%rcx
+ 105 00c4 48C7C089 		movq    $0x89,%rax
+ 105      000000
+ 106 00cb 48C1E028 		shlq	$40,%rax
+ 107 00cf 89D1     		movl    %edx,%ecx
+ 108 00d1 C1E918   		shrl	$24,%ecx
+ 109 00d4 48C1E138 		shlq    $56,%rcx
+ 110 00d8 4801C8   		addq	%rcx,%rax
+ 111 00db 4831C9   		xorq	%rcx,%rcx
+ 112 00de 89D1     		movl    %edx,%ecx
+ 113 00e0 81E1FFFF 		andl    $0xffffff,%ecx
+ 113      FF00
+ 114 00e6 48C1E110 		shlq	$16,%rcx
+ 115 00ea 4801C8   		addq	%rcx,%rax
+ 116 00ed 4883C067 		addq    $103,%rax
+ 117 00f1 488D3D00 		leaq	GDT_Table(%rip),%rdi
+ 117      000000
+ 118 00f8 48894740 		movq    %rax,64(%rdi)
+ 119 00fc 48C1EA20 		shrq	$32,%rdx
+ 120 0100 48895748 		movq    %rdx,72(%rdi)
+ 121              	/*
+ 122              		0x40 = 0100 0000b
+ 123              	
+ 124              	索引: 100b = 8 (GDT第8项)
+ 125              	
+ 126              	TI: 0 (使用GDT)
+ 127              	
+ 128              	RPL: 00 (特权级0)
+ 129              	*/
+ 130 0104 66B84000 		mov     $0x40,%ax
+ 131 0108 0F00D8   		ltr     %ax
+ 132 010b 488B0505 		movq    go_to_kernel(%rip),%rax
+ 132      000000
+ 133 0112 6A08     		pushq	$0x08
+ 134 0114 50       		pushq	%rax
+ 135 0115 48CB     		lretq
+ 136              	
+ 137              	go_to_kernel:
+ 138 0117 00000000 		.quad	Start_Kernel
+ 138      00000000 
+ 139              	
+ 140              	ignore_int:
+ 141 011f FC       		cld
+ 142              		//清除方向标志位（Direction Flag），确保后续的操作不会因为方向标志位而�
+ 143 0120 50       		pushq %rax
 GAS LISTING head.s 			page 4
 
 
- 143      00000000 
- 144              	
- 145              	ignore_int:
- 146 012b FC       		cld
- 147              		//清除方向标志位（Direction Flag），确保后续的操作不会因为方向标志位而�
- 148 012c 50       		pushq %rax
- 149 012d 53       		pushq %rbx
- 150 012e 51       		pushq %rcx
- 151 012f 52       		pushq %rdx
- 152 0130 55       		pushq %rbp
- 153 0131 57       		pushq %rdi
- 154 0132 56       		pushq %rsi
- 155 0133 4150     		pushq %r8
- 156 0135 4151     		pushq %r9
- 157 0137 4152     		pushq %r10
- 158 0139 4153     		pushq %r11
- 159 013b 4154     		pushq %r12
- 160 013d 4155     		pushq %r13
- 161 013f 4156     		pushq %r14
- 162 0141 4157     		pushq %r15
- 163 0143 8CC0     		movq	%es,	%rax
- 164 0145 50       		pushq	%rax
- 165 0146 8CD8     		movq	%ds,	%rax
- 166 0148 50       		pushq	%rax
- 167              		//Set the new segment register value,so that it can go to kernel 
- 168 0149 48C7C010 		movq	$0x10,	%rax
- 168      000000
- 169 0150 8ED8     		movq 	%rax,	%ds
- 170 0152 8EC0     		movq	%rax,	%es
- 171              	
- 172 0154 488D0543 		leaq	int_msg(%rip),	%rax
- 172      000000
- 173 015b 50       		pushq	%rax
- 174              		//调用约定
- 175 015c 4889C2   		movq	%rax,%rdx
- 176 015f 48C7C600 		movq	$0x00000000,%rsi
- 176      000000
- 177 0166 48C7C700 		movq	$0x00ff0000,%rdi
- 177      00FF00
- 178 016d 48C7C000 		movq	$0,%rax
- 178      000000
- 179 0174 E8000000 		callq   color_printk
- 179      00
- 180              		// x86-64架构中，每个通用寄存器都是64位的，即8字节，所以在64位模式下，
- 181 0179 4883C408 		addq	$0x8,%rsp
- 182              	
- 183              	
- 184              	Loop:
- 185 017d EBFE     		jmp	Loop
- 186 017f 58       		popq	%rax
- 187 0180 8ED8     		movq	%rax,	%ds
- 188 0182 58       		popq	%rax
- 189 0183 8EC0     		movq	%rax,	%es
- 190 0185 415F     		popq    %r15
- 191 0187 415E     		popq	%r14
- 192 0189 415D     		popq	%r13
- 193 018b 415C     		popq	%r12
+ 144 0121 53       		pushq %rbx
+ 145 0122 51       		pushq %rcx
+ 146 0123 52       		pushq %rdx
+ 147 0124 55       		pushq %rbp
+ 148 0125 57       		pushq %rdi
+ 149 0126 56       		pushq %rsi
+ 150 0127 4150     		pushq %r8
+ 151 0129 4151     		pushq %r9
+ 152 012b 4152     		pushq %r10
+ 153 012d 4153     		pushq %r11
+ 154 012f 4154     		pushq %r12
+ 155 0131 4155     		pushq %r13
+ 156 0133 4156     		pushq %r14
+ 157 0135 4157     		pushq %r15
+ 158 0137 8CC0     		movq	%es,	%rax
+ 159 0139 50       		pushq	%rax
+ 160 013a 8CD8     		movq	%ds,	%rax
+ 161 013c 50       		pushq	%rax
+ 162              		//Set the new segment register value,so that it can go to kernel 
+ 163 013d 48C7C010 		movq	$0x10,	%rax
+ 163      000000
+ 164 0144 8ED8     		movq 	%rax,	%ds
+ 165 0146 8EC0     		movq	%rax,	%es
+ 166              	
+ 167 0148 488D0543 		leaq	int_msg(%rip),	%rax
+ 167      000000
+ 168 014f 50       		pushq	%rax
+ 169              		//调用约定
+ 170 0150 4889C2   		movq	%rax,%rdx
+ 171 0153 48C7C600 		movq	$0x00000000,%rsi
+ 171      000000
+ 172 015a 48C7C700 		movq	$0x00ff0000,%rdi
+ 172      00FF00
+ 173 0161 48C7C000 		movq	$0,%rax
+ 173      000000
+ 174 0168 E8000000 		callq   color_printk
+ 174      00
+ 175              		// x86-64架构中，每个通用寄存器都是64位的，即8字节，所以在64位模式下，
+ 176 016d 4883C408 		addq	$0x8,%rsp
+ 177              	
+ 178              	
+ 179              	Loop:
+ 180 0171 EBFE     		jmp	Loop
+ 181 0173 58       		popq	%rax
+ 182 0174 8ED8     		movq	%rax,	%ds
+ 183 0176 58       		popq	%rax
+ 184 0177 8EC0     		movq	%rax,	%es
+ 185 0179 415F     		popq    %r15
+ 186 017b 415E     		popq	%r14
+ 187 017d 415D     		popq	%r13
+ 188 017f 415C     		popq	%r12
+ 189 0181 415B     		popq	%r11
+ 190 0183 415A     		popq	%r10
+ 191 0185 4159     		popq	%r9
+ 192 0187 4158     		popq	%r8
+ 193 0189 5E       		popq	%rsi
+ 194 018a 5F       		popq	%rdi
 GAS LISTING head.s 			page 5
 
 
- 194 018d 415B     		popq	%r11
- 195 018f 415A     		popq	%r10
- 196 0191 4159     		popq	%r9
- 197 0193 4158     		popq	%r8
- 198 0195 5E       		popq	%rsi
- 199 0196 5F       		popq	%rdi
- 200 0197 5D       		popq	%rbp
- 201 0198 5A       		popq	%rdx
- 202 0199 59       		popq	%rcx
- 203 019a 5B       		popq	%rbx
- 204 019b 58       		popq	%rax
- 205 019c 48CF     		iretq
- 206              	int_msg:
- 207              	// This command allocates and stores a string at the current position indicated by the position cou
- 208              	// automatic put NULL at the end of the string
- 209 019e 556E6B6F 		.asciz	"Unkown Interrupt or fault at Rip,are you serious?\n"
- 209      776E2049 
- 209      6E746572 
- 209      72757074 
- 209      206F7220 
- 210              	
+ 195 018b 5D       		popq	%rbp
+ 196 018c 5A       		popq	%rdx
+ 197 018d 59       		popq	%rcx
+ 198 018e 5B       		popq	%rbx
+ 199 018f 58       		popq	%rax
+ 200 0190 48CF     		iretq
+ 201              	int_msg:
+ 202              	// This command allocates and stores a string at the current position indicated by the position cou
+ 203              	// automatic put NULL at the end of the string
+ 204 0192 556E6B6F 		.asciz	"Unkown Interrupt or fault at Rip,are you serious?\n"
+ 204      776E2049 
+ 204      6E746572 
+ 204      72757074 
+ 204      206F7220 
+ 205              	
+ 206              	
+ 207              	//=======	init page
+ 208 01c5 906690   	.align 8
+ 209              	
+ 210 01c8 00000000 	.org	0x1000
+ 210      00000000 
+ 210      00000000 
+ 210      00000000 
+ 210      00000000 
  211              	
- 212              	//=======	init page
- 213 01d1 90660F1F 	.align 8
- 213      440000
- 214              	
- 215 01d8 00000000 	.org	0x1000
+ 212              	__PML4E:
+ 213              	
+ 214 1000 07201000 		.quad	0x102007
+ 214      00000000 
+ 215 1008 00000000 		.fill	255,8,0
  215      00000000 
  215      00000000 
  215      00000000 
  215      00000000 
- 216              	
- 217              	__PML4E:
+ 216 1800 07201000 		.quad	0x102007
+ 216      00000000 
+ 217 1808 00000000 		.fill	255,8,0
+ 217      00000000 
+ 217      00000000 
+ 217      00000000 
+ 217      00000000 
  218              	
- 219 1000 07201000 		.quad	0x102007
- 219      00000000 
- 220 1008 00000000 		.fill	255,8,0
- 220      00000000 
- 220      00000000 
- 220      00000000 
- 220      00000000 
- 221 1800 07201000 		.quad	0x102007
- 221      00000000 
- 222 1808 00000000 		.fill	255,8,0
- 222      00000000 
- 222      00000000 
- 222      00000000 
- 222      00000000 
- 223              	
- 224              	.org	0x2000
+ 219              	.org	0x2000
+ 220              	
+ 221              	__PDPTE:
+ 222              		
+ 223 2000 03301000 		.quad	0x103003
+ 223      00000000 
+ 224 2008 00000000 		.fill	511,8,0
+ 224      00000000 
+ 224      00000000 
+ 224      00000000 
+ 224      00000000 
  225              	
- 226              	__PDPTE:
- 227              		
- 228 2000 03301000 		.quad	0x103003
- 228      00000000 
- 229 2008 00000000 		.fill	511,8,0
- 229      00000000 
+ 226              	.org	0x3000
+ 227              	
+ 228              	__PDE:
 GAS LISTING head.s 			page 6
 
 
- 229      00000000 
- 229      00000000 
- 229      00000000 
- 230              	
- 231              	.org	0x3000
- 232              	
- 233              	__PDE:
- 234              	
- 235 3000 83000000 		.quad	0x000083	
+ 229              	
+ 230 3000 83000000 		.quad	0x000083	
+ 230      00000000 
+ 231 3008 83002000 		.quad	0x200083
+ 231      00000000 
+ 232 3010 83004000 		.quad	0x400083
+ 232      00000000 
+ 233 3018 83006000 		.quad	0x600083
+ 233      00000000 
+ 234 3020 83008000 		.quad	0x800083
+ 234      00000000 
+ 235 3028 830000E0 		.quad	0xe0000083		/*0x a00000*/
  235      00000000 
- 236 3008 83002000 		.quad	0x200083
+ 236 3030 830020E0 		.quad	0xe0200083
  236      00000000 
- 237 3010 83004000 		.quad	0x400083
+ 237 3038 830040E0 		.quad	0xe0400083
  237      00000000 
- 238 3018 83006000 		.quad	0x600083
+ 238 3040 830060E0 		.quad	0xe0600083		/*0x1000000*/
  238      00000000 
- 239 3020 83008000 		.quad	0x800083
+ 239 3048 830080E0 		.quad	0xe0800083
  239      00000000 
- 240 3028 830000E0 		.quad	0xe0000083		/*0x a00000*/
+ 240 3050 8300A0E0 		.quad	0xe0a00083
  240      00000000 
- 241 3030 830020E0 		.quad	0xe0200083
+ 241 3058 8300C0E0 		.quad	0xe0c00083
  241      00000000 
- 242 3038 830040E0 		.quad	0xe0400083
+ 242 3060 8300E0E0 		.quad	0xe0e00083
  242      00000000 
- 243 3040 830060E0 		.quad	0xe0600083		/*0x1000000*/
+ 243 3068 00000000 		.fill	499,8,0
  243      00000000 
- 244 3048 830080E0 		.quad	0xe0800083
- 244      00000000 
- 245 3050 8300A0E0 		.quad	0xe0a00083
- 245      00000000 
- 246 3058 8300C0E0 		.quad	0xe0c00083
- 246      00000000 
- 247 3060 8300E0E0 		.quad	0xe0e00083
- 247      00000000 
- 248 3068 00000000 		.fill	499,8,0
- 248      00000000 
- 248      00000000 
- 248      00000000 
- 248      00000000 
- 249              	
- 250              	//=======	GDT_Table
- 251              	
- 252              	.section .data
- 253              	
- 254              	.globl GDT_Table
- 255              	
- 256              	GDT_Table:
- 257 0000 00000000 		.quad	0x0000000000000000			/*0	NULL descriptor		       	00*/
- 257      00000000 
- 258 0008 00000000 		.quad	0x0020980000000000			/*1	KERNEL	Code	64-bit	Segment	08*/
- 258      00982000 
- 259 0010 00000000 		.quad	0x0000920000000000			/*2	KERNEL	Data	64-bit	Segment	10*/
- 259      00920000 
- 260 0018 00000000 		.quad	0x0020f80000000000			/*3	USER	Code	64-bit	Segment	18*/
- 260      00F82000 
- 261 0020 00000000 		.quad	0x0000f20000000000			/*4	USER	Data	64-bit	Segment	20*/
- 261      00F20000 
+ 243      00000000 
+ 243      00000000 
+ 243      00000000 
+ 244              	
+ 245              	//=======	GDT_Table
+ 246              	
+ 247              	.section .data
+ 248              	
+ 249              	.globl GDT_Table
+ 250              	
+ 251              	GDT_Table:
+ 252 0000 00000000 		.quad	0x0000000000000000			/*0	NULL descriptor		       	00*/
+ 252      00000000 
+ 253 0008 00000000 		.quad	0x0020980000000000			/*1	KERNEL	Code	64-bit	Segment	08*/
+ 253      00982000 
+ 254 0010 00000000 		.quad	0x0000920000000000			/*2	KERNEL	Data	64-bit	Segment	10*/
+ 254      00920000 
+ 255 0018 00000000 		.quad	0x0020f80000000000			/*3	USER	Code	64-bit	Segment	18*/
+ 255      00F82000 
+ 256 0020 00000000 		.quad	0x0000f20000000000			/*4	USER	Data	64-bit	Segment	20*/
+ 256      00F20000 
+ 257 0028 FFFF0000 		.quad	0x00cf9a000000ffff			/*5	KERNEL	Code	32-bit	Segment	28*/
+ 257      009ACF00 
+ 258 0030 FFFF0000 		.quad	0x00cf92000000ffff			/*6	KERNEL	Data	32-bit	Segment	30*/
+ 258      0092CF00 
+ 259 0038 00000000 		.fill	10,8,0					/*8 ~ 9	TSS (jmp one segment <7>) in long-mode 128-bit 40*/
+ 259      00000000 
+ 259      00000000 
 GAS LISTING head.s 			page 7
 
 
- 262 0028 FFFF0000 		.quad	0x00cf9a000000ffff			/*5	KERNEL	Code	32-bit	Segment	28*/
- 262      009ACF00 
- 263 0030 FFFF0000 		.quad	0x00cf92000000ffff			/*6	KERNEL	Data	32-bit	Segment	30*/
- 263      0092CF00 
- 264 0038 00000000 		.fill	10,8,0					/*8 ~ 9	TSS (jmp one segment <7>) in long-mode 128-bit 40*/
- 264      00000000 
- 264      00000000 
- 264      00000000 
- 264      00000000 
- 265              	GDT_END:
- 266              	
- 267              	GDT_POINTER:
- 268              	//界限是从0开始计数的，类似于数组的索引，所以这里的界限是GDT_END - GDT_T
- 269              	//GDT_END - GDT_Table 是GDT_Table的长度，减1是因为GDT_Table的长度是8的倍数，所以
- 270 0088 8700     	GDT_LIMIT:	.word	GDT_END - GDT_Table - 1
- 271 008a 00000000 	GDT_BASE:	.quad	GDT_Table
- 271      00000000 
- 272              	
- 273              	//=======	IDT_Table
- 274              	
- 275              	.globl IDT_Table
- 276              	
- 277              	IDT_Table:
- 278 0092 00000000 		.fill  512,8,0
+ 259      00000000 
+ 259      00000000 
+ 260              	GDT_END:
+ 261              	
+ 262              	GDT_POINTER:
+ 263              	//界限是从0开始计数的，类似于数组的索引，所以这里的界限是GDT_END - GDT_T
+ 264              	//GDT_END - GDT_Table 是GDT_Table的长度，减1是因为GDT_Table的长度是8的倍数，所以
+ 265 0088 8700     	GDT_LIMIT:	.word	GDT_END - GDT_Table - 1
+ 266 008a 00000000 	GDT_BASE:	.quad	GDT_Table
+ 266      00000000 
+ 267              	
+ 268              	//=======	IDT_Table
+ 269              	
+ 270              	.globl IDT_Table
+ 271              	
+ 272              	IDT_Table:
+ 273 0092 00000000 		.fill  512,8,0
+ 273      00000000 
+ 273      00000000 
+ 273      00000000 
+ 273      00000000 
+ 274              	IDT_END:
+ 275              	
+ 276              	IDT_POINTER:
+ 277 1092 FF0F     	IDT_LIMIT:	.word	IDT_END - IDT_Table - 1
+ 278 1094 00000000 	IDT_BASE:	.quad	IDT_Table
  278      00000000 
- 278      00000000 
- 278      00000000 
- 278      00000000 
- 279              	IDT_END:
- 280              	
- 281              	IDT_POINTER:
- 282 1092 FF0F     	IDT_LIMIT:	.word	IDT_END - IDT_Table - 1
- 283 1094 00000000 	IDT_BASE:	.quad	IDT_Table
- 283      00000000 
- 284              	
- 285              	//=======	TSS64_Table
- 286              	
- 287              	.globl	TSS64_Table
- 288              	
- 289              	TSS64_Table:
- 290 109c 00000000 		.fill  13,8,0
+ 279              	
+ 280              	//=======	TSS64_Table
+ 281              	
+ 282              	.globl	TSS64_Table
+ 283              	
+ 284              	TSS64_Table:
+ 285 109c 00000000 		.fill  13,8,0
+ 285      00000000 
+ 285      00000000 
+ 285      00000000 
+ 285      00000000 
+ 286              	TSS64_END:
+ 287              	
+ 288              	TSS64_POINTER:
+ 289 1104 6700     	TSS64_LIMIT:	.word	TSS64_END - TSS64_Table - 1
+ 290 1106 00000000 	TSS64_BASE:	.quad	TSS64_Table
  290      00000000 
- 290      00000000 
- 290      00000000 
- 290      00000000 
- 291              	TSS64_END:
- 292              	
- 293              	TSS64_POINTER:
- 294 1104 6700     	TSS64_LIMIT:	.word	TSS64_END - TSS64_Table - 1
- 295 1106 00000000 	TSS64_BASE:	.quad	TSS64_Table
- 295      00000000 
 GAS LISTING head.s 			page 8
 
 
 DEFINED SYMBOLS
               head.S:9      .text:0000000000000000 _start
-              head.S:267    .data:0000000000000088 GDT_POINTER
-              head.S:281    .data:0000000000001092 IDT_POINTER
+              head.S:262    .data:0000000000000088 GDT_POINTER
+              head.S:276    .data:0000000000001092 IDT_POINTER
               head.S:58     .text:000000000000004a switch_seg
               head.S:61     .text:0000000000000052 entry64
-              head.S:142    .text:0000000000000123 go_to_kernel
-              head.S:74     .text:0000000000000077 setup_IDT
-              head.S:145    .text:000000000000012b ignore_int
-              head.S:277    .data:0000000000000092 IDT_Table
-              head.S:98     .text:00000000000000b3 rp_sidt
-              head.S:106    .text:00000000000000c3 setup_TSS64
-              head.S:289    .data:000000000000109c TSS64_Table
-              head.S:256    .data:0000000000000000 GDT_Table
-              head.S:206    .text:000000000000019e int_msg
-              head.S:184    .text:000000000000017d Loop
-              head.S:217    .text:0000000000001000 __PML4E
-              head.S:226    .text:0000000000002000 __PDPTE
-              head.S:233    .text:0000000000003000 __PDE
-              head.S:265    .data:0000000000000088 GDT_END
-              head.S:270    .data:0000000000000088 GDT_LIMIT
-              head.S:271    .data:000000000000008a GDT_BASE
-              head.S:279    .data:0000000000001092 IDT_END
-              head.S:282    .data:0000000000001092 IDT_LIMIT
-              head.S:283    .data:0000000000001094 IDT_BASE
-              head.S:291    .data:0000000000001104 TSS64_END
-              head.S:293    .data:0000000000001104 TSS64_POINTER
-              head.S:294    .data:0000000000001104 TSS64_LIMIT
-              head.S:295    .data:0000000000001106 TSS64_BASE
+              head.S:69     .text:000000000000006b setup_IDT
+              head.S:140    .text:000000000000011f ignore_int
+              head.S:272    .data:0000000000000092 IDT_Table
+              head.S:93     .text:00000000000000a7 rp_sidt
+              head.S:101    .text:00000000000000b7 setup_TSS64
+              head.S:284    .data:000000000000109c TSS64_Table
+              head.S:251    .data:0000000000000000 GDT_Table
+              head.S:137    .text:0000000000000117 go_to_kernel
+              head.S:201    .text:0000000000000192 int_msg
+              head.S:179    .text:0000000000000171 Loop
+              head.S:212    .text:0000000000001000 __PML4E
+              head.S:221    .text:0000000000002000 __PDPTE
+              head.S:228    .text:0000000000003000 __PDE
+              head.S:260    .data:0000000000000088 GDT_END
+              head.S:265    .data:0000000000000088 GDT_LIMIT
+              head.S:266    .data:000000000000008a GDT_BASE
+              head.S:274    .data:0000000000001092 IDT_END
+              head.S:277    .data:0000000000001092 IDT_LIMIT
+              head.S:278    .data:0000000000001094 IDT_BASE
+              head.S:286    .data:0000000000001104 TSS64_END
+              head.S:288    .data:0000000000001104 TSS64_POINTER
+              head.S:289    .data:0000000000001104 TSS64_LIMIT
+              head.S:290    .data:0000000000001106 TSS64_BASE
 
 UNDEFINED SYMBOLS
 Start_Kernel

@@ -60,11 +60,6 @@ entry64:
  movq %rax, %ss
  movq $0xffff800000007E00, %rsp
 
- movq go_to_kernel(%rip), %rax
- pushq $0x08
- pushq %rax
- lretq
-
 setup_IDT:
     leaq ignore_int(%rip),%rdx
  movq $(0x08 << 16),%rax
@@ -117,7 +112,7 @@ setup_TSS64:
  movq %rax,64(%rdi)
  shrq $32,%rdx
  movq %rdx,72(%rdi)
-# 135 "head.S"
+# 130 "head.S"
  mov $0x40,%ax
  ltr %ax
  movq go_to_kernel(%rip),%rax
