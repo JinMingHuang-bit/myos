@@ -3,135 +3,8 @@
 #	compiled by GNU C version 13.3.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version isl-0.26-GMP
 
 # GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
-# options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -Ofast -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection
+# options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection
 	.text
-	.section	.rodata.str1.1,"aMS",@progbits,1
-.LC2:
-	.string	"hello\t\t kernel!\n"
-.LC3:
-	.string	"hello,User\n"
-	.section	.rodata.str1.8,"aMS",@progbits,1
-	.align 8
-.LC4:
-	.string	"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n"
-	.align 8
-.LC5:
-	.string	"I am the royal daughter who has broken the law!\n"
-	.align 8
-.LC6:
-	.string	"Hmm,there is still a problem here?"
-	.text
-	.p2align 4
-	.globl	Start_Kernel
-	.type	Start_Kernel, @function
-Start_Kernel:
-.LFB34:
-	.cfi_startproc
-	endbr64	
-.L3:
-	movabsq	$_GLOBAL_OFFSET_TABLE_-.L3, %r11	#,
-	pushq	%r15	#
-	.cfi_def_cfa_offset 16
-	.cfi_offset 15, -16
-	leaq	.L3(%rip), %r15	#, tmp82
-	pushq	%rbx	#
-	.cfi_def_cfa_offset 24
-	.cfi_offset 3, -24
-	addq	%r11, %r15	#, tmp82
-	subq	$8, %rsp	#,
-	.cfi_def_cfa_offset 32
-# main.c:20:     asm volatile("mov %%cr4, %0" : "=r"(cr4));
-#APP
-# 20 "main.c" 1
-	mov %cr4, %rax	# cr4
-# 0 "" 2
-# main.c:22:     cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
-#NO_APP
-	orb	$6, %ah	#, cr4
-# main.c:23:     asm volatile("mov %0, %%cr4" : : "r"(cr4));
-#APP
-# 23 "main.c" 1
-	mov %rax, %cr4	# cr4
-# 0 "" 2
-# main.c:27:     Pos.XResolution=1440;
-#NO_APP
-	movabsq	$.LC0@GOTOFF, %rdx	#, tmp88
-# main.c:67:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
-	xorl	%esi, %esi	#
-# main.c:27:     Pos.XResolution=1440;
-	movabsq	$Pos@GOTOFF, %rax	#, tmp87
-# main.c:33:     Pos.FB_addr=(int *)0xffff800000a00000;
-	movabsq	$-140737477869568, %rcx	#, tmp113
-# main.c:27:     Pos.XResolution=1440;
-	movdqa	(%r15,%rdx), %xmm0	#, tmp112
-# main.c:33:     Pos.FB_addr=(int *)0xffff800000a00000;
-	movq	%rcx, 24(%rax,%r15)	# tmp113, Pos.FB_addr
-# main.c:31:     Pos.XCharSize=8;
-	movabsq	$.LC1@GOTOFF, %rdx	#, tmp91
-# main.c:67:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
-	movabsq	$color_printk@PLTOFF, %rbx	#, tmp98
-# main.c:31:     Pos.XCharSize=8;
-	movq	(%r15,%rdx), %rdx	#, tmp92
-# main.c:67:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
-	addq	%r15, %rbx	# tmp82, tmp98
-	movl	$16776960, %edi	#,
-# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
-	movq	$5184000, 32(%r15,%rax)	#, Pos.FB_length
-# main.c:27:     Pos.XResolution=1440;
-	movaps	%xmm0, (%r15,%rax)	# tmp112, MEM <vector(4) int> [(int *)&Pos]
-# main.c:31:     Pos.XCharSize=8;
-	movq	%rdx, 16(%r15,%rax)	# tmp92, MEM <vector(2) int> [(int *)&Pos + 16B]
-# main.c:67:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
-	movabsq	$.LC2@GOTOFF, %rax	#, tmp97
-	leaq	(%r15,%rax), %rdx	#, tmp96
-	xorl	%eax, %eax	#
-	call	*%rbx	# tmp98
-# main.c:68:     color_printk(YELLOW,BLACK,"hello,User\n");
-	xorl	%esi, %esi	#
-	movl	$16776960, %edi	#,
-	movabsq	$.LC3@GOTOFF, %rax	#, tmp100
-	leaq	(%r15,%rax), %rdx	#, tmp99
-	xorl	%eax, %eax	#
-	call	*%rbx	# tmp98
-# main.c:69:     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
-	xorl	%esi, %esi	#
-	movl	$16776960, %edi	#,
-	movabsq	$.LC4@GOTOFF, %rax	#, tmp103
-	leaq	(%r15,%rax), %rdx	#, tmp102
-	xorl	%eax, %eax	#
-	call	*%rbx	# tmp98
-# main.c:71:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
-	xorl	%esi, %esi	#
-	movl	$16776960, %edi	#,
-	movabsq	$.LC5@GOTOFF, %rax	#, tmp106
-	leaq	(%r15,%rax), %rdx	#, tmp105
-	xorl	%eax, %eax	#
-	call	*%rbx	# tmp98
-# main.c:73:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
-	xorl	%esi, %esi	#
-	movl	$16776960, %edi	#,
-	movabsq	$.LC6@GOTOFF, %rax	#, tmp109
-	leaq	(%r15,%rax), %rdx	#, tmp108
-	xorl	%eax, %eax	#
-	call	*%rbx	# tmp98
-.L2:
-	jmp	.L2	#
-	.cfi_endproc
-.LFE34:
-	.size	Start_Kernel, .-Start_Kernel
-	.globl	buf
-	.bss
-	.align 32
-	.type	buf, @object
-	.size	buf, 4096
-buf:
-	.zero	4096
-	.globl	Pos
-	.align 32
-	.type	Pos, @object
-	.size	Pos, 40
-Pos:
-	.zero	40
 	.globl	font_ascii
 	.data
 	.align 32
@@ -3192,18 +3065,178 @@ font_ascii:
 	.string	""
 	.string	""
 	.string	""
-	.section	.rodata.cst16,"aM",@progbits,16
-	.align 16
+	.globl	Pos
+	.bss
+	.align 32
+	.type	Pos, @object
+	.size	Pos, 40
+Pos:
+	.zero	40
+	.globl	buf
+	.align 32
+	.type	buf, @object
+	.size	buf, 4096
+buf:
+	.zero	4096
+	.section	.rodata
 .LC0:
-	.long	1440
-	.long	900
-	.long	0
-	.long	0
-	.section	.rodata.cst8,"aM",@progbits,8
-	.align 8
+	.string	"hello\t\t kernel!\n"
 .LC1:
-	.long	8
-	.long	16
+	.string	"hello,User\n"
+	.align 8
+.LC2:
+	.string	"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n"
+	.align 8
+.LC3:
+	.string	"I am the royal daughter who has broken the law!\n"
+	.align 8
+.LC4:
+	.string	"Hmm,there is still a problem here?"
+	.text
+	.globl	Start_Kernel
+	.type	Start_Kernel, @function
+Start_Kernel:
+.LFB34:
+	.cfi_startproc
+	endbr64	
+	pushq	%rbp	#
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp	#,
+	.cfi_def_cfa_register 6
+	pushq	%r15	#
+	pushq	%rbx	#
+	subq	$32, %rsp	#,
+	.cfi_offset 15, -24
+	.cfi_offset 3, -32
+.L3:
+	leaq	.L3(%rip), %rbx	#, tmp82
+	movabsq	$_GLOBAL_OFFSET_TABLE_-.L3, %r11	#,
+	addq	%r11, %rbx	#, tmp82
+# main.c:20:     asm volatile("mov %%cr4, %0" : "=r"(cr4));
+#APP
+# 20 "main.c" 1
+	mov %cr4, %rax	# cr4
+# 0 "" 2
+#NO_APP
+	movq	%rax, -24(%rbp)	# cr4, cr4
+# main.c:21:     cr4 |= (1 << 9);  // 设置OSXMMEXCPT位
+	orq	$512, -24(%rbp)	#, cr4
+# main.c:22:     cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
+	orq	$1024, -24(%rbp)	#, cr4
+# main.c:23:     asm volatile("mov %0, %%cr4" : : "r"(cr4));
+	movq	-24(%rbp), %rax	# cr4, tmp89
+#APP
+# 23 "main.c" 1
+	mov %rax, %cr4	# tmp89
+# 0 "" 2
+# main.c:25:     int *addr=(int *)0xffff800000a00000;
+#NO_APP
+	movabsq	$-140737477869568, %rsi	#, tmp120
+	movq	%rsi, -32(%rbp)	# tmp120, addr
+# main.c:27:     Pos.XResolution=1440;
+	movabsq	$Pos@GOTOFF, %rax	#, tmp90
+	movl	$1440, (%rbx,%rax)	#, Pos.XResolution
+# main.c:28:     Pos.YResolution=900;
+	movabsq	$Pos@GOTOFF, %rax	#, tmp91
+	movl	$900, 4(%rbx,%rax)	#, Pos.YResolution
+# main.c:29:     Pos.XPosition=0;
+	movabsq	$Pos@GOTOFF, %rax	#, tmp92
+	movl	$0, 8(%rbx,%rax)	#, Pos.XPosition
+# main.c:30:     Pos.YPosition=0;
+	movabsq	$Pos@GOTOFF, %rax	#, tmp93
+	movl	$0, 12(%rbx,%rax)	#, Pos.YPosition
+# main.c:31:     Pos.XCharSize=8;
+	movabsq	$Pos@GOTOFF, %rax	#, tmp94
+	movl	$8, 16(%rbx,%rax)	#, Pos.XCharSize
+# main.c:32:     Pos.YCharSize=16;
+	movabsq	$Pos@GOTOFF, %rax	#, tmp95
+	movl	$16, 20(%rbx,%rax)	#, Pos.YCharSize
+# main.c:33:     Pos.FB_addr=(int *)0xffff800000a00000;
+	movabsq	$Pos@GOTOFF, %rax	#, tmp96
+	movq	%rsi, 24(%rbx,%rax)	# tmp121, Pos.FB_addr
+# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+	movabsq	$Pos@GOTOFF, %rax	#, tmp97
+	movl	(%rbx,%rax), %edx	# Pos.XResolution, _1
+# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+	movabsq	$Pos@GOTOFF, %rax	#, tmp98
+	movl	4(%rbx,%rax), %eax	# Pos.YResolution, _2
+# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+	imull	%edx, %eax	# _1, _3
+# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+	sall	$2, %eax	#, _4
+	cltq
+# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+	movabsq	$Pos@GOTOFF, %rdx	#, tmp99
+	movq	%rax, 32(%rbx,%rdx)	# _5, Pos.FB_length
+# main.c:67:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
+	movabsq	$.LC0@GOTOFF, %rax	#, tmp101
+	leaq	(%rbx,%rax), %rax	#, tmp100
+	movq	%rax, %rdx	# tmp100,
+	movl	$0, %esi	#,
+	movl	$16776960, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp102
+	addq	%rbx, %rcx	# tmp82, tmp102
+	call	*%rcx	# tmp102
+# main.c:68:     color_printk(YELLOW,BLACK,"hello,User\n");
+	movabsq	$.LC1@GOTOFF, %rax	#, tmp104
+	leaq	(%rbx,%rax), %rax	#, tmp103
+	movq	%rax, %rdx	# tmp103,
+	movl	$0, %esi	#,
+	movl	$16776960, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp105
+	addq	%rbx, %rcx	# tmp82, tmp105
+	call	*%rcx	# tmp105
+# main.c:69:     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
+	movabsq	$.LC2@GOTOFF, %rax	#, tmp107
+	leaq	(%rbx,%rax), %rax	#, tmp106
+	movq	%rax, %rdx	# tmp106,
+	movl	$0, %esi	#,
+	movl	$16776960, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp108
+	addq	%rbx, %rcx	# tmp82, tmp108
+	call	*%rcx	# tmp108
+# main.c:70:     i=1/0;    
+	movl	$1, %eax	#, tmp109
+	movl	$0, %edi	#, tmp112
+	cltd
+	idivl	%edi	# tmp112
+	movl	%eax, -36(%rbp)	# tmp110, i
+# main.c:71:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
+	movabsq	$.LC3@GOTOFF, %rax	#, tmp114
+	leaq	(%rbx,%rax), %rax	#, tmp113
+	movq	%rax, %rdx	# tmp113,
+	movl	$0, %esi	#,
+	movl	$16776960, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp115
+	addq	%rbx, %rcx	# tmp82, tmp115
+	call	*%rcx	# tmp115
+# main.c:73:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
+	movabsq	$.LC4@GOTOFF, %rax	#, tmp117
+	leaq	(%rbx,%rax), %rax	#, tmp116
+	movq	%rax, %rdx	# tmp116,
+	movl	$0, %esi	#,
+	movl	$16776960, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp118
+	addq	%rbx, %rcx	# tmp82, tmp118
+	call	*%rcx	# tmp118
+.L2:
+# main.c:74:     while (1)
+	nop	
+	jmp	.L2	#
+	.cfi_endproc
+.LFE34:
+	.size	Start_Kernel, .-Start_Kernel
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"
