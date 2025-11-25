@@ -120,3 +120,20 @@ Next at t=24967692
 <bochs:2>
 
 
+(0) [0x00000010003e] 0008:000000000010003e (unk. ctxt): mov rax, qword ptr ds:[rip+5] ; 488b0505000000
+<bochs:20> n
+Next at t=25106401
+(0) [0x000000100045] 0008:0000000000100045 (unk. ctxt): push 0x0000000000000008   ; 6a08
+<bochs:21> n
+Next at t=25106402
+(0) [0x000000100047] 0008:0000000000100047 (unk. ctxt): push rax                  ; 50
+<bochs:22> n
+Next at t=25106403
+(0) [0x000000100048] 0008:0000000000100048 (unk. ctxt): retf                      ; 48cb
+<bochs:23> n
+Next at t=25106404
+(0) [0x000000100052] 0008:ffff800000100052 (unk. ctxt): mov rax, 0x0000000000000010 ; 48c7c010000000
+<bochs:24> n
+Next at t=25106405
+(0) [0x000000100059] 0008:ffff800000100059 (unk. ctxt): mov ds, ax                ; 8ed8
+<bochs:25>
