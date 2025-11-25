@@ -11,21 +11,21 @@ MV = mv
 DEBUG_DIR = debug
 
 # 编译选项
-CFLAGS= -mcmodel=large -fno-builtin -m64 -fno-stack-protector 
-CFLAGSO1= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -O1
-CFLAGSO2= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -O2
-CFLAGSO3= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -O3
-CFLAGSOf= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -Ofast
-CFLAGSOs= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -Os
+CFLAGS= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -g
+CFLAGSO1= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -O1 -g
+CFLAGSO2= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -O2 -g
+CFLAGSO3= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -O3 -g
+CFLAGSOf= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -Ofast -g
+CFLAGSOs= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -Os -g
 ASFLAGS = --64
 LDFLAGS = -b elf64-x86-64 -z muldefs
-OBJCOPYFLAGS = -I elf64-x86-64 -S -R ".eh_frame" -R ".comment" -O binary
-
+#OBJCOPYFLAGS = -I elf64-x86-64 -S -R ".eh_frame" -R ".comment" -O binary
+OBJCOPYFLAGS = -I elf64-x86-64 -O binary
 # 目标文件
 OBJS = head.o main.o printk.o
 
 # 默认目标
-all: system kernel.bin move_debug
+all: system kernel.bin move_debug system.debug
 
 # 创建debug目录并移动调试文件
 move_debug: system.asm
@@ -45,14 +45,14 @@ head.o: head.S
 	$(OBJDUMP) -d head.o > head.asm
 
 main.o: main.c
-	$(CC) $(CFLAGSOf) -c main.c -o main.o
-	$(CC) $(CFLAGSOf) -S -fverbose-asm main.c -o main.s
+	$(CC) $(CFLAGS) -c main.c -o main.o
+	$(CC) $(CFLAGS) -S -fverbose-asm main.c -o main.s
 	$(OBJDUMP) -d main.o > main.asm
 	$(AS) $(ASFLAGS) -o main.o main.s -ahls > main.lst
 
 printk.o: printk.c printk.h lib.h
-	$(CC) $(CFLAGSOf) -c printk.c -o printk.o
-	$(CC) $(CFLAGSOf) -S -fverbose-asm printk.c -o printk.s
+	$(CC) $(CFLAGS) -c printk.c -o printk.o
+	$(CC) $(CFLAGS) -S -fverbose-asm printk.c -o printk.s
 	$(OBJDUMP) -d printk.o > printk.asm
 	$(AS) $(ASFLAGS) -o printk.o printk.s -ahls > printk.lst
 
@@ -60,10 +60,14 @@ printk.o: printk.c printk.h lib.h
 system.asm: system
 	$(OBJDUMP) -d system > system.asm
 
+
 # 调试目标：显示debug目录内容
 debug-info:
 	@echo "Debug files in $(DEBUG_DIR):"
 	@ls -la $(DEBUG_DIR)/ || echo "Debug directory is empty"
+
+system.debug: $(OBJS) kernel.lds
+	$(LD) $(LDFLAGS) -g -o system.debug $(OBJS) -T kernel.lds
 
 # 清理
 clean:

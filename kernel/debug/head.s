@@ -105,6 +105,7 @@ setup_TSS64:
  shlq $40,%rax
  movl %edx,%ecx
  shrl $24,%ecx
+
  shlq $56,%rcx
  addq %rcx,%rax
  xorq %rcx,%rcx
