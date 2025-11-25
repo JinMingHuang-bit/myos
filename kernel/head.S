@@ -2,7 +2,6 @@
 //The page table structure follows the code and starts at 0x1000. 
 //The data structures such as GDT, IDT and TSS are located at higher addresses (in the .data section)
 
-
 .section .text
 .globl _start
 
