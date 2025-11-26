@@ -47,3 +47,9 @@ RESTORE_ALL:
     popq %rax;
     addq $0x10, %rsp;
     iretq;
+
+ENTRY(divide_error)
+    pushq $0
+    pushq %rax
+    leaq do_divide_error(%rip), %rax
+    xchgq %rax, (%rsp)
