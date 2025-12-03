@@ -103,6 +103,8 @@ ret_from_exception:
 ENTRY(ret_from_intr)
     jmp RESTORE_ALL
 
+#NMI不可屏蔽中断是一个特殊的中断，它不携带任何参数，也不返回任何值，
+#NMI中断的处理程序可以通过执行一条指令来结束，也可以通过执行一条指令来继续执行。
 ENTRY(nmi)
     pushq %rax
     cld
