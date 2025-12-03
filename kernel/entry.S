@@ -52,4 +52,89 @@ ENTRY(divide_error)
     pushq $0
     pushq %rax
     leaq do_divide_error(%rip), %rax
+    //(%rsp) is a pointer,point to 栈顶指针 RSP 寄存器所指向的内存地址中的内容
     xchgq %rax, (%rsp)
+/*
+bp 寄存器:SP,BP一般与段寄存器SS 联用，以确定堆栈寄存器中某一单元的地址，
+SP用以指示栈顶的偏移地址，而BP可 作为堆栈区中的一个基地址，用以确定在堆栈中的操作数地址
+
+*/
+
+error_code:
+    pushq %rax
+    movq  %es,%rax
+    pushq %rax
+    movq  %ds,%rax
+    pushq %rax
+    xorq  %rax,%rax
+
+    pushq %rbp
+    pushq %rdi
+    pushq %rsi
+    pushq %rdx
+    pushq %rcx
+    pushq %rbx
+    pushq %r8
+    pushq %r9
+    pushq %r10
+    pushq %r11
+    pushq %r12
+    pushq %r13
+    pushq %r14
+    pushq %r15
+
+    /*
+    将错误码和栈指针分别存入RSI和RDX,供异常处理函数使用
+    */
+
+    cld
+    movq ERRCODE(%rsp),%rsi
+    movq RIP(%rsp),%rdx
+
+    movq $0x10,%rdi
+    movq %rdi,%ds
+    movq %rdi,%es
+    movq %rsp,%rdi
+    callq *%rdx
+    jmp ret_from_exception
+
+// 还原被中断程序的现场
+ret_from_exception:
+ENTRY(ret_from_intr)
+    jmp RESTORE_ALL
+
+ENTRY(nmi)
+    pushq %rax
+    cld
+    pushq %rax
+
+    pushq %rax
+    movq %es,%rax
+    pushq %rax
+    movq %ds,%rax
+    pushq %rax
+    xorq %rax,%rax
+
+    pushq %rbp
+    pushq %rdi
+    pushq %rsi
+    pushq %rdx
+    pushq %rcx
+    pushq %rbx
+    pushq %r8
+    pushq %r9
+    pushq %r10
+    pushq %r11
+    pushq %r12
+    pushq %r13
+    pushq %r14
+    pushq %r15
+
+    movq $0x10,%rdx
+    movq %rdx,%ds
+    movq %rdx,%es
+
+    movq $0,%rdi
+    movq %rsp,%rsi
+    callq do_nmi
+    jmp RESTORE_ALL
