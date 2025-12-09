@@ -9,6 +9,9 @@ The kernel is typically mapped to the Higher Half.
 //jmp    ffff800000100094 <Start_kernel+0x1c>
 #include "lib.h"
 #include "printk.h"
+#include "gate.h"
+#include "trap.h"
+
 void Start_Kernel(void)
 {
 
@@ -32,7 +35,7 @@ void Start_Kernel(void)
     Pos.YCharSize=16;
     Pos.FB_addr=(int *)0xffff800000a00000;
     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
-
+    load_TR(8);
     // for(i=0;i<Pos.XResolution*20;i++){
     //     *((char*)addr+0)=(char)0x00;
     //     *((char*)addr+1)=(char)0x00;
