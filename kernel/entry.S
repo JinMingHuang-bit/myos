@@ -103,8 +103,8 @@ ret_from_exception:
 ENTRY(ret_from_intr)
     jmp RESTORE_ALL
 
-#NMI不可屏蔽中断是一个特殊的中断，它不携带任何参数，也不返回任何值，
-#NMI中断的处理程序可以通过执行一条指令来结束，也可以通过执行一条指令来继续执行。
+//NMI不可屏蔽中断是一个特殊的中断，它不携带任何参数，也不返回任何值，
+//NMI中断的处理程序可以通过执行一条指令来结束，也可以通过执行一条指令来继续执行。
 ENTRY(nmi)
     pushq %rax
     cld
@@ -132,11 +132,27 @@ ENTRY(nmi)
     pushq %r14
     pushq %r15
 
-    movq $0x10,%rdx
-    movq %rdx,%ds
-    movq %rdx,%es
+    movq $0x10,%rdx   // # 0x10通常是内核数据段选择子
+    movq %rdx,%ds    // # 设置DS为内核数据段
+    movq %rdx,%es    //# 设置ES为内核数据段
 
     movq $0,%rdi
     movq %rsp,%rsi
     callq do_nmi
     jmp RESTORE_ALL
+
+ENTRY(invalid_TSS)
+    pushq %rax
+    //Exchange the values of RAX and the top of the stack,
+    //This not only restores the original value of RAX, but also places the function address for processing on the stack.
+    leaq	do_invalid_TSS(%rip),%rax
+    xchgq	%rax, (%rsp)
+    jmp error_code
+
+ENTRY(page_fault)
+    pushq %rax
+    leaq	do_page_fault(%rip),%rax
+    xchgq	%rax, (%rsp)
+    jmp error_code
+    
+    
