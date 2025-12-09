@@ -103,6 +103,13 @@ ret_from_exception:
 ENTRY(ret_from_intr)
     jmp RESTORE_ALL
 
+ENTRY(debug)
+    pushq   $0
+    pushq   %rax
+    leaq    do_debug(%rip), %rax
+    xchgq   %rax,   (%rsp)
+    jmp error_code
+
 //NMI不可屏蔽中断是一个特殊的中断，它不携带任何参数，也不返回任何值，
 //NMI中断的处理程序可以通过执行一条指令来结束，也可以通过执行一条指令来继续执行。
 ENTRY(nmi)
@@ -155,4 +162,103 @@ ENTRY(page_fault)
     xchgq	%rax, (%rsp)
     jmp error_code
     
-    
+ENTRY(int3)
+    pushq   $0
+    pushq   %rax
+    leaq    do_int3(%rip),  %rax
+    xchgq   %rax,   (%rsp)
+    jmp error_code
+
+ENTRY(overflow)
+    pushq   $0
+    pushq   %rax
+    leaq    do_overflow(%rip),  %rax
+    xchgq   %rax,   (%rsp)
+    jmp error_code
+
+ENTRY(bounds)
+    pushq   $0
+    pushq   %rax
+    leaq    do_bounds(%rip),    %rax
+    xchgq   %rax,   (%rsp)
+    jmp error_code
+
+ENTRY(undefined_opcode)
+    pushq   $0
+    pushq   %rax
+    leaq    do_undefined_opcode(%rip),  %rax
+    xchgq   %rax,   (%rsp)
+    jmp error_code
+
+ENTRY(dev_not_available)    /* need rewrite */
+    pushq   $0
+    pushq   %rax
+    leaq    do_dev_not_available(%rip), %rax
+    xchgq   %rax,   (%rsp)
+    jmp error_code
+
+
+ENTRY(double_fault)
+    pushq   %rax
+    leaq    do_double_fault(%rip),  %rax
+    xchgq   %rax,   (%rsp)
+    jmp error_code
+
+ENTRY(coprocessor_segment_overrun)
+    pushq   $0
+    pushq   %rax
+    leaq    do_coprocessor_segment_overrun(%rip),   %rax
+    xchgq   %rax,   (%rsp)
+    jmp error_code
+
+ENTRY(segment_not_present)
+    pushq   %rax
+    leaq    do_segment_not_present(%rip),   %rax
+    xchgq   %rax,   (%rsp)
+    jmp error_code
+
+ENTRY(stack_segment_fault)
+    pushq   %rax
+    leaq    do_stack_segment_fault(%rip),   %rax
+    xchgq   %rax,   (%rsp)
+    jmp error_code
+
+ENTRY(general_protection)
+    pushq   %rax
+    leaq    do_general_protection(%rip),    %rax
+    xchgq   %rax,   (%rsp)
+    jmp error_code
+
+ENTRY(x87_FPU_error)
+    pushq   $0
+    pushq   %rax
+    leaq    do_x87_FPU_error(%rip), %rax
+    xchgq   %rax,   (%rsp)
+    jmp error_code
+
+ENTRY(alignment_check)
+    pushq   %rax
+    leaq    do_alignment_check(%rip),   %rax
+    xchgq   %rax,   (%rsp)
+    jmp error_code
+
+ENTRY(machine_check)
+    pushq   $0
+    pushq   %rax
+    leaq    do_machine_check(%rip), %rax
+    xchgq   %rax,   (%rsp)
+    jmp error_code
+
+ENTRY(SIMD_exception)
+    pushq   $0
+    pushq   %rax
+    leaq    do_SIMD_exception(%rip),    %rax
+    xchgq   %rax,   (%rsp)
+    jmp error_code
+
+ENTRY(virtualization_exception)
+    pushq   $0
+    pushq   %rax
+    leaq    do_virtualization_exception(%rip),  %rax
+    xchgq   %rax,   (%rsp)
+    jmp error_code
