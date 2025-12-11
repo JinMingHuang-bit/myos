@@ -1,6 +1,7 @@
 #include "lib.h"
 #include "gate.h"
 #include "printk.h"
+#include "trap.h"
 void do_divide_error(unsigned long rsp,unsigned long error_code) {
     unsigned long *p=NULL;
     //将栈指针寄存器RSP(异常处理模块将栈指针寄存器RSP的值作为参数传入RDI寄存器中)的值向上索引0x98个字节,以获取被中断现场的RIP寄存器的值.

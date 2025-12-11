@@ -3493,1036 +3493,1698 @@ GAS LISTING main.s 			page 1
  3082      00000000 
  3082      00000000 
  3082      00000000 
- 3083              		.section	.rodata
- 3084              	.LC0:
- 3085 0000 68656C6C 		.string	"hello\t\t kernel!\n"
- 3085      6F090920 
- 3085      6B65726E 
- 3085      656C210A 
- 3085      00
- 3086              	.LC1:
- 3087 0011 68656C6C 		.string	"hello,User\n"
- 3087      6F2C5573 
- 3087      65720A00 
- 3088 001d 000000   		.align 8
- 3089              	.LC2:
- 3090 0020 5374616E 		.string	"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n"
- 3090      64696E67 
- 3090      20666972 
- 3090      6D20696E 
- 3090      20746865 
- 3091 0074 00000000 		.align 8
- 3092              	.LC3:
- 3093 0078 4920616D 		.string	"I am the royal daughter who has broken the law!\n"
- 3093      20746865 
- 3093      20726F79 
- 3093      616C2064 
- 3093      61756768 
- 3094 00a9 00000000 		.align 8
- 3094      000000
- 3095              	.LC4:
- 3096 00b0 486D6D2C 		.string	"Hmm,there is still a problem here?"
- 3096      74686572 
- 3096      65206973 
- 3096      20737469 
- 3096      6C6C2061 
- 3097              		.text
- 3098              		.globl	Start_Kernel
- 3099              		.type	Start_Kernel, @function
- 3100              	Start_Kernel:
- 3101              	.LFB34:
- 3102              		.file 1 "main.c"
+ 3083              		.text
+ 3084              		.globl	set_tss64
+ 3085              		.type	set_tss64, @function
+ 3086              	set_tss64:
+ 3087              	.LFB38:
+ 3088              		.file 1 "gate.h"
+   1:gate.h        **** #ifndef _GATE_H_
+   2:gate.h        **** #define _GATE_H_
+   3:gate.h        **** 
+   4:gate.h        **** struct desc_struct
+   5:gate.h        **** { 
+   6:gate.h        ****    unsigned char x[8];
+   7:gate.h        **** };
+   8:gate.h        **** 
+   9:gate.h        **** struct gate_struct
+  10:gate.h        **** {
+  11:gate.h        ****    unsigned char x[16];
+  12:gate.h        **** };
+  13:gate.h        **** extern struct desc_struct GDT_Table[];
+  14:gate.h        **** extern struct gate_struct IDT_Table[];
+  15:gate.h        **** extern unsigned int TSS64_Table[26];
+  16:gate.h        **** // set the interrupt gate
+  17:gate.h        **** /*
+  18:gate.h        **** 这个宏函数用于设置x86-64架构的中断门描述符(Interrupt Gate Descriptor)
+  19:gate.h        **** 参数说明：
+  20:gate.h        **** - gate_selector_addr: 中断门描述符的内存地址
+  21:gate.h        **** - attr: 中断门的属性位
+  22:gate.h        **** - ist: 中断栈表索引
+  23:gate.h        **** - code_addr: 中断处理程序的代码地址
+  24:gate.h        **** 
+  25:gate.h        **** x86-64中断门描述符格式（16字节）：
+  26:gate.h        **** +0-7字节：低64位 - 包含代码地址的0-31位、段选择子、IST等
+  27:gate.h        **** +8-15字节：高64位 - 包含代码地址的32-63位、属性等
+  28:gate.h        **** */
+  29:gate.h        **** 
+  30:gate.h        **** #define _set_gate(gate_selector_addr, attr, ist, code_addr) \
+  31:gate.h        **** do \
+  32:gate.h        **** { \
+  33:gate.h        ****     unsigned long __d0, __d1; \
+  34:gate.h        ****     __asm__ __volatile__( \
+  35:gate.h        ****         "movw %%dx, %%ax  \n\t"          /* 将dx(段选择子)移到ax */ \
+  36:gate.h        ****         "andq $0x7, %%rcx \n\t"          /* 保留IST的低3位 */ \
+  37:gate.h        ****         "addq %4, %%rcx   \n\t"           \
+  38:gate.h        ****         "shlq $32, %%rcx  \n\t"          /* 左移32位准备高位 */ \
+  39:gate.h        ****         "addq %%rcx, %%rax \n\t"         /* 合并到rax */ \
+GAS LISTING main.s 			page 60
+
+
+  40:gate.h        ****         "xorq %%rcx, %%rcx \n\t"         /* 清空rcx */ \
+  41:gate.h        ****         "movl %%edx, %%ecx \n\t"         /* 将edx低32位移到ecx */ \
+  42:gate.h        ****         "shrq $16, %%rcx  \n\t"          /* 右移16位获取高16位 */ \
+  43:gate.h        ****         "shlq $48, %%rcx  \n\t"          /* 左移48位到最高位 */ \
+  44:gate.h        ****         "addq %%rcx, %%rax \n\t"         /* 添加到rax */ \
+  45:gate.h        ****         "movq %%rax, %0    \n\t"         /* 存储低64位 */ \
+  46:gate.h        ****         "shrq $32, %%rdx  \n\t"          /* 将rdx右移32位 */ \
+  47:gate.h        ****         "movq %%rdx, %1    \n\t"         /* 存储高64位 */ \
+  48:gate.h        ****         : "=m"(*((unsigned long*)(gate_selector_addr))),  /*=m：内存操作数，可写*/ \
+  49:gate.h        ****           "=m"(*(1 + (unsigned long *)(gate_selector_addr))),   /*&a：使用rax/eax寄存器，早
+  50:gate.h        ****           &d：使用rdx/edx寄存器，早期破坏约束*/\ 
+  51:gate.h        ****           "=&a"(__d0), "=&d"(__d1) \
+  52:gate.h        ****         : "i"(attr << 8), \
+  53:gate.h        ****           "3"((unsigned long)(code_addr)), \
+  54:gate.h        ****           "2"(0x8 << 16), \
+  55:gate.h        ****           "c"(ist)     /*rcx */ \
+  56:gate.h        ****         :  "memory"); \
+  57:gate.h        **** } while(0)
+  58:gate.h        **** 
+  59:gate.h        **** /*
+  60:gate.h        **** 输入0："i"(attr << 8)
+  61:gate.h        **** 
+  62:gate.h        **** i：立即数
+  63:gate.h        **** 
+  64:gate.h        **** attr << 8：属性左移8位，为后续位操作做准备
+  65:gate.h        **** 
+  66:gate.h        **** 输入1："3"((unsigned long)(code_addr))
+  67:gate.h        **** 
+  68:gate.h        **** 3：匹配第3个输出操作数（"=&d"(__d1)）
+  69:gate.h        **** 
+  70:gate.h        **** 代码地址放入rdx寄存器
+  71:gate.h        **** 
+  72:gate.h        **** 输入2："2"(0x8 << 16)
+  73:gate.h        **** 
+  74:gate.h        **** 2：匹配第2个输出操作数（"=&a"(__d0)）
+  75:gate.h        **** 
+  76:gate.h        **** 0x8 << 16：内核代码段选择子左移16位
+  77:gate.h        **** 
+  78:gate.h        **** */ 
+  79:gate.h        **** 
+  80:gate.h        **** 
+  81:gate.h        **** 
+  82:gate.h        **** #define load_TR(n) \
+  83:gate.h        **** do {              \
+  84:gate.h        ****   __asm__ __volatile__( "ltr %%ax" \
+  85:gate.h        ****     :         \
+  86:gate.h        ****     : "a"(n << 3) \
+  87:gate.h        ****     : "memory" );    \
+  88:gate.h        **** }while (0)
+  89:gate.h        **** 
+  90:gate.h        **** 
+  91:gate.h        **** // 使用示例和解释
+  92:gate.h        **** /*
+  93:gate.h        **** 中断门描述符结构：
+  94:gate.h        **** - 低64位（0-7字节）：[0-15]代码地址[0-15] + [16-31]段选择子 + [32-47]IST + [48-63]�
+  95:gate.h        **** - 高64位（8-15字节）：[0-31]代码地址[32-63] + [40-47]属性 + [56-63]保留位
+  96:gate.h        **** 
+GAS LISTING main.s 			page 61
+
+
+  97:gate.h        **** 这个宏主要用于内核中设置中断处理程序的描述符，
+  98:gate.h        **** 是操作系统内核开发中设置IDT(中断描述符表)的关键函数
+  99:gate.h        **** */
+ 100:gate.h        **** 
+ 101:gate.h        **** 
+ 102:gate.h        **** 
+ 103:gate.h        **** static inline void set_intr_gate(unsigned int n, unsigned char ist,void * addr){
+ 104:gate.h        ****     _set_gate(IDT_Table+n, 0x8E, ist, addr);
+ 105:gate.h        **** }
+ 106:gate.h        **** /*
+ 107:gate.h        **** 为什么需要加 static？
+ 108:gate.h        **** 问题所在：
+ 109:gate.h        **** 当你在头文件中定义了一个 inline 函数但不加 static：
+ 110:gate.h        **** 
+ 111:gate.h        **** 多个 .c 文件 #include 这个头文件
+ 112:gate.h        **** 
+ 113:gate.h        **** 每个 .c 文件都会获得函数的定义
+ 114:gate.h        **** 
+ 115:gate.h        **** 链接时可能会出现：
+ 116:gate.h        **** 
+ 117:gate.h        **** 重复定义错误（如果编译器生成了函数体）
+ 118:gate.h        **** 
+ 119:gate.h        **** 未定义引用（如果编译器只内联了部分调用）
+ 120:gate.h        **** 
+ 121:gate.h        **** 因编译器实现而异
+ 122:gate.h        **** 
+ 123:gate.h        **** 编译器行为差异：
+ 124:gate.h        **** GCC：inline 函数默认具有外部链接，除非被声明为 static
+ 125:gate.h        **** 
+ 126:gate.h        **** 不同编译标准和版本可能有不同行为
+ 127:gate.h        **** 
+ 128:gate.h        **** 在 Linux 内核中，通常使用 static inline
+ 129:gate.h        **** 
+ 130:gate.h        **** 
+ 131:gate.h        **** */
+ 132:gate.h        **** 
+ 133:gate.h        **** static inline void set_trap_gate(unsigned int n, unsigned char ist,void * addr){
+ 134:gate.h        **** 
+ 135:gate.h        ****     _set_gate(IDT_Table+n, 0x8F, ist, addr);
+ 136:gate.h        **** 
+ 137:gate.h        **** }
+ 138:gate.h        **** 
+ 139:gate.h        **** static inline void set_system_gate(unsigned int n, unsigned char ist,void * addr){
+ 140:gate.h        ****     _set_gate(IDT_Table+n, 0xEF, ist, addr);
+ 141:gate.h        **** }
+ 142:gate.h        **** 
+ 143:gate.h        **** static inline void set_system_intr_gate(unsigned int n,unsigned char ist,void * addr)	//int3
+ 144:gate.h        **** {
+ 145:gate.h        **** 	_set_gate(IDT_Table + n , 0xEE , ist , addr);	//P,DPL=3,TYPE=E
+ 146:gate.h        **** }
+ 147:gate.h        **** 
+ 148:gate.h        **** void set_tss64(unsigned long rsp0,unsigned long rsp1,unsigned long rsp2,unsigned long ist1,unsigned
+ 149:gate.h        **** unsigned long ist4,unsigned long ist5,unsigned long ist6,unsigned long ist7)
+ 150:gate.h        **** {
+ 3089              		.loc 1 150 1
+ 3090              		.cfi_startproc
+ 3091 0000 F30F1EFA 		endbr64	
+GAS LISTING main.s 			page 62
+
+
+ 3092 0004 55       		pushq	%rbp	#
+ 3093              		.cfi_def_cfa_offset 16
+ 3094              		.cfi_offset 6, -16
+ 3095 0005 4889E5   		movq	%rsp, %rbp	#,
+ 3096              		.cfi_def_cfa_register 6
+ 3097              	.L2:
+ 3098 0008 488D05F9 		leaq	.L2(%rip), %rax	#, tmp82
+ 3098      FFFFFF
+ 3099 000f 49BB0000 		movabsq	$_GLOBAL_OFFSET_TABLE_-.L2, %r11	#,
+ 3099      00000000 
+ 3099      0000
+ 3100 0019 4C01D8   		addq	%r11, %rax	#, tmp82
+ 3101 001c 48897DF8 		movq	%rdi, -8(%rbp)	# rsp0, rsp0
+ 3102 0020 488975F0 		movq	%rsi, -16(%rbp)	# rsp1, rsp1
+ 3103 0024 488955E8 		movq	%rdx, -24(%rbp)	# rsp2, rsp2
+ 3104 0028 48894DE0 		movq	%rcx, -32(%rbp)	# ist1, ist1
+ 3105 002c 4C8945D8 		movq	%r8, -40(%rbp)	# ist2, ist2
+ 3106 0030 4C894DD0 		movq	%r9, -48(%rbp)	# ist3, ist3
+ 3107              	# gate.h:152: 	*(unsigned long *)(TSS64_Table+1) = rsp0;
+ 151:gate.h        ****   //set the privilege level
+ 152:gate.h        **** 	*(unsigned long *)(TSS64_Table+1) = rsp0;
+ 3108              		.loc 1 152 3
+ 3109 0034 48BA0000 		movabsq	$TSS64_Table@GOT, %rdx	#, tmp93
+ 3109      00000000 
+ 3109      0000
+ 3110 003e 488B1410 		movq	(%rax,%rdx), %rdx	#, tmp94
+ 3111 0042 488D5204 		leaq	4(%rdx), %rdx	#, _1
+ 3112              	# gate.h:152: 	*(unsigned long *)(TSS64_Table+1) = rsp0;
+ 3113              		.loc 1 152 36
+ 3114 0046 488B4DF8 		movq	-8(%rbp), %rcx	# rsp0, tmp95
+ 3115 004a 48890A   		movq	%rcx, (%rdx)	# tmp95, *_1
+ 3116              	# gate.h:153: 	*(unsigned long *)(TSS64_Table+3) = rsp1;
+ 153:gate.h        **** 	*(unsigned long *)(TSS64_Table+3) = rsp1;
+ 3117              		.loc 1 153 3
+ 3118 004d 48BA0000 		movabsq	$TSS64_Table@GOT, %rdx	#, tmp96
+ 3118      00000000 
+ 3118      0000
+ 3119 0057 488B1410 		movq	(%rax,%rdx), %rdx	#, tmp97
+ 3120 005b 488D520C 		leaq	12(%rdx), %rdx	#, _2
+ 3121              	# gate.h:153: 	*(unsigned long *)(TSS64_Table+3) = rsp1;
+ 3122              		.loc 1 153 36
+ 3123 005f 488B4DF0 		movq	-16(%rbp), %rcx	# rsp1, tmp98
+ 3124 0063 48890A   		movq	%rcx, (%rdx)	# tmp98, *_2
+ 3125              	# gate.h:154: 	*(unsigned long *)(TSS64_Table+5) = rsp2;
+ 154:gate.h        **** 	*(unsigned long *)(TSS64_Table+5) = rsp2;
+ 3126              		.loc 1 154 3
+ 3127 0066 48BA0000 		movabsq	$TSS64_Table@GOT, %rdx	#, tmp99
+ 3127      00000000 
+ 3127      0000
+ 3128 0070 488B1410 		movq	(%rax,%rdx), %rdx	#, tmp100
+ 3129 0074 488D5214 		leaq	20(%rdx), %rdx	#, _3
+ 3130              	# gate.h:154: 	*(unsigned long *)(TSS64_Table+5) = rsp2;
+ 3131              		.loc 1 154 36
+ 3132 0078 488B4DE8 		movq	-24(%rbp), %rcx	# rsp2, tmp101
+ 3133 007c 48890A   		movq	%rcx, (%rdx)	# tmp101, *_3
+ 3134              	# gate.h:156: 	*(unsigned long *)(TSS64_Table+9) = ist1;
+ 155:gate.h        ****   //set the stack pointer
+GAS LISTING main.s 			page 63
+
+
+ 156:gate.h        **** 	*(unsigned long *)(TSS64_Table+9) = ist1;
+ 3135              		.loc 1 156 3
+ 3136 007f 48BA0000 		movabsq	$TSS64_Table@GOT, %rdx	#, tmp102
+ 3136      00000000 
+ 3136      0000
+ 3137 0089 488B1410 		movq	(%rax,%rdx), %rdx	#, tmp103
+ 3138 008d 488D5224 		leaq	36(%rdx), %rdx	#, _4
+ 3139              	# gate.h:156: 	*(unsigned long *)(TSS64_Table+9) = ist1;
+ 3140              		.loc 1 156 36
+ 3141 0091 488B4DE0 		movq	-32(%rbp), %rcx	# ist1, tmp104
+ 3142 0095 48890A   		movq	%rcx, (%rdx)	# tmp104, *_4
+ 3143              	# gate.h:157: 	*(unsigned long *)(TSS64_Table+11) = ist2;
+ 157:gate.h        **** 	*(unsigned long *)(TSS64_Table+11) = ist2;
+ 3144              		.loc 1 157 3
+ 3145 0098 48BA0000 		movabsq	$TSS64_Table@GOT, %rdx	#, tmp105
+ 3145      00000000 
+ 3145      0000
+ 3146 00a2 488B1410 		movq	(%rax,%rdx), %rdx	#, tmp106
+ 3147 00a6 488D522C 		leaq	44(%rdx), %rdx	#, _5
+ 3148              	# gate.h:157: 	*(unsigned long *)(TSS64_Table+11) = ist2;
+ 3149              		.loc 1 157 37
+ 3150 00aa 488B4DD8 		movq	-40(%rbp), %rcx	# ist2, tmp107
+ 3151 00ae 48890A   		movq	%rcx, (%rdx)	# tmp107, *_5
+ 3152              	# gate.h:158: 	*(unsigned long *)(TSS64_Table+13) = ist3;
+ 158:gate.h        **** 	*(unsigned long *)(TSS64_Table+13) = ist3;
+ 3153              		.loc 1 158 3
+ 3154 00b1 48BA0000 		movabsq	$TSS64_Table@GOT, %rdx	#, tmp108
+ 3154      00000000 
+ 3154      0000
+ 3155 00bb 488B1410 		movq	(%rax,%rdx), %rdx	#, tmp109
+ 3156 00bf 488D5234 		leaq	52(%rdx), %rdx	#, _6
+ 3157              	# gate.h:158: 	*(unsigned long *)(TSS64_Table+13) = ist3;
+ 3158              		.loc 1 158 37
+ 3159 00c3 488B4DD0 		movq	-48(%rbp), %rcx	# ist3, tmp110
+ 3160 00c7 48890A   		movq	%rcx, (%rdx)	# tmp110, *_6
+ 3161              	# gate.h:159: 	*(unsigned long *)(TSS64_Table+15) = ist4;
+ 159:gate.h        **** 	*(unsigned long *)(TSS64_Table+15) = ist4;
+ 3162              		.loc 1 159 3
+ 3163 00ca 48BA0000 		movabsq	$TSS64_Table@GOT, %rdx	#, tmp111
+ 3163      00000000 
+ 3163      0000
+ 3164 00d4 488B1410 		movq	(%rax,%rdx), %rdx	#, tmp112
+ 3165 00d8 488D523C 		leaq	60(%rdx), %rdx	#, _7
+ 3166              	# gate.h:159: 	*(unsigned long *)(TSS64_Table+15) = ist4;
+ 3167              		.loc 1 159 37
+ 3168 00dc 488B4D10 		movq	16(%rbp), %rcx	# ist4, tmp113
+ 3169 00e0 48890A   		movq	%rcx, (%rdx)	# tmp113, *_7
+ 3170              	# gate.h:160: 	*(unsigned long *)(TSS64_Table+17) = ist5;
+ 160:gate.h        **** 	*(unsigned long *)(TSS64_Table+17) = ist5;
+ 3171              		.loc 1 160 3
+ 3172 00e3 48BA0000 		movabsq	$TSS64_Table@GOT, %rdx	#, tmp114
+ 3172      00000000 
+ 3172      0000
+ 3173 00ed 488B1410 		movq	(%rax,%rdx), %rdx	#, tmp115
+ 3174 00f1 488D5244 		leaq	68(%rdx), %rdx	#, _8
+ 3175              	# gate.h:160: 	*(unsigned long *)(TSS64_Table+17) = ist5;
+ 3176              		.loc 1 160 37
+GAS LISTING main.s 			page 64
+
+
+ 3177 00f5 488B4D18 		movq	24(%rbp), %rcx	# ist5, tmp116
+ 3178 00f9 48890A   		movq	%rcx, (%rdx)	# tmp116, *_8
+ 3179              	# gate.h:161: 	*(unsigned long *)(TSS64_Table+19) = ist6;
+ 161:gate.h        **** 	*(unsigned long *)(TSS64_Table+19) = ist6;
+ 3180              		.loc 1 161 3
+ 3181 00fc 48BA0000 		movabsq	$TSS64_Table@GOT, %rdx	#, tmp117
+ 3181      00000000 
+ 3181      0000
+ 3182 0106 488B1410 		movq	(%rax,%rdx), %rdx	#, tmp118
+ 3183 010a 488D524C 		leaq	76(%rdx), %rdx	#, _9
+ 3184              	# gate.h:161: 	*(unsigned long *)(TSS64_Table+19) = ist6;
+ 3185              		.loc 1 161 37
+ 3186 010e 488B4D20 		movq	32(%rbp), %rcx	# ist6, tmp119
+ 3187 0112 48890A   		movq	%rcx, (%rdx)	# tmp119, *_9
+ 3188              	# gate.h:162: 	*(unsigned long *)(TSS64_Table+21) = ist7;	
+ 162:gate.h        **** 	*(unsigned long *)(TSS64_Table+21) = ist7;	
+ 3189              		.loc 1 162 3
+ 3190 0115 48BA0000 		movabsq	$TSS64_Table@GOT, %rdx	#, tmp120
+ 3190      00000000 
+ 3190      0000
+ 3191 011f 488B0410 		movq	(%rax,%rdx), %rax	#, tmp121
+ 3192 0123 488D4054 		leaq	84(%rax), %rax	#, _10
+ 3193              	# gate.h:162: 	*(unsigned long *)(TSS64_Table+21) = ist7;	
+ 3194              		.loc 1 162 37
+ 3195 0127 488B5528 		movq	40(%rbp), %rdx	# ist7, tmp122
+ 3196 012b 488910   		movq	%rdx, (%rax)	# tmp122, *_10
+ 3197              	# gate.h:163: }
+ 163:gate.h        **** }
+ 3198              		.loc 1 163 1
+ 3199 012e 90       		nop	
+ 3200 012f 5D       		popq	%rbp	#
+ 3201              		.cfi_def_cfa 7, 8
+ 3202 0130 C3       		ret	
+ 3203              		.cfi_endproc
+ 3204              	.LFE38:
+ 3205              		.size	set_tss64, .-set_tss64
+ 3206              		.section	.rodata
+ 3207              	.LC0:
+ 3208 0000 68656C6C 		.string	"hello\t\t kernel!\n"
+ 3208      6F090920 
+ 3208      6B65726E 
+ 3208      656C210A 
+ 3208      00
+ 3209              	.LC1:
+ 3210 0011 68656C6C 		.string	"hello,User\n"
+ 3210      6F2C5573 
+ 3210      65720A00 
+ 3211 001d 000000   		.align 8
+ 3212              	.LC2:
+ 3213 0020 5374616E 		.string	"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n"
+ 3213      64696E67 
+ 3213      20666972 
+ 3213      6D20696E 
+ 3213      20746865 
+ 3214 0074 00000000 		.align 8
+ 3215              	.LC3:
+ 3216 0078 4920616D 		.string	"I am the royal daughter who has broken the law!\n"
+GAS LISTING main.s 			page 65
+
+
+ 3216      20746865 
+ 3216      20726F79 
+ 3216      616C2064 
+ 3216      61756768 
+ 3217 00a9 00000000 		.align 8
+ 3217      000000
+ 3218              	.LC4:
+ 3219 00b0 486D6D2C 		.string	"Hmm,there is still a problem here?"
+ 3219      74686572 
+ 3219      65206973 
+ 3219      20737469 
+ 3219      6C6C2061 
+ 3220              		.text
+ 3221              		.globl	Start_Kernel
+ 3222              		.type	Start_Kernel, @function
+ 3223              	Start_Kernel:
+ 3224              	.LFB39:
+ 3225              		.file 2 "main.c"
    1:main.c        **** /*
    2:main.c        **** compile into large model,
    3:main.c        **** The large model has no address range limitation and allows the code and data to be distributed thro
    4:main.c        **** the entire 64-bit address space (0 to 2^64 - 1).
    5:main.c        **** 
    6:main.c        **** The kernel is typically mapped to the Higher Half.
-GAS LISTING main.s 			page 60
-
-
    7:main.c        **** */ 
    8:main.c        **** 
    9:main.c        **** //jmp    ffff800000100094 <Start_kernel+0x1c>
   10:main.c        **** #include "lib.h"
   11:main.c        **** #include "printk.h"
-  12:main.c        **** void Start_Kernel(void)
-  13:main.c        **** {
- 3103              		.loc 1 13 1
- 3104              		.cfi_startproc
- 3105 0000 F30F1EFA 		endbr64	
- 3106 0004 55       		pushq	%rbp	#
- 3107              		.cfi_def_cfa_offset 16
- 3108              		.cfi_offset 6, -16
- 3109 0005 4889E5   		movq	%rsp, %rbp	#,
- 3110              		.cfi_def_cfa_register 6
- 3111 0008 4157     		pushq	%r15	#
- 3112 000a 53       		pushq	%rbx	#
- 3113 000b 4883EC20 		subq	$32, %rsp	#,
- 3114              		.cfi_offset 15, -24
- 3115              		.cfi_offset 3, -32
- 3116              	.L3:
- 3117 000f 488D1DF9 		leaq	.L3(%rip), %rbx	#, tmp82
- 3117      FFFFFF
- 3118 0016 49BB0000 		movabsq	$_GLOBAL_OFFSET_TABLE_-.L3, %r11	#,
- 3118      00000000 
- 3118      0000
- 3119 0020 4C01DB   		addq	%r11, %rbx	#, tmp82
- 3120              	# main.c:20:     asm volatile("mov %%cr4, %0" : "=r"(cr4));
+  12:main.c        **** #include "gate.h"
+  13:main.c        **** #include "trap.h"
   14:main.c        **** 
-  15:main.c        ****     //the loader.asm now using 640×480;
-  16:main.c        ****     // if there is a problem,try 640*20,otherwise use 1440*20
-  17:main.c        ****     //(1440*900)
-  18:main.c        ****     // 启用SSE异常处理
-  19:main.c        ****     unsigned long cr4;
-  20:main.c        ****     asm volatile("mov %%cr4, %0" : "=r"(cr4));
- 3121              		.loc 1 20 5
- 3122              	#APP
- 3123              	# 20 "main.c" 1
-  21              	    cr4 |= (1 << 9);  // 设置OSXMMEXCPT位
- 3124              		mov %cr4, %rax	# cr4
- 3125              	# 0 "" 2
- 3126              	#NO_APP
- 3127 0026 488945E8 		movq	%rax, -24(%rbp)	# cr4, cr4
- 3128              	# main.c:21:     cr4 |= (1 << 9);  // 设置OSXMMEXCPT位
- 3129              		.loc 1 21 9
- 3130 002a 48814DE8 		orq	$512, -24(%rbp)	#, cr4
- 3130      00020000 
- 3131              	# main.c:22:     cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
-  22:main.c        ****     cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
- 3132              		.loc 1 22 9
- 3133 0032 48814DE8 		orq	$1024, -24(%rbp)	#, cr4
- 3133      00040000 
- 3134              	# main.c:23:     asm volatile("mov %0, %%cr4" : : "r"(cr4));
-  23:main.c        ****     asm volatile("mov %0, %%cr4" : : "r"(cr4));
- 3135              		.loc 1 23 5
- 3136 003a 488B45E8 		movq	-24(%rbp), %rax	# cr4, tmp89
- 3137              	#APP
-GAS LISTING main.s 			page 61
-
-
- 3138              	# 23 "main.c" 1
-  24              	    
- 3139              		mov %rax, %cr4	# tmp89
- 3140              	# 0 "" 2
- 3141              	# main.c:25:     int *addr=(int *)0xffff800000a00000;
-  25:main.c        ****     int *addr=(int *)0xffff800000a00000;
- 3142              		.loc 1 25 10
- 3143              	#NO_APP
- 3144 0041 48BE0000 		movabsq	$-140737477869568, %rsi	#, tmp120
- 3144      A0000080 
- 3144      FFFF
- 3145 004b 488975E0 		movq	%rsi, -32(%rbp)	# tmp120, addr
- 3146              	# main.c:27:     Pos.XResolution=1440;
-  26:main.c        ****     int i;
-  27:main.c        ****     Pos.XResolution=1440;
- 3147              		.loc 1 27 20
- 3148 004f 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp90
- 3148      00000000 
- 3148      0000
- 3149 0059 C70403A0 		movl	$1440, (%rbx,%rax)	#, Pos.XResolution
- 3149      050000
- 3150              	# main.c:28:     Pos.YResolution=900;
-  28:main.c        ****     Pos.YResolution=900;
- 3151              		.loc 1 28 20
- 3152 0060 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp91
- 3152      00000000 
- 3152      0000
- 3153 006a C7440304 		movl	$900, 4(%rbx,%rax)	#, Pos.YResolution
- 3153      84030000 
- 3154              	# main.c:29:     Pos.XPosition=0;
-  29:main.c        ****     Pos.XPosition=0;
- 3155              		.loc 1 29 18
- 3156 0072 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp92
- 3156      00000000 
- 3156      0000
- 3157 007c C7440308 		movl	$0, 8(%rbx,%rax)	#, Pos.XPosition
- 3157      00000000 
- 3158              	# main.c:30:     Pos.YPosition=0;
-  30:main.c        ****     Pos.YPosition=0;
- 3159              		.loc 1 30 18
- 3160 0084 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp93
- 3160      00000000 
- 3160      0000
- 3161 008e C744030C 		movl	$0, 12(%rbx,%rax)	#, Pos.YPosition
- 3161      00000000 
- 3162              	# main.c:31:     Pos.XCharSize=8;
-  31:main.c        ****     Pos.XCharSize=8;
- 3163              		.loc 1 31 18
- 3164 0096 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp94
- 3164      00000000 
- 3164      0000
- 3165 00a0 C7440310 		movl	$8, 16(%rbx,%rax)	#, Pos.XCharSize
- 3165      08000000 
- 3166              	# main.c:32:     Pos.YCharSize=16;
-  32:main.c        ****     Pos.YCharSize=16;
- 3167              		.loc 1 32 18
- 3168 00a8 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp95
-GAS LISTING main.s 			page 62
-
-
- 3168      00000000 
- 3168      0000
- 3169 00b2 C7440314 		movl	$16, 20(%rbx,%rax)	#, Pos.YCharSize
- 3169      10000000 
- 3170              	# main.c:33:     Pos.FB_addr=(int *)0xffff800000a00000;
-  33:main.c        ****     Pos.FB_addr=(int *)0xffff800000a00000;
- 3171              		.loc 1 33 16
- 3172 00ba 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp96
- 3172      00000000 
- 3172      0000
- 3173 00c4 48897403 		movq	%rsi, 24(%rbx,%rax)	# tmp121, Pos.FB_addr
- 3173      18
- 3174              	# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
-  34:main.c        ****     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
- 3175              		.loc 1 34 23
- 3176 00c9 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp97
- 3176      00000000 
- 3176      0000
- 3177 00d3 8B1403   		movl	(%rbx,%rax), %edx	# Pos.XResolution, _1
- 3178              	# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
- 3179              		.loc 1 34 39
- 3180 00d6 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp98
- 3180      00000000 
- 3180      0000
- 3181 00e0 8B440304 		movl	4(%rbx,%rax), %eax	# Pos.YResolution, _2
- 3182              	# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
- 3183              		.loc 1 34 35
- 3184 00e4 0FAFC2   		imull	%edx, %eax	# _1, _3
- 3185              	# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
- 3186              		.loc 1 34 51
- 3187 00e7 C1E002   		sall	$2, %eax	#, _4
- 3188 00ea 4898     		cltq
- 3189              	# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
- 3190              		.loc 1 34 18
- 3191 00ec 48BA0000 		movabsq	$Pos@GOTOFF, %rdx	#, tmp99
- 3191      00000000 
- 3191      0000
- 3192 00f6 48894413 		movq	%rax, 32(%rbx,%rdx)	# _5, Pos.FB_length
- 3192      20
- 3193              	# main.c:67:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
-  35:main.c        **** 
-  36:main.c        ****     // for(i=0;i<Pos.XResolution*20;i++){
-  37:main.c        ****     //     *((char*)addr+0)=(char)0x00;
-  38:main.c        ****     //     *((char*)addr+1)=(char)0x00;
-  39:main.c        ****     //     *((char*)addr+2)=(char)0xff;
-  40:main.c        ****     //     *((char*)addr+3)=(char)0x00;
-  41:main.c        ****     //     addr=addr+1;
-  42:main.c        **** 
-  43:main.c        ****     // }
-  44:main.c        ****     // for(i=0;i<Pos.XResolution*20;i++){
-  45:main.c        ****     //     *((char*)addr+0)=(char)0x00;
-  46:main.c        ****     //     *((char*)addr+1)=(char)0xff;
-  47:main.c        ****     //     *((char*)addr+2)=(char)0x00;
-  48:main.c        ****     //     *((char*)addr+3)=(char)0x00;
-  49:main.c        ****     //     addr=addr+1;
-  50:main.c        **** 
-  51:main.c        ****     // }
-GAS LISTING main.s 			page 63
-
-
-  52:main.c        ****     // for(i=0;i<Pos.XResolution*20;i++){
-  53:main.c        ****     //     *((char*)addr+0)=(char)0xff;
-  54:main.c        ****     //     *((char*)addr+1)=(char)0x00;
-  55:main.c        ****     //     *((char*)addr+2)=(char)0x00;
-  56:main.c        ****     //     *((char*)addr+3)=(char)0x00;
-  57:main.c        ****     //     addr=addr+1;
-  58:main.c        ****     // }
-  59:main.c        ****     // for(i=0;i<Pos.XResolution*20;i++){
-  60:main.c        ****     //     *((char*)addr+0)=(char)0xff;
-  61:main.c        ****     //     *((char*)addr+1)=(char)0xff;
-  62:main.c        ****     //     *((char*)addr+2)=(char)0xff;
-  63:main.c        ****     //     *((char*)addr+3)=(char)0x00;
-  64:main.c        ****     //     addr=addr+1;
-  65:main.c        **** 
-  66:main.c        ****     // }
-  67:main.c        ****     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
- 3194              		.loc 1 67 5
- 3195 00fb 48B80000 		movabsq	$.LC0@GOTOFF, %rax	#, tmp101
- 3195      00000000 
- 3195      0000
- 3196 0105 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp100
- 3197 0109 4889C2   		movq	%rax, %rdx	# tmp100,
- 3198 010c BE000000 		movl	$0, %esi	#,
- 3198      00
- 3199 0111 BF00FFFF 		movl	$16776960, %edi	#,
- 3199      00
- 3200 0116 4989DF   		movq	%rbx, %r15	# tmp82,
- 3201 0119 B8000000 		movl	$0, %eax	#,
- 3201      00
- 3202 011e 48B90000 		movabsq	$color_printk@PLTOFF, %rcx	#, tmp102
- 3202      00000000 
- 3202      0000
- 3203 0128 4801D9   		addq	%rbx, %rcx	# tmp82, tmp102
- 3204 012b FFD1     		call	*%rcx	# tmp102
- 3205              	.LVL0:
- 3206              	# main.c:68:     color_printk(YELLOW,BLACK,"hello,User\n");
-  68:main.c        ****     color_printk(YELLOW,BLACK,"hello,User\n");
- 3207              		.loc 1 68 5
- 3208 012d 48B80000 		movabsq	$.LC1@GOTOFF, %rax	#, tmp104
- 3208      00000000 
- 3208      0000
- 3209 0137 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp103
- 3210 013b 4889C2   		movq	%rax, %rdx	# tmp103,
- 3211 013e BE000000 		movl	$0, %esi	#,
- 3211      00
- 3212 0143 BF00FFFF 		movl	$16776960, %edi	#,
- 3212      00
- 3213 0148 4989DF   		movq	%rbx, %r15	# tmp82,
- 3214 014b B8000000 		movl	$0, %eax	#,
- 3214      00
- 3215 0150 48B90000 		movabsq	$color_printk@PLTOFF, %rcx	#, tmp105
- 3215      00000000 
- 3215      0000
- 3216 015a 4801D9   		addq	%rbx, %rcx	# tmp82, tmp105
- 3217 015d FFD1     		call	*%rcx	# tmp105
- 3218              	.LVL1:
- 3219              	# main.c:69:     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have establ
-GAS LISTING main.s 			page 64
-
-
-  69:main.c        ****     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the par
- 3220              		.loc 1 69 5
- 3221 015f 48B80000 		movabsq	$.LC2@GOTOFF, %rax	#, tmp107
- 3221      00000000 
- 3221      0000
- 3222 0169 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp106
- 3223 016d 4889C2   		movq	%rax, %rdx	# tmp106,
- 3224 0170 BE000000 		movl	$0, %esi	#,
- 3224      00
- 3225 0175 BF00FFFF 		movl	$16776960, %edi	#,
- 3225      00
- 3226 017a 4989DF   		movq	%rbx, %r15	# tmp82,
- 3227 017d B8000000 		movl	$0, %eax	#,
- 3227      00
- 3228 0182 48B90000 		movabsq	$color_printk@PLTOFF, %rcx	#, tmp108
- 3228      00000000 
- 3228      0000
- 3229 018c 4801D9   		addq	%rbx, %rcx	# tmp82, tmp108
- 3230 018f FFD1     		call	*%rcx	# tmp108
- 3231              	.LVL2:
- 3232              	# main.c:70:     i=1/0;    
-  70:main.c        ****     i=1/0;    
- 3233              		.loc 1 70 6
- 3234 0191 B8010000 		movl	$1, %eax	#, tmp109
- 3234      00
- 3235 0196 BF000000 		movl	$0, %edi	#, tmp112
- 3235      00
- 3236 019b 99       		cltd
- 3237 019c F7FF     		idivl	%edi	# tmp112
- 3238 019e 8945DC   		movl	%eax, -36(%rbp)	# tmp110, i
- 3239              	# main.c:71:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
-  71:main.c        ****     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
- 3240              		.loc 1 71 5
- 3241 01a1 48B80000 		movabsq	$.LC3@GOTOFF, %rax	#, tmp114
+  15:main.c        **** void Start_Kernel(void)
+  16:main.c        **** {
+ 3226              		.loc 2 16 1
+ 3227              		.cfi_startproc
+ 3228 0131 F30F1EFA 		endbr64	
+ 3229 0135 55       		pushq	%rbp	#
+ 3230              		.cfi_def_cfa_offset 16
+ 3231              		.cfi_offset 6, -16
+ 3232 0136 4889E5   		movq	%rsp, %rbp	#,
+ 3233              		.cfi_def_cfa_register 6
+ 3234 0139 4157     		pushq	%r15	#
+ 3235 013b 53       		pushq	%rbx	#
+ 3236 013c 4883EC20 		subq	$32, %rsp	#,
+ 3237              		.cfi_offset 15, -24
+ 3238              		.cfi_offset 3, -32
+ 3239              	.L5:
+ 3240 0140 488D1DF9 		leaq	.L5(%rip), %rbx	#, tmp82
+ 3240      FFFFFF
+ 3241 0147 49BB0000 		movabsq	$_GLOBAL_OFFSET_TABLE_-.L5, %r11	#,
  3241      00000000 
  3241      0000
- 3242 01ab 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp113
- 3243 01af 4889C2   		movq	%rax, %rdx	# tmp113,
- 3244 01b2 BE000000 		movl	$0, %esi	#,
- 3244      00
- 3245 01b7 BF00FFFF 		movl	$16776960, %edi	#,
- 3245      00
- 3246 01bc 4989DF   		movq	%rbx, %r15	# tmp82,
- 3247 01bf B8000000 		movl	$0, %eax	#,
- 3247      00
- 3248 01c4 48B90000 		movabsq	$color_printk@PLTOFF, %rcx	#, tmp115
- 3248      00000000 
- 3248      0000
- 3249 01ce 4801D9   		addq	%rbx, %rcx	# tmp82, tmp115
- 3250 01d1 FFD1     		call	*%rcx	# tmp115
- 3251              	.LVL3:
- 3252              	# main.c:73:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
-  72:main.c        ****     // clear_screen(YELLOW,BLACK);
-  73:main.c        ****     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
- 3253              		.loc 1 73 5
- 3254 01d3 48B80000 		movabsq	$.LC4@GOTOFF, %rax	#, tmp117
- 3254      00000000 
-GAS LISTING main.s 			page 65
-
-
- 3254      0000
- 3255 01dd 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp116
- 3256 01e1 4889C2   		movq	%rax, %rdx	# tmp116,
- 3257 01e4 BE000000 		movl	$0, %esi	#,
- 3257      00
- 3258 01e9 BF00FFFF 		movl	$16776960, %edi	#,
- 3258      00
- 3259 01ee 4989DF   		movq	%rbx, %r15	# tmp82,
- 3260 01f1 B8000000 		movl	$0, %eax	#,
- 3260      00
- 3261 01f6 48B90000 		movabsq	$color_printk@PLTOFF, %rcx	#, tmp118
- 3261      00000000 
- 3261      0000
- 3262 0200 4801D9   		addq	%rbx, %rcx	# tmp82, tmp118
- 3263 0203 FFD1     		call	*%rcx	# tmp118
- 3264              	.LVL4:
- 3265              	.L2:
- 3266              	# main.c:74:     while (1)
-  74:main.c        ****     while (1)
- 3267              		.loc 1 74 11
- 3268 0205 90       		nop	
- 3269 0206 EBFD     		jmp	.L2	#
- 3270              		.cfi_endproc
- 3271              	.LFE34:
- 3272              		.size	Start_Kernel, .-Start_Kernel
- 3273              	.Letext0:
- 3274              		.file 2 "printk.h"
- 3275              		.file 3 "font.h"
- 3276              		.section	.debug_info,"",@progbits
- 3277              	.Ldebug_info0:
- 3278 0000 E1010000 		.long	0x1e1
- 3279 0004 0500     		.value	0x5
- 3280 0006 01       		.byte	0x1
- 3281 0007 08       		.byte	0x8
- 3282 0008 00000000 		.long	.Ldebug_abbrev0
- 3283 000c 0A       		.uleb128 0xa
- 3284 000d 00000000 		.long	.LASF16
- 3285 0011 1D       		.byte	0x1d
- 3286 0012 00000000 		.long	.LASF0
- 3287 0016 00000000 		.long	.LASF1
- 3288 001a 00000000 		.quad	.Ltext0
- 3288      00000000 
- 3289 0022 08020000 		.quad	.Letext0-.Ltext0
- 3289      00000000 
- 3290 002a 00000000 		.long	.Ldebug_line0
- 3291 002e 03       		.uleb128 0x3
- 3292 002f 08       		.byte	0x8
- 3293 0030 07       		.byte	0x7
- 3294 0031 00000000 		.long	.LASF2
- 3295 0035 03       		.uleb128 0x3
- 3296 0036 04       		.byte	0x4
- 3297 0037 07       		.byte	0x7
- 3298 0038 00000000 		.long	.LASF3
- 3299 003c 06       		.uleb128 0x6
- 3300 003d 52000000 		.long	0x52
- 3301 0041 52000000 		.long	0x52
- 3302 0045 07       		.uleb128 0x7
+ 3242 0151 4C01DB   		addq	%r11, %rbx	#, tmp82
+ 3243              	# main.c:23:     asm volatile("mov %%cr4, %0" : "=r"(cr4));
+  17:main.c        **** 
+  18:main.c        ****     //the loader.asm now using 640×480;
 GAS LISTING main.s 			page 66
 
 
- 3303 0046 2E000000 		.long	0x2e
- 3304 004a FF       		.byte	0xff
- 3305 004b 07       		.uleb128 0x7
- 3306 004c 2E000000 		.long	0x2e
- 3307 0050 0F       		.byte	0xf
- 3308 0051 00       		.byte	0
- 3309 0052 03       		.uleb128 0x3
- 3310 0053 01       		.byte	0x1
- 3311 0054 08       		.byte	0x8
- 3312 0055 00000000 		.long	.LASF4
- 3313 0059 0B       		.uleb128 0xb
- 3314 005a 00000000 		.long	.LASF13
- 3315 005e 03       		.byte	0x3
- 3316 005f 06       		.byte	0x6
- 3317 0060 0F       		.byte	0xf
- 3318 0061 3C000000 		.long	0x3c
- 3319 0065 09       		.uleb128 0x9
- 3320 0066 03       		.byte	0x3
- 3321 0067 00000000 		.quad	font_ascii
- 3321      00000000 
- 3322 006f 0C       		.uleb128 0xc
- 3323 0070 00000000 		.long	.LASF17
- 3324 0074 28       		.byte	0x28
- 3325 0075 02       		.byte	0x2
- 3326 0076 20       		.byte	0x20
- 3327 0077 08       		.byte	0x8
- 3328 0078 DD000000 		.long	0xdd
- 3329 007c 01       		.uleb128 0x1
- 3330 007d 00000000 		.long	.LASF5
- 3331 0081 22       		.byte	0x22
- 3332 0082 09       		.byte	0x9
- 3333 0083 DD000000 		.long	0xdd
- 3334 0087 00       		.byte	0
- 3335 0088 01       		.uleb128 0x1
- 3336 0089 00000000 		.long	.LASF6
- 3337 008d 23       		.byte	0x23
- 3338 008e 09       		.byte	0x9
- 3339 008f DD000000 		.long	0xdd
- 3340 0093 04       		.byte	0x4
- 3341 0094 01       		.uleb128 0x1
- 3342 0095 00000000 		.long	.LASF7
- 3343 0099 24       		.byte	0x24
- 3344 009a 09       		.byte	0x9
- 3345 009b DD000000 		.long	0xdd
- 3346 009f 08       		.byte	0x8
- 3347 00a0 01       		.uleb128 0x1
- 3348 00a1 00000000 		.long	.LASF8
- 3349 00a5 25       		.byte	0x25
- 3350 00a6 09       		.byte	0x9
- 3351 00a7 DD000000 		.long	0xdd
- 3352 00ab 0C       		.byte	0xc
- 3353 00ac 01       		.uleb128 0x1
- 3354 00ad 00000000 		.long	.LASF9
- 3355 00b1 26       		.byte	0x26
- 3356 00b2 09       		.byte	0x9
- 3357 00b3 DD000000 		.long	0xdd
- 3358 00b7 10       		.byte	0x10
+  19:main.c        ****     // if there is a problem,try 640*20,otherwise use 1440*20
+  20:main.c        ****     //(1440*900)
+  21:main.c        ****     // 启用SSE异常处理
+  22:main.c        ****     unsigned long cr4;
+  23:main.c        ****     asm volatile("mov %%cr4, %0" : "=r"(cr4));
+ 3244              		.loc 2 23 5
+ 3245              	#APP
+ 3246              	# 23 "main.c" 1
+  24              	    cr4 |= (1 << 9);  // 设置OSXMMEXCPT位
+ 3247              		mov %cr4, %rax	# cr4
+ 3248              	# 0 "" 2
+ 3249              	#NO_APP
+ 3250 0157 488945E8 		movq	%rax, -24(%rbp)	# cr4, cr4
+ 3251              	# main.c:24:     cr4 |= (1 << 9);  // 设置OSXMMEXCPT位
+ 3252              		.loc 2 24 9
+ 3253 015b 48814DE8 		orq	$512, -24(%rbp)	#, cr4
+ 3253      00020000 
+ 3254              	# main.c:25:     cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
+  25:main.c        ****     cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
+ 3255              		.loc 2 25 9
+ 3256 0163 48814DE8 		orq	$1024, -24(%rbp)	#, cr4
+ 3256      00040000 
+ 3257              	# main.c:26:     asm volatile("mov %0, %%cr4" : : "r"(cr4));
+  26:main.c        ****     asm volatile("mov %0, %%cr4" : : "r"(cr4));
+ 3258              		.loc 2 26 5
+ 3259 016b 488B45E8 		movq	-24(%rbp), %rax	# cr4, tmp89
+ 3260              	#APP
+ 3261              	# 26 "main.c" 1
+  27              	    
+ 3262              		mov %rax, %cr4	# tmp89
+ 3263              	# 0 "" 2
+ 3264              	# main.c:28:     int *addr=(int *)0xffff800000a00000;
+  28:main.c        ****     int *addr=(int *)0xffff800000a00000;
+ 3265              		.loc 2 28 10
+ 3266              	#NO_APP
+ 3267 0172 48BE0000 		movabsq	$-140737477869568, %rsi	#, tmp128
+ 3267      A0000080 
+ 3267      FFFF
+ 3268 017c 488975E0 		movq	%rsi, -32(%rbp)	# tmp128, addr
+ 3269              	# main.c:30:     Pos.XResolution=1440;
+  29:main.c        ****     int i;
+  30:main.c        ****     Pos.XResolution=1440;
+ 3270              		.loc 2 30 20
+ 3271 0180 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp90
+ 3271      00000000 
+ 3271      0000
+ 3272 018a C70403A0 		movl	$1440, (%rbx,%rax)	#, Pos.XResolution
+ 3272      050000
+ 3273              	# main.c:31:     Pos.YResolution=900;
+  31:main.c        ****     Pos.YResolution=900;
+ 3274              		.loc 2 31 20
+ 3275 0191 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp91
+ 3275      00000000 
+ 3275      0000
+ 3276 019b C7440304 		movl	$900, 4(%rbx,%rax)	#, Pos.YResolution
+ 3276      84030000 
+ 3277              	# main.c:32:     Pos.XPosition=0;
 GAS LISTING main.s 			page 67
 
 
- 3359 00b8 01       		.uleb128 0x1
- 3360 00b9 00000000 		.long	.LASF10
- 3361 00bd 27       		.byte	0x27
- 3362 00be 09       		.byte	0x9
- 3363 00bf DD000000 		.long	0xdd
- 3364 00c3 14       		.byte	0x14
- 3365 00c4 01       		.uleb128 0x1
- 3366 00c5 00000000 		.long	.LASF11
- 3367 00c9 28       		.byte	0x28
- 3368 00ca 14       		.byte	0x14
- 3369 00cb E4000000 		.long	0xe4
- 3370 00cf 18       		.byte	0x18
- 3371 00d0 01       		.uleb128 0x1
- 3372 00d1 00000000 		.long	.LASF12
- 3373 00d5 29       		.byte	0x29
- 3374 00d6 13       		.byte	0x13
- 3375 00d7 2E000000 		.long	0x2e
- 3376 00db 20       		.byte	0x20
- 3377 00dc 00       		.byte	0
- 3378 00dd 0D       		.uleb128 0xd
- 3379 00de 04       		.byte	0x4
- 3380 00df 05       		.byte	0x5
- 3381 00e0 696E7400 		.string	"int"
- 3382 00e4 04       		.uleb128 0x4
- 3383 00e5 35000000 		.long	0x35
- 3384 00e9 08       		.uleb128 0x8
- 3385 00ea 506F7300 		.string	"Pos"
- 3386 00ee 2A       		.byte	0x2a
- 3387 00ef 02       		.byte	0x2
- 3388 00f0 6F000000 		.long	0x6f
- 3389 00f4 09       		.uleb128 0x9
- 3390 00f5 03       		.byte	0x3
- 3391 00f6 00000000 		.quad	Pos
- 3391      00000000 
- 3392 00fe 06       		.uleb128 0x6
- 3393 00ff 0F010000 		.long	0x10f
- 3394 0103 0F010000 		.long	0x10f
- 3395 0107 0E       		.uleb128 0xe
- 3396 0108 2E000000 		.long	0x2e
- 3397 010c FF0F     		.value	0xfff
- 3398 010e 00       		.byte	0
- 3399 010f 03       		.uleb128 0x3
- 3400 0110 01       		.byte	0x1
- 3401 0111 06       		.byte	0x6
- 3402 0112 00000000 		.long	.LASF14
- 3403 0116 0F       		.uleb128 0xf
- 3404 0117 0F010000 		.long	0x10f
- 3405 011b 08       		.uleb128 0x8
- 3406 011c 62756600 		.string	"buf"
- 3407 0120 2E       		.byte	0x2e
- 3408 0121 06       		.byte	0x6
- 3409 0122 FE000000 		.long	0xfe
- 3410 0126 09       		.uleb128 0x9
- 3411 0127 03       		.byte	0x3
- 3412 0128 00000000 		.quad	buf
- 3412      00000000 
- 3413 0130 10       		.uleb128 0x10
+  32:main.c        ****     Pos.XPosition=0;
+ 3278              		.loc 2 32 18
+ 3279 01a3 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp92
+ 3279      00000000 
+ 3279      0000
+ 3280 01ad C7440308 		movl	$0, 8(%rbx,%rax)	#, Pos.XPosition
+ 3280      00000000 
+ 3281              	# main.c:33:     Pos.YPosition=0;
+  33:main.c        ****     Pos.YPosition=0;
+ 3282              		.loc 2 33 18
+ 3283 01b5 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp93
+ 3283      00000000 
+ 3283      0000
+ 3284 01bf C744030C 		movl	$0, 12(%rbx,%rax)	#, Pos.YPosition
+ 3284      00000000 
+ 3285              	# main.c:34:     Pos.XCharSize=8;
+  34:main.c        ****     Pos.XCharSize=8;
+ 3286              		.loc 2 34 18
+ 3287 01c7 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp94
+ 3287      00000000 
+ 3287      0000
+ 3288 01d1 C7440310 		movl	$8, 16(%rbx,%rax)	#, Pos.XCharSize
+ 3288      08000000 
+ 3289              	# main.c:35:     Pos.YCharSize=16;
+  35:main.c        ****     Pos.YCharSize=16;
+ 3290              		.loc 2 35 18
+ 3291 01d9 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp95
+ 3291      00000000 
+ 3291      0000
+ 3292 01e3 C7440314 		movl	$16, 20(%rbx,%rax)	#, Pos.YCharSize
+ 3292      10000000 
+ 3293              	# main.c:36:     Pos.FB_addr=(int *)0xffff800000a00000;
+  36:main.c        ****     Pos.FB_addr=(int *)0xffff800000a00000;
+ 3294              		.loc 2 36 16
+ 3295 01eb 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp96
+ 3295      00000000 
+ 3295      0000
+ 3296 01f5 48897403 		movq	%rsi, 24(%rbx,%rax)	# tmp129, Pos.FB_addr
+ 3296      18
+ 3297              	# main.c:37:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+  37:main.c        ****     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+ 3298              		.loc 2 37 23
+ 3299 01fa 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp97
+ 3299      00000000 
+ 3299      0000
+ 3300 0204 8B1403   		movl	(%rbx,%rax), %edx	# Pos.XResolution, _1
+ 3301              	# main.c:37:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+ 3302              		.loc 2 37 39
+ 3303 0207 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp98
+ 3303      00000000 
+ 3303      0000
+ 3304 0211 8B440304 		movl	4(%rbx,%rax), %eax	# Pos.YResolution, _2
+ 3305              	# main.c:37:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+ 3306              		.loc 2 37 35
+ 3307 0215 0FAFC2   		imull	%edx, %eax	# _1, _3
+ 3308              	# main.c:37:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+ 3309              		.loc 2 37 51
 GAS LISTING main.s 			page 68
 
 
- 3414 0131 00000000 		.long	.LASF18
- 3415 0135 02       		.byte	0x2
- 3416 0136 3B       		.byte	0x3b
- 3417 0137 05       		.byte	0x5
- 3418 0138 DD000000 		.long	0xdd
- 3419 013c 51010000 		.long	0x151
- 3420 0140 05       		.uleb128 0x5
- 3421 0141 35000000 		.long	0x35
- 3422 0145 05       		.uleb128 0x5
- 3423 0146 35000000 		.long	0x35
- 3424 014a 05       		.uleb128 0x5
- 3425 014b 51010000 		.long	0x151
- 3426 014f 11       		.uleb128 0x11
- 3427 0150 00       		.byte	0
- 3428 0151 04       		.uleb128 0x4
- 3429 0152 16010000 		.long	0x116
- 3430 0156 12       		.uleb128 0x12
- 3431 0157 00000000 		.long	.LASF19
- 3432 015b 01       		.byte	0x1
- 3433 015c 0C       		.byte	0xc
- 3434 015d 06       		.byte	0x6
- 3435 015e 00000000 		.quad	.LFB34
- 3435      00000000 
- 3436 0166 08020000 		.quad	.LFE34-.LFB34
- 3436      00000000 
- 3437 016e 01       		.uleb128 0x1
- 3438 016f 9C       		.byte	0x9c
- 3439 0170 DF010000 		.long	0x1df
- 3440 0174 09       		.uleb128 0x9
- 3441 0175 63723400 		.string	"cr4"
- 3442 0179 13       		.byte	0x13
- 3443 017a 13       		.byte	0x13
- 3444 017b 2E000000 		.long	0x2e
- 3445 017f 02       		.uleb128 0x2
- 3446 0180 91       		.byte	0x91
- 3447 0181 58       		.sleb128 -40
- 3448 0182 13       		.uleb128 0x13
- 3449 0183 00000000 		.long	.LASF15
- 3450 0187 01       		.byte	0x1
- 3451 0188 19       		.byte	0x19
- 3452 0189 0A       		.byte	0xa
- 3453 018a DF010000 		.long	0x1df
- 3454 018e 02       		.uleb128 0x2
- 3455 018f 91       		.byte	0x91
- 3456 0190 50       		.sleb128 -48
- 3457 0191 09       		.uleb128 0x9
- 3458 0192 6900     		.string	"i"
- 3459 0194 1A       		.byte	0x1a
- 3460 0195 09       		.byte	0x9
- 3461 0196 DD000000 		.long	0xdd
- 3462 019a 02       		.uleb128 0x2
- 3463 019b 91       		.byte	0x91
- 3464 019c 4C       		.sleb128 -52
- 3465 019d 02       		.uleb128 0x2
- 3466 019e 00000000 		.quad	.LVL0
- 3466      00000000 
- 3467 01a6 30010000 		.long	0x130
+ 3310 0218 C1E002   		sall	$2, %eax	#, _4
+ 3311 021b 4898     		cltq
+ 3312              	# main.c:37:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+ 3313              		.loc 2 37 18
+ 3314 021d 48BA0000 		movabsq	$Pos@GOTOFF, %rdx	#, tmp99
+ 3314      00000000 
+ 3314      0000
+ 3315 0227 48894413 		movq	%rax, 32(%rbx,%rdx)	# _5, Pos.FB_length
+ 3315      20
+ 3316              	# main.c:38:     load_TR(8);
+  38:main.c        ****     load_TR(8);
+ 3317              		.loc 2 38 5
+ 3318 022c B8400000 		movl	$64, %eax	#, tmp100
+ 3318      00
+ 3319              	#APP
+ 3320              	# 38 "main.c" 1
+  39              	    //set_tss64(0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff8
+ 3321              		ltr %ax	
+ 3322              	# 0 "" 2
+ 3323              	# main.c:40:     set_tss64(0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007
+  40:main.c        ****     set_tss64(0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800
+ 3324              		.loc 2 40 5
+ 3325              	#NO_APP
+ 3326 0234 68007C00 		pushq	$31744	#
+ 3326      00
+ 3327 0239 C7442404 		movl	$-32768, 4(%rsp)	#,
+ 3327      0080FFFF 
+ 3328 0241 68007C00 		pushq	$31744	#
+ 3328      00
+ 3329 0246 C7442404 		movl	$-32768, 4(%rsp)	#,
+ 3329      0080FFFF 
+ 3330 024e 68007C00 		pushq	$31744	#
+ 3330      00
+ 3331 0253 C7442404 		movl	$-32768, 4(%rsp)	#,
+ 3331      0080FFFF 
+ 3332 025b 68007C00 		pushq	$31744	#
+ 3332      00
+ 3333 0260 C7442404 		movl	$-32768, 4(%rsp)	#,
+ 3333      0080FFFF 
+ 3334 0268 49B9007C 		movabsq	$-140737488323584, %r9	#,
+ 3334      00000080 
+ 3334      FFFF
+ 3335 0272 49B8007C 		movabsq	$-140737488323584, %r8	#,
+ 3335      00000080 
+ 3335      FFFF
+ 3336 027c 48B8007C 		movabsq	$-140737488323584, %rax	#, tmp101
+ 3336      00000080 
+ 3336      FFFF
+ 3337 0286 4889C1   		movq	%rax, %rcx	# tmp101,
+ 3338 0289 48B8007C 		movabsq	$-140737488323584, %rax	#, tmp102
+ 3338      00000080 
+ 3338      FFFF
+ 3339 0293 4889C2   		movq	%rax, %rdx	# tmp102,
+ 3340 0296 48B8007C 		movabsq	$-140737488323584, %rax	#, tmp103
+ 3340      00000080 
+ 3340      FFFF
+ 3341 02a0 4889C6   		movq	%rax, %rsi	# tmp103,
 GAS LISTING main.s 			page 69
 
 
- 3468 01aa 02       		.uleb128 0x2
- 3469 01ab 00000000 		.quad	.LVL1
- 3469      00000000 
- 3470 01b3 30010000 		.long	0x130
- 3471 01b7 02       		.uleb128 0x2
- 3472 01b8 00000000 		.quad	.LVL2
- 3472      00000000 
- 3473 01c0 30010000 		.long	0x130
- 3474 01c4 02       		.uleb128 0x2
- 3475 01c5 00000000 		.quad	.LVL3
- 3475      00000000 
- 3476 01cd 30010000 		.long	0x130
- 3477 01d1 02       		.uleb128 0x2
- 3478 01d2 00000000 		.quad	.LVL4
- 3478      00000000 
- 3479 01da 30010000 		.long	0x130
- 3480 01de 00       		.byte	0
- 3481 01df 04       		.uleb128 0x4
- 3482 01e0 DD000000 		.long	0xdd
- 3483 01e4 00       		.byte	0
- 3484              		.section	.debug_abbrev,"",@progbits
- 3485              	.Ldebug_abbrev0:
- 3486 0000 01       		.uleb128 0x1
- 3487 0001 0D       		.uleb128 0xd
- 3488 0002 00       		.byte	0
- 3489 0003 03       		.uleb128 0x3
- 3490 0004 0E       		.uleb128 0xe
- 3491 0005 3A       		.uleb128 0x3a
- 3492 0006 21       		.uleb128 0x21
- 3493 0007 02       		.sleb128 2
- 3494 0008 3B       		.uleb128 0x3b
- 3495 0009 0B       		.uleb128 0xb
- 3496 000a 39       		.uleb128 0x39
- 3497 000b 0B       		.uleb128 0xb
- 3498 000c 49       		.uleb128 0x49
- 3499 000d 13       		.uleb128 0x13
- 3500 000e 38       		.uleb128 0x38
- 3501 000f 0B       		.uleb128 0xb
- 3502 0010 00       		.byte	0
- 3503 0011 00       		.byte	0
- 3504 0012 02       		.uleb128 0x2
- 3505 0013 48       		.uleb128 0x48
- 3506 0014 00       		.byte	0
- 3507 0015 7D       		.uleb128 0x7d
- 3508 0016 01       		.uleb128 0x1
- 3509 0017 7F       		.uleb128 0x7f
- 3510 0018 13       		.uleb128 0x13
- 3511 0019 00       		.byte	0
- 3512 001a 00       		.byte	0
- 3513 001b 03       		.uleb128 0x3
- 3514 001c 24       		.uleb128 0x24
- 3515 001d 00       		.byte	0
- 3516 001e 0B       		.uleb128 0xb
- 3517 001f 0B       		.uleb128 0xb
- 3518 0020 3E       		.uleb128 0x3e
- 3519 0021 0B       		.uleb128 0xb
- 3520 0022 03       		.uleb128 0x3
+ 3342 02a3 48B8007C 		movabsq	$-140737488323584, %rax	#, tmp104
+ 3342      00000080 
+ 3342      FFFF
+ 3343 02ad 4889C7   		movq	%rax, %rdi	# tmp104,
+ 3344 02b0 48B80000 		movabsq	$set_tss64@GOTOFF, %rax	#, tmp106
+ 3344      00000000 
+ 3344      0000
+ 3345 02ba 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp105
+ 3346 02be FFD0     		call	*%rax	# tmp105
+ 3347              	.LVL0:
+ 3348 02c0 4883C420 		addq	$32, %rsp	#,
+ 3349              	# main.c:42:     sys_vector_init();
+  41:main.c        **** 0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00);
+  42:main.c        ****     sys_vector_init();
+ 3350              		.loc 2 42 5
+ 3351 02c4 4989DF   		movq	%rbx, %r15	# tmp82,
+ 3352 02c7 B8000000 		movl	$0, %eax	#,
+ 3352      00
+ 3353 02cc 48BA0000 		movabsq	$sys_vector_init@PLTOFF, %rdx	#, tmp107
+ 3353      00000000 
+ 3353      0000
+ 3354 02d6 4801DA   		addq	%rbx, %rdx	# tmp82, tmp107
+ 3355 02d9 FFD2     		call	*%rdx	# tmp107
+ 3356              	.LVL1:
+ 3357              	# main.c:74:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
+  43:main.c        ****     // for(i=0;i<Pos.XResolution*20;i++){
+  44:main.c        ****     //     *((char*)addr+0)=(char)0x00;
+  45:main.c        ****     //     *((char*)addr+1)=(char)0x00;
+  46:main.c        ****     //     *((char*)addr+2)=(char)0xff;
+  47:main.c        ****     //     *((char*)addr+3)=(char)0x00;
+  48:main.c        ****     //     addr=addr+1;
+  49:main.c        **** 
+  50:main.c        ****     // }
+  51:main.c        ****     // for(i=0;i<Pos.XResolution*20;i++){
+  52:main.c        ****     //     *((char*)addr+0)=(char)0x00;
+  53:main.c        ****     //     *((char*)addr+1)=(char)0xff;
+  54:main.c        ****     //     *((char*)addr+2)=(char)0x00;
+  55:main.c        ****     //     *((char*)addr+3)=(char)0x00;
+  56:main.c        ****     //     addr=addr+1;
+  57:main.c        **** 
+  58:main.c        ****     // }
+  59:main.c        ****     // for(i=0;i<Pos.XResolution*20;i++){
+  60:main.c        ****     //     *((char*)addr+0)=(char)0xff;
+  61:main.c        ****     //     *((char*)addr+1)=(char)0x00;
+  62:main.c        ****     //     *((char*)addr+2)=(char)0x00;
+  63:main.c        ****     //     *((char*)addr+3)=(char)0x00;
+  64:main.c        ****     //     addr=addr+1;
+  65:main.c        ****     // }
+  66:main.c        ****     // for(i=0;i<Pos.XResolution*20;i++){
+  67:main.c        ****     //     *((char*)addr+0)=(char)0xff;
+  68:main.c        ****     //     *((char*)addr+1)=(char)0xff;
+  69:main.c        ****     //     *((char*)addr+2)=(char)0xff;
+  70:main.c        ****     //     *((char*)addr+3)=(char)0x00;
+  71:main.c        ****     //     addr=addr+1;
+  72:main.c        **** 
+  73:main.c        ****     // }
+  74:main.c        ****     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
 GAS LISTING main.s 			page 70
 
 
- 3521 0023 0E       		.uleb128 0xe
- 3522 0024 00       		.byte	0
- 3523 0025 00       		.byte	0
- 3524 0026 04       		.uleb128 0x4
- 3525 0027 0F       		.uleb128 0xf
- 3526 0028 00       		.byte	0
- 3527 0029 0B       		.uleb128 0xb
- 3528 002a 21       		.uleb128 0x21
- 3529 002b 08       		.sleb128 8
- 3530 002c 49       		.uleb128 0x49
- 3531 002d 13       		.uleb128 0x13
- 3532 002e 00       		.byte	0
- 3533 002f 00       		.byte	0
- 3534 0030 05       		.uleb128 0x5
- 3535 0031 05       		.uleb128 0x5
- 3536 0032 00       		.byte	0
- 3537 0033 49       		.uleb128 0x49
- 3538 0034 13       		.uleb128 0x13
- 3539 0035 00       		.byte	0
- 3540 0036 00       		.byte	0
- 3541 0037 06       		.uleb128 0x6
- 3542 0038 01       		.uleb128 0x1
- 3543 0039 01       		.byte	0x1
- 3544 003a 49       		.uleb128 0x49
- 3545 003b 13       		.uleb128 0x13
- 3546 003c 01       		.uleb128 0x1
- 3547 003d 13       		.uleb128 0x13
- 3548 003e 00       		.byte	0
- 3549 003f 00       		.byte	0
- 3550 0040 07       		.uleb128 0x7
- 3551 0041 21       		.uleb128 0x21
- 3552 0042 00       		.byte	0
- 3553 0043 49       		.uleb128 0x49
- 3554 0044 13       		.uleb128 0x13
- 3555 0045 2F       		.uleb128 0x2f
- 3556 0046 0B       		.uleb128 0xb
- 3557 0047 00       		.byte	0
- 3558 0048 00       		.byte	0
- 3559 0049 08       		.uleb128 0x8
- 3560 004a 34       		.uleb128 0x34
- 3561 004b 00       		.byte	0
- 3562 004c 03       		.uleb128 0x3
- 3563 004d 08       		.uleb128 0x8
- 3564 004e 3A       		.uleb128 0x3a
- 3565 004f 21       		.uleb128 0x21
- 3566 0050 02       		.sleb128 2
- 3567 0051 3B       		.uleb128 0x3b
- 3568 0052 0B       		.uleb128 0xb
- 3569 0053 39       		.uleb128 0x39
- 3570 0054 0B       		.uleb128 0xb
- 3571 0055 49       		.uleb128 0x49
- 3572 0056 13       		.uleb128 0x13
- 3573 0057 3F       		.uleb128 0x3f
- 3574 0058 19       		.uleb128 0x19
- 3575 0059 02       		.uleb128 0x2
- 3576 005a 18       		.uleb128 0x18
- 3577 005b 00       		.byte	0
+ 3358              		.loc 2 74 5
+ 3359 02db 48B80000 		movabsq	$.LC0@GOTOFF, %rax	#, tmp109
+ 3359      00000000 
+ 3359      0000
+ 3360 02e5 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp108
+ 3361 02e9 4889C2   		movq	%rax, %rdx	# tmp108,
+ 3362 02ec BE000000 		movl	$0, %esi	#,
+ 3362      00
+ 3363 02f1 BF00FFFF 		movl	$16776960, %edi	#,
+ 3363      00
+ 3364 02f6 4989DF   		movq	%rbx, %r15	# tmp82,
+ 3365 02f9 B8000000 		movl	$0, %eax	#,
+ 3365      00
+ 3366 02fe 48B90000 		movabsq	$color_printk@PLTOFF, %rcx	#, tmp110
+ 3366      00000000 
+ 3366      0000
+ 3367 0308 4801D9   		addq	%rbx, %rcx	# tmp82, tmp110
+ 3368 030b FFD1     		call	*%rcx	# tmp110
+ 3369              	.LVL2:
+ 3370              	# main.c:75:     color_printk(YELLOW,BLACK,"hello,User\n");
+  75:main.c        ****     color_printk(YELLOW,BLACK,"hello,User\n");
+ 3371              		.loc 2 75 5
+ 3372 030d 48B80000 		movabsq	$.LC1@GOTOFF, %rax	#, tmp112
+ 3372      00000000 
+ 3372      0000
+ 3373 0317 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp111
+ 3374 031b 4889C2   		movq	%rax, %rdx	# tmp111,
+ 3375 031e BE000000 		movl	$0, %esi	#,
+ 3375      00
+ 3376 0323 BF00FFFF 		movl	$16776960, %edi	#,
+ 3376      00
+ 3377 0328 4989DF   		movq	%rbx, %r15	# tmp82,
+ 3378 032b B8000000 		movl	$0, %eax	#,
+ 3378      00
+ 3379 0330 48B90000 		movabsq	$color_printk@PLTOFF, %rcx	#, tmp113
+ 3379      00000000 
+ 3379      0000
+ 3380 033a 4801D9   		addq	%rbx, %rcx	# tmp82, tmp113
+ 3381 033d FFD1     		call	*%rcx	# tmp113
+ 3382              	.LVL3:
+ 3383              	# main.c:76:     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have establ
+  76:main.c        ****     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the par
+ 3384              		.loc 2 76 5
+ 3385 033f 48B80000 		movabsq	$.LC2@GOTOFF, %rax	#, tmp115
+ 3385      00000000 
+ 3385      0000
+ 3386 0349 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp114
+ 3387 034d 4889C2   		movq	%rax, %rdx	# tmp114,
+ 3388 0350 BE000000 		movl	$0, %esi	#,
+ 3388      00
+ 3389 0355 BF00FFFF 		movl	$16776960, %edi	#,
+ 3389      00
+ 3390 035a 4989DF   		movq	%rbx, %r15	# tmp82,
+ 3391 035d B8000000 		movl	$0, %eax	#,
+ 3391      00
+ 3392 0362 48B90000 		movabsq	$color_printk@PLTOFF, %rcx	#, tmp116
+ 3392      00000000 
 GAS LISTING main.s 			page 71
 
 
- 3578 005c 00       		.byte	0
- 3579 005d 09       		.uleb128 0x9
- 3580 005e 34       		.uleb128 0x34
- 3581 005f 00       		.byte	0
- 3582 0060 03       		.uleb128 0x3
- 3583 0061 08       		.uleb128 0x8
- 3584 0062 3A       		.uleb128 0x3a
- 3585 0063 21       		.uleb128 0x21
- 3586 0064 01       		.sleb128 1
- 3587 0065 3B       		.uleb128 0x3b
- 3588 0066 0B       		.uleb128 0xb
- 3589 0067 39       		.uleb128 0x39
- 3590 0068 0B       		.uleb128 0xb
- 3591 0069 49       		.uleb128 0x49
- 3592 006a 13       		.uleb128 0x13
- 3593 006b 02       		.uleb128 0x2
- 3594 006c 18       		.uleb128 0x18
- 3595 006d 00       		.byte	0
- 3596 006e 00       		.byte	0
- 3597 006f 0A       		.uleb128 0xa
- 3598 0070 11       		.uleb128 0x11
- 3599 0071 01       		.byte	0x1
- 3600 0072 25       		.uleb128 0x25
- 3601 0073 0E       		.uleb128 0xe
- 3602 0074 13       		.uleb128 0x13
- 3603 0075 0B       		.uleb128 0xb
- 3604 0076 03       		.uleb128 0x3
- 3605 0077 1F       		.uleb128 0x1f
- 3606 0078 1B       		.uleb128 0x1b
- 3607 0079 1F       		.uleb128 0x1f
- 3608 007a 11       		.uleb128 0x11
- 3609 007b 01       		.uleb128 0x1
- 3610 007c 12       		.uleb128 0x12
- 3611 007d 07       		.uleb128 0x7
- 3612 007e 10       		.uleb128 0x10
- 3613 007f 17       		.uleb128 0x17
- 3614 0080 00       		.byte	0
- 3615 0081 00       		.byte	0
- 3616 0082 0B       		.uleb128 0xb
- 3617 0083 34       		.uleb128 0x34
- 3618 0084 00       		.byte	0
- 3619 0085 03       		.uleb128 0x3
- 3620 0086 0E       		.uleb128 0xe
- 3621 0087 3A       		.uleb128 0x3a
- 3622 0088 0B       		.uleb128 0xb
- 3623 0089 3B       		.uleb128 0x3b
- 3624 008a 0B       		.uleb128 0xb
- 3625 008b 39       		.uleb128 0x39
- 3626 008c 0B       		.uleb128 0xb
- 3627 008d 49       		.uleb128 0x49
- 3628 008e 13       		.uleb128 0x13
- 3629 008f 3F       		.uleb128 0x3f
- 3630 0090 19       		.uleb128 0x19
- 3631 0091 02       		.uleb128 0x2
- 3632 0092 18       		.uleb128 0x18
- 3633 0093 00       		.byte	0
- 3634 0094 00       		.byte	0
+ 3392      0000
+ 3393 036c 4801D9   		addq	%rbx, %rcx	# tmp82, tmp116
+ 3394 036f FFD1     		call	*%rcx	# tmp116
+ 3395              	.LVL4:
+ 3396              	# main.c:77:     i=1/0;    
+  77:main.c        ****     i=1/0;    
+ 3397              		.loc 2 77 6
+ 3398 0371 B8010000 		movl	$1, %eax	#, tmp117
+ 3398      00
+ 3399 0376 BF000000 		movl	$0, %edi	#, tmp120
+ 3399      00
+ 3400 037b 99       		cltd
+ 3401 037c F7FF     		idivl	%edi	# tmp120
+ 3402 037e 8945DC   		movl	%eax, -36(%rbp)	# tmp118, i
+ 3403              	# main.c:78:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
+  78:main.c        ****     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
+ 3404              		.loc 2 78 5
+ 3405 0381 48B80000 		movabsq	$.LC3@GOTOFF, %rax	#, tmp122
+ 3405      00000000 
+ 3405      0000
+ 3406 038b 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp121
+ 3407 038f 4889C2   		movq	%rax, %rdx	# tmp121,
+ 3408 0392 BE000000 		movl	$0, %esi	#,
+ 3408      00
+ 3409 0397 BF00FFFF 		movl	$16776960, %edi	#,
+ 3409      00
+ 3410 039c 4989DF   		movq	%rbx, %r15	# tmp82,
+ 3411 039f B8000000 		movl	$0, %eax	#,
+ 3411      00
+ 3412 03a4 48B90000 		movabsq	$color_printk@PLTOFF, %rcx	#, tmp123
+ 3412      00000000 
+ 3412      0000
+ 3413 03ae 4801D9   		addq	%rbx, %rcx	# tmp82, tmp123
+ 3414 03b1 FFD1     		call	*%rcx	# tmp123
+ 3415              	.LVL5:
+ 3416              	# main.c:80:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
+  79:main.c        ****     // clear_screen(YELLOW,BLACK);
+  80:main.c        ****     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
+ 3417              		.loc 2 80 5
+ 3418 03b3 48B80000 		movabsq	$.LC4@GOTOFF, %rax	#, tmp125
+ 3418      00000000 
+ 3418      0000
+ 3419 03bd 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp124
+ 3420 03c1 4889C2   		movq	%rax, %rdx	# tmp124,
+ 3421 03c4 BE000000 		movl	$0, %esi	#,
+ 3421      00
+ 3422 03c9 BF00FFFF 		movl	$16776960, %edi	#,
+ 3422      00
+ 3423 03ce 4989DF   		movq	%rbx, %r15	# tmp82,
+ 3424 03d1 B8000000 		movl	$0, %eax	#,
+ 3424      00
+ 3425 03d6 48B90000 		movabsq	$color_printk@PLTOFF, %rcx	#, tmp126
+ 3425      00000000 
+ 3425      0000
+ 3426 03e0 4801D9   		addq	%rbx, %rcx	# tmp82, tmp126
+ 3427 03e3 FFD1     		call	*%rcx	# tmp126
+ 3428              	.LVL6:
 GAS LISTING main.s 			page 72
 
 
- 3635 0095 0C       		.uleb128 0xc
- 3636 0096 13       		.uleb128 0x13
- 3637 0097 01       		.byte	0x1
- 3638 0098 03       		.uleb128 0x3
- 3639 0099 0E       		.uleb128 0xe
- 3640 009a 0B       		.uleb128 0xb
- 3641 009b 0B       		.uleb128 0xb
- 3642 009c 3A       		.uleb128 0x3a
- 3643 009d 0B       		.uleb128 0xb
- 3644 009e 3B       		.uleb128 0x3b
- 3645 009f 0B       		.uleb128 0xb
- 3646 00a0 39       		.uleb128 0x39
- 3647 00a1 0B       		.uleb128 0xb
- 3648 00a2 01       		.uleb128 0x1
- 3649 00a3 13       		.uleb128 0x13
- 3650 00a4 00       		.byte	0
- 3651 00a5 00       		.byte	0
- 3652 00a6 0D       		.uleb128 0xd
- 3653 00a7 24       		.uleb128 0x24
- 3654 00a8 00       		.byte	0
- 3655 00a9 0B       		.uleb128 0xb
- 3656 00aa 0B       		.uleb128 0xb
- 3657 00ab 3E       		.uleb128 0x3e
- 3658 00ac 0B       		.uleb128 0xb
- 3659 00ad 03       		.uleb128 0x3
- 3660 00ae 08       		.uleb128 0x8
- 3661 00af 00       		.byte	0
- 3662 00b0 00       		.byte	0
- 3663 00b1 0E       		.uleb128 0xe
- 3664 00b2 21       		.uleb128 0x21
- 3665 00b3 00       		.byte	0
- 3666 00b4 49       		.uleb128 0x49
- 3667 00b5 13       		.uleb128 0x13
- 3668 00b6 2F       		.uleb128 0x2f
- 3669 00b7 05       		.uleb128 0x5
- 3670 00b8 00       		.byte	0
- 3671 00b9 00       		.byte	0
- 3672 00ba 0F       		.uleb128 0xf
- 3673 00bb 26       		.uleb128 0x26
- 3674 00bc 00       		.byte	0
- 3675 00bd 49       		.uleb128 0x49
- 3676 00be 13       		.uleb128 0x13
- 3677 00bf 00       		.byte	0
- 3678 00c0 00       		.byte	0
- 3679 00c1 10       		.uleb128 0x10
- 3680 00c2 2E       		.uleb128 0x2e
- 3681 00c3 01       		.byte	0x1
- 3682 00c4 3F       		.uleb128 0x3f
- 3683 00c5 19       		.uleb128 0x19
- 3684 00c6 03       		.uleb128 0x3
- 3685 00c7 0E       		.uleb128 0xe
- 3686 00c8 3A       		.uleb128 0x3a
- 3687 00c9 0B       		.uleb128 0xb
- 3688 00ca 3B       		.uleb128 0x3b
- 3689 00cb 0B       		.uleb128 0xb
- 3690 00cc 39       		.uleb128 0x39
- 3691 00cd 0B       		.uleb128 0xb
+ 3429              	.L4:
+ 3430              	# main.c:81:     while (1)
+  81:main.c        ****     while (1)
+ 3431              		.loc 2 81 11
+ 3432 03e5 90       		nop	
+ 3433 03e6 EBFD     		jmp	.L4	#
+ 3434              		.cfi_endproc
+ 3435              	.LFE39:
+ 3436              		.size	Start_Kernel, .-Start_Kernel
+ 3437              	.Letext0:
+ 3438              		.file 3 "printk.h"
+ 3439              		.file 4 "font.h"
+ 3440              		.file 5 "trap.h"
+ 3441              		.section	.debug_info,"",@progbits
+ 3442              	.Ldebug_info0:
+ 3443 0000 CC020000 		.long	0x2cc
+ 3444 0004 0500     		.value	0x5
+ 3445 0006 01       		.byte	0x1
+ 3446 0007 08       		.byte	0x8
+ 3447 0008 00000000 		.long	.Ldebug_abbrev0
+ 3448 000c 0C       		.uleb128 0xc
+ 3449 000d 00000000 		.long	.LASF27
+ 3450 0011 1D       		.byte	0x1d
+ 3451 0012 00000000 		.long	.LASF0
+ 3452 0016 00000000 		.long	.LASF1
+ 3453 001a 00000000 		.quad	.Ltext0
+ 3453      00000000 
+ 3454 0022 E8030000 		.quad	.Letext0-.Ltext0
+ 3454      00000000 
+ 3455 002a 00000000 		.long	.Ldebug_line0
+ 3456 002e 04       		.uleb128 0x4
+ 3457 002f 08       		.byte	0x8
+ 3458 0030 07       		.byte	0x7
+ 3459 0031 00000000 		.long	.LASF2
+ 3460 0035 04       		.uleb128 0x4
+ 3461 0036 04       		.byte	0x4
+ 3462 0037 07       		.byte	0x7
+ 3463 0038 00000000 		.long	.LASF3
+ 3464 003c 05       		.uleb128 0x5
+ 3465 003d 52000000 		.long	0x52
+ 3466 0041 52000000 		.long	0x52
+ 3467 0045 06       		.uleb128 0x6
+ 3468 0046 2E000000 		.long	0x2e
+ 3469 004a FF       		.byte	0xff
+ 3470 004b 06       		.uleb128 0x6
+ 3471 004c 2E000000 		.long	0x2e
+ 3472 0050 0F       		.byte	0xf
+ 3473 0051 00       		.byte	0
+ 3474 0052 04       		.uleb128 0x4
+ 3475 0053 01       		.byte	0x1
+ 3476 0054 08       		.byte	0x8
+ 3477 0055 00000000 		.long	.LASF4
+ 3478 0059 0D       		.uleb128 0xd
+ 3479 005a 00000000 		.long	.LASF13
+ 3480 005e 04       		.byte	0x4
+ 3481 005f 06       		.byte	0x6
+ 3482 0060 0F       		.byte	0xf
 GAS LISTING main.s 			page 73
 
 
- 3692 00ce 27       		.uleb128 0x27
- 3693 00cf 19       		.uleb128 0x19
- 3694 00d0 49       		.uleb128 0x49
- 3695 00d1 13       		.uleb128 0x13
- 3696 00d2 3C       		.uleb128 0x3c
- 3697 00d3 19       		.uleb128 0x19
- 3698 00d4 01       		.uleb128 0x1
- 3699 00d5 13       		.uleb128 0x13
- 3700 00d6 00       		.byte	0
- 3701 00d7 00       		.byte	0
- 3702 00d8 11       		.uleb128 0x11
- 3703 00d9 18       		.uleb128 0x18
- 3704 00da 00       		.byte	0
- 3705 00db 00       		.byte	0
- 3706 00dc 00       		.byte	0
- 3707 00dd 12       		.uleb128 0x12
- 3708 00de 2E       		.uleb128 0x2e
- 3709 00df 01       		.byte	0x1
- 3710 00e0 3F       		.uleb128 0x3f
- 3711 00e1 19       		.uleb128 0x19
- 3712 00e2 03       		.uleb128 0x3
- 3713 00e3 0E       		.uleb128 0xe
- 3714 00e4 3A       		.uleb128 0x3a
- 3715 00e5 0B       		.uleb128 0xb
- 3716 00e6 3B       		.uleb128 0x3b
- 3717 00e7 0B       		.uleb128 0xb
- 3718 00e8 39       		.uleb128 0x39
- 3719 00e9 0B       		.uleb128 0xb
- 3720 00ea 27       		.uleb128 0x27
- 3721 00eb 19       		.uleb128 0x19
- 3722 00ec 11       		.uleb128 0x11
- 3723 00ed 01       		.uleb128 0x1
- 3724 00ee 12       		.uleb128 0x12
- 3725 00ef 07       		.uleb128 0x7
- 3726 00f0 40       		.uleb128 0x40
- 3727 00f1 18       		.uleb128 0x18
- 3728 00f2 7A       		.uleb128 0x7a
- 3729 00f3 19       		.uleb128 0x19
- 3730 00f4 01       		.uleb128 0x1
- 3731 00f5 13       		.uleb128 0x13
- 3732 00f6 00       		.byte	0
- 3733 00f7 00       		.byte	0
- 3734 00f8 13       		.uleb128 0x13
- 3735 00f9 34       		.uleb128 0x34
- 3736 00fa 00       		.byte	0
- 3737 00fb 03       		.uleb128 0x3
- 3738 00fc 0E       		.uleb128 0xe
- 3739 00fd 3A       		.uleb128 0x3a
- 3740 00fe 0B       		.uleb128 0xb
- 3741 00ff 3B       		.uleb128 0x3b
- 3742 0100 0B       		.uleb128 0xb
- 3743 0101 39       		.uleb128 0x39
- 3744 0102 0B       		.uleb128 0xb
- 3745 0103 49       		.uleb128 0x49
- 3746 0104 13       		.uleb128 0x13
- 3747 0105 02       		.uleb128 0x2
- 3748 0106 18       		.uleb128 0x18
+ 3483 0061 3C000000 		.long	0x3c
+ 3484 0065 09       		.uleb128 0x9
+ 3485 0066 03       		.byte	0x3
+ 3486 0067 00000000 		.quad	font_ascii
+ 3486      00000000 
+ 3487 006f 0E       		.uleb128 0xe
+ 3488 0070 00000000 		.long	.LASF28
+ 3489 0074 28       		.byte	0x28
+ 3490 0075 03       		.byte	0x3
+ 3491 0076 20       		.byte	0x20
+ 3492 0077 08       		.byte	0x8
+ 3493 0078 DD000000 		.long	0xdd
+ 3494 007c 02       		.uleb128 0x2
+ 3495 007d 00000000 		.long	.LASF5
+ 3496 0081 22       		.byte	0x22
+ 3497 0082 09       		.byte	0x9
+ 3498 0083 DD000000 		.long	0xdd
+ 3499 0087 00       		.byte	0
+ 3500 0088 02       		.uleb128 0x2
+ 3501 0089 00000000 		.long	.LASF6
+ 3502 008d 23       		.byte	0x23
+ 3503 008e 09       		.byte	0x9
+ 3504 008f DD000000 		.long	0xdd
+ 3505 0093 04       		.byte	0x4
+ 3506 0094 02       		.uleb128 0x2
+ 3507 0095 00000000 		.long	.LASF7
+ 3508 0099 24       		.byte	0x24
+ 3509 009a 09       		.byte	0x9
+ 3510 009b DD000000 		.long	0xdd
+ 3511 009f 08       		.byte	0x8
+ 3512 00a0 02       		.uleb128 0x2
+ 3513 00a1 00000000 		.long	.LASF8
+ 3514 00a5 25       		.byte	0x25
+ 3515 00a6 09       		.byte	0x9
+ 3516 00a7 DD000000 		.long	0xdd
+ 3517 00ab 0C       		.byte	0xc
+ 3518 00ac 02       		.uleb128 0x2
+ 3519 00ad 00000000 		.long	.LASF9
+ 3520 00b1 26       		.byte	0x26
+ 3521 00b2 09       		.byte	0x9
+ 3522 00b3 DD000000 		.long	0xdd
+ 3523 00b7 10       		.byte	0x10
+ 3524 00b8 02       		.uleb128 0x2
+ 3525 00b9 00000000 		.long	.LASF10
+ 3526 00bd 27       		.byte	0x27
+ 3527 00be 09       		.byte	0x9
+ 3528 00bf DD000000 		.long	0xdd
+ 3529 00c3 14       		.byte	0x14
+ 3530 00c4 02       		.uleb128 0x2
+ 3531 00c5 00000000 		.long	.LASF11
+ 3532 00c9 28       		.byte	0x28
+ 3533 00ca 14       		.byte	0x14
+ 3534 00cb E4000000 		.long	0xe4
+ 3535 00cf 18       		.byte	0x18
+ 3536 00d0 02       		.uleb128 0x2
+ 3537 00d1 00000000 		.long	.LASF12
+ 3538 00d5 29       		.byte	0x29
 GAS LISTING main.s 			page 74
 
 
- 3749 0107 00       		.byte	0
- 3750 0108 00       		.byte	0
- 3751 0109 00       		.byte	0
- 3752              		.section	.debug_aranges,"",@progbits
- 3753 0000 2C000000 		.long	0x2c
- 3754 0004 0200     		.value	0x2
- 3755 0006 00000000 		.long	.Ldebug_info0
- 3756 000a 08       		.byte	0x8
- 3757 000b 00       		.byte	0
- 3758 000c 0000     		.value	0
- 3759 000e 0000     		.value	0
- 3760 0010 00000000 		.quad	.Ltext0
- 3760      00000000 
- 3761 0018 08020000 		.quad	.Letext0-.Ltext0
- 3761      00000000 
- 3762 0020 00000000 		.quad	0
- 3762      00000000 
- 3763 0028 00000000 		.quad	0
- 3763      00000000 
- 3764              		.section	.debug_line,"",@progbits
- 3765              	.Ldebug_line0:
- 3766 0000 9D000000 		.section	.debug_str,"MS",@progbits,1
- 3766      05000800 
- 3766      34000000 
- 3766      010101FB 
- 3766      0E0D0001 
- 3767              	.LASF12:
- 3768 0000 46425F6C 		.string	"FB_length"
- 3768      656E6774 
- 3768      6800
- 3769              	.LASF3:
- 3770 000a 756E7369 		.string	"unsigned int"
- 3770      676E6564 
- 3770      20696E74 
- 3770      00
- 3771              	.LASF9:
- 3772 0017 58436861 		.string	"XCharSize"
- 3772      7253697A 
- 3772      6500
- 3773              	.LASF8:
- 3774 0021 59506F73 		.string	"YPosition"
- 3774      6974696F 
- 3774      6E00
- 3775              	.LASF2:
- 3776 002b 6C6F6E67 		.string	"long unsigned int"
- 3776      20756E73 
- 3776      69676E65 
- 3776      6420696E 
- 3776      7400
- 3777              	.LASF16:
- 3778 003d 474E5520 		.string	"GNU C17 13.3.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stac
- 3778      43313720 
- 3778      31332E33 
- 3778      2E30202D 
- 3778      6D636D6F 
- 3779              	.LASF13:
- 3780 00e8 666F6E74 		.string	"font_ascii"
+ 3539 00d6 13       		.byte	0x13
+ 3540 00d7 2E000000 		.long	0x2e
+ 3541 00db 20       		.byte	0x20
+ 3542 00dc 00       		.byte	0
+ 3543 00dd 0F       		.uleb128 0xf
+ 3544 00de 04       		.byte	0x4
+ 3545 00df 05       		.byte	0x5
+ 3546 00e0 696E7400 		.string	"int"
+ 3547 00e4 07       		.uleb128 0x7
+ 3548 00e5 35000000 		.long	0x35
+ 3549 00e9 09       		.uleb128 0x9
+ 3550 00ea 506F7300 		.string	"Pos"
+ 3551 00ee 2A       		.byte	0x2a
+ 3552 00ef 02       		.byte	0x2
+ 3553 00f0 6F000000 		.long	0x6f
+ 3554 00f4 09       		.uleb128 0x9
+ 3555 00f5 03       		.byte	0x3
+ 3556 00f6 00000000 		.quad	Pos
+ 3556      00000000 
+ 3557 00fe 05       		.uleb128 0x5
+ 3558 00ff 0F010000 		.long	0x10f
+ 3559 0103 0F010000 		.long	0x10f
+ 3560 0107 10       		.uleb128 0x10
+ 3561 0108 2E000000 		.long	0x2e
+ 3562 010c FF0F     		.value	0xfff
+ 3563 010e 00       		.byte	0
+ 3564 010f 04       		.uleb128 0x4
+ 3565 0110 01       		.byte	0x1
+ 3566 0111 06       		.byte	0x6
+ 3567 0112 00000000 		.long	.LASF14
+ 3568 0116 11       		.uleb128 0x11
+ 3569 0117 0F010000 		.long	0x10f
+ 3570 011b 09       		.uleb128 0x9
+ 3571 011c 62756600 		.string	"buf"
+ 3572 0120 2E       		.byte	0x2e
+ 3573 0121 06       		.byte	0x6
+ 3574 0122 FE000000 		.long	0xfe
+ 3575 0126 09       		.uleb128 0x9
+ 3576 0127 03       		.byte	0x3
+ 3577 0128 00000000 		.quad	buf
+ 3577      00000000 
+ 3578 0130 05       		.uleb128 0x5
+ 3579 0131 35000000 		.long	0x35
+ 3580 0135 40010000 		.long	0x140
+ 3581 0139 06       		.uleb128 0x6
+ 3582 013a 2E000000 		.long	0x2e
+ 3583 013e 19       		.byte	0x19
+ 3584 013f 00       		.byte	0
+ 3585 0140 12       		.uleb128 0x12
+ 3586 0141 00000000 		.long	.LASF15
+ 3587 0145 01       		.byte	0x1
+ 3588 0146 0F       		.byte	0xf
+ 3589 0147 15       		.byte	0x15
+ 3590 0148 30010000 		.long	0x130
+ 3591 014c 13       		.uleb128 0x13
+ 3592 014d 00000000 		.long	.LASF29
+ 3593 0151 03       		.byte	0x3
 GAS LISTING main.s 			page 75
 
 
- 3780      5F617363 
- 3780      696900
- 3781              	.LASF5:
- 3782 00f3 58526573 		.string	"XResolution"
- 3782      6F6C7574 
- 3782      696F6E00 
- 3783              	.LASF6:
- 3784 00ff 59526573 		.string	"YResolution"
- 3784      6F6C7574 
- 3784      696F6E00 
- 3785              	.LASF4:
- 3786 010b 756E7369 		.string	"unsigned char"
- 3786      676E6564 
- 3786      20636861 
- 3786      7200
- 3787              	.LASF14:
- 3788 0119 63686172 		.string	"char"
- 3788      00
- 3789              	.LASF15:
- 3790 011e 61646472 		.string	"addr"
- 3790      00
- 3791              	.LASF17:
- 3792 0123 706F7369 		.string	"position"
- 3792      74696F6E 
- 3792      00
- 3793              	.LASF11:
- 3794 012c 46425F61 		.string	"FB_addr"
- 3794      64647200 
- 3795              	.LASF10:
- 3796 0134 59436861 		.string	"YCharSize"
- 3796      7253697A 
- 3796      6500
- 3797              	.LASF7:
- 3798 013e 58506F73 		.string	"XPosition"
- 3798      6974696F 
- 3798      6E00
- 3799              	.LASF18:
- 3800 0148 636F6C6F 		.string	"color_printk"
- 3800      725F7072 
- 3800      696E746B 
- 3800      00
- 3801              	.LASF19:
- 3802 0155 53746172 		.string	"Start_Kernel"
- 3802      745F4B65 
- 3802      726E656C 
- 3802      00
- 3803              		.section	.debug_line_str,"MS",@progbits,1
- 3804              	.LASF0:
- 3805 0000 6D61696E 		.string	"main.c"
- 3805      2E6300
- 3806              	.LASF1:
- 3807 0007 2F686F6D 		.string	"/home/student/myos/kernel"
- 3807      652F7374 
- 3807      7564656E 
- 3807      742F6D79 
- 3807      6F732F6B 
- 3808              		.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
+ 3594 0152 3B       		.byte	0x3b
+ 3595 0153 05       		.byte	0x5
+ 3596 0154 DD000000 		.long	0xdd
+ 3597 0158 6D010000 		.long	0x16d
+ 3598 015c 08       		.uleb128 0x8
+ 3599 015d 35000000 		.long	0x35
+ 3600 0161 08       		.uleb128 0x8
+ 3601 0162 35000000 		.long	0x35
+ 3602 0166 08       		.uleb128 0x8
+ 3603 0167 6D010000 		.long	0x16d
+ 3604 016b 0A       		.uleb128 0xa
+ 3605 016c 00       		.byte	0
+ 3606 016d 07       		.uleb128 0x7
+ 3607 016e 16010000 		.long	0x116
+ 3608 0172 14       		.uleb128 0x14
+ 3609 0173 00000000 		.long	.LASF30
+ 3610 0177 05       		.byte	0x5
+ 3611 0178 28       		.byte	0x28
+ 3612 0179 06       		.byte	0x6
+ 3613 017a 80010000 		.long	0x180
+ 3614 017e 0A       		.uleb128 0xa
+ 3615 017f 00       		.byte	0
+ 3616 0180 15       		.uleb128 0x15
+ 3617 0181 00000000 		.long	.LASF31
+ 3618 0185 02       		.byte	0x2
+ 3619 0186 0F       		.byte	0xf
+ 3620 0187 06       		.byte	0x6
+ 3621 0188 00000000 		.quad	.LFB39
+ 3621      00000000 
+ 3622 0190 B7020000 		.quad	.LFE39-.LFB39
+ 3622      00000000 
+ 3623 0198 01       		.uleb128 0x1
+ 3624 0199 9C       		.byte	0x9c
+ 3625 019a 23020000 		.long	0x223
+ 3626 019e 0B       		.uleb128 0xb
+ 3627 019f 63723400 		.string	"cr4"
+ 3628 01a3 16       		.byte	0x16
+ 3629 01a4 13       		.byte	0x13
+ 3630 01a5 2E000000 		.long	0x2e
+ 3631 01a9 02       		.uleb128 0x2
+ 3632 01aa 91       		.byte	0x91
+ 3633 01ab 58       		.sleb128 -40
+ 3634 01ac 16       		.uleb128 0x16
+ 3635 01ad 00000000 		.long	.LASF16
+ 3636 01b1 02       		.byte	0x2
+ 3637 01b2 1C       		.byte	0x1c
+ 3638 01b3 0A       		.byte	0xa
+ 3639 01b4 23020000 		.long	0x223
+ 3640 01b8 02       		.uleb128 0x2
+ 3641 01b9 91       		.byte	0x91
+ 3642 01ba 50       		.sleb128 -48
+ 3643 01bb 0B       		.uleb128 0xb
+ 3644 01bc 6900     		.string	"i"
+ 3645 01be 1D       		.byte	0x1d
+ 3646 01bf 09       		.byte	0x9
+ 3647 01c0 DD000000 		.long	0xdd
+ 3648 01c4 02       		.uleb128 0x2
 GAS LISTING main.s 			page 76
 
 
- 3809 0021 2F686F6D 		.section	.note.GNU-stack,"",@progbits
- 3809      652F7374 
- 3809      7564656E 
- 3809      742F6D79 
- 3809      6F732F6B 
- 3810              		.section	.note.gnu.property,"a"
- 3811              		.align 8
- 3812 0000 04000000 		.long	1f - 0f
- 3813 0004 10000000 		.long	4f - 1f
- 3814 0008 05000000 		.long	5
- 3815              	0:
- 3816 000c 474E5500 		.string	"GNU"
- 3817              	1:
- 3818              		.align 8
- 3819 0010 020000C0 		.long	0xc0000002
- 3820 0014 04000000 		.long	3f - 2f
- 3821              	2:
- 3822 0018 03000000 		.long	0x3
- 3823              	3:
- 3824 001c 00000000 		.align 8
- 3825              	4:
+ 3649 01c5 91       		.byte	0x91
+ 3650 01c6 4C       		.sleb128 -52
+ 3651 01c7 03       		.uleb128 0x3
+ 3652 01c8 00000000 		.quad	.LVL0
+ 3652      00000000 
+ 3653 01d0 28020000 		.long	0x228
+ 3654 01d4 03       		.uleb128 0x3
+ 3655 01d5 00000000 		.quad	.LVL1
+ 3655      00000000 
+ 3656 01dd 72010000 		.long	0x172
+ 3657 01e1 03       		.uleb128 0x3
+ 3658 01e2 00000000 		.quad	.LVL2
+ 3658      00000000 
+ 3659 01ea 4C010000 		.long	0x14c
+ 3660 01ee 03       		.uleb128 0x3
+ 3661 01ef 00000000 		.quad	.LVL3
+ 3661      00000000 
+ 3662 01f7 4C010000 		.long	0x14c
+ 3663 01fb 03       		.uleb128 0x3
+ 3664 01fc 00000000 		.quad	.LVL4
+ 3664      00000000 
+ 3665 0204 4C010000 		.long	0x14c
+ 3666 0208 03       		.uleb128 0x3
+ 3667 0209 00000000 		.quad	.LVL5
+ 3667      00000000 
+ 3668 0211 4C010000 		.long	0x14c
+ 3669 0215 03       		.uleb128 0x3
+ 3670 0216 00000000 		.quad	.LVL6
+ 3670      00000000 
+ 3671 021e 4C010000 		.long	0x14c
+ 3672 0222 00       		.byte	0
+ 3673 0223 07       		.uleb128 0x7
+ 3674 0224 DD000000 		.long	0xdd
+ 3675 0228 17       		.uleb128 0x17
+ 3676 0229 00000000 		.long	.LASF32
+ 3677 022d 01       		.byte	0x1
+ 3678 022e 94       		.byte	0x94
+ 3679 022f 06       		.byte	0x6
+ 3680 0230 00000000 		.quad	.LFB38
+ 3680      00000000 
+ 3681 0238 31010000 		.quad	.LFE38-.LFB38
+ 3681      00000000 
+ 3682 0240 01       		.uleb128 0x1
+ 3683 0241 9C       		.byte	0x9c
+ 3684 0242 01       		.uleb128 0x1
+ 3685 0243 00000000 		.long	.LASF17
+ 3686 0247 94       		.byte	0x94
+ 3687 0248 1E       		.byte	0x1e
+ 3688 0249 2E000000 		.long	0x2e
+ 3689 024d 02       		.uleb128 0x2
+ 3690 024e 91       		.byte	0x91
+ 3691 024f 68       		.sleb128 -24
+ 3692 0250 01       		.uleb128 0x1
+ 3693 0251 00000000 		.long	.LASF18
+ 3694 0255 94       		.byte	0x94
+ 3695 0256 31       		.byte	0x31
+ 3696 0257 2E000000 		.long	0x2e
 GAS LISTING main.s 			page 77
+
+
+ 3697 025b 02       		.uleb128 0x2
+ 3698 025c 91       		.byte	0x91
+ 3699 025d 60       		.sleb128 -32
+ 3700 025e 01       		.uleb128 0x1
+ 3701 025f 00000000 		.long	.LASF19
+ 3702 0263 94       		.byte	0x94
+ 3703 0264 44       		.byte	0x44
+ 3704 0265 2E000000 		.long	0x2e
+ 3705 0269 02       		.uleb128 0x2
+ 3706 026a 91       		.byte	0x91
+ 3707 026b 58       		.sleb128 -40
+ 3708 026c 01       		.uleb128 0x1
+ 3709 026d 00000000 		.long	.LASF20
+ 3710 0271 94       		.byte	0x94
+ 3711 0272 57       		.byte	0x57
+ 3712 0273 2E000000 		.long	0x2e
+ 3713 0277 02       		.uleb128 0x2
+ 3714 0278 91       		.byte	0x91
+ 3715 0279 50       		.sleb128 -48
+ 3716 027a 01       		.uleb128 0x1
+ 3717 027b 00000000 		.long	.LASF21
+ 3718 027f 94       		.byte	0x94
+ 3719 0280 6A       		.byte	0x6a
+ 3720 0281 2E000000 		.long	0x2e
+ 3721 0285 02       		.uleb128 0x2
+ 3722 0286 91       		.byte	0x91
+ 3723 0287 48       		.sleb128 -56
+ 3724 0288 01       		.uleb128 0x1
+ 3725 0289 00000000 		.long	.LASF22
+ 3726 028d 94       		.byte	0x94
+ 3727 028e 7D       		.byte	0x7d
+ 3728 028f 2E000000 		.long	0x2e
+ 3729 0293 02       		.uleb128 0x2
+ 3730 0294 91       		.byte	0x91
+ 3731 0295 40       		.sleb128 -64
+ 3732 0296 01       		.uleb128 0x1
+ 3733 0297 00000000 		.long	.LASF23
+ 3734 029b 95       		.byte	0x95
+ 3735 029c 0F       		.byte	0xf
+ 3736 029d 2E000000 		.long	0x2e
+ 3737 02a1 02       		.uleb128 0x2
+ 3738 02a2 91       		.byte	0x91
+ 3739 02a3 00       		.sleb128 0
+ 3740 02a4 01       		.uleb128 0x1
+ 3741 02a5 00000000 		.long	.LASF24
+ 3742 02a9 95       		.byte	0x95
+ 3743 02aa 22       		.byte	0x22
+ 3744 02ab 2E000000 		.long	0x2e
+ 3745 02af 02       		.uleb128 0x2
+ 3746 02b0 91       		.byte	0x91
+ 3747 02b1 08       		.sleb128 8
+ 3748 02b2 01       		.uleb128 0x1
+ 3749 02b3 00000000 		.long	.LASF25
+ 3750 02b7 95       		.byte	0x95
+ 3751 02b8 35       		.byte	0x35
+ 3752 02b9 2E000000 		.long	0x2e
+ 3753 02bd 02       		.uleb128 0x2
+GAS LISTING main.s 			page 78
+
+
+ 3754 02be 91       		.byte	0x91
+ 3755 02bf 10       		.sleb128 16
+ 3756 02c0 01       		.uleb128 0x1
+ 3757 02c1 00000000 		.long	.LASF26
+ 3758 02c5 95       		.byte	0x95
+ 3759 02c6 48       		.byte	0x48
+ 3760 02c7 2E000000 		.long	0x2e
+ 3761 02cb 02       		.uleb128 0x2
+ 3762 02cc 91       		.byte	0x91
+ 3763 02cd 18       		.sleb128 24
+ 3764 02ce 00       		.byte	0
+ 3765 02cf 00       		.byte	0
+ 3766              		.section	.debug_abbrev,"",@progbits
+ 3767              	.Ldebug_abbrev0:
+ 3768 0000 01       		.uleb128 0x1
+ 3769 0001 05       		.uleb128 0x5
+ 3770 0002 00       		.byte	0
+ 3771 0003 03       		.uleb128 0x3
+ 3772 0004 0E       		.uleb128 0xe
+ 3773 0005 3A       		.uleb128 0x3a
+ 3774 0006 21       		.uleb128 0x21
+ 3775 0007 01       		.sleb128 1
+ 3776 0008 3B       		.uleb128 0x3b
+ 3777 0009 0B       		.uleb128 0xb
+ 3778 000a 39       		.uleb128 0x39
+ 3779 000b 0B       		.uleb128 0xb
+ 3780 000c 49       		.uleb128 0x49
+ 3781 000d 13       		.uleb128 0x13
+ 3782 000e 02       		.uleb128 0x2
+ 3783 000f 18       		.uleb128 0x18
+ 3784 0010 00       		.byte	0
+ 3785 0011 00       		.byte	0
+ 3786 0012 02       		.uleb128 0x2
+ 3787 0013 0D       		.uleb128 0xd
+ 3788 0014 00       		.byte	0
+ 3789 0015 03       		.uleb128 0x3
+ 3790 0016 0E       		.uleb128 0xe
+ 3791 0017 3A       		.uleb128 0x3a
+ 3792 0018 21       		.uleb128 0x21
+ 3793 0019 03       		.sleb128 3
+ 3794 001a 3B       		.uleb128 0x3b
+ 3795 001b 0B       		.uleb128 0xb
+ 3796 001c 39       		.uleb128 0x39
+ 3797 001d 0B       		.uleb128 0xb
+ 3798 001e 49       		.uleb128 0x49
+ 3799 001f 13       		.uleb128 0x13
+ 3800 0020 38       		.uleb128 0x38
+ 3801 0021 0B       		.uleb128 0xb
+ 3802 0022 00       		.byte	0
+ 3803 0023 00       		.byte	0
+ 3804 0024 03       		.uleb128 0x3
+ 3805 0025 48       		.uleb128 0x48
+ 3806 0026 00       		.byte	0
+ 3807 0027 7D       		.uleb128 0x7d
+ 3808 0028 01       		.uleb128 0x1
+ 3809 0029 7F       		.uleb128 0x7f
+ 3810 002a 13       		.uleb128 0x13
+GAS LISTING main.s 			page 79
+
+
+ 3811 002b 00       		.byte	0
+ 3812 002c 00       		.byte	0
+ 3813 002d 04       		.uleb128 0x4
+ 3814 002e 24       		.uleb128 0x24
+ 3815 002f 00       		.byte	0
+ 3816 0030 0B       		.uleb128 0xb
+ 3817 0031 0B       		.uleb128 0xb
+ 3818 0032 3E       		.uleb128 0x3e
+ 3819 0033 0B       		.uleb128 0xb
+ 3820 0034 03       		.uleb128 0x3
+ 3821 0035 0E       		.uleb128 0xe
+ 3822 0036 00       		.byte	0
+ 3823 0037 00       		.byte	0
+ 3824 0038 05       		.uleb128 0x5
+ 3825 0039 01       		.uleb128 0x1
+ 3826 003a 01       		.byte	0x1
+ 3827 003b 49       		.uleb128 0x49
+ 3828 003c 13       		.uleb128 0x13
+ 3829 003d 01       		.uleb128 0x1
+ 3830 003e 13       		.uleb128 0x13
+ 3831 003f 00       		.byte	0
+ 3832 0040 00       		.byte	0
+ 3833 0041 06       		.uleb128 0x6
+ 3834 0042 21       		.uleb128 0x21
+ 3835 0043 00       		.byte	0
+ 3836 0044 49       		.uleb128 0x49
+ 3837 0045 13       		.uleb128 0x13
+ 3838 0046 2F       		.uleb128 0x2f
+ 3839 0047 0B       		.uleb128 0xb
+ 3840 0048 00       		.byte	0
+ 3841 0049 00       		.byte	0
+ 3842 004a 07       		.uleb128 0x7
+ 3843 004b 0F       		.uleb128 0xf
+ 3844 004c 00       		.byte	0
+ 3845 004d 0B       		.uleb128 0xb
+ 3846 004e 21       		.uleb128 0x21
+ 3847 004f 08       		.sleb128 8
+ 3848 0050 49       		.uleb128 0x49
+ 3849 0051 13       		.uleb128 0x13
+ 3850 0052 00       		.byte	0
+ 3851 0053 00       		.byte	0
+ 3852 0054 08       		.uleb128 0x8
+ 3853 0055 05       		.uleb128 0x5
+ 3854 0056 00       		.byte	0
+ 3855 0057 49       		.uleb128 0x49
+ 3856 0058 13       		.uleb128 0x13
+ 3857 0059 00       		.byte	0
+ 3858 005a 00       		.byte	0
+ 3859 005b 09       		.uleb128 0x9
+ 3860 005c 34       		.uleb128 0x34
+ 3861 005d 00       		.byte	0
+ 3862 005e 03       		.uleb128 0x3
+ 3863 005f 08       		.uleb128 0x8
+ 3864 0060 3A       		.uleb128 0x3a
+ 3865 0061 21       		.uleb128 0x21
+ 3866 0062 03       		.sleb128 3
+ 3867 0063 3B       		.uleb128 0x3b
+GAS LISTING main.s 			page 80
+
+
+ 3868 0064 0B       		.uleb128 0xb
+ 3869 0065 39       		.uleb128 0x39
+ 3870 0066 0B       		.uleb128 0xb
+ 3871 0067 49       		.uleb128 0x49
+ 3872 0068 13       		.uleb128 0x13
+ 3873 0069 3F       		.uleb128 0x3f
+ 3874 006a 19       		.uleb128 0x19
+ 3875 006b 02       		.uleb128 0x2
+ 3876 006c 18       		.uleb128 0x18
+ 3877 006d 00       		.byte	0
+ 3878 006e 00       		.byte	0
+ 3879 006f 0A       		.uleb128 0xa
+ 3880 0070 18       		.uleb128 0x18
+ 3881 0071 00       		.byte	0
+ 3882 0072 00       		.byte	0
+ 3883 0073 00       		.byte	0
+ 3884 0074 0B       		.uleb128 0xb
+ 3885 0075 34       		.uleb128 0x34
+ 3886 0076 00       		.byte	0
+ 3887 0077 03       		.uleb128 0x3
+ 3888 0078 08       		.uleb128 0x8
+ 3889 0079 3A       		.uleb128 0x3a
+ 3890 007a 21       		.uleb128 0x21
+ 3891 007b 02       		.sleb128 2
+ 3892 007c 3B       		.uleb128 0x3b
+ 3893 007d 0B       		.uleb128 0xb
+ 3894 007e 39       		.uleb128 0x39
+ 3895 007f 0B       		.uleb128 0xb
+ 3896 0080 49       		.uleb128 0x49
+ 3897 0081 13       		.uleb128 0x13
+ 3898 0082 02       		.uleb128 0x2
+ 3899 0083 18       		.uleb128 0x18
+ 3900 0084 00       		.byte	0
+ 3901 0085 00       		.byte	0
+ 3902 0086 0C       		.uleb128 0xc
+ 3903 0087 11       		.uleb128 0x11
+ 3904 0088 01       		.byte	0x1
+ 3905 0089 25       		.uleb128 0x25
+ 3906 008a 0E       		.uleb128 0xe
+ 3907 008b 13       		.uleb128 0x13
+ 3908 008c 0B       		.uleb128 0xb
+ 3909 008d 03       		.uleb128 0x3
+ 3910 008e 1F       		.uleb128 0x1f
+ 3911 008f 1B       		.uleb128 0x1b
+ 3912 0090 1F       		.uleb128 0x1f
+ 3913 0091 11       		.uleb128 0x11
+ 3914 0092 01       		.uleb128 0x1
+ 3915 0093 12       		.uleb128 0x12
+ 3916 0094 07       		.uleb128 0x7
+ 3917 0095 10       		.uleb128 0x10
+ 3918 0096 17       		.uleb128 0x17
+ 3919 0097 00       		.byte	0
+ 3920 0098 00       		.byte	0
+ 3921 0099 0D       		.uleb128 0xd
+ 3922 009a 34       		.uleb128 0x34
+ 3923 009b 00       		.byte	0
+ 3924 009c 03       		.uleb128 0x3
+GAS LISTING main.s 			page 81
+
+
+ 3925 009d 0E       		.uleb128 0xe
+ 3926 009e 3A       		.uleb128 0x3a
+ 3927 009f 0B       		.uleb128 0xb
+ 3928 00a0 3B       		.uleb128 0x3b
+ 3929 00a1 0B       		.uleb128 0xb
+ 3930 00a2 39       		.uleb128 0x39
+ 3931 00a3 0B       		.uleb128 0xb
+ 3932 00a4 49       		.uleb128 0x49
+ 3933 00a5 13       		.uleb128 0x13
+ 3934 00a6 3F       		.uleb128 0x3f
+ 3935 00a7 19       		.uleb128 0x19
+ 3936 00a8 02       		.uleb128 0x2
+ 3937 00a9 18       		.uleb128 0x18
+ 3938 00aa 00       		.byte	0
+ 3939 00ab 00       		.byte	0
+ 3940 00ac 0E       		.uleb128 0xe
+ 3941 00ad 13       		.uleb128 0x13
+ 3942 00ae 01       		.byte	0x1
+ 3943 00af 03       		.uleb128 0x3
+ 3944 00b0 0E       		.uleb128 0xe
+ 3945 00b1 0B       		.uleb128 0xb
+ 3946 00b2 0B       		.uleb128 0xb
+ 3947 00b3 3A       		.uleb128 0x3a
+ 3948 00b4 0B       		.uleb128 0xb
+ 3949 00b5 3B       		.uleb128 0x3b
+ 3950 00b6 0B       		.uleb128 0xb
+ 3951 00b7 39       		.uleb128 0x39
+ 3952 00b8 0B       		.uleb128 0xb
+ 3953 00b9 01       		.uleb128 0x1
+ 3954 00ba 13       		.uleb128 0x13
+ 3955 00bb 00       		.byte	0
+ 3956 00bc 00       		.byte	0
+ 3957 00bd 0F       		.uleb128 0xf
+ 3958 00be 24       		.uleb128 0x24
+ 3959 00bf 00       		.byte	0
+ 3960 00c0 0B       		.uleb128 0xb
+ 3961 00c1 0B       		.uleb128 0xb
+ 3962 00c2 3E       		.uleb128 0x3e
+ 3963 00c3 0B       		.uleb128 0xb
+ 3964 00c4 03       		.uleb128 0x3
+ 3965 00c5 08       		.uleb128 0x8
+ 3966 00c6 00       		.byte	0
+ 3967 00c7 00       		.byte	0
+ 3968 00c8 10       		.uleb128 0x10
+ 3969 00c9 21       		.uleb128 0x21
+ 3970 00ca 00       		.byte	0
+ 3971 00cb 49       		.uleb128 0x49
+ 3972 00cc 13       		.uleb128 0x13
+ 3973 00cd 2F       		.uleb128 0x2f
+ 3974 00ce 05       		.uleb128 0x5
+ 3975 00cf 00       		.byte	0
+ 3976 00d0 00       		.byte	0
+ 3977 00d1 11       		.uleb128 0x11
+ 3978 00d2 26       		.uleb128 0x26
+ 3979 00d3 00       		.byte	0
+ 3980 00d4 49       		.uleb128 0x49
+ 3981 00d5 13       		.uleb128 0x13
+GAS LISTING main.s 			page 82
+
+
+ 3982 00d6 00       		.byte	0
+ 3983 00d7 00       		.byte	0
+ 3984 00d8 12       		.uleb128 0x12
+ 3985 00d9 34       		.uleb128 0x34
+ 3986 00da 00       		.byte	0
+ 3987 00db 03       		.uleb128 0x3
+ 3988 00dc 0E       		.uleb128 0xe
+ 3989 00dd 3A       		.uleb128 0x3a
+ 3990 00de 0B       		.uleb128 0xb
+ 3991 00df 3B       		.uleb128 0x3b
+ 3992 00e0 0B       		.uleb128 0xb
+ 3993 00e1 39       		.uleb128 0x39
+ 3994 00e2 0B       		.uleb128 0xb
+ 3995 00e3 49       		.uleb128 0x49
+ 3996 00e4 13       		.uleb128 0x13
+ 3997 00e5 3F       		.uleb128 0x3f
+ 3998 00e6 19       		.uleb128 0x19
+ 3999 00e7 3C       		.uleb128 0x3c
+ 4000 00e8 19       		.uleb128 0x19
+ 4001 00e9 00       		.byte	0
+ 4002 00ea 00       		.byte	0
+ 4003 00eb 13       		.uleb128 0x13
+ 4004 00ec 2E       		.uleb128 0x2e
+ 4005 00ed 01       		.byte	0x1
+ 4006 00ee 3F       		.uleb128 0x3f
+ 4007 00ef 19       		.uleb128 0x19
+ 4008 00f0 03       		.uleb128 0x3
+ 4009 00f1 0E       		.uleb128 0xe
+ 4010 00f2 3A       		.uleb128 0x3a
+ 4011 00f3 0B       		.uleb128 0xb
+ 4012 00f4 3B       		.uleb128 0x3b
+ 4013 00f5 0B       		.uleb128 0xb
+ 4014 00f6 39       		.uleb128 0x39
+ 4015 00f7 0B       		.uleb128 0xb
+ 4016 00f8 27       		.uleb128 0x27
+ 4017 00f9 19       		.uleb128 0x19
+ 4018 00fa 49       		.uleb128 0x49
+ 4019 00fb 13       		.uleb128 0x13
+ 4020 00fc 3C       		.uleb128 0x3c
+ 4021 00fd 19       		.uleb128 0x19
+ 4022 00fe 01       		.uleb128 0x1
+ 4023 00ff 13       		.uleb128 0x13
+ 4024 0100 00       		.byte	0
+ 4025 0101 00       		.byte	0
+ 4026 0102 14       		.uleb128 0x14
+ 4027 0103 2E       		.uleb128 0x2e
+ 4028 0104 01       		.byte	0x1
+ 4029 0105 3F       		.uleb128 0x3f
+ 4030 0106 19       		.uleb128 0x19
+ 4031 0107 03       		.uleb128 0x3
+ 4032 0108 0E       		.uleb128 0xe
+ 4033 0109 3A       		.uleb128 0x3a
+ 4034 010a 0B       		.uleb128 0xb
+ 4035 010b 3B       		.uleb128 0x3b
+ 4036 010c 0B       		.uleb128 0xb
+ 4037 010d 39       		.uleb128 0x39
+ 4038 010e 0B       		.uleb128 0xb
+GAS LISTING main.s 			page 83
+
+
+ 4039 010f 3C       		.uleb128 0x3c
+ 4040 0110 19       		.uleb128 0x19
+ 4041 0111 01       		.uleb128 0x1
+ 4042 0112 13       		.uleb128 0x13
+ 4043 0113 00       		.byte	0
+ 4044 0114 00       		.byte	0
+ 4045 0115 15       		.uleb128 0x15
+ 4046 0116 2E       		.uleb128 0x2e
+ 4047 0117 01       		.byte	0x1
+ 4048 0118 3F       		.uleb128 0x3f
+ 4049 0119 19       		.uleb128 0x19
+ 4050 011a 03       		.uleb128 0x3
+ 4051 011b 0E       		.uleb128 0xe
+ 4052 011c 3A       		.uleb128 0x3a
+ 4053 011d 0B       		.uleb128 0xb
+ 4054 011e 3B       		.uleb128 0x3b
+ 4055 011f 0B       		.uleb128 0xb
+ 4056 0120 39       		.uleb128 0x39
+ 4057 0121 0B       		.uleb128 0xb
+ 4058 0122 27       		.uleb128 0x27
+ 4059 0123 19       		.uleb128 0x19
+ 4060 0124 11       		.uleb128 0x11
+ 4061 0125 01       		.uleb128 0x1
+ 4062 0126 12       		.uleb128 0x12
+ 4063 0127 07       		.uleb128 0x7
+ 4064 0128 40       		.uleb128 0x40
+ 4065 0129 18       		.uleb128 0x18
+ 4066 012a 7A       		.uleb128 0x7a
+ 4067 012b 19       		.uleb128 0x19
+ 4068 012c 01       		.uleb128 0x1
+ 4069 012d 13       		.uleb128 0x13
+ 4070 012e 00       		.byte	0
+ 4071 012f 00       		.byte	0
+ 4072 0130 16       		.uleb128 0x16
+ 4073 0131 34       		.uleb128 0x34
+ 4074 0132 00       		.byte	0
+ 4075 0133 03       		.uleb128 0x3
+ 4076 0134 0E       		.uleb128 0xe
+ 4077 0135 3A       		.uleb128 0x3a
+ 4078 0136 0B       		.uleb128 0xb
+ 4079 0137 3B       		.uleb128 0x3b
+ 4080 0138 0B       		.uleb128 0xb
+ 4081 0139 39       		.uleb128 0x39
+ 4082 013a 0B       		.uleb128 0xb
+ 4083 013b 49       		.uleb128 0x49
+ 4084 013c 13       		.uleb128 0x13
+ 4085 013d 02       		.uleb128 0x2
+ 4086 013e 18       		.uleb128 0x18
+ 4087 013f 00       		.byte	0
+ 4088 0140 00       		.byte	0
+ 4089 0141 17       		.uleb128 0x17
+ 4090 0142 2E       		.uleb128 0x2e
+ 4091 0143 01       		.byte	0x1
+ 4092 0144 3F       		.uleb128 0x3f
+ 4093 0145 19       		.uleb128 0x19
+ 4094 0146 03       		.uleb128 0x3
+ 4095 0147 0E       		.uleb128 0xe
+GAS LISTING main.s 			page 84
+
+
+ 4096 0148 3A       		.uleb128 0x3a
+ 4097 0149 0B       		.uleb128 0xb
+ 4098 014a 3B       		.uleb128 0x3b
+ 4099 014b 0B       		.uleb128 0xb
+ 4100 014c 39       		.uleb128 0x39
+ 4101 014d 0B       		.uleb128 0xb
+ 4102 014e 27       		.uleb128 0x27
+ 4103 014f 19       		.uleb128 0x19
+ 4104 0150 11       		.uleb128 0x11
+ 4105 0151 01       		.uleb128 0x1
+ 4106 0152 12       		.uleb128 0x12
+ 4107 0153 07       		.uleb128 0x7
+ 4108 0154 40       		.uleb128 0x40
+ 4109 0155 18       		.uleb128 0x18
+ 4110 0156 7A       		.uleb128 0x7a
+ 4111 0157 19       		.uleb128 0x19
+ 4112 0158 00       		.byte	0
+ 4113 0159 00       		.byte	0
+ 4114 015a 00       		.byte	0
+ 4115              		.section	.debug_aranges,"",@progbits
+ 4116 0000 2C000000 		.long	0x2c
+ 4117 0004 0200     		.value	0x2
+ 4118 0006 00000000 		.long	.Ldebug_info0
+ 4119 000a 08       		.byte	0x8
+ 4120 000b 00       		.byte	0
+ 4121 000c 0000     		.value	0
+ 4122 000e 0000     		.value	0
+ 4123 0010 00000000 		.quad	.Ltext0
+ 4123      00000000 
+ 4124 0018 E8030000 		.quad	.Letext0-.Ltext0
+ 4124      00000000 
+ 4125 0020 00000000 		.quad	0
+ 4125      00000000 
+ 4126 0028 00000000 		.quad	0
+ 4126      00000000 
+ 4127              		.section	.debug_line,"",@progbits
+ 4128              	.Ldebug_line0:
+ 4129 0000 00010000 		.section	.debug_str,"MS",@progbits,1
+ 4129      05000800 
+ 4129      3E000000 
+ 4129      010101FB 
+ 4129      0E0D0001 
+ 4130              	.LASF5:
+ 4131 0000 58526573 		.string	"XResolution"
+ 4131      6F6C7574 
+ 4131      696F6E00 
+ 4132              	.LASF27:
+ 4133 000c 474E5520 		.string	"GNU C17 13.3.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stac
+ 4133      43313720 
+ 4133      31332E33 
+ 4133      2E30202D 
+ 4133      6D636D6F 
+ 4134              	.LASF9:
+ 4135 00b7 58436861 		.string	"XCharSize"
+ 4135      7253697A 
+ 4135      6500
+ 4136              	.LASF20:
+GAS LISTING main.s 			page 85
+
+
+ 4137 00c1 69737431 		.string	"ist1"
+ 4137      00
+ 4138              	.LASF21:
+ 4139 00c6 69737432 		.string	"ist2"
+ 4139      00
+ 4140              	.LASF22:
+ 4141 00cb 69737433 		.string	"ist3"
+ 4141      00
+ 4142              	.LASF23:
+ 4143 00d0 69737434 		.string	"ist4"
+ 4143      00
+ 4144              	.LASF24:
+ 4145 00d5 69737435 		.string	"ist5"
+ 4145      00
+ 4146              	.LASF25:
+ 4147 00da 69737436 		.string	"ist6"
+ 4147      00
+ 4148              	.LASF26:
+ 4149 00df 69737437 		.string	"ist7"
+ 4149      00
+ 4150              	.LASF16:
+ 4151 00e4 61646472 		.string	"addr"
+ 4151      00
+ 4152              	.LASF31:
+ 4153 00e9 53746172 		.string	"Start_Kernel"
+ 4153      745F4B65 
+ 4153      726E656C 
+ 4153      00
+ 4154              	.LASF4:
+ 4155 00f6 756E7369 		.string	"unsigned char"
+ 4155      676E6564 
+ 4155      20636861 
+ 4155      7200
+ 4156              	.LASF13:
+ 4157 0104 666F6E74 		.string	"font_ascii"
+ 4157      5F617363 
+ 4157      696900
+ 4158              	.LASF2:
+ 4159 010f 6C6F6E67 		.string	"long unsigned int"
+ 4159      20756E73 
+ 4159      69676E65 
+ 4159      6420696E 
+ 4159      7400
+ 4160              	.LASF15:
+ 4161 0121 54535336 		.string	"TSS64_Table"
+ 4161      345F5461 
+ 4161      626C6500 
+ 4162              	.LASF11:
+ 4163 012d 46425F61 		.string	"FB_addr"
+ 4163      64647200 
+ 4164              	.LASF10:
+ 4165 0135 59436861 		.string	"YCharSize"
+ 4165      7253697A 
+ 4165      6500
+ 4166              	.LASF28:
+ 4167 013f 706F7369 		.string	"position"
+ 4167      74696F6E 
+GAS LISTING main.s 			page 86
+
+
+ 4167      00
+ 4168              	.LASF3:
+ 4169 0148 756E7369 		.string	"unsigned int"
+ 4169      676E6564 
+ 4169      20696E74 
+ 4169      00
+ 4170              	.LASF29:
+ 4171 0155 636F6C6F 		.string	"color_printk"
+ 4171      725F7072 
+ 4171      696E746B 
+ 4171      00
+ 4172              	.LASF14:
+ 4173 0162 63686172 		.string	"char"
+ 4173      00
+ 4174              	.LASF12:
+ 4175 0167 46425F6C 		.string	"FB_length"
+ 4175      656E6774 
+ 4175      6800
+ 4176              	.LASF8:
+ 4177 0171 59506F73 		.string	"YPosition"
+ 4177      6974696F 
+ 4177      6E00
+ 4178              	.LASF30:
+ 4179 017b 7379735F 		.string	"sys_vector_init"
+ 4179      76656374 
+ 4179      6F725F69 
+ 4179      6E697400 
+ 4180              	.LASF19:
+ 4181 018b 72737032 		.string	"rsp2"
+ 4181      00
+ 4182              	.LASF6:
+ 4183 0190 59526573 		.string	"YResolution"
+ 4183      6F6C7574 
+ 4183      696F6E00 
+ 4184              	.LASF17:
+ 4185 019c 72737030 		.string	"rsp0"
+ 4185      00
+ 4186              	.LASF18:
+ 4187 01a1 72737031 		.string	"rsp1"
+ 4187      00
+ 4188              	.LASF32:
+ 4189 01a6 7365745F 		.string	"set_tss64"
+ 4189      74737336 
+ 4189      3400
+ 4190              	.LASF7:
+ 4191 01b0 58506F73 		.string	"XPosition"
+ 4191      6974696F 
+ 4191      6E00
+ 4192              		.section	.debug_line_str,"MS",@progbits,1
+ 4193              	.LASF0:
+ 4194 0000 6D61696E 		.string	"main.c"
+ 4194      2E6300
+ 4195              	.LASF1:
+ 4196 0007 2F686F6D 		.string	"/home/student/myos/kernel"
+ 4196      652F7374 
+ 4196      7564656E 
+ 4196      742F6D79 
+GAS LISTING main.s 			page 87
+
+
+ 4196      6F732F6B 
+ 4197              		.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
+ 4198 0021 2F686F6D 		.section	.note.GNU-stack,"",@progbits
+ 4198      652F7374 
+ 4198      7564656E 
+ 4198      742F6D79 
+ 4198      6F732F6B 
+ 4199              		.section	.note.gnu.property,"a"
+ 4200              		.align 8
+ 4201 0000 04000000 		.long	1f - 0f
+ 4202 0004 10000000 		.long	4f - 1f
+ 4203 0008 05000000 		.long	5
+ 4204              	0:
+ 4205 000c 474E5500 		.string	"GNU"
+ 4206              	1:
+ 4207              		.align 8
+ 4208 0010 020000C0 		.long	0xc0000002
+ 4209 0014 04000000 		.long	3f - 2f
+ 4210              	2:
+ 4211 0018 03000000 		.long	0x3
+ 4212              	3:
+ 4213 001c 00000000 		.align 8
+ 4214              	4:
+GAS LISTING main.s 			page 88
 
 
 DEFINED SYMBOLS
@@ -4530,13 +5192,16 @@ DEFINED SYMBOLS
               main.s:15     .data:0000000000000000 font_ascii
               main.s:3075   .bss:0000000000000000 Pos
               main.s:3081   .bss:0000000000000040 buf
-              main.s:3100   .text:0000000000000000 Start_Kernel
-              main.s:3084   .rodata:0000000000000000 .LC0
-              main.s:3086   .rodata:0000000000000011 .LC1
-              main.s:3089   .rodata:0000000000000020 .LC2
-              main.s:3092   .rodata:0000000000000078 .LC3
-              main.s:3095   .rodata:00000000000000b0 .LC4
+              main.s:3086   .text:0000000000000000 set_tss64
+              main.s:3223   .text:0000000000000131 Start_Kernel
+              main.s:3207   .rodata:0000000000000000 .LC0
+              main.s:3209   .rodata:0000000000000011 .LC1
+              main.s:3212   .rodata:0000000000000020 .LC2
+              main.s:3215   .rodata:0000000000000078 .LC3
+              main.s:3218   .rodata:00000000000000b0 .LC4
 
 UNDEFINED SYMBOLS
 _GLOBAL_OFFSET_TABLE_
+TSS64_Table
+sys_vector_init
 color_printk
