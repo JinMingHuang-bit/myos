@@ -36,6 +36,10 @@ void Start_Kernel(void)
     Pos.FB_addr=(int *)0xffff800000a00000;
     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
     load_TR(8);
+    //set_tss64(0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00);
+    set_tss64(0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,
+0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00);
+    sys_vector_init();
     // for(i=0;i<Pos.XResolution*20;i++){
     //     *((char*)addr+0)=(char)0x00;
     //     *((char*)addr+1)=(char)0x00;

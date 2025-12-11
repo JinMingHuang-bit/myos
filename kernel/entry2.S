@@ -95,7 +95,7 @@ error_code:
     movq %rdi,%ds
     movq %rdi,%es
     movq %rsp,%rdi
-    callq *%rdx
+    //callq *%rdx
     jmp ret_from_exception
 
 // 还原被中断程序的现场
@@ -151,14 +151,14 @@ ENTRY(invalid_TSS)
     pushq %rax
     //Exchange the values of RAX and the top of the stack,
     //This not only restores the original value of RAX, but also places the function address for processing on the stack.
-    leaq    do_invalid_TSS(%rip),%rax
-    xchgq   %rax, (%rsp)
+    leaq	do_invalid_TSS(%rip),%rax
+    xchgq	%rax, (%rsp)
     jmp error_code
 
 ENTRY(page_fault)
     pushq %rax
-    leaq    do_page_fault(%rip),%rax
-    xchgq   %rax, (%rsp)
+    leaq	do_page_fault(%rip),%rax
+    xchgq	%rax, (%rsp)
     jmp error_code
     
 ENTRY(int3)

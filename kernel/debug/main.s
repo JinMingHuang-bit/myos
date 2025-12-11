@@ -3080,6 +3080,129 @@ Pos:
 	.size	buf, 4096
 buf:
 	.zero	4096
+	.text
+	.globl	set_tss64
+	.type	set_tss64, @function
+set_tss64:
+.LFB38:
+	.file 1 "gate.h"
+	.loc 1 150 1
+	.cfi_startproc
+	endbr64	
+	pushq	%rbp	#
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp	#,
+	.cfi_def_cfa_register 6
+.L2:
+	leaq	.L2(%rip), %rax	#, tmp82
+	movabsq	$_GLOBAL_OFFSET_TABLE_-.L2, %r11	#,
+	addq	%r11, %rax	#, tmp82
+	movq	%rdi, -8(%rbp)	# rsp0, rsp0
+	movq	%rsi, -16(%rbp)	# rsp1, rsp1
+	movq	%rdx, -24(%rbp)	# rsp2, rsp2
+	movq	%rcx, -32(%rbp)	# ist1, ist1
+	movq	%r8, -40(%rbp)	# ist2, ist2
+	movq	%r9, -48(%rbp)	# ist3, ist3
+# gate.h:152: 	*(unsigned long *)(TSS64_Table+1) = rsp0;
+	.loc 1 152 3
+	movabsq	$TSS64_Table@GOT, %rdx	#, tmp93
+	movq	(%rax,%rdx), %rdx	#, tmp94
+	leaq	4(%rdx), %rdx	#, _1
+# gate.h:152: 	*(unsigned long *)(TSS64_Table+1) = rsp0;
+	.loc 1 152 36
+	movq	-8(%rbp), %rcx	# rsp0, tmp95
+	movq	%rcx, (%rdx)	# tmp95, *_1
+# gate.h:153: 	*(unsigned long *)(TSS64_Table+3) = rsp1;
+	.loc 1 153 3
+	movabsq	$TSS64_Table@GOT, %rdx	#, tmp96
+	movq	(%rax,%rdx), %rdx	#, tmp97
+	leaq	12(%rdx), %rdx	#, _2
+# gate.h:153: 	*(unsigned long *)(TSS64_Table+3) = rsp1;
+	.loc 1 153 36
+	movq	-16(%rbp), %rcx	# rsp1, tmp98
+	movq	%rcx, (%rdx)	# tmp98, *_2
+# gate.h:154: 	*(unsigned long *)(TSS64_Table+5) = rsp2;
+	.loc 1 154 3
+	movabsq	$TSS64_Table@GOT, %rdx	#, tmp99
+	movq	(%rax,%rdx), %rdx	#, tmp100
+	leaq	20(%rdx), %rdx	#, _3
+# gate.h:154: 	*(unsigned long *)(TSS64_Table+5) = rsp2;
+	.loc 1 154 36
+	movq	-24(%rbp), %rcx	# rsp2, tmp101
+	movq	%rcx, (%rdx)	# tmp101, *_3
+# gate.h:156: 	*(unsigned long *)(TSS64_Table+9) = ist1;
+	.loc 1 156 3
+	movabsq	$TSS64_Table@GOT, %rdx	#, tmp102
+	movq	(%rax,%rdx), %rdx	#, tmp103
+	leaq	36(%rdx), %rdx	#, _4
+# gate.h:156: 	*(unsigned long *)(TSS64_Table+9) = ist1;
+	.loc 1 156 36
+	movq	-32(%rbp), %rcx	# ist1, tmp104
+	movq	%rcx, (%rdx)	# tmp104, *_4
+# gate.h:157: 	*(unsigned long *)(TSS64_Table+11) = ist2;
+	.loc 1 157 3
+	movabsq	$TSS64_Table@GOT, %rdx	#, tmp105
+	movq	(%rax,%rdx), %rdx	#, tmp106
+	leaq	44(%rdx), %rdx	#, _5
+# gate.h:157: 	*(unsigned long *)(TSS64_Table+11) = ist2;
+	.loc 1 157 37
+	movq	-40(%rbp), %rcx	# ist2, tmp107
+	movq	%rcx, (%rdx)	# tmp107, *_5
+# gate.h:158: 	*(unsigned long *)(TSS64_Table+13) = ist3;
+	.loc 1 158 3
+	movabsq	$TSS64_Table@GOT, %rdx	#, tmp108
+	movq	(%rax,%rdx), %rdx	#, tmp109
+	leaq	52(%rdx), %rdx	#, _6
+# gate.h:158: 	*(unsigned long *)(TSS64_Table+13) = ist3;
+	.loc 1 158 37
+	movq	-48(%rbp), %rcx	# ist3, tmp110
+	movq	%rcx, (%rdx)	# tmp110, *_6
+# gate.h:159: 	*(unsigned long *)(TSS64_Table+15) = ist4;
+	.loc 1 159 3
+	movabsq	$TSS64_Table@GOT, %rdx	#, tmp111
+	movq	(%rax,%rdx), %rdx	#, tmp112
+	leaq	60(%rdx), %rdx	#, _7
+# gate.h:159: 	*(unsigned long *)(TSS64_Table+15) = ist4;
+	.loc 1 159 37
+	movq	16(%rbp), %rcx	# ist4, tmp113
+	movq	%rcx, (%rdx)	# tmp113, *_7
+# gate.h:160: 	*(unsigned long *)(TSS64_Table+17) = ist5;
+	.loc 1 160 3
+	movabsq	$TSS64_Table@GOT, %rdx	#, tmp114
+	movq	(%rax,%rdx), %rdx	#, tmp115
+	leaq	68(%rdx), %rdx	#, _8
+# gate.h:160: 	*(unsigned long *)(TSS64_Table+17) = ist5;
+	.loc 1 160 37
+	movq	24(%rbp), %rcx	# ist5, tmp116
+	movq	%rcx, (%rdx)	# tmp116, *_8
+# gate.h:161: 	*(unsigned long *)(TSS64_Table+19) = ist6;
+	.loc 1 161 3
+	movabsq	$TSS64_Table@GOT, %rdx	#, tmp117
+	movq	(%rax,%rdx), %rdx	#, tmp118
+	leaq	76(%rdx), %rdx	#, _9
+# gate.h:161: 	*(unsigned long *)(TSS64_Table+19) = ist6;
+	.loc 1 161 37
+	movq	32(%rbp), %rcx	# ist6, tmp119
+	movq	%rcx, (%rdx)	# tmp119, *_9
+# gate.h:162: 	*(unsigned long *)(TSS64_Table+21) = ist7;	
+	.loc 1 162 3
+	movabsq	$TSS64_Table@GOT, %rdx	#, tmp120
+	movq	(%rax,%rdx), %rax	#, tmp121
+	leaq	84(%rax), %rax	#, _10
+# gate.h:162: 	*(unsigned long *)(TSS64_Table+21) = ist7;	
+	.loc 1 162 37
+	movq	40(%rbp), %rdx	# ist7, tmp122
+	movq	%rdx, (%rax)	# tmp122, *_10
+# gate.h:163: }
+	.loc 1 163 1
+	nop	
+	popq	%rbp	#
+	.cfi_def_cfa 7, 8
+	ret	
+	.cfi_endproc
+.LFE38:
+	.size	set_tss64, .-set_tss64
 	.section	.rodata
 .LC0:
 	.string	"hello\t\t kernel!\n"
@@ -3098,9 +3221,9 @@ buf:
 	.globl	Start_Kernel
 	.type	Start_Kernel, @function
 Start_Kernel:
-.LFB34:
-	.file 1 "main.c"
-	.loc 1 13 1
+.LFB39:
+	.file 2 "main.c"
+	.loc 2 16 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -3113,275 +3236,317 @@ Start_Kernel:
 	subq	$32, %rsp	#,
 	.cfi_offset 15, -24
 	.cfi_offset 3, -32
-.L3:
-	leaq	.L3(%rip), %rbx	#, tmp82
-	movabsq	$_GLOBAL_OFFSET_TABLE_-.L3, %r11	#,
+.L5:
+	leaq	.L5(%rip), %rbx	#, tmp82
+	movabsq	$_GLOBAL_OFFSET_TABLE_-.L5, %r11	#,
 	addq	%r11, %rbx	#, tmp82
-# main.c:20:     asm volatile("mov %%cr4, %0" : "=r"(cr4));
-	.loc 1 20 5
+# main.c:23:     asm volatile("mov %%cr4, %0" : "=r"(cr4));
+	.loc 2 23 5
 #APP
-# 20 "main.c" 1
+# 23 "main.c" 1
 	mov %cr4, %rax	# cr4
 # 0 "" 2
 #NO_APP
 	movq	%rax, -24(%rbp)	# cr4, cr4
-# main.c:21:     cr4 |= (1 << 9);  // 设置OSXMMEXCPT位
-	.loc 1 21 9
+# main.c:24:     cr4 |= (1 << 9);  // 设置OSXMMEXCPT位
+	.loc 2 24 9
 	orq	$512, -24(%rbp)	#, cr4
-# main.c:22:     cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
-	.loc 1 22 9
+# main.c:25:     cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
+	.loc 2 25 9
 	orq	$1024, -24(%rbp)	#, cr4
-# main.c:23:     asm volatile("mov %0, %%cr4" : : "r"(cr4));
-	.loc 1 23 5
+# main.c:26:     asm volatile("mov %0, %%cr4" : : "r"(cr4));
+	.loc 2 26 5
 	movq	-24(%rbp), %rax	# cr4, tmp89
 #APP
-# 23 "main.c" 1
+# 26 "main.c" 1
 	mov %rax, %cr4	# tmp89
 # 0 "" 2
-# main.c:25:     int *addr=(int *)0xffff800000a00000;
-	.loc 1 25 10
+# main.c:28:     int *addr=(int *)0xffff800000a00000;
+	.loc 2 28 10
 #NO_APP
-	movabsq	$-140737477869568, %rsi	#, tmp120
-	movq	%rsi, -32(%rbp)	# tmp120, addr
-# main.c:27:     Pos.XResolution=1440;
-	.loc 1 27 20
+	movabsq	$-140737477869568, %rsi	#, tmp128
+	movq	%rsi, -32(%rbp)	# tmp128, addr
+# main.c:30:     Pos.XResolution=1440;
+	.loc 2 30 20
 	movabsq	$Pos@GOTOFF, %rax	#, tmp90
 	movl	$1440, (%rbx,%rax)	#, Pos.XResolution
-# main.c:28:     Pos.YResolution=900;
-	.loc 1 28 20
+# main.c:31:     Pos.YResolution=900;
+	.loc 2 31 20
 	movabsq	$Pos@GOTOFF, %rax	#, tmp91
 	movl	$900, 4(%rbx,%rax)	#, Pos.YResolution
-# main.c:29:     Pos.XPosition=0;
-	.loc 1 29 18
+# main.c:32:     Pos.XPosition=0;
+	.loc 2 32 18
 	movabsq	$Pos@GOTOFF, %rax	#, tmp92
 	movl	$0, 8(%rbx,%rax)	#, Pos.XPosition
-# main.c:30:     Pos.YPosition=0;
-	.loc 1 30 18
+# main.c:33:     Pos.YPosition=0;
+	.loc 2 33 18
 	movabsq	$Pos@GOTOFF, %rax	#, tmp93
 	movl	$0, 12(%rbx,%rax)	#, Pos.YPosition
-# main.c:31:     Pos.XCharSize=8;
-	.loc 1 31 18
+# main.c:34:     Pos.XCharSize=8;
+	.loc 2 34 18
 	movabsq	$Pos@GOTOFF, %rax	#, tmp94
 	movl	$8, 16(%rbx,%rax)	#, Pos.XCharSize
-# main.c:32:     Pos.YCharSize=16;
-	.loc 1 32 18
+# main.c:35:     Pos.YCharSize=16;
+	.loc 2 35 18
 	movabsq	$Pos@GOTOFF, %rax	#, tmp95
 	movl	$16, 20(%rbx,%rax)	#, Pos.YCharSize
-# main.c:33:     Pos.FB_addr=(int *)0xffff800000a00000;
-	.loc 1 33 16
+# main.c:36:     Pos.FB_addr=(int *)0xffff800000a00000;
+	.loc 2 36 16
 	movabsq	$Pos@GOTOFF, %rax	#, tmp96
-	movq	%rsi, 24(%rbx,%rax)	# tmp121, Pos.FB_addr
-# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
-	.loc 1 34 23
+	movq	%rsi, 24(%rbx,%rax)	# tmp129, Pos.FB_addr
+# main.c:37:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+	.loc 2 37 23
 	movabsq	$Pos@GOTOFF, %rax	#, tmp97
 	movl	(%rbx,%rax), %edx	# Pos.XResolution, _1
-# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
-	.loc 1 34 39
+# main.c:37:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+	.loc 2 37 39
 	movabsq	$Pos@GOTOFF, %rax	#, tmp98
 	movl	4(%rbx,%rax), %eax	# Pos.YResolution, _2
-# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
-	.loc 1 34 35
+# main.c:37:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+	.loc 2 37 35
 	imull	%edx, %eax	# _1, _3
-# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
-	.loc 1 34 51
+# main.c:37:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+	.loc 2 37 51
 	sall	$2, %eax	#, _4
 	cltq
-# main.c:34:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
-	.loc 1 34 18
+# main.c:37:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+	.loc 2 37 18
 	movabsq	$Pos@GOTOFF, %rdx	#, tmp99
 	movq	%rax, 32(%rbx,%rdx)	# _5, Pos.FB_length
-# main.c:67:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
-	.loc 1 67 5
-	movabsq	$.LC0@GOTOFF, %rax	#, tmp101
-	leaq	(%rbx,%rax), %rax	#, tmp100
-	movq	%rax, %rdx	# tmp100,
-	movl	$0, %esi	#,
-	movl	$16776960, %edi	#,
-	movq	%rbx, %r15	# tmp82,
-	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp102
-	addq	%rbx, %rcx	# tmp82, tmp102
-	call	*%rcx	# tmp102
+# main.c:38:     load_TR(8);
+	.loc 2 38 5
+	movl	$64, %eax	#, tmp100
+#APP
+# 38 "main.c" 1
+	ltr %ax	
+# 0 "" 2
+# main.c:40:     set_tss64(0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,
+	.loc 2 40 5
+#NO_APP
+	pushq	$31744	#
+	movl	$-32768, 4(%rsp)	#,
+	pushq	$31744	#
+	movl	$-32768, 4(%rsp)	#,
+	pushq	$31744	#
+	movl	$-32768, 4(%rsp)	#,
+	pushq	$31744	#
+	movl	$-32768, 4(%rsp)	#,
+	movabsq	$-140737488323584, %r9	#,
+	movabsq	$-140737488323584, %r8	#,
+	movabsq	$-140737488323584, %rax	#, tmp101
+	movq	%rax, %rcx	# tmp101,
+	movabsq	$-140737488323584, %rax	#, tmp102
+	movq	%rax, %rdx	# tmp102,
+	movabsq	$-140737488323584, %rax	#, tmp103
+	movq	%rax, %rsi	# tmp103,
+	movabsq	$-140737488323584, %rax	#, tmp104
+	movq	%rax, %rdi	# tmp104,
+	movabsq	$set_tss64@GOTOFF, %rax	#, tmp106
+	leaq	(%rbx,%rax), %rax	#, tmp105
+	call	*%rax	# tmp105
 .LVL0:
-# main.c:68:     color_printk(YELLOW,BLACK,"hello,User\n");
-	.loc 1 68 5
-	movabsq	$.LC1@GOTOFF, %rax	#, tmp104
-	leaq	(%rbx,%rax), %rax	#, tmp103
-	movq	%rax, %rdx	# tmp103,
-	movl	$0, %esi	#,
-	movl	$16776960, %edi	#,
+	addq	$32, %rsp	#,
+# main.c:42:     sys_vector_init();
+	.loc 2 42 5
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp105
-	addq	%rbx, %rcx	# tmp82, tmp105
-	call	*%rcx	# tmp105
+	movabsq	$sys_vector_init@PLTOFF, %rdx	#, tmp107
+	addq	%rbx, %rdx	# tmp82, tmp107
+	call	*%rdx	# tmp107
 .LVL1:
-# main.c:69:     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
-	.loc 1 69 5
-	movabsq	$.LC2@GOTOFF, %rax	#, tmp107
-	leaq	(%rbx,%rax), %rax	#, tmp106
-	movq	%rax, %rdx	# tmp106,
+# main.c:74:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
+	.loc 2 74 5
+	movabsq	$.LC0@GOTOFF, %rax	#, tmp109
+	leaq	(%rbx,%rax), %rax	#, tmp108
+	movq	%rax, %rdx	# tmp108,
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp108
-	addq	%rbx, %rcx	# tmp82, tmp108
-	call	*%rcx	# tmp108
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp110
+	addq	%rbx, %rcx	# tmp82, tmp110
+	call	*%rcx	# tmp110
 .LVL2:
-# main.c:70:     i=1/0;    
-	.loc 1 70 6
-	movl	$1, %eax	#, tmp109
-	movl	$0, %edi	#, tmp112
-	cltd
-	idivl	%edi	# tmp112
-	movl	%eax, -36(%rbp)	# tmp110, i
-# main.c:71:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
-	.loc 1 71 5
-	movabsq	$.LC3@GOTOFF, %rax	#, tmp114
-	leaq	(%rbx,%rax), %rax	#, tmp113
-	movq	%rax, %rdx	# tmp113,
+# main.c:75:     color_printk(YELLOW,BLACK,"hello,User\n");
+	.loc 2 75 5
+	movabsq	$.LC1@GOTOFF, %rax	#, tmp112
+	leaq	(%rbx,%rax), %rax	#, tmp111
+	movq	%rax, %rdx	# tmp111,
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp115
-	addq	%rbx, %rcx	# tmp82, tmp115
-	call	*%rcx	# tmp115
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp113
+	addq	%rbx, %rcx	# tmp82, tmp113
+	call	*%rcx	# tmp113
 .LVL3:
-# main.c:73:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
-	.loc 1 73 5
-	movabsq	$.LC4@GOTOFF, %rax	#, tmp117
-	leaq	(%rbx,%rax), %rax	#, tmp116
-	movq	%rax, %rdx	# tmp116,
+# main.c:76:     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
+	.loc 2 76 5
+	movabsq	$.LC2@GOTOFF, %rax	#, tmp115
+	leaq	(%rbx,%rax), %rax	#, tmp114
+	movq	%rax, %rdx	# tmp114,
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp118
-	addq	%rbx, %rcx	# tmp82, tmp118
-	call	*%rcx	# tmp118
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp116
+	addq	%rbx, %rcx	# tmp82, tmp116
+	call	*%rcx	# tmp116
 .LVL4:
-.L2:
-# main.c:74:     while (1)
-	.loc 1 74 11
+# main.c:77:     i=1/0;    
+	.loc 2 77 6
+	movl	$1, %eax	#, tmp117
+	movl	$0, %edi	#, tmp120
+	cltd
+	idivl	%edi	# tmp120
+	movl	%eax, -36(%rbp)	# tmp118, i
+# main.c:78:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
+	.loc 2 78 5
+	movabsq	$.LC3@GOTOFF, %rax	#, tmp122
+	leaq	(%rbx,%rax), %rax	#, tmp121
+	movq	%rax, %rdx	# tmp121,
+	movl	$0, %esi	#,
+	movl	$16776960, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp123
+	addq	%rbx, %rcx	# tmp82, tmp123
+	call	*%rcx	# tmp123
+.LVL5:
+# main.c:80:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
+	.loc 2 80 5
+	movabsq	$.LC4@GOTOFF, %rax	#, tmp125
+	leaq	(%rbx,%rax), %rax	#, tmp124
+	movq	%rax, %rdx	# tmp124,
+	movl	$0, %esi	#,
+	movl	$16776960, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp126
+	addq	%rbx, %rcx	# tmp82, tmp126
+	call	*%rcx	# tmp126
+.LVL6:
+.L4:
+# main.c:81:     while (1)
+	.loc 2 81 11
 	nop	
-	jmp	.L2	#
+	jmp	.L4	#
 	.cfi_endproc
-.LFE34:
+.LFE39:
 	.size	Start_Kernel, .-Start_Kernel
 .Letext0:
-	.file 2 "printk.h"
-	.file 3 "font.h"
+	.file 3 "printk.h"
+	.file 4 "font.h"
+	.file 5 "trap.h"
 	.section	.debug_info,"",@progbits
 .Ldebug_info0:
-	.long	0x1e1
+	.long	0x2cc
 	.value	0x5
 	.byte	0x1
 	.byte	0x8
 	.long	.Ldebug_abbrev0
-	.uleb128 0xa
-	.long	.LASF16
+	.uleb128 0xc
+	.long	.LASF27
 	.byte	0x1d
 	.long	.LASF0
 	.long	.LASF1
 	.quad	.Ltext0
 	.quad	.Letext0-.Ltext0
 	.long	.Ldebug_line0
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0x8
 	.byte	0x7
 	.long	.LASF2
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0x4
 	.byte	0x7
 	.long	.LASF3
+	.uleb128 0x5
+	.long	0x52
+	.long	0x52
 	.uleb128 0x6
-	.long	0x52
-	.long	0x52
-	.uleb128 0x7
 	.long	0x2e
 	.byte	0xff
-	.uleb128 0x7
+	.uleb128 0x6
 	.long	0x2e
 	.byte	0xf
 	.byte	0
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0x1
 	.byte	0x8
 	.long	.LASF4
-	.uleb128 0xb
+	.uleb128 0xd
 	.long	.LASF13
-	.byte	0x3
+	.byte	0x4
 	.byte	0x6
 	.byte	0xf
 	.long	0x3c
 	.uleb128 0x9
 	.byte	0x3
 	.quad	font_ascii
-	.uleb128 0xc
-	.long	.LASF17
+	.uleb128 0xe
+	.long	.LASF28
 	.byte	0x28
-	.byte	0x2
+	.byte	0x3
 	.byte	0x20
 	.byte	0x8
 	.long	0xdd
-	.uleb128 0x1
+	.uleb128 0x2
 	.long	.LASF5
 	.byte	0x22
 	.byte	0x9
 	.long	0xdd
 	.byte	0
-	.uleb128 0x1
+	.uleb128 0x2
 	.long	.LASF6
 	.byte	0x23
 	.byte	0x9
 	.long	0xdd
 	.byte	0x4
-	.uleb128 0x1
+	.uleb128 0x2
 	.long	.LASF7
 	.byte	0x24
 	.byte	0x9
 	.long	0xdd
 	.byte	0x8
-	.uleb128 0x1
+	.uleb128 0x2
 	.long	.LASF8
 	.byte	0x25
 	.byte	0x9
 	.long	0xdd
 	.byte	0xc
-	.uleb128 0x1
+	.uleb128 0x2
 	.long	.LASF9
 	.byte	0x26
 	.byte	0x9
 	.long	0xdd
 	.byte	0x10
-	.uleb128 0x1
+	.uleb128 0x2
 	.long	.LASF10
 	.byte	0x27
 	.byte	0x9
 	.long	0xdd
 	.byte	0x14
-	.uleb128 0x1
+	.uleb128 0x2
 	.long	.LASF11
 	.byte	0x28
 	.byte	0x14
 	.long	0xe4
 	.byte	0x18
-	.uleb128 0x1
+	.uleb128 0x2
 	.long	.LASF12
 	.byte	0x29
 	.byte	0x13
 	.long	0x2e
 	.byte	0x20
 	.byte	0
-	.uleb128 0xd
+	.uleb128 0xf
 	.byte	0x4
 	.byte	0x5
 	.string	"int"
-	.uleb128 0x4
+	.uleb128 0x7
 	.long	0x35
-	.uleb128 0x8
+	.uleb128 0x9
 	.string	"Pos"
 	.byte	0x2a
 	.byte	0x2
@@ -3389,20 +3554,20 @@ Start_Kernel:
 	.uleb128 0x9
 	.byte	0x3
 	.quad	Pos
-	.uleb128 0x6
+	.uleb128 0x5
 	.long	0x10f
 	.long	0x10f
-	.uleb128 0xe
+	.uleb128 0x10
 	.long	0x2e
 	.value	0xfff
 	.byte	0
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0x1
 	.byte	0x6
 	.long	.LASF14
-	.uleb128 0xf
+	.uleb128 0x11
 	.long	0x10f
-	.uleb128 0x8
+	.uleb128 0x9
 	.string	"buf"
 	.byte	0x2e
 	.byte	0x6
@@ -3410,177 +3575,201 @@ Start_Kernel:
 	.uleb128 0x9
 	.byte	0x3
 	.quad	buf
-	.uleb128 0x10
-	.long	.LASF18
-	.byte	0x2
+	.uleb128 0x5
+	.long	0x35
+	.long	0x140
+	.uleb128 0x6
+	.long	0x2e
+	.byte	0x19
+	.byte	0
+	.uleb128 0x12
+	.long	.LASF15
+	.byte	0x1
+	.byte	0xf
+	.byte	0x15
+	.long	0x130
+	.uleb128 0x13
+	.long	.LASF29
+	.byte	0x3
 	.byte	0x3b
 	.byte	0x5
 	.long	0xdd
-	.long	0x151
-	.uleb128 0x5
+	.long	0x16d
+	.uleb128 0x8
 	.long	0x35
-	.uleb128 0x5
+	.uleb128 0x8
 	.long	0x35
-	.uleb128 0x5
-	.long	0x151
-	.uleb128 0x11
+	.uleb128 0x8
+	.long	0x16d
+	.uleb128 0xa
 	.byte	0
-	.uleb128 0x4
+	.uleb128 0x7
 	.long	0x116
-	.uleb128 0x12
-	.long	.LASF19
-	.byte	0x1
-	.byte	0xc
+	.uleb128 0x14
+	.long	.LASF30
+	.byte	0x5
+	.byte	0x28
 	.byte	0x6
-	.quad	.LFB34
-	.quad	.LFE34-.LFB34
+	.long	0x180
+	.uleb128 0xa
+	.byte	0
+	.uleb128 0x15
+	.long	.LASF31
+	.byte	0x2
+	.byte	0xf
+	.byte	0x6
+	.quad	.LFB39
+	.quad	.LFE39-.LFB39
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x1df
-	.uleb128 0x9
+	.long	0x223
+	.uleb128 0xb
 	.string	"cr4"
-	.byte	0x13
+	.byte	0x16
 	.byte	0x13
 	.long	0x2e
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
-	.uleb128 0x13
-	.long	.LASF15
-	.byte	0x1
-	.byte	0x19
+	.uleb128 0x16
+	.long	.LASF16
+	.byte	0x2
+	.byte	0x1c
 	.byte	0xa
-	.long	0x1df
+	.long	0x223
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -48
-	.uleb128 0x9
+	.uleb128 0xb
 	.string	"i"
-	.byte	0x1a
+	.byte	0x1d
 	.byte	0x9
 	.long	0xdd
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -52
-	.uleb128 0x2
+	.uleb128 0x3
 	.quad	.LVL0
-	.long	0x130
-	.uleb128 0x2
+	.long	0x228
+	.uleb128 0x3
 	.quad	.LVL1
-	.long	0x130
-	.uleb128 0x2
+	.long	0x172
+	.uleb128 0x3
 	.quad	.LVL2
-	.long	0x130
-	.uleb128 0x2
+	.long	0x14c
+	.uleb128 0x3
 	.quad	.LVL3
-	.long	0x130
-	.uleb128 0x2
+	.long	0x14c
+	.uleb128 0x3
 	.quad	.LVL4
-	.long	0x130
+	.long	0x14c
+	.uleb128 0x3
+	.quad	.LVL5
+	.long	0x14c
+	.uleb128 0x3
+	.quad	.LVL6
+	.long	0x14c
 	.byte	0
-	.uleb128 0x4
+	.uleb128 0x7
 	.long	0xdd
+	.uleb128 0x17
+	.long	.LASF32
+	.byte	0x1
+	.byte	0x94
+	.byte	0x6
+	.quad	.LFB38
+	.quad	.LFE38-.LFB38
+	.uleb128 0x1
+	.byte	0x9c
+	.uleb128 0x1
+	.long	.LASF17
+	.byte	0x94
+	.byte	0x1e
+	.long	0x2e
+	.uleb128 0x2
+	.byte	0x91
+	.sleb128 -24
+	.uleb128 0x1
+	.long	.LASF18
+	.byte	0x94
+	.byte	0x31
+	.long	0x2e
+	.uleb128 0x2
+	.byte	0x91
+	.sleb128 -32
+	.uleb128 0x1
+	.long	.LASF19
+	.byte	0x94
+	.byte	0x44
+	.long	0x2e
+	.uleb128 0x2
+	.byte	0x91
+	.sleb128 -40
+	.uleb128 0x1
+	.long	.LASF20
+	.byte	0x94
+	.byte	0x57
+	.long	0x2e
+	.uleb128 0x2
+	.byte	0x91
+	.sleb128 -48
+	.uleb128 0x1
+	.long	.LASF21
+	.byte	0x94
+	.byte	0x6a
+	.long	0x2e
+	.uleb128 0x2
+	.byte	0x91
+	.sleb128 -56
+	.uleb128 0x1
+	.long	.LASF22
+	.byte	0x94
+	.byte	0x7d
+	.long	0x2e
+	.uleb128 0x2
+	.byte	0x91
+	.sleb128 -64
+	.uleb128 0x1
+	.long	.LASF23
+	.byte	0x95
+	.byte	0xf
+	.long	0x2e
+	.uleb128 0x2
+	.byte	0x91
+	.sleb128 0
+	.uleb128 0x1
+	.long	.LASF24
+	.byte	0x95
+	.byte	0x22
+	.long	0x2e
+	.uleb128 0x2
+	.byte	0x91
+	.sleb128 8
+	.uleb128 0x1
+	.long	.LASF25
+	.byte	0x95
+	.byte	0x35
+	.long	0x2e
+	.uleb128 0x2
+	.byte	0x91
+	.sleb128 16
+	.uleb128 0x1
+	.long	.LASF26
+	.byte	0x95
+	.byte	0x48
+	.long	0x2e
+	.uleb128 0x2
+	.byte	0x91
+	.sleb128 24
+	.byte	0
 	.byte	0
 	.section	.debug_abbrev,"",@progbits
 .Ldebug_abbrev0:
 	.uleb128 0x1
-	.uleb128 0xd
+	.uleb128 0x5
 	.byte	0
 	.uleb128 0x3
 	.uleb128 0xe
-	.uleb128 0x3a
-	.uleb128 0x21
-	.sleb128 2
-	.uleb128 0x3b
-	.uleb128 0xb
-	.uleb128 0x39
-	.uleb128 0xb
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x38
-	.uleb128 0xb
-	.byte	0
-	.byte	0
-	.uleb128 0x2
-	.uleb128 0x48
-	.byte	0
-	.uleb128 0x7d
-	.uleb128 0x1
-	.uleb128 0x7f
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x3
-	.uleb128 0x24
-	.byte	0
-	.uleb128 0xb
-	.uleb128 0xb
-	.uleb128 0x3e
-	.uleb128 0xb
-	.uleb128 0x3
-	.uleb128 0xe
-	.byte	0
-	.byte	0
-	.uleb128 0x4
-	.uleb128 0xf
-	.byte	0
-	.uleb128 0xb
-	.uleb128 0x21
-	.sleb128 8
-	.uleb128 0x49
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x5
-	.uleb128 0x5
-	.byte	0
-	.uleb128 0x49
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x6
-	.uleb128 0x1
-	.byte	0x1
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x1
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x7
-	.uleb128 0x21
-	.byte	0
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x2f
-	.uleb128 0xb
-	.byte	0
-	.byte	0
-	.uleb128 0x8
-	.uleb128 0x34
-	.byte	0
-	.uleb128 0x3
-	.uleb128 0x8
-	.uleb128 0x3a
-	.uleb128 0x21
-	.sleb128 2
-	.uleb128 0x3b
-	.uleb128 0xb
-	.uleb128 0x39
-	.uleb128 0xb
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x3f
-	.uleb128 0x19
-	.uleb128 0x2
-	.uleb128 0x18
-	.byte	0
-	.byte	0
-	.uleb128 0x9
-	.uleb128 0x34
-	.byte	0
-	.uleb128 0x3
-	.uleb128 0x8
 	.uleb128 0x3a
 	.uleb128 0x21
 	.sleb128 1
@@ -3594,7 +3783,123 @@ Start_Kernel:
 	.uleb128 0x18
 	.byte	0
 	.byte	0
+	.uleb128 0x2
+	.uleb128 0xd
+	.byte	0
+	.uleb128 0x3
+	.uleb128 0xe
+	.uleb128 0x3a
+	.uleb128 0x21
+	.sleb128 3
+	.uleb128 0x3b
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0xb
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x38
+	.uleb128 0xb
+	.byte	0
+	.byte	0
+	.uleb128 0x3
+	.uleb128 0x48
+	.byte	0
+	.uleb128 0x7d
+	.uleb128 0x1
+	.uleb128 0x7f
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x4
+	.uleb128 0x24
+	.byte	0
+	.uleb128 0xb
+	.uleb128 0xb
+	.uleb128 0x3e
+	.uleb128 0xb
+	.uleb128 0x3
+	.uleb128 0xe
+	.byte	0
+	.byte	0
+	.uleb128 0x5
+	.uleb128 0x1
+	.byte	0x1
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x1
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x6
+	.uleb128 0x21
+	.byte	0
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x2f
+	.uleb128 0xb
+	.byte	0
+	.byte	0
+	.uleb128 0x7
+	.uleb128 0xf
+	.byte	0
+	.uleb128 0xb
+	.uleb128 0x21
+	.sleb128 8
+	.uleb128 0x49
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x8
+	.uleb128 0x5
+	.byte	0
+	.uleb128 0x49
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x9
+	.uleb128 0x34
+	.byte	0
+	.uleb128 0x3
+	.uleb128 0x8
+	.uleb128 0x3a
+	.uleb128 0x21
+	.sleb128 3
+	.uleb128 0x3b
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0xb
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x3f
+	.uleb128 0x19
+	.uleb128 0x2
+	.uleb128 0x18
+	.byte	0
+	.byte	0
 	.uleb128 0xa
+	.uleb128 0x18
+	.byte	0
+	.byte	0
+	.byte	0
+	.uleb128 0xb
+	.uleb128 0x34
+	.byte	0
+	.uleb128 0x3
+	.uleb128 0x8
+	.uleb128 0x3a
+	.uleb128 0x21
+	.sleb128 2
+	.uleb128 0x3b
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0xb
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x2
+	.uleb128 0x18
+	.byte	0
+	.byte	0
+	.uleb128 0xc
 	.uleb128 0x11
 	.byte	0x1
 	.uleb128 0x25
@@ -3613,7 +3918,7 @@ Start_Kernel:
 	.uleb128 0x17
 	.byte	0
 	.byte	0
-	.uleb128 0xb
+	.uleb128 0xd
 	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
@@ -3632,7 +3937,7 @@ Start_Kernel:
 	.uleb128 0x18
 	.byte	0
 	.byte	0
-	.uleb128 0xc
+	.uleb128 0xe
 	.uleb128 0x13
 	.byte	0x1
 	.uleb128 0x3
@@ -3649,7 +3954,7 @@ Start_Kernel:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0xd
+	.uleb128 0xf
 	.uleb128 0x24
 	.byte	0
 	.uleb128 0xb
@@ -3660,7 +3965,7 @@ Start_Kernel:
 	.uleb128 0x8
 	.byte	0
 	.byte	0
-	.uleb128 0xe
+	.uleb128 0x10
 	.uleb128 0x21
 	.byte	0
 	.uleb128 0x49
@@ -3669,14 +3974,33 @@ Start_Kernel:
 	.uleb128 0x5
 	.byte	0
 	.byte	0
-	.uleb128 0xf
+	.uleb128 0x11
 	.uleb128 0x26
 	.byte	0
 	.uleb128 0x49
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x10
+	.uleb128 0x12
+	.uleb128 0x34
+	.byte	0
+	.uleb128 0x3
+	.uleb128 0xe
+	.uleb128 0x3a
+	.uleb128 0xb
+	.uleb128 0x3b
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0xb
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x3f
+	.uleb128 0x19
+	.uleb128 0x3c
+	.uleb128 0x19
+	.byte	0
+	.byte	0
+	.uleb128 0x13
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -3699,12 +4023,26 @@ Start_Kernel:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x11
-	.uleb128 0x18
+	.uleb128 0x14
+	.uleb128 0x2e
+	.byte	0x1
+	.uleb128 0x3f
+	.uleb128 0x19
+	.uleb128 0x3
+	.uleb128 0xe
+	.uleb128 0x3a
+	.uleb128 0xb
+	.uleb128 0x3b
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0xb
+	.uleb128 0x3c
+	.uleb128 0x19
+	.uleb128 0x1
+	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.byte	0
-	.uleb128 0x12
+	.uleb128 0x15
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -3731,7 +4069,7 @@ Start_Kernel:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x13
+	.uleb128 0x16
 	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
@@ -3746,6 +4084,31 @@ Start_Kernel:
 	.uleb128 0x13
 	.uleb128 0x2
 	.uleb128 0x18
+	.byte	0
+	.byte	0
+	.uleb128 0x17
+	.uleb128 0x2e
+	.byte	0x1
+	.uleb128 0x3f
+	.uleb128 0x19
+	.uleb128 0x3
+	.uleb128 0xe
+	.uleb128 0x3a
+	.uleb128 0xb
+	.uleb128 0x3b
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0xb
+	.uleb128 0x27
+	.uleb128 0x19
+	.uleb128 0x11
+	.uleb128 0x1
+	.uleb128 0x12
+	.uleb128 0x7
+	.uleb128 0x40
+	.uleb128 0x18
+	.uleb128 0x7a
+	.uleb128 0x19
 	.byte	0
 	.byte	0
 	.byte	0
@@ -3764,42 +4127,68 @@ Start_Kernel:
 	.section	.debug_line,"",@progbits
 .Ldebug_line0:
 	.section	.debug_str,"MS",@progbits,1
-.LASF12:
-	.string	"FB_length"
-.LASF3:
-	.string	"unsigned int"
-.LASF9:
-	.string	"XCharSize"
-.LASF8:
-	.string	"YPosition"
-.LASF2:
-	.string	"long unsigned int"
-.LASF16:
-	.string	"GNU C17 13.3.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
-.LASF13:
-	.string	"font_ascii"
 .LASF5:
 	.string	"XResolution"
-.LASF6:
-	.string	"YResolution"
+.LASF27:
+	.string	"GNU C17 13.3.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
+.LASF9:
+	.string	"XCharSize"
+.LASF20:
+	.string	"ist1"
+.LASF21:
+	.string	"ist2"
+.LASF22:
+	.string	"ist3"
+.LASF23:
+	.string	"ist4"
+.LASF24:
+	.string	"ist5"
+.LASF25:
+	.string	"ist6"
+.LASF26:
+	.string	"ist7"
+.LASF16:
+	.string	"addr"
+.LASF31:
+	.string	"Start_Kernel"
 .LASF4:
 	.string	"unsigned char"
-.LASF14:
-	.string	"char"
+.LASF13:
+	.string	"font_ascii"
+.LASF2:
+	.string	"long unsigned int"
 .LASF15:
-	.string	"addr"
-.LASF17:
-	.string	"position"
+	.string	"TSS64_Table"
 .LASF11:
 	.string	"FB_addr"
 .LASF10:
 	.string	"YCharSize"
+.LASF28:
+	.string	"position"
+.LASF3:
+	.string	"unsigned int"
+.LASF29:
+	.string	"color_printk"
+.LASF14:
+	.string	"char"
+.LASF12:
+	.string	"FB_length"
+.LASF8:
+	.string	"YPosition"
+.LASF30:
+	.string	"sys_vector_init"
+.LASF19:
+	.string	"rsp2"
+.LASF6:
+	.string	"YResolution"
+.LASF17:
+	.string	"rsp0"
+.LASF18:
+	.string	"rsp1"
+.LASF32:
+	.string	"set_tss64"
 .LASF7:
 	.string	"XPosition"
-.LASF18:
-	.string	"color_printk"
-.LASF19:
-	.string	"Start_Kernel"
 	.section	.debug_line_str,"MS",@progbits,1
 .LASF0:
 	.string	"main.c"

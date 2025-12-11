@@ -8,12 +8,11 @@
 
 
 
-
 .section .text
 .globl _start
 
 _start:
-# 23 "head.S"
+# 22 "head.S"
  mov $0x10, %ax
  mov %ax, %ds
  mov %ax, %es
@@ -118,8 +117,11 @@ setup_TSS64:
  movq %rax,64(%rdi)
  shrq $32,%rdx
  movq %rdx,72(%rdi)
- mov $0x40,%ax
- ltr %ax
+
+
+
+
+
  movq go_to_kernel(%rip),%rax
  pushq $0x08
  pushq %rax
