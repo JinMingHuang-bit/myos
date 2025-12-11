@@ -3758,54 +3758,54 @@ ffff8000001072cf:	58                   	pop    %rax
 ffff8000001072d0:	48 83 c4 10          	add    $0x10,%rsp
 ffff8000001072d4:	48 cf                	iretq
 
-ffff8000001072d6 <ret_from_intr>:
-ffff8000001072d6:	eb db                	jmp    ffff8000001072b3 <RESTORE_ALL>
+ffff8000001072d6 <divide_error>:
+ffff8000001072d6:	6a 00                	push   $0x0
+ffff8000001072d8:	50                   	push   %rax
+ffff8000001072d9:	48 8d 05 69 e9 ff ff 	lea    -0x1697(%rip),%rax        # ffff800000105c49 <do_divide_error>
+ffff8000001072e0:	48 87 04 24          	xchg   %rax,(%rsp)
 
-ffff8000001072d8 <divide_error>:
-ffff8000001072d8:	6a 00                	push   $0x0
-ffff8000001072da:	50                   	push   %rax
-ffff8000001072db:	48 8d 05 67 e9 ff ff 	lea    -0x1699(%rip),%rax        # ffff800000105c49 <do_divide_error>
-ffff8000001072e2:	48 87 04 24          	xchg   %rax,(%rsp)
+ffff8000001072e4 <error_code>:
+ffff8000001072e4:	50                   	push   %rax
+ffff8000001072e5:	8c c0                	mov    %es,%eax
+ffff8000001072e7:	50                   	push   %rax
+ffff8000001072e8:	8c d8                	mov    %ds,%eax
+ffff8000001072ea:	50                   	push   %rax
+ffff8000001072eb:	48 31 c0             	xor    %rax,%rax
+ffff8000001072ee:	55                   	push   %rbp
+ffff8000001072ef:	57                   	push   %rdi
+ffff8000001072f0:	56                   	push   %rsi
+ffff8000001072f1:	52                   	push   %rdx
+ffff8000001072f2:	51                   	push   %rcx
+ffff8000001072f3:	53                   	push   %rbx
+ffff8000001072f4:	41 50                	push   %r8
+ffff8000001072f6:	41 51                	push   %r9
+ffff8000001072f8:	41 52                	push   %r10
+ffff8000001072fa:	41 53                	push   %r11
+ffff8000001072fc:	41 54                	push   %r12
+ffff8000001072fe:	41 55                	push   %r13
+ffff800000107300:	41 56                	push   %r14
+ffff800000107302:	41 57                	push   %r15
+ffff800000107304:	fc                   	cld
+ffff800000107305:	48 8b b4 24 90 00 00 	mov    0x90(%rsp),%rsi
+ffff80000010730c:	00 
+ffff80000010730d:	48 8b 94 24 88 00 00 	mov    0x88(%rsp),%rdx
+ffff800000107314:	00 
+ffff800000107315:	48 c7 c7 10 00 00 00 	mov    $0x10,%rdi
+ffff80000010731c:	8e df                	mov    %edi,%ds
+ffff80000010731e:	8e c7                	mov    %edi,%es
+ffff800000107320:	48 89 e7             	mov    %rsp,%rdi
+ffff800000107323:	ff d2                	call   *%rdx
+ffff800000107325:	eb 00                	jmp    ffff800000107327 <ret_from_intr>
 
-ffff8000001072e6 <error_code>:
-ffff8000001072e6:	50                   	push   %rax
-ffff8000001072e7:	8c c0                	mov    %es,%eax
-ffff8000001072e9:	50                   	push   %rax
-ffff8000001072ea:	8c d8                	mov    %ds,%eax
-ffff8000001072ec:	50                   	push   %rax
-ffff8000001072ed:	48 31 c0             	xor    %rax,%rax
-ffff8000001072f0:	55                   	push   %rbp
-ffff8000001072f1:	57                   	push   %rdi
-ffff8000001072f2:	56                   	push   %rsi
-ffff8000001072f3:	52                   	push   %rdx
-ffff8000001072f4:	51                   	push   %rcx
-ffff8000001072f5:	53                   	push   %rbx
-ffff8000001072f6:	41 50                	push   %r8
-ffff8000001072f8:	41 51                	push   %r9
-ffff8000001072fa:	41 52                	push   %r10
-ffff8000001072fc:	41 53                	push   %r11
-ffff8000001072fe:	41 54                	push   %r12
-ffff800000107300:	41 55                	push   %r13
-ffff800000107302:	41 56                	push   %r14
-ffff800000107304:	41 57                	push   %r15
-ffff800000107306:	fc                   	cld
-ffff800000107307:	48 8b b4 24 90 00 00 	mov    0x90(%rsp),%rsi
-ffff80000010730e:	00 
-ffff80000010730f:	48 8b 94 24 88 00 00 	mov    0x88(%rsp),%rdx
-ffff800000107316:	00 
-ffff800000107317:	48 c7 c7 10 00 00 00 	mov    $0x10,%rdi
-ffff80000010731e:	8e df                	mov    %edi,%ds
-ffff800000107320:	8e c7                	mov    %edi,%es
-ffff800000107322:	48 89 e7             	mov    %rsp,%rdi
-ffff800000107325:	ff d2                	call   *%rdx
-ffff800000107327:	eb ad                	jmp    ffff8000001072d6 <ret_from_intr>
+ffff800000107327 <ret_from_intr>:
+ffff800000107327:	eb 8a                	jmp    ffff8000001072b3 <RESTORE_ALL>
 
 ffff800000107329 <debug>:
 ffff800000107329:	6a 00                	push   $0x0
 ffff80000010732b:	50                   	push   %rax
 ffff80000010732c:	48 8d 05 a4 e9 ff ff 	lea    -0x165c(%rip),%rax        # ffff800000105cd7 <do_debug>
 ffff800000107333:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff800000107337:	eb ad                	jmp    ffff8000001072e6 <error_code>
+ffff800000107337:	eb ab                	jmp    ffff8000001072e4 <error_code>
 
 ffff800000107339 <nmi>:
 ffff800000107339:	50                   	push   %rax
@@ -3834,119 +3834,119 @@ ffff80000010735a:	41 57                	push   %r15
 ffff80000010735c:	48 c7 c2 10 00 00 00 	mov    $0x10,%rdx
 ffff800000107363:	8e da                	mov    %edx,%ds
 ffff800000107365:	8e c2                	mov    %edx,%es
-ffff800000107367:	48 c7 c6 00 00 00 00 	mov    $0x0,%rsi
-ffff80000010736e:	48 89 e7             	mov    %rsp,%rdi
+ffff800000107367:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+ffff80000010736e:	48 89 e6             	mov    %rsp,%rsi
 ffff800000107371:	e8 ef e9 ff ff       	call   ffff800000105d65 <do_nmi>
 ffff800000107376:	e9 38 ff ff ff       	jmp    ffff8000001072b3 <RESTORE_ALL>
 
-ffff80000010737b <int3>:
-ffff80000010737b:	6a 00                	push   $0x0
-ffff80000010737d:	50                   	push   %rax
-ffff80000010737e:	48 8d 05 6e ea ff ff 	lea    -0x1592(%rip),%rax        # ffff800000105df3 <do_int3>
-ffff800000107385:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff800000107389:	e9 58 ff ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff80000010737b <invalid_TSS>:
+ffff80000010737b:	50                   	push   %rax
+ffff80000010737c:	48 8d 05 52 ee ff ff 	lea    -0x11ae(%rip),%rax        # ffff8000001061d5 <do_invalid_TSS>
+ffff800000107383:	48 87 04 24          	xchg   %rax,(%rsp)
+ffff800000107387:	e9 58 ff ff ff       	jmp    ffff8000001072e4 <error_code>
 
-ffff80000010738e <overflow>:
-ffff80000010738e:	6a 00                	push   $0x0
-ffff800000107390:	50                   	push   %rax
-ffff800000107391:	48 8d 05 e9 ea ff ff 	lea    -0x1517(%rip),%rax        # ffff800000105e81 <do_overflow>
-ffff800000107398:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff80000010739c:	e9 45 ff ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff80000010738c <page_fault>:
+ffff80000010738c:	50                   	push   %rax
+ffff80000010738d:	48 8d 05 31 f6 ff ff 	lea    -0x9cf(%rip),%rax        # ffff8000001069c5 <do_page_fault>
+ffff800000107394:	48 87 04 24          	xchg   %rax,(%rsp)
+ffff800000107398:	e9 47 ff ff ff       	jmp    ffff8000001072e4 <error_code>
 
-ffff8000001073a1 <bounds>:
-ffff8000001073a1:	6a 00                	push   $0x0
-ffff8000001073a3:	50                   	push   %rax
-ffff8000001073a4:	48 8d 05 64 eb ff ff 	lea    -0x149c(%rip),%rax        # ffff800000105f0f <do_bounds>
-ffff8000001073ab:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff8000001073af:	e9 32 ff ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff80000010739d <int3>:
+ffff80000010739d:	6a 00                	push   $0x0
+ffff80000010739f:	50                   	push   %rax
+ffff8000001073a0:	48 8d 05 4c ea ff ff 	lea    -0x15b4(%rip),%rax        # ffff800000105df3 <do_int3>
+ffff8000001073a7:	48 87 04 24          	xchg   %rax,(%rsp)
+ffff8000001073ab:	e9 34 ff ff ff       	jmp    ffff8000001072e4 <error_code>
 
-ffff8000001073b4 <undefined_opcode>:
-ffff8000001073b4:	6a 00                	push   $0x0
-ffff8000001073b6:	50                   	push   %rax
-ffff8000001073b7:	48 8d 05 df eb ff ff 	lea    -0x1421(%rip),%rax        # ffff800000105f9d <do_undefined_opcode>
-ffff8000001073be:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff8000001073c2:	e9 1f ff ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff8000001073b0 <overflow>:
+ffff8000001073b0:	6a 00                	push   $0x0
+ffff8000001073b2:	50                   	push   %rax
+ffff8000001073b3:	48 8d 05 c7 ea ff ff 	lea    -0x1539(%rip),%rax        # ffff800000105e81 <do_overflow>
+ffff8000001073ba:	48 87 04 24          	xchg   %rax,(%rsp)
+ffff8000001073be:	e9 21 ff ff ff       	jmp    ffff8000001072e4 <error_code>
 
-ffff8000001073c7 <dev_not_available>:
-ffff8000001073c7:	6a 00                	push   $0x0
-ffff8000001073c9:	50                   	push   %rax
-ffff8000001073ca:	48 8d 05 5a ec ff ff 	lea    -0x13a6(%rip),%rax        # ffff80000010602b <do_dev_not_available>
-ffff8000001073d1:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff8000001073d5:	e9 0c ff ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff8000001073c3 <bounds>:
+ffff8000001073c3:	6a 00                	push   $0x0
+ffff8000001073c5:	50                   	push   %rax
+ffff8000001073c6:	48 8d 05 42 eb ff ff 	lea    -0x14be(%rip),%rax        # ffff800000105f0f <do_bounds>
+ffff8000001073cd:	48 87 04 24          	xchg   %rax,(%rsp)
+ffff8000001073d1:	e9 0e ff ff ff       	jmp    ffff8000001072e4 <error_code>
 
-ffff8000001073da <double_fault>:
-ffff8000001073da:	50                   	push   %rax
-ffff8000001073db:	48 8d 05 d7 ec ff ff 	lea    -0x1329(%rip),%rax        # ffff8000001060b9 <do_double_fault>
-ffff8000001073e2:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff8000001073e6:	e9 fb fe ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff8000001073d6 <undefined_opcode>:
+ffff8000001073d6:	6a 00                	push   $0x0
+ffff8000001073d8:	50                   	push   %rax
+ffff8000001073d9:	48 8d 05 bd eb ff ff 	lea    -0x1443(%rip),%rax        # ffff800000105f9d <do_undefined_opcode>
+ffff8000001073e0:	48 87 04 24          	xchg   %rax,(%rsp)
+ffff8000001073e4:	e9 fb fe ff ff       	jmp    ffff8000001072e4 <error_code>
 
-ffff8000001073eb <coprocessor_segment_overrun>:
-ffff8000001073eb:	6a 00                	push   $0x0
-ffff8000001073ed:	50                   	push   %rax
-ffff8000001073ee:	48 8d 05 52 ed ff ff 	lea    -0x12ae(%rip),%rax        # ffff800000106147 <do_coprocessor_segment_overrun>
-ffff8000001073f5:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff8000001073f9:	e9 e8 fe ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff8000001073e9 <dev_not_available>:
+ffff8000001073e9:	6a 00                	push   $0x0
+ffff8000001073eb:	50                   	push   %rax
+ffff8000001073ec:	48 8d 05 38 ec ff ff 	lea    -0x13c8(%rip),%rax        # ffff80000010602b <do_dev_not_available>
+ffff8000001073f3:	48 87 04 24          	xchg   %rax,(%rsp)
+ffff8000001073f7:	e9 e8 fe ff ff       	jmp    ffff8000001072e4 <error_code>
 
-ffff8000001073fe <invalid_TSS>:
-ffff8000001073fe:	50                   	push   %rax
-ffff8000001073ff:	48 8d 05 cf ed ff ff 	lea    -0x1231(%rip),%rax        # ffff8000001061d5 <do_invalid_TSS>
-ffff800000107406:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff80000010740a:	e9 d7 fe ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff8000001073fc <double_fault>:
+ffff8000001073fc:	50                   	push   %rax
+ffff8000001073fd:	48 8d 05 b5 ec ff ff 	lea    -0x134b(%rip),%rax        # ffff8000001060b9 <do_double_fault>
+ffff800000107404:	48 87 04 24          	xchg   %rax,(%rsp)
+ffff800000107408:	e9 d7 fe ff ff       	jmp    ffff8000001072e4 <error_code>
 
-ffff80000010740f <segment_not_present>:
+ffff80000010740d <coprocessor_segment_overrun>:
+ffff80000010740d:	6a 00                	push   $0x0
 ffff80000010740f:	50                   	push   %rax
-ffff800000107410:	48 8d 05 ba ef ff ff 	lea    -0x1046(%rip),%rax        # ffff8000001063d1 <do_segment_not_present>
+ffff800000107410:	48 8d 05 30 ed ff ff 	lea    -0x12d0(%rip),%rax        # ffff800000106147 <do_coprocessor_segment_overrun>
 ffff800000107417:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff80000010741b:	e9 c6 fe ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff80000010741b:	e9 c4 fe ff ff       	jmp    ffff8000001072e4 <error_code>
 
-ffff800000107420 <stack_segment_fault>:
+ffff800000107420 <segment_not_present>:
 ffff800000107420:	50                   	push   %rax
-ffff800000107421:	48 8d 05 a5 f1 ff ff 	lea    -0xe5b(%rip),%rax        # ffff8000001065cd <do_stack_segment_fault>
+ffff800000107421:	48 8d 05 a9 ef ff ff 	lea    -0x1057(%rip),%rax        # ffff8000001063d1 <do_segment_not_present>
 ffff800000107428:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff80000010742c:	e9 b5 fe ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff80000010742c:	e9 b3 fe ff ff       	jmp    ffff8000001072e4 <error_code>
 
-ffff800000107431 <general_protection>:
+ffff800000107431 <stack_segment_fault>:
 ffff800000107431:	50                   	push   %rax
-ffff800000107432:	48 8d 05 90 f3 ff ff 	lea    -0xc70(%rip),%rax        # ffff8000001067c9 <do_general_protection>
+ffff800000107432:	48 8d 05 94 f1 ff ff 	lea    -0xe6c(%rip),%rax        # ffff8000001065cd <do_stack_segment_fault>
 ffff800000107439:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff80000010743d:	e9 a4 fe ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff80000010743d:	e9 a2 fe ff ff       	jmp    ffff8000001072e4 <error_code>
 
-ffff800000107442 <page_fault>:
+ffff800000107442 <general_protection>:
 ffff800000107442:	50                   	push   %rax
-ffff800000107443:	48 8d 05 7b f5 ff ff 	lea    -0xa85(%rip),%rax        # ffff8000001069c5 <do_page_fault>
+ffff800000107443:	48 8d 05 7f f3 ff ff 	lea    -0xc81(%rip),%rax        # ffff8000001067c9 <do_general_protection>
 ffff80000010744a:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff80000010744e:	e9 93 fe ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff80000010744e:	e9 91 fe ff ff       	jmp    ffff8000001072e4 <error_code>
 
 ffff800000107453 <x87_FPU_error>:
 ffff800000107453:	6a 00                	push   $0x0
 ffff800000107455:	50                   	push   %rax
 ffff800000107456:	48 8d 05 10 f8 ff ff 	lea    -0x7f0(%rip),%rax        # ffff800000106c6d <do_x87_FPU_error>
 ffff80000010745d:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff800000107461:	e9 80 fe ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff800000107461:	e9 7e fe ff ff       	jmp    ffff8000001072e4 <error_code>
 
 ffff800000107466 <alignment_check>:
 ffff800000107466:	50                   	push   %rax
 ffff800000107467:	48 8d 05 8d f8 ff ff 	lea    -0x773(%rip),%rax        # ffff800000106cfb <do_alignment_check>
 ffff80000010746e:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff800000107472:	e9 6f fe ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff800000107472:	e9 6d fe ff ff       	jmp    ffff8000001072e4 <error_code>
 
 ffff800000107477 <machine_check>:
 ffff800000107477:	6a 00                	push   $0x0
 ffff800000107479:	50                   	push   %rax
 ffff80000010747a:	48 8d 05 08 f9 ff ff 	lea    -0x6f8(%rip),%rax        # ffff800000106d89 <do_machine_check>
 ffff800000107481:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff800000107485:	e9 5c fe ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff800000107485:	e9 5a fe ff ff       	jmp    ffff8000001072e4 <error_code>
 
 ffff80000010748a <SIMD_exception>:
 ffff80000010748a:	6a 00                	push   $0x0
 ffff80000010748c:	50                   	push   %rax
 ffff80000010748d:	48 8d 05 83 f9 ff ff 	lea    -0x67d(%rip),%rax        # ffff800000106e17 <do_SIMD_exception>
 ffff800000107494:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff800000107498:	e9 49 fe ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff800000107498:	e9 47 fe ff ff       	jmp    ffff8000001072e4 <error_code>
 
 ffff80000010749d <virtualization_exception>:
 ffff80000010749d:	6a 00                	push   $0x0
 ffff80000010749f:	50                   	push   %rax
 ffff8000001074a0:	48 8d 05 fe f9 ff ff 	lea    -0x602(%rip),%rax        # ffff800000106ea5 <do_virtualization_exception>
 ffff8000001074a7:	48 87 04 24          	xchg   %rax,(%rsp)
-ffff8000001074ab:	e9 36 fe ff ff       	jmp    ffff8000001072e6 <error_code>
+ffff8000001074ab:	e9 34 fe ff ff       	jmp    ffff8000001072e4 <error_code>

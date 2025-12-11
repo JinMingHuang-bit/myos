@@ -116,7 +116,6 @@ ENTRY(nmi)
     pushq %rax
     cld
     pushq %rax
-
     pushq %rax
     movq %es,%rax
     pushq %rax
