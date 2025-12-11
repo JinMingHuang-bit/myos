@@ -40,7 +40,7 @@ Disassembly of section .text:
       68:	80 ff ff 
 
 000000000000006b <setup_IDT>:
-      6b:	48 8d 15 ad 00 00 00 	lea    0xad(%rip),%rdx        # 11f <ignore_int>
+      6b:	48 8d 15 a6 00 00 00 	lea    0xa6(%rip),%rdx        # 118 <ignore_int>
       72:	48 c7 c0 00 00 08 00 	mov    $0x80000,%rax
       79:	66 89 d0             	mov    %dx,%ax
       7c:	48 b9 00 00 00 00 00 	movabs $0x8e0000000000,%rcx
@@ -81,100 +81,98 @@ Disassembly of section .text:
       f8:	48 89 47 40          	mov    %rax,0x40(%rdi)
       fc:	48 c1 ea 20          	shr    $0x20,%rdx
      100:	48 89 57 48          	mov    %rdx,0x48(%rdi)
-     104:	66 b8 40 00          	mov    $0x40,%ax
-     108:	0f 00 d8             	ltr    %eax
-     10b:	48 8b 05 05 00 00 00 	mov    0x5(%rip),%rax        # 117 <go_to_kernel>
-     112:	6a 08                	push   $0x8
-     114:	50                   	push   %rax
-     115:	48 cb                	lretq
+     104:	48 8b 05 05 00 00 00 	mov    0x5(%rip),%rax        # 110 <go_to_kernel>
+     10b:	6a 08                	push   $0x8
+     10d:	50                   	push   %rax
+     10e:	48 cb                	lretq
 
-0000000000000117 <go_to_kernel>:
+0000000000000110 <go_to_kernel>:
 	...
 
-000000000000011f <ignore_int>:
-     11f:	fc                   	cld
-     120:	50                   	push   %rax
-     121:	53                   	push   %rbx
-     122:	51                   	push   %rcx
-     123:	52                   	push   %rdx
-     124:	55                   	push   %rbp
-     125:	57                   	push   %rdi
-     126:	56                   	push   %rsi
-     127:	41 50                	push   %r8
-     129:	41 51                	push   %r9
-     12b:	41 52                	push   %r10
-     12d:	41 53                	push   %r11
-     12f:	41 54                	push   %r12
-     131:	41 55                	push   %r13
-     133:	41 56                	push   %r14
-     135:	41 57                	push   %r15
-     137:	8c c0                	mov    %es,%eax
-     139:	50                   	push   %rax
-     13a:	8c d8                	mov    %ds,%eax
-     13c:	50                   	push   %rax
-     13d:	48 c7 c0 10 00 00 00 	mov    $0x10,%rax
-     144:	8e d8                	mov    %eax,%ds
-     146:	8e c0                	mov    %eax,%es
-     148:	48 8d 05 43 00 00 00 	lea    0x43(%rip),%rax        # 192 <int_msg>
-     14f:	50                   	push   %rax
-     150:	48 89 c2             	mov    %rax,%rdx
-     153:	48 c7 c6 00 00 00 00 	mov    $0x0,%rsi
-     15a:	48 c7 c7 00 00 ff 00 	mov    $0xff0000,%rdi
-     161:	48 c7 c0 00 00 00 00 	mov    $0x0,%rax
-     168:	e8 00 00 00 00       	call   16d <ignore_int+0x4e>
-     16d:	48 83 c4 08          	add    $0x8,%rsp
+0000000000000118 <ignore_int>:
+     118:	fc                   	cld
+     119:	50                   	push   %rax
+     11a:	53                   	push   %rbx
+     11b:	51                   	push   %rcx
+     11c:	52                   	push   %rdx
+     11d:	55                   	push   %rbp
+     11e:	57                   	push   %rdi
+     11f:	56                   	push   %rsi
+     120:	41 50                	push   %r8
+     122:	41 51                	push   %r9
+     124:	41 52                	push   %r10
+     126:	41 53                	push   %r11
+     128:	41 54                	push   %r12
+     12a:	41 55                	push   %r13
+     12c:	41 56                	push   %r14
+     12e:	41 57                	push   %r15
+     130:	8c c0                	mov    %es,%eax
+     132:	50                   	push   %rax
+     133:	8c d8                	mov    %ds,%eax
+     135:	50                   	push   %rax
+     136:	48 c7 c0 10 00 00 00 	mov    $0x10,%rax
+     13d:	8e d8                	mov    %eax,%ds
+     13f:	8e c0                	mov    %eax,%es
+     141:	48 8d 05 43 00 00 00 	lea    0x43(%rip),%rax        # 18b <int_msg>
+     148:	50                   	push   %rax
+     149:	48 89 c2             	mov    %rax,%rdx
+     14c:	48 c7 c6 00 00 00 00 	mov    $0x0,%rsi
+     153:	48 c7 c7 00 00 ff 00 	mov    $0xff0000,%rdi
+     15a:	48 c7 c0 00 00 00 00 	mov    $0x0,%rax
+     161:	e8 00 00 00 00       	call   166 <ignore_int+0x4e>
+     166:	48 83 c4 08          	add    $0x8,%rsp
 
-0000000000000171 <Loop>:
-     171:	eb fe                	jmp    171 <Loop>
-     173:	58                   	pop    %rax
-     174:	8e d8                	mov    %eax,%ds
-     176:	58                   	pop    %rax
-     177:	8e c0                	mov    %eax,%es
-     179:	41 5f                	pop    %r15
-     17b:	41 5e                	pop    %r14
-     17d:	41 5d                	pop    %r13
-     17f:	41 5c                	pop    %r12
-     181:	41 5b                	pop    %r11
-     183:	41 5a                	pop    %r10
-     185:	41 59                	pop    %r9
-     187:	41 58                	pop    %r8
-     189:	5e                   	pop    %rsi
-     18a:	5f                   	pop    %rdi
-     18b:	5d                   	pop    %rbp
-     18c:	5a                   	pop    %rdx
-     18d:	59                   	pop    %rcx
-     18e:	5b                   	pop    %rbx
-     18f:	58                   	pop    %rax
-     190:	48 cf                	iretq
+000000000000016a <Loop>:
+     16a:	eb fe                	jmp    16a <Loop>
+     16c:	58                   	pop    %rax
+     16d:	8e d8                	mov    %eax,%ds
+     16f:	58                   	pop    %rax
+     170:	8e c0                	mov    %eax,%es
+     172:	41 5f                	pop    %r15
+     174:	41 5e                	pop    %r14
+     176:	41 5d                	pop    %r13
+     178:	41 5c                	pop    %r12
+     17a:	41 5b                	pop    %r11
+     17c:	41 5a                	pop    %r10
+     17e:	41 59                	pop    %r9
+     180:	41 58                	pop    %r8
+     182:	5e                   	pop    %rsi
+     183:	5f                   	pop    %rdi
+     184:	5d                   	pop    %rbp
+     185:	5a                   	pop    %rdx
+     186:	59                   	pop    %rcx
+     187:	5b                   	pop    %rbx
+     188:	58                   	pop    %rax
+     189:	48 cf                	iretq
 
-0000000000000192 <int_msg>:
-     192:	55                   	push   %rbp
-     193:	6e                   	outsb  %ds:(%rsi),(%dx)
-     194:	6b 6f 77 6e          	imul   $0x6e,0x77(%rdi),%ebp
-     198:	20 49 6e             	and    %cl,0x6e(%rcx)
-     19b:	74 65                	je     202 <int_msg+0x70>
-     19d:	72 72                	jb     211 <int_msg+0x7f>
-     19f:	75 70                	jne    211 <int_msg+0x7f>
-     1a1:	74 20                	je     1c3 <int_msg+0x31>
-     1a3:	6f                   	outsl  %ds:(%rsi),(%dx)
-     1a4:	72 20                	jb     1c6 <int_msg+0x34>
-     1a6:	66 61                	data16 (bad)
-     1a8:	75 6c                	jne    216 <int_msg+0x84>
-     1aa:	74 20                	je     1cc <int_msg+0x3a>
-     1ac:	61                   	(bad)
-     1ad:	74 20                	je     1cf <int_msg+0x3d>
-     1af:	52                   	push   %rdx
-     1b0:	69 70 2c 61 72 65 20 	imul   $0x20657261,0x2c(%rax),%esi
-     1b7:	79 6f                	jns    228 <int_msg+0x96>
-     1b9:	75 20                	jne    1db <int_msg+0x49>
-     1bb:	73 65                	jae    222 <int_msg+0x90>
-     1bd:	72 69                	jb     228 <int_msg+0x96>
-     1bf:	6f                   	outsl  %ds:(%rsi),(%dx)
-     1c0:	75 73                	jne    235 <int_msg+0xa3>
-     1c2:	3f                   	(bad)
-     1c3:	0a 00                	or     (%rax),%al
-     1c5:	90                   	nop
-     1c6:	66 90                	xchg   %ax,%ax
+000000000000018b <int_msg>:
+     18b:	55                   	push   %rbp
+     18c:	6e                   	outsb  %ds:(%rsi),(%dx)
+     18d:	6b 6f 77 6e          	imul   $0x6e,0x77(%rdi),%ebp
+     191:	20 49 6e             	and    %cl,0x6e(%rcx)
+     194:	74 65                	je     1fb <int_msg+0x70>
+     196:	72 72                	jb     20a <int_msg+0x7f>
+     198:	75 70                	jne    20a <int_msg+0x7f>
+     19a:	74 20                	je     1bc <int_msg+0x31>
+     19c:	6f                   	outsl  %ds:(%rsi),(%dx)
+     19d:	72 20                	jb     1bf <int_msg+0x34>
+     19f:	66 61                	data16 (bad)
+     1a1:	75 6c                	jne    20f <int_msg+0x84>
+     1a3:	74 20                	je     1c5 <int_msg+0x3a>
+     1a5:	61                   	(bad)
+     1a6:	74 20                	je     1c8 <int_msg+0x3d>
+     1a8:	52                   	push   %rdx
+     1a9:	69 70 2c 61 72 65 20 	imul   $0x20657261,0x2c(%rax),%esi
+     1b0:	79 6f                	jns    221 <int_msg+0x96>
+     1b2:	75 20                	jne    1d4 <int_msg+0x49>
+     1b4:	73 65                	jae    21b <int_msg+0x90>
+     1b6:	72 69                	jb     221 <int_msg+0x96>
+     1b8:	6f                   	outsl  %ds:(%rsi),(%dx)
+     1b9:	75 73                	jne    22e <int_msg+0xa3>
+     1bb:	3f                   	(bad)
+     1bc:	0a 00                	or     (%rax),%al
+     1be:	90                   	nop
+     1bf:	90                   	nop
 	...
 
 0000000000001000 <__PML4E>:

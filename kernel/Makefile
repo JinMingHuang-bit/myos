@@ -22,7 +22,7 @@ LDFLAGS = -b elf64-x86-64 -z muldefs
 #OBJCOPYFLAGS = -I elf64-x86-64 -S -R ".eh_frame" -R ".comment" -O binary
 OBJCOPYFLAGS = -I elf64-x86-64 -O binary
 # 目标文件
-OBJS = head.o main.o printk.o
+OBJS = head.o main.o printk.o trap.o entry.o
 
 # 默认目标
 all: system kernel.bin move_debug system.debug
@@ -44,6 +44,11 @@ head.o: head.S
 	$(AS) $(ASFLAGS) -o head.o head.s -ahls > head.lst
 	$(OBJDUMP) -d head.o > head.asm
 
+entry.o:entry.S
+	$(CC) -E entry.S > entry.s
+	$(AS) $(ASFLAGS) -o entry.o entry.s -ahls > entry.lst
+	$(OBJDUMP) -d entry.o > entry.asm
+
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c -o main.o
 	$(CC) $(CFLAGS) -S -fverbose-asm main.c -o main.s
@@ -56,6 +61,11 @@ printk.o: printk.c printk.h lib.h
 	$(OBJDUMP) -d printk.o > printk.asm
 	$(AS) $(ASFLAGS) -o printk.o printk.s -ahls > printk.lst
 
+trap.o:trap.c lib.h gate.h printk.h trap.h
+	$(CC) $(CFLAGS) -c trap.c -o trap.o
+	$(CC) $(CFLAGS) -S -fverbose-asm trap.c -o trap.s
+	$(OBJDUMP) -d trap.o > trap.asm
+	$(AS) $(ASFLAGS) -o trap.o trap.s -ahls > trap.lst
 # 为最终系统文件生成反汇编
 system.asm: system
 	$(OBJDUMP) -d system > system.asm

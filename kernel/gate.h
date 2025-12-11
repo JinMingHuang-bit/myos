@@ -98,21 +98,49 @@ do {              \
 是操作系统内核开发中设置IDT(中断描述符表)的关键函数
 */
 
-inline void set_intr_gate(unsigned int n, unsigned char ist,void * addr){
+
+
+static inline void set_intr_gate(unsigned int n, unsigned char ist,void * addr){
     _set_gate(IDT_Table+n, 0x8E, ist, addr);
 }
+/*
+为什么需要加 static？
+问题所在：
+当你在头文件中定义了一个 inline 函数但不加 static：
 
-inline void set_trap_gate(unsigned int n, unsigned char ist,void * addr){
+多个 .c 文件 #include 这个头文件
+
+每个 .c 文件都会获得函数的定义
+
+链接时可能会出现：
+
+重复定义错误（如果编译器生成了函数体）
+
+未定义引用（如果编译器只内联了部分调用）
+
+因编译器实现而异
+
+编译器行为差异：
+GCC：inline 函数默认具有外部链接，除非被声明为 static
+
+不同编译标准和版本可能有不同行为
+
+在 Linux 内核中，通常使用 static inline
+
+
+*/
+
+static inline void set_trap_gate(unsigned int n, unsigned char ist,void * addr){
 
     _set_gate(IDT_Table+n, 0x8F, ist, addr);
 
 }
 
-inline void set_system_gate(unsigned int n, unsigned char ist,void * addr){
+static inline void set_system_gate(unsigned int n, unsigned char ist,void * addr){
     _set_gate(IDT_Table+n, 0xEF, ist, addr);
 }
 
-inline void set_system_intr_gate(unsigned int n,unsigned char ist,void * addr)	//int3
+static inline void set_system_intr_gate(unsigned int n,unsigned char ist,void * addr)	//int3
 {
 	_set_gate(IDT_Table + n , 0xEE , ist , addr);	//P,DPL=3,TYPE=E
 }
