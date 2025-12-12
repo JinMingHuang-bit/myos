@@ -74,7 +74,27 @@ void Start_Kernel(void)
     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
     color_printk(YELLOW,BLACK,"hello,User\n");
     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
-    i=1/0;    
+    // i=1/0;
+    /*
+    0xffff80000aa00000 是一个高半内核地址（canonical form）
+
+这个地址位于内核空间（0xffff800000000000 以上的区域）
+
+在启动初期，内核只映射了必要的内存区域：
+
+内核代码段、数据段
+
+帧缓冲区（0xffff800000a00000）
+
+可能的一些系统数据结构
+
+但是 0xffff80000aa00000 并没有被映射到任何物理内存
+帧缓冲区通常只映射一小段（比如 1440×900×4 ≈ 5.2MB）
+
+0xffff80000aa00000 超出了帧缓冲区的映射范围
+    */
+    
+    i=*(int*)0xffff80000aa00000; 
     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
     // clear_screen(YELLOW,BLACK);
     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
