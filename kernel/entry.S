@@ -54,6 +54,7 @@ ENTRY(divide_error)
     leaq do_divide_error(%rip), %rax
     //(%rsp) is a pointer,point to 栈顶指针 RSP 寄存器所指向的内存地址中的内容
     xchgq %rax, (%rsp)
+    jmp error_code
 /*
 bp 寄存器:SP,BP一般与段寄存器SS 联用，以确定堆栈寄存器中某一单元的地址，
 SP用以指示栈顶的偏移地址，而BP可 作为堆栈区中的一个基地址，用以确定在堆栈中的操作数地址

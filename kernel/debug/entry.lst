@@ -68,267 +68,268 @@ GAS LISTING entry.s 			page 1
   54      000000
   55              	    //(%rsp) is a pointer,point to 栈顶指针 RSP 寄存器所指向的内存地址中的内容
   56 002d 48870424 	    xchgq %rax, (%rsp)
-  57              	/*
-  58              	bp 寄存器:SP,BP一般与段寄存器SS 联用，以确定堆栈寄存器中某一单元的地址
-  59              	SP用以指示栈顶的偏移地址，而BP可 作为堆栈区中的一个基地址，用以确定�
-  60              	
-  61              	*/
-  62              	
-  63              	error_code:
-  64 0031 50       	    pushq %rax
-  65 0032 8CC0     	    movq  %es,%rax
-  66 0034 50       	    pushq %rax
-  67 0035 8CD8     	    movq  %ds,%rax
-  68 0037 50       	    pushq %rax
-  69 0038 4831C0   	    xorq  %rax,%rax
-  70              	
-  71 003b 55       	    pushq %rbp
-  72 003c 57       	    pushq %rdi
-  73 003d 56       	    pushq %rsi
-  74 003e 52       	    pushq %rdx
-  75 003f 51       	    pushq %rcx
-  76 0040 53       	    pushq %rbx
-  77 0041 4150     	    pushq %r8
-  78 0043 4151     	    pushq %r9
-  79 0045 4152     	    pushq %r10
-  80 0047 4153     	    pushq %r11
-  81 0049 4154     	    pushq %r12
-  82 004b 4155     	    pushq %r13
-  83 004d 4156     	    pushq %r14
-  84 004f 4157     	    pushq %r15
-  85              	
-  86              	    /*
-  87              	    将错误码和栈指针分别存入RSI和RDX,供异常处理函数使用
-  88              	    */
-  89              	
-  90 0051 FC       	    cld
-  91 0052 488BB424 	    movq ERRCODE(%rsp),%rsi
-  91      90000000 
-  92 005a 488B9424 	    movq FUNC(%rsp),%rdx
-  92      88000000 
-  93              	
-  94 0062 48C7C710 	    movq $0x10,%rdi
-  94      000000
-  95 0069 8EDF     	    movq %rdi,%ds
-  96 006b 8EC7     	    movq %rdi,%es
-  97 006d 4889E7   	    movq %rsp,%rdi
-  98 0070 FFD2     	    callq *%rdx
-  99 0072 EB00     	    jmp ret_from_exception
- 100              	
- 101              	// 还原被中断程序的现场
- 102              	ret_from_exception:
- 103              	ENTRY(ret_from_intr)
+  57 0031 EB00     	    jmp error_code
+  58              	/*
+  59              	bp 寄存器:SP,BP一般与段寄存器SS 联用，以确定堆栈寄存器中某一单元的地址
+  60              	SP用以指示栈顶的偏移地址，而BP可 作为堆栈区中的一个基地址，用以确定�
+  61              	
+  62              	*/
+  63              	
+  64              	error_code:
+  65 0033 50       	    pushq %rax
+  66 0034 8CC0     	    movq  %es,%rax
+  67 0036 50       	    pushq %rax
+  68 0037 8CD8     	    movq  %ds,%rax
+  69 0039 50       	    pushq %rax
+  70 003a 4831C0   	    xorq  %rax,%rax
+  71              	
+  72 003d 55       	    pushq %rbp
+  73 003e 57       	    pushq %rdi
+  74 003f 56       	    pushq %rsi
+  75 0040 52       	    pushq %rdx
+  76 0041 51       	    pushq %rcx
+  77 0042 53       	    pushq %rbx
+  78 0043 4150     	    pushq %r8
+  79 0045 4151     	    pushq %r9
+  80 0047 4152     	    pushq %r10
+  81 0049 4153     	    pushq %r11
+  82 004b 4154     	    pushq %r12
+  83 004d 4155     	    pushq %r13
+  84 004f 4156     	    pushq %r14
+  85 0051 4157     	    pushq %r15
+  86              	
+  87              	    /*
+  88              	    将错误码和栈指针分别存入RSI和RDX,供异常处理函数使用
+  89              	    */
+  90              	
+  91 0053 FC       	    cld
+  92 0054 488BB424 	    movq ERRCODE(%rsp),%rsi
+  92      90000000 
+  93 005c 488B9424 	    movq FUNC(%rsp),%rdx
+  93      88000000 
+  94              	
+  95 0064 48C7C710 	    movq $0x10,%rdi
+  95      000000
+  96 006b 8EDF     	    movq %rdi,%ds
+  97 006d 8EC7     	    movq %rdi,%es
+  98 006f 4889E7   	    movq %rsp,%rdi
+  99 0072 FFD2     	    callq *%rdx
+ 100 0074 EB00     	    jmp ret_from_exception
+ 101              	
+ 102              	// 还原被中断程序的现场
+ 103              	ret_from_exception:
 GAS LISTING entry.s 			page 3
 
 
- 104 0074 EB8A     	    jmp RESTORE_ALL
- 105              	
- 106              	ENTRY(debug)
- 107 0076 6A00     	    pushq   $0
- 108 0078 50       	    pushq   %rax
- 109 0079 488D0500 	    leaq    do_debug(%rip), %rax
- 109      000000
- 110 0080 48870424 	    xchgq   %rax,   (%rsp)
- 111 0084 EBAB     	    jmp error_code
- 112              	
- 113              	//NMI不可屏蔽中断是一个特殊的中断，它不携带任何参数，也不返回任何值�
- 114              	//NMI中断的处理程序可以通过执行一条指令来结束，也可以通过执行一条指�
- 115              	ENTRY(nmi)
- 116 0086 50       	    pushq %rax
- 117 0087 FC       	    cld
- 118 0088 50       	    pushq %rax
- 119 0089 50       	    pushq %rax
- 120 008a 8CC0     	    movq %es,%rax
- 121 008c 50       	    pushq %rax
- 122 008d 8CD8     	    movq %ds,%rax
- 123 008f 50       	    pushq %rax
- 124 0090 4831C0   	    xorq %rax,%rax
- 125              	
- 126 0093 55       	    pushq %rbp
- 127 0094 57       	    pushq %rdi
- 128 0095 56       	    pushq %rsi
- 129 0096 52       	    pushq %rdx
- 130 0097 51       	    pushq %rcx
- 131 0098 53       	    pushq %rbx
- 132 0099 4150     	    pushq %r8
- 133 009b 4151     	    pushq %r9
- 134 009d 4152     	    pushq %r10
- 135 009f 4153     	    pushq %r11
- 136 00a1 4154     	    pushq %r12
- 137 00a3 4155     	    pushq %r13
- 138 00a5 4156     	    pushq %r14
- 139 00a7 4157     	    pushq %r15
- 140              	
- 141 00a9 48C7C210 	    movq $0x10,%rdx   // # 0x10通常是内核数据段选择子
- 141      000000
- 142 00b0 8EDA     	    movq %rdx,%ds    // # 设置DS为内核数据段
- 143 00b2 8EC2     	    movq %rdx,%es    //# 设置ES为内核数据段
- 144              	
- 145 00b4 48C7C700 	    movq $0,%rdi
- 145      000000
- 146 00bb 4889E6   	    movq %rsp,%rsi
- 147 00be E8000000 	    callq do_nmi
- 147      00
- 148 00c3 E938FFFF 	    jmp RESTORE_ALL
- 148      FF
- 149              	
- 150              	ENTRY(invalid_TSS)
- 151 00c8 50       	    pushq %rax
- 152              	    //Exchange the values of RAX and the top of the stack,
- 153              	    //This not only restores the original value of RAX, but also places the function address for pr
- 154 00c9 488D0500 	    leaq    do_invalid_TSS(%rip),%rax
- 154      000000
+ 104              	ENTRY(ret_from_intr)
+ 105 0076 EB88     	    jmp RESTORE_ALL
+ 106              	
+ 107              	ENTRY(debug)
+ 108 0078 6A00     	    pushq   $0
+ 109 007a 50       	    pushq   %rax
+ 110 007b 488D0500 	    leaq    do_debug(%rip), %rax
+ 110      000000
+ 111 0082 48870424 	    xchgq   %rax,   (%rsp)
+ 112 0086 EBAB     	    jmp error_code
+ 113              	
+ 114              	//NMI不可屏蔽中断是一个特殊的中断，它不携带任何参数，也不返回任何值�
+ 115              	//NMI中断的处理程序可以通过执行一条指令来结束，也可以通过执行一条指�
+ 116              	ENTRY(nmi)
+ 117 0088 50       	    pushq %rax
+ 118 0089 FC       	    cld
+ 119 008a 50       	    pushq %rax
+ 120 008b 50       	    pushq %rax
+ 121 008c 8CC0     	    movq %es,%rax
+ 122 008e 50       	    pushq %rax
+ 123 008f 8CD8     	    movq %ds,%rax
+ 124 0091 50       	    pushq %rax
+ 125 0092 4831C0   	    xorq %rax,%rax
+ 126              	
+ 127 0095 55       	    pushq %rbp
+ 128 0096 57       	    pushq %rdi
+ 129 0097 56       	    pushq %rsi
+ 130 0098 52       	    pushq %rdx
+ 131 0099 51       	    pushq %rcx
+ 132 009a 53       	    pushq %rbx
+ 133 009b 4150     	    pushq %r8
+ 134 009d 4151     	    pushq %r9
+ 135 009f 4152     	    pushq %r10
+ 136 00a1 4153     	    pushq %r11
+ 137 00a3 4154     	    pushq %r12
+ 138 00a5 4155     	    pushq %r13
+ 139 00a7 4156     	    pushq %r14
+ 140 00a9 4157     	    pushq %r15
+ 141              	
+ 142 00ab 48C7C210 	    movq $0x10,%rdx   // # 0x10通常是内核数据段选择子
+ 142      000000
+ 143 00b2 8EDA     	    movq %rdx,%ds    // # 设置DS为内核数据段
+ 144 00b4 8EC2     	    movq %rdx,%es    //# 设置ES为内核数据段
+ 145              	
+ 146 00b6 48C7C700 	    movq $0,%rdi
+ 146      000000
+ 147 00bd 4889E6   	    movq %rsp,%rsi
+ 148 00c0 E8000000 	    callq do_nmi
+ 148      00
+ 149 00c5 E936FFFF 	    jmp RESTORE_ALL
+ 149      FF
+ 150              	
+ 151              	ENTRY(invalid_TSS)
+ 152 00ca 50       	    pushq %rax
+ 153              	    //Exchange the values of RAX and the top of the stack,
+ 154              	    //This not only restores the original value of RAX, but also places the function address for pr
+ 155 00cb 488D0500 	    leaq    do_invalid_TSS(%rip),%rax
 GAS LISTING entry.s 			page 4
 
 
- 155 00d0 48870424 	    xchgq   %rax, (%rsp)
- 156 00d4 E958FFFF 	    jmp error_code
- 156      FF
- 157              	
- 158              	ENTRY(page_fault)
- 159 00d9 50       	    pushq %rax
- 160 00da 488D0500 	    leaq    do_page_fault(%rip),%rax
- 160      000000
- 161 00e1 48870424 	    xchgq   %rax, (%rsp)
- 162 00e5 E947FFFF 	    jmp error_code
- 162      FF
- 163              	    
- 164              	ENTRY(int3)
- 165 00ea 6A00     	    pushq   $0
- 166 00ec 50       	    pushq   %rax
- 167 00ed 488D0500 	    leaq    do_int3(%rip),  %rax
- 167      000000
- 168 00f4 48870424 	    xchgq   %rax,   (%rsp)
- 169 00f8 E934FFFF 	    jmp error_code
- 169      FF
- 170              	
- 171              	ENTRY(overflow)
- 172 00fd 6A00     	    pushq   $0
- 173 00ff 50       	    pushq   %rax
- 174 0100 488D0500 	    leaq    do_overflow(%rip),  %rax
- 174      000000
- 175 0107 48870424 	    xchgq   %rax,   (%rsp)
- 176 010b E921FFFF 	    jmp error_code
- 176      FF
- 177              	
- 178              	ENTRY(bounds)
- 179 0110 6A00     	    pushq   $0
- 180 0112 50       	    pushq   %rax
- 181 0113 488D0500 	    leaq    do_bounds(%rip),    %rax
- 181      000000
- 182 011a 48870424 	    xchgq   %rax,   (%rsp)
- 183 011e E90EFFFF 	    jmp error_code
- 183      FF
- 184              	
- 185              	ENTRY(undefined_opcode)
- 186 0123 6A00     	    pushq   $0
- 187 0125 50       	    pushq   %rax
- 188 0126 488D0500 	    leaq    do_undefined_opcode(%rip),  %rax
- 188      000000
- 189 012d 48870424 	    xchgq   %rax,   (%rsp)
- 190 0131 E9FBFEFF 	    jmp error_code
- 190      FF
- 191              	
- 192              	ENTRY(dev_not_available)    /* need rewrite */
- 193 0136 6A00     	    pushq   $0
- 194 0138 50       	    pushq   %rax
- 195 0139 488D0500 	    leaq    do_dev_not_available(%rip), %rax
- 195      000000
- 196 0140 48870424 	    xchgq   %rax,   (%rsp)
- 197 0144 E9E8FEFF 	    jmp error_code
- 197      FF
- 198              	
+ 155      000000
+ 156 00d2 48870424 	    xchgq   %rax, (%rsp)
+ 157 00d6 E958FFFF 	    jmp error_code
+ 157      FF
+ 158              	
+ 159              	ENTRY(page_fault)
+ 160 00db 50       	    pushq %rax
+ 161 00dc 488D0500 	    leaq    do_page_fault(%rip),%rax
+ 161      000000
+ 162 00e3 48870424 	    xchgq   %rax, (%rsp)
+ 163 00e7 E947FFFF 	    jmp error_code
+ 163      FF
+ 164              	    
+ 165              	ENTRY(int3)
+ 166 00ec 6A00     	    pushq   $0
+ 167 00ee 50       	    pushq   %rax
+ 168 00ef 488D0500 	    leaq    do_int3(%rip),  %rax
+ 168      000000
+ 169 00f6 48870424 	    xchgq   %rax,   (%rsp)
+ 170 00fa E934FFFF 	    jmp error_code
+ 170      FF
+ 171              	
+ 172              	ENTRY(overflow)
+ 173 00ff 6A00     	    pushq   $0
+ 174 0101 50       	    pushq   %rax
+ 175 0102 488D0500 	    leaq    do_overflow(%rip),  %rax
+ 175      000000
+ 176 0109 48870424 	    xchgq   %rax,   (%rsp)
+ 177 010d E921FFFF 	    jmp error_code
+ 177      FF
+ 178              	
+ 179              	ENTRY(bounds)
+ 180 0112 6A00     	    pushq   $0
+ 181 0114 50       	    pushq   %rax
+ 182 0115 488D0500 	    leaq    do_bounds(%rip),    %rax
+ 182      000000
+ 183 011c 48870424 	    xchgq   %rax,   (%rsp)
+ 184 0120 E90EFFFF 	    jmp error_code
+ 184      FF
+ 185              	
+ 186              	ENTRY(undefined_opcode)
+ 187 0125 6A00     	    pushq   $0
+ 188 0127 50       	    pushq   %rax
+ 189 0128 488D0500 	    leaq    do_undefined_opcode(%rip),  %rax
+ 189      000000
+ 190 012f 48870424 	    xchgq   %rax,   (%rsp)
+ 191 0133 E9FBFEFF 	    jmp error_code
+ 191      FF
+ 192              	
+ 193              	ENTRY(dev_not_available)    /* need rewrite */
+ 194 0138 6A00     	    pushq   $0
+ 195 013a 50       	    pushq   %rax
+ 196 013b 488D0500 	    leaq    do_dev_not_available(%rip), %rax
+ 196      000000
+ 197 0142 48870424 	    xchgq   %rax,   (%rsp)
+ 198 0146 E9E8FEFF 	    jmp error_code
+ 198      FF
 GAS LISTING entry.s 			page 5
 
 
  199              	
- 200              	ENTRY(double_fault)
- 201 0149 50       	    pushq   %rax
- 202 014a 488D0500 	    leaq    do_double_fault(%rip),  %rax
- 202      000000
- 203 0151 48870424 	    xchgq   %rax,   (%rsp)
- 204 0155 E9D7FEFF 	    jmp error_code
- 204      FF
- 205              	
- 206              	ENTRY(coprocessor_segment_overrun)
- 207 015a 6A00     	    pushq   $0
- 208 015c 50       	    pushq   %rax
- 209 015d 488D0500 	    leaq    do_coprocessor_segment_overrun(%rip),   %rax
- 209      000000
- 210 0164 48870424 	    xchgq   %rax,   (%rsp)
- 211 0168 E9C4FEFF 	    jmp error_code
- 211      FF
- 212              	
- 213              	ENTRY(segment_not_present)
- 214 016d 50       	    pushq   %rax
- 215 016e 488D0500 	    leaq    do_segment_not_present(%rip),   %rax
- 215      000000
- 216 0175 48870424 	    xchgq   %rax,   (%rsp)
- 217 0179 E9B3FEFF 	    jmp error_code
- 217      FF
- 218              	
- 219              	ENTRY(stack_segment_fault)
- 220 017e 50       	    pushq   %rax
- 221 017f 488D0500 	    leaq    do_stack_segment_fault(%rip),   %rax
- 221      000000
- 222 0186 48870424 	    xchgq   %rax,   (%rsp)
- 223 018a E9A2FEFF 	    jmp error_code
- 223      FF
- 224              	
- 225              	ENTRY(general_protection)
- 226 018f 50       	    pushq   %rax
- 227 0190 488D0500 	    leaq    do_general_protection(%rip),    %rax
- 227      000000
- 228 0197 48870424 	    xchgq   %rax,   (%rsp)
- 229 019b E991FEFF 	    jmp error_code
- 229      FF
- 230              	
- 231              	ENTRY(x87_FPU_error)
- 232 01a0 6A00     	    pushq   $0
- 233 01a2 50       	    pushq   %rax
- 234 01a3 488D0500 	    leaq    do_x87_FPU_error(%rip), %rax
- 234      000000
- 235 01aa 48870424 	    xchgq   %rax,   (%rsp)
- 236 01ae E97EFEFF 	    jmp error_code
- 236      FF
- 237              	
- 238              	ENTRY(alignment_check)
- 239 01b3 50       	    pushq   %rax
- 240 01b4 488D0500 	    leaq    do_alignment_check(%rip),   %rax
- 240      000000
- 241 01bb 48870424 	    xchgq   %rax,   (%rsp)
- 242 01bf E96DFEFF 	    jmp error_code
+ 200              	
+ 201              	ENTRY(double_fault)
+ 202 014b 50       	    pushq   %rax
+ 203 014c 488D0500 	    leaq    do_double_fault(%rip),  %rax
+ 203      000000
+ 204 0153 48870424 	    xchgq   %rax,   (%rsp)
+ 205 0157 E9D7FEFF 	    jmp error_code
+ 205      FF
+ 206              	
+ 207              	ENTRY(coprocessor_segment_overrun)
+ 208 015c 6A00     	    pushq   $0
+ 209 015e 50       	    pushq   %rax
+ 210 015f 488D0500 	    leaq    do_coprocessor_segment_overrun(%rip),   %rax
+ 210      000000
+ 211 0166 48870424 	    xchgq   %rax,   (%rsp)
+ 212 016a E9C4FEFF 	    jmp error_code
+ 212      FF
+ 213              	
+ 214              	ENTRY(segment_not_present)
+ 215 016f 50       	    pushq   %rax
+ 216 0170 488D0500 	    leaq    do_segment_not_present(%rip),   %rax
+ 216      000000
+ 217 0177 48870424 	    xchgq   %rax,   (%rsp)
+ 218 017b E9B3FEFF 	    jmp error_code
+ 218      FF
+ 219              	
+ 220              	ENTRY(stack_segment_fault)
+ 221 0180 50       	    pushq   %rax
+ 222 0181 488D0500 	    leaq    do_stack_segment_fault(%rip),   %rax
+ 222      000000
+ 223 0188 48870424 	    xchgq   %rax,   (%rsp)
+ 224 018c E9A2FEFF 	    jmp error_code
+ 224      FF
+ 225              	
+ 226              	ENTRY(general_protection)
+ 227 0191 50       	    pushq   %rax
+ 228 0192 488D0500 	    leaq    do_general_protection(%rip),    %rax
+ 228      000000
+ 229 0199 48870424 	    xchgq   %rax,   (%rsp)
+ 230 019d E991FEFF 	    jmp error_code
+ 230      FF
+ 231              	
+ 232              	ENTRY(x87_FPU_error)
+ 233 01a2 6A00     	    pushq   $0
+ 234 01a4 50       	    pushq   %rax
+ 235 01a5 488D0500 	    leaq    do_x87_FPU_error(%rip), %rax
+ 235      000000
+ 236 01ac 48870424 	    xchgq   %rax,   (%rsp)
+ 237 01b0 E97EFEFF 	    jmp error_code
+ 237      FF
+ 238              	
+ 239              	ENTRY(alignment_check)
+ 240 01b5 50       	    pushq   %rax
+ 241 01b6 488D0500 	    leaq    do_alignment_check(%rip),   %rax
+ 241      000000
+ 242 01bd 48870424 	    xchgq   %rax,   (%rsp)
 GAS LISTING entry.s 			page 6
 
 
- 242      FF
- 243              	
- 244              	ENTRY(machine_check)
- 245 01c4 6A00     	    pushq   $0
- 246 01c6 50       	    pushq   %rax
- 247 01c7 488D0500 	    leaq    do_machine_check(%rip), %rax
- 247      000000
- 248 01ce 48870424 	    xchgq   %rax,   (%rsp)
- 249 01d2 E95AFEFF 	    jmp error_code
- 249      FF
- 250              	
- 251              	ENTRY(SIMD_exception)
- 252 01d7 6A00     	    pushq   $0
- 253 01d9 50       	    pushq   %rax
- 254 01da 488D0500 	    leaq    do_SIMD_exception(%rip),    %rax
- 254      000000
- 255 01e1 48870424 	    xchgq   %rax,   (%rsp)
- 256 01e5 E947FEFF 	    jmp error_code
- 256      FF
- 257              	
- 258              	ENTRY(virtualization_exception)
- 259 01ea 6A00     	    pushq   $0
- 260 01ec 50       	    pushq   %rax
- 261 01ed 488D0500 	    leaq    do_virtualization_exception(%rip),  %rax
- 261      000000
- 262 01f4 48870424 	    xchgq   %rax,   (%rsp)
- 263 01f8 E934FEFF 	    jmp error_code...
- 263      FF
+ 243 01c1 E96DFEFF 	    jmp error_code
+ 243      FF
+ 244              	
+ 245              	ENTRY(machine_check)
+ 246 01c6 6A00     	    pushq   $0
+ 247 01c8 50       	    pushq   %rax
+ 248 01c9 488D0500 	    leaq    do_machine_check(%rip), %rax
+ 248      000000
+ 249 01d0 48870424 	    xchgq   %rax,   (%rsp)
+ 250 01d4 E95AFEFF 	    jmp error_code
+ 250      FF
+ 251              	
+ 252              	ENTRY(SIMD_exception)
+ 253 01d9 6A00     	    pushq   $0
+ 254 01db 50       	    pushq   %rax
+ 255 01dc 488D0500 	    leaq    do_SIMD_exception(%rip),    %rax
+ 255      000000
+ 256 01e3 48870424 	    xchgq   %rax,   (%rsp)
+ 257 01e7 E947FEFF 	    jmp error_code
+ 257      FF
+ 258              	
+ 259              	ENTRY(virtualization_exception)
+ 260 01ec 6A00     	    pushq   $0
+ 261 01ee 50       	    pushq   %rax
+ 262 01ef 488D0500 	    leaq    do_virtualization_exception(%rip),  %rax
+ 262      000000
+ 263 01f6 48870424 	    xchgq   %rax,   (%rsp)
+ 264 01fa E934FEFF 	    jmp error_code...
+ 264      FF
 GAS LISTING entry.s 			page 7
 
 
@@ -359,28 +360,28 @@ DEFINED SYMBOLS
              entry.S:26     *ABS*:00000000000000b8 OLDSS
              entry.S:28     .text:0000000000000000 RESTORE_ALL
              entry.S:51     .text:0000000000000023 divide_error
-             entry.S:63     .text:0000000000000031 error_code
-             entry.S:102    .text:0000000000000074 ret_from_exception
-             entry.S:103    .text:0000000000000074 ret_from_intr
-             entry.S:106    .text:0000000000000076 debug
-             entry.S:115    .text:0000000000000086 nmi
-             entry.S:150    .text:00000000000000c8 invalid_TSS
-             entry.S:158    .text:00000000000000d9 page_fault
-             entry.S:164    .text:00000000000000ea int3
-             entry.S:171    .text:00000000000000fd overflow
-             entry.S:178    .text:0000000000000110 bounds
-             entry.S:185    .text:0000000000000123 undefined_opcode
-             entry.S:192    .text:0000000000000136 dev_not_available
-             entry.S:200    .text:0000000000000149 double_fault
-             entry.S:206    .text:000000000000015a coprocessor_segment_overrun
-             entry.S:213    .text:000000000000016d segment_not_present
-             entry.S:219    .text:000000000000017e stack_segment_fault
-             entry.S:225    .text:000000000000018f general_protection
-             entry.S:231    .text:00000000000001a0 x87_FPU_error
-             entry.S:238    .text:00000000000001b3 alignment_check
-             entry.S:244    .text:00000000000001c4 machine_check
-             entry.S:251    .text:00000000000001d7 SIMD_exception
-             entry.S:258    .text:00000000000001ea virtualization_exception
+             entry.S:64     .text:0000000000000033 error_code
+             entry.S:103    .text:0000000000000076 ret_from_exception
+             entry.S:104    .text:0000000000000076 ret_from_intr
+             entry.S:107    .text:0000000000000078 debug
+             entry.S:116    .text:0000000000000088 nmi
+             entry.S:151    .text:00000000000000ca invalid_TSS
+             entry.S:159    .text:00000000000000db page_fault
+             entry.S:165    .text:00000000000000ec int3
+             entry.S:172    .text:00000000000000ff overflow
+             entry.S:179    .text:0000000000000112 bounds
+             entry.S:186    .text:0000000000000125 undefined_opcode
+             entry.S:193    .text:0000000000000138 dev_not_available
+             entry.S:201    .text:000000000000014b double_fault
+             entry.S:207    .text:000000000000015c coprocessor_segment_overrun
+             entry.S:214    .text:000000000000016f segment_not_present
+             entry.S:220    .text:0000000000000180 stack_segment_fault
+             entry.S:226    .text:0000000000000191 general_protection
+             entry.S:232    .text:00000000000001a2 x87_FPU_error
+             entry.S:239    .text:00000000000001b5 alignment_check
+             entry.S:245    .text:00000000000001c6 machine_check
+             entry.S:252    .text:00000000000001d9 SIMD_exception
+             entry.S:259    .text:00000000000001ec virtualization_exception
 
 UNDEFINED SYMBOLS
 do_divide_error

@@ -3393,15 +3393,15 @@ Start_Kernel:
 	addq	%rbx, %rcx	# tmp82, tmp116
 	call	*%rcx	# tmp116
 .LVL4:
-# main.c:77:     i=1/0;    
+# main.c:77:     i=1/0;
 	.loc 2 77 6
 	movl	$1, %eax	#, tmp117
 	movl	$0, %edi	#, tmp120
 	cltd
 	idivl	%edi	# tmp120
 	movl	%eax, -36(%rbp)	# tmp118, i
-# main.c:78:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
-	.loc 2 78 5
+# main.c:79:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
+	.loc 2 79 5
 	movabsq	$.LC3@GOTOFF, %rax	#, tmp122
 	leaq	(%rbx,%rax), %rax	#, tmp121
 	movq	%rax, %rdx	# tmp121,
@@ -3413,8 +3413,8 @@ Start_Kernel:
 	addq	%rbx, %rcx	# tmp82, tmp123
 	call	*%rcx	# tmp123
 .LVL5:
-# main.c:80:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
-	.loc 2 80 5
+# main.c:81:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
+	.loc 2 81 5
 	movabsq	$.LC4@GOTOFF, %rax	#, tmp125
 	leaq	(%rbx,%rax), %rax	#, tmp124
 	movq	%rax, %rdx	# tmp124,
@@ -3427,8 +3427,8 @@ Start_Kernel:
 	call	*%rcx	# tmp126
 .LVL6:
 .L4:
-# main.c:81:     while (1)
-	.loc 2 81 11
+# main.c:82:     while (1)
+	.loc 2 82 11
 	nop	
 	jmp	.L4	#
 	.cfi_endproc
