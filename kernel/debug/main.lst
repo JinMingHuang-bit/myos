@@ -4205,8 +4205,8 @@ GAS LISTING main.s 			page 1
  3393 036c 4801D9   		addq	%rbx, %rcx	# tmp82, tmp116
  3394 036f FFD1     		call	*%rcx	# tmp116
  3395              	.LVL4:
- 3396              	# main.c:77:     i=1/0;    
-  77:main.c        ****     i=1/0;    
+ 3396              	# main.c:77:     i=1/0;
+  77:main.c        ****     i=1/0;
  3397              		.loc 2 77 6
  3398 0371 B8010000 		movl	$1, %eax	#, tmp117
  3398      00
@@ -4215,9 +4215,10 @@ GAS LISTING main.s 			page 1
  3400 037b 99       		cltd
  3401 037c F7FF     		idivl	%edi	# tmp120
  3402 037e 8945DC   		movl	%eax, -36(%rbp)	# tmp118, i
- 3403              	# main.c:78:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
-  78:main.c        ****     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
- 3404              		.loc 2 78 5
+ 3403              	# main.c:79:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
+  78:main.c        ****     //i=*(int*)0xffff80000aa00000;    
+  79:main.c        ****     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
+ 3404              		.loc 2 79 5
  3405 0381 48B80000 		movabsq	$.LC3@GOTOFF, %rax	#, tmp122
  3405      00000000 
  3405      0000
@@ -4236,10 +4237,10 @@ GAS LISTING main.s 			page 1
  3413 03ae 4801D9   		addq	%rbx, %rcx	# tmp82, tmp123
  3414 03b1 FFD1     		call	*%rcx	# tmp123
  3415              	.LVL5:
- 3416              	# main.c:80:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
-  79:main.c        ****     // clear_screen(YELLOW,BLACK);
-  80:main.c        ****     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
- 3417              		.loc 2 80 5
+ 3416              	# main.c:81:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
+  80:main.c        ****     // clear_screen(YELLOW,BLACK);
+  81:main.c        ****     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
+ 3417              		.loc 2 81 5
  3418 03b3 48B80000 		movabsq	$.LC4@GOTOFF, %rax	#, tmp125
  3418      00000000 
  3418      0000
@@ -4257,14 +4258,14 @@ GAS LISTING main.s 			page 1
  3425      0000
  3426 03e0 4801D9   		addq	%rbx, %rcx	# tmp82, tmp126
  3427 03e3 FFD1     		call	*%rcx	# tmp126
- 3428              	.LVL6:
 GAS LISTING main.s 			page 72
 
 
+ 3428              	.LVL6:
  3429              	.L4:
- 3430              	# main.c:81:     while (1)
-  81:main.c        ****     while (1)
- 3431              		.loc 2 81 11
+ 3430              	# main.c:82:     while (1)
+  82:main.c        ****     while (1)
+ 3431              		.loc 2 82 11
  3432 03e5 90       		nop	
  3433 03e6 EBFD     		jmp	.L4	#
  3434              		.cfi_endproc
@@ -4317,10 +4318,10 @@ GAS LISTING main.s 			page 1
  3479 005a 00000000 		.long	.LASF13
  3480 005e 04       		.byte	0x4
  3481 005f 06       		.byte	0x6
- 3482 0060 0F       		.byte	0xf
 GAS LISTING main.s 			page 73
 
 
+ 3482 0060 0F       		.byte	0xf
  3483 0061 3C000000 		.long	0x3c
  3484 0065 09       		.uleb128 0x9
  3485 0066 03       		.byte	0x3
@@ -4377,10 +4378,10 @@ GAS LISTING main.s 			page 1
  3535 00cf 18       		.byte	0x18
  3536 00d0 02       		.uleb128 0x2
  3537 00d1 00000000 		.long	.LASF12
- 3538 00d5 29       		.byte	0x29
 GAS LISTING main.s 			page 74
 
 
+ 3538 00d5 29       		.byte	0x29
  3539 00d6 13       		.byte	0x13
  3540 00d7 2E000000 		.long	0x2e
  3541 00db 20       		.byte	0x20
@@ -4437,10 +4438,10 @@ GAS LISTING main.s 			page 1
  3590 0148 30010000 		.long	0x130
  3591 014c 13       		.uleb128 0x13
  3592 014d 00000000 		.long	.LASF29
- 3593 0151 03       		.byte	0x3
 GAS LISTING main.s 			page 75
 
 
+ 3593 0151 03       		.byte	0x3
  3594 0152 3B       		.byte	0x3b
  3595 0153 05       		.byte	0x5
  3596 0154 DD000000 		.long	0xdd
@@ -4497,10 +4498,10 @@ GAS LISTING main.s 			page 1
  3645 01be 1D       		.byte	0x1d
  3646 01bf 09       		.byte	0x9
  3647 01c0 DD000000 		.long	0xdd
- 3648 01c4 02       		.uleb128 0x2
 GAS LISTING main.s 			page 76
 
 
+ 3648 01c4 02       		.uleb128 0x2
  3649 01c5 91       		.byte	0x91
  3650 01c6 4C       		.sleb128 -52
  3651 01c7 03       		.uleb128 0x3
@@ -4557,10 +4558,10 @@ GAS LISTING main.s 			page 1
  3693 0251 00000000 		.long	.LASF18
  3694 0255 94       		.byte	0x94
  3695 0256 31       		.byte	0x31
- 3696 0257 2E000000 		.long	0x2e
 GAS LISTING main.s 			page 77
 
 
+ 3696 0257 2E000000 		.long	0x2e
  3697 025b 02       		.uleb128 0x2
  3698 025c 91       		.byte	0x91
  3699 025d 60       		.sleb128 -32
@@ -4617,10 +4618,10 @@ GAS LISTING main.s 			page 1
  3750 02b7 95       		.byte	0x95
  3751 02b8 35       		.byte	0x35
  3752 02b9 2E000000 		.long	0x2e
- 3753 02bd 02       		.uleb128 0x2
 GAS LISTING main.s 			page 78
 
 
+ 3753 02bd 02       		.uleb128 0x2
  3754 02be 91       		.byte	0x91
  3755 02bf 10       		.sleb128 16
  3756 02c0 01       		.uleb128 0x1
@@ -4677,10 +4678,10 @@ GAS LISTING main.s 			page 1
  3807 0027 7D       		.uleb128 0x7d
  3808 0028 01       		.uleb128 0x1
  3809 0029 7F       		.uleb128 0x7f
- 3810 002a 13       		.uleb128 0x13
 GAS LISTING main.s 			page 79
 
 
+ 3810 002a 13       		.uleb128 0x13
  3811 002b 00       		.byte	0
  3812 002c 00       		.byte	0
  3813 002d 04       		.uleb128 0x4
@@ -4737,10 +4738,10 @@ GAS LISTING main.s 			page 1
  3864 0060 3A       		.uleb128 0x3a
  3865 0061 21       		.uleb128 0x21
  3866 0062 03       		.sleb128 3
- 3867 0063 3B       		.uleb128 0x3b
 GAS LISTING main.s 			page 80
 
 
+ 3867 0063 3B       		.uleb128 0x3b
  3868 0064 0B       		.uleb128 0xb
  3869 0065 39       		.uleb128 0x39
  3870 0066 0B       		.uleb128 0xb
@@ -4797,10 +4798,10 @@ GAS LISTING main.s 			page 1
  3921 0099 0D       		.uleb128 0xd
  3922 009a 34       		.uleb128 0x34
  3923 009b 00       		.byte	0
- 3924 009c 03       		.uleb128 0x3
 GAS LISTING main.s 			page 81
 
 
+ 3924 009c 03       		.uleb128 0x3
  3925 009d 0E       		.uleb128 0xe
  3926 009e 3A       		.uleb128 0x3a
  3927 009f 0B       		.uleb128 0xb
@@ -4857,10 +4858,10 @@ GAS LISTING main.s 			page 1
  3978 00d2 26       		.uleb128 0x26
  3979 00d3 00       		.byte	0
  3980 00d4 49       		.uleb128 0x49
- 3981 00d5 13       		.uleb128 0x13
 GAS LISTING main.s 			page 82
 
 
+ 3981 00d5 13       		.uleb128 0x13
  3982 00d6 00       		.byte	0
  3983 00d7 00       		.byte	0
  3984 00d8 12       		.uleb128 0x12
@@ -4917,10 +4918,10 @@ GAS LISTING main.s 			page 1
  4035 010b 3B       		.uleb128 0x3b
  4036 010c 0B       		.uleb128 0xb
  4037 010d 39       		.uleb128 0x39
- 4038 010e 0B       		.uleb128 0xb
 GAS LISTING main.s 			page 83
 
 
+ 4038 010e 0B       		.uleb128 0xb
  4039 010f 3C       		.uleb128 0x3c
  4040 0110 19       		.uleb128 0x19
  4041 0111 01       		.uleb128 0x1
@@ -4977,10 +4978,10 @@ GAS LISTING main.s 			page 1
  4092 0144 3F       		.uleb128 0x3f
  4093 0145 19       		.uleb128 0x19
  4094 0146 03       		.uleb128 0x3
- 4095 0147 0E       		.uleb128 0xe
 GAS LISTING main.s 			page 84
 
 
+ 4095 0147 0E       		.uleb128 0xe
  4096 0148 3A       		.uleb128 0x3a
  4097 0149 0B       		.uleb128 0xb
  4098 014a 3B       		.uleb128 0x3b
@@ -5037,10 +5038,10 @@ GAS LISTING main.s 			page 1
  4135 00b7 58436861 		.string	"XCharSize"
  4135      7253697A 
  4135      6500
- 4136              	.LASF20:
 GAS LISTING main.s 			page 85
 
 
+ 4136              	.LASF20:
  4137 00c1 69737431 		.string	"ist1"
  4137      00
  4138              	.LASF21:
@@ -5097,10 +5098,10 @@ GAS LISTING main.s 			page 1
  4165      6500
  4166              	.LASF28:
  4167 013f 706F7369 		.string	"position"
- 4167      74696F6E 
 GAS LISTING main.s 			page 86
 
 
+ 4167      74696F6E 
  4167      00
  4168              	.LASF3:
  4169 0148 756E7369 		.string	"unsigned int"
@@ -5157,10 +5158,10 @@ GAS LISTING main.s 			page 1
  4196 0007 2F686F6D 		.string	"/home/student/myos/kernel"
  4196      652F7374 
  4196      7564656E 
- 4196      742F6D79 
 GAS LISTING main.s 			page 87
 
 
+ 4196      742F6D79 
  4196      6F732F6B 
  4197              		.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
  4198 0021 2F686F6D 		.section	.note.GNU-stack,"",@progbits

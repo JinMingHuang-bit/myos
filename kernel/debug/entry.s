@@ -61,6 +61,7 @@ RESTORE_ALL:
     leaq do_divide_error(%rip), %rax
 
     xchgq %rax, (%rsp)
+    jmp error_code
 
 
 
