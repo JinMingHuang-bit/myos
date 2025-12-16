@@ -65,8 +65,7 @@ struct Memory_E820_Formate
 	unsigned int length2;
 	unsigned int type;
 };
-//
-//
+
 struct E820
 {
 	unsigned long address;
