@@ -11,6 +11,7 @@ MV = mv
 DEBUG_DIR = debug
 
 # 编译选项
+#-mcmodel=large使用大型代码模型（large code model）,允许代码和数据的大小超过2GB限制
 CFLAGS= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -g
 CFLAGSO1= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -O1 -g
 CFLAGSO2= -mcmodel=large -fno-builtin -m64 -fno-stack-protector -O2 -g
@@ -22,10 +23,10 @@ LDFLAGS = -b elf64-x86-64 -z muldefs
 #OBJCOPYFLAGS = -I elf64-x86-64 -S -R ".eh_frame" -R ".comment" -O binary
 OBJCOPYFLAGS = -I elf64-x86-64 -O binary
 # 目标文件
-OBJS = head.o main.o printk.o trap.o entry.o
+OBJS = head.o main.o printk.o trap.o entry.o memory.o
 
 # 默认目标
-all: system kernel.bin move_debug system.debug
+all: system kernel.bin move_debug system.debug 
 
 # 创建debug目录并移动调试文件
 move_debug: system.asm
@@ -54,6 +55,12 @@ main.o: main.c
 	$(CC) $(CFLAGS) -S -fverbose-asm main.c -o main.s
 	$(OBJDUMP) -d main.o > main.asm
 	$(AS) $(ASFLAGS) -o main.o main.s -ahls > main.lst
+memory.o: memory.c  memory.h lib.h printk.h
+	$(CC) $(CFLAGS) -c memory.c -o memory.o
+	$(CC) $(CFLAGS) -S -fverbose-asm memory.c -o memory.s
+	$(OBJDUMP) -d memory.o > memory.asm
+	$(AS) $(ASFLAGS) -o memory.o memory.s -ahls > memory.lst
+
 
 printk.o: printk.c printk.h lib.h
 	$(CC) $(CFLAGS) -c printk.c -o printk.o
