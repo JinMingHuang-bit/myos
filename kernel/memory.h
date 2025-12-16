@@ -1,6 +1,16 @@
 #ifndef _MEMORY_H_
 #define _MEMORY_H_
 
+#define PTRS_PER_PAGE 512
+#define PAGE_OFFset ((unsigned long)0xffff800000000000)(
+#define PAGE_GDT_SHIFT 39
+#define PAGE_1G_SHIFT 30
+#define PAGE_2M_SHIFT 21
+#define PAGE_4K_SHIFT 12
+#define PAGE_2M_SIZE (1UL << PAGE_2M_SHIFT)
+#define PAGE_4K_SIZE (1UL << PAGE_4K_SHIFT)
+
+
 /*
 When the system starts up, the BIOS/boot program collects the memory mapping information. 
 The boot program stores the mapping table at the designated location (such as physical address 0x7e00) 
@@ -21,6 +31,8 @@ struct Memory_E820_Formate
 	unsigned int length1;
 	unsigned int length2;
 	unsigned int type;
-}
+};
+
+void init_memory();
 
 #endif

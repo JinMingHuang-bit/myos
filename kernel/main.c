@@ -11,7 +11,7 @@ The kernel is typically mapped to the Higher Half.
 #include "printk.h"
 #include "gate.h"
 #include "trap.h"
-
+#include "memory.h"
 void Start_Kernel(void)
 {
 
@@ -94,7 +94,8 @@ void Start_Kernel(void)
 0xffff80000aa00000 超出了帧缓冲区的映射范围
     */
     
-    i=*(int*)0xffff80000aa00000; 
+    // i=*(int*)0xffff80000aa00000; 
+    init_memory();
     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
     // clear_screen(YELLOW,BLACK);
     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
