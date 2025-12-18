@@ -6,7 +6,7 @@
 # options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection
 	.text
 .Ltext0:
-	.file 0 "/workspace/myos/kernel" "printk.c"
+	.file 0 "/home/student/myos/kernel" "printk.c"
 	.globl	font_ascii
 	.data
 	.align 32
@@ -7236,10 +7236,10 @@ vsprintf:
 .LASF33:
 	.string	"vsprintf"
 	.section	.debug_line_str,"MS",@progbits,1
-.LASF1:
-	.string	"/workspace/myos/kernel"
 .LASF0:
 	.string	"printk.c"
+.LASF1:
+	.string	"/home/student/myos/kernel"
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"
