@@ -9,7 +9,7 @@ GAS LISTING main.s 			page 1
    6              	# options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-prote
    7              		.text
    8              	.Ltext0:
-   9              		.file 0 "/workspace/myos/kernel" "main.c"
+   9              		.file 0 "/home/student/myos/kernel" "main.c"
   10              		.globl	font_ascii
   11              		.data
   12              		.align 32
@@ -3821,9 +3821,9 @@ GAS LISTING main.s 			page 1
  3207              		.bss
  3208              		.align 32
  3209              		.type	memory_management_struct, @object
- 3210              		.size	memory_management_struct, 776
+ 3210              		.size	memory_management_struct, 648
  3211              	memory_management_struct:
- 3212 1040 00000000 		.zero	776
+ 3212 1040 00000000 		.zero	648
  3212      00000000 
  3212      00000000 
  3212      00000000 
@@ -3896,8 +3896,8 @@ GAS LISTING main.s 			page 1
  3240              		.cfi_def_cfa_register 6
  3241 0139 4157     		pushq	%r15	#
  3242 013b 53       		pushq	%rbx	#
- 3243 013c 4881EC20 		subq	$800, %rsp	#,
- 3243      030000
+ 3243 013c 4881ECA0 		subq	$672, %rsp	#,
+ 3243      020000
 GAS LISTING main.s 			page 66
 
 
@@ -4120,11 +4120,11 @@ GAS LISTING main.s 			page 1
  3364              	# main.c:43:     struct  Global_Memory_Descriptor memory_management_struct={{0},0};
   43:main.c        ****     struct  Global_Memory_Descriptor memory_management_struct={{0},0};
  3365              		.loc 2 43 38
- 3366 02de 488D95D0 		leaq	-816(%rbp), %rdx	#, tmp108
- 3366      FCFFFF
+ 3366 02de 488D9550 		leaq	-688(%rbp), %rdx	#, tmp108
+ 3366      FDFFFF
  3367 02e5 B8000000 		movl	$0, %eax	#, tmp109
  3367      00
- 3368 02ea B9610000 		movl	$97, %ecx	#, tmp110
+ 3368 02ea B9510000 		movl	$81, %ecx	#, tmp110
  3368      00
  3369 02ef 4889D7   		movq	%rdx, %rdi	# tmp108, tmp108
  3370 02f2 F348AB   		rep stosq
@@ -4494,7 +4494,7 @@ GAS LISTING main.s 			page 1
  3613 014f 37010000 		.long	0x137
  3614 0153 0B       		.uleb128 0xb
  3615 0154 00000000 		.long	.LASF17
- 3616 0158 18       		.byte	0x18
+ 3616 0158 14       		.byte	0x14
  3617 0159 05       		.byte	0x5
  3618 015a 56       		.byte	0x56
  3619 015b 87010000 		.long	0x187
@@ -4519,13 +4519,13 @@ GAS LISTING main.s 			page 1
  3635 017a 00000000 		.long	.LASF20
  3636 017e 05       		.byte	0x5
  3637 017f 5A       		.byte	0x5a
- 3638 0180 13       		.byte	0x13
- 3639 0181 2E000000 		.long	0x2e
+ 3638 0180 12       		.byte	0x12
+ 3639 0181 35000000 		.long	0x35
  3640 0185 10       		.byte	0x10
  3641 0186 00       		.byte	0
  3642 0187 14       		.uleb128 0x14
  3643 0188 00000000 		.long	.LASF21
- 3644 018c 0803     		.value	0x308
+ 3644 018c 8802     		.value	0x288
  3645 018e 05       		.byte	0x5
  3646 018f 5D       		.byte	0x5d
  3647 0190 08       		.byte	0x8
@@ -4543,7 +4543,7 @@ GAS LISTING main.s 			page 1
  3659 01a8 60       		.byte	0x60
  3660 01a9 10       		.byte	0x10
  3661 01aa 2E000000 		.long	0x2e
- 3662 01ae 0003     		.value	0x300
+ 3662 01ae 8002     		.value	0x280
  3663 01b0 00       		.byte	0
  3664 01b1 05       		.uleb128 0x5
  3665 01b2 53010000 		.long	0x153
@@ -4641,7 +4641,7 @@ GAS LISTING main.s 			page 1
  3748 0263 87010000 		.long	0x187
  3749 0267 03       		.uleb128 0x3
  3750 0268 91       		.byte	0x91
- 3751 0269 C079     		.sleb128 -832
+ 3751 0269 C07A     		.sleb128 -704
  3752 026b 03       		.uleb128 0x3
  3753 026c 00000000 		.quad	.LVL0
  3753      00000000 
@@ -5384,24 +5384,24 @@ GAS LISTING main.s 			page 1
  4363 021b 6C656E67 		.string	"length"
  4363      746800
  4364              		.section	.debug_line_str,"MS",@progbits,1
- 4365              	.LASF1:
- 4366 0000 2F776F72 		.string	"/workspace/myos/kernel"
- 4366      6B737061 
- 4366      63652F6D 
- 4366      796F732F 
- 4366      6B65726E 
- 4367              	.LASF0:
- 4368 0017 6D61696E 		.string	"main.c"
- 4368      2E6300
+ 4365              	.LASF0:
+ 4366 0000 6D61696E 		.string	"main.c"
+ 4366      2E6300
+ 4367              	.LASF1:
+ 4368 0007 2F686F6D 		.string	"/home/student/myos/kernel"
+ 4368      652F7374 
+ 4368      7564656E 
+ 4368      742F6D79 
+ 4368      6F732F6B 
  4369              		.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
- 4370 001e 2F776F72 		.section	.note.GNU-stack,"",@progbits
- 4370      6B737061 
- 4370      63652F6D 
- 4370      796F732F 
+ 4370 0021 2F686F6D 		.section	.note.GNU-stack,"",@progbits
+ 4370      652F7374 
+ 4370      7564656E 
+ 4370      742F6D79 
 GAS LISTING main.s 			page 91
 
 
- 4370      6B65726E 
+ 4370      6F732F6B 
  4371              		.section	.note.gnu.property,"a"
  4372              		.align 8
  4373 0000 04000000 		.long	1f - 0f

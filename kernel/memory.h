@@ -87,13 +87,13 @@ struct E820
 {
     unsigned long address;  // 内存区域的起始地址
     unsigned long length;   // 内存区域的长度
-    unsigned long type;     // 内存区域的类型
+    unsigned int type;     // 内存区域的类型
 }__attribute__((packed));   // 强制为12字节，无填充
 
 struct Global_Memory_Descriptor
 {
 	struct E820 e820[32];
-	unsigned long e820_length;8
+	unsigned long e820_length;
 };
 
 struct Global_Memory_Descriptor memory_management_struct;

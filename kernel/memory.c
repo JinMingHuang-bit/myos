@@ -23,6 +23,7 @@
 // 			break;
 // 		}
 // 	}
+// 	color_printk(ORANGE,BLACK,"OS Can Used Total RAM:%#018lx\n",TotalMem);
 // 	color_printk(ORANGE,BLACK,"OS Can Used Total RAM:%#0181x\n",TotalMem);
 // }
 

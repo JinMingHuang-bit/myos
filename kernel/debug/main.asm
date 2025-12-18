@@ -88,7 +88,7 @@ Disassembly of section .text:
  136:	48 89 e5             	mov    %rsp,%rbp
  139:	41 57                	push   %r15
  13b:	53                   	push   %rbx
- 13c:	48 81 ec 20 03 00 00 	sub    $0x320,%rsp
+ 13c:	48 81 ec a0 02 00 00 	sub    $0x2a0,%rsp
  143:	48 8d 1d f9 ff ff ff 	lea    -0x7(%rip),%rbx        # 143 <Start_Kernel+0x12>
  14a:	49 bb 00 00 00 00 00 	movabs $0x0,%r11
  151:	00 00 00 
@@ -183,9 +183,9 @@ Disassembly of section .text:
  2d6:	00 00 00 
  2d9:	48 01 da             	add    %rbx,%rdx
  2dc:	ff d2                	call   *%rdx
- 2de:	48 8d 95 d0 fc ff ff 	lea    -0x330(%rbp),%rdx
+ 2de:	48 8d 95 50 fd ff ff 	lea    -0x2b0(%rbp),%rdx
  2e5:	b8 00 00 00 00       	mov    $0x0,%eax
- 2ea:	b9 61 00 00 00       	mov    $0x61,%ecx
+ 2ea:	b9 51 00 00 00       	mov    $0x51,%ecx
  2ef:	48 89 d7             	mov    %rdx,%rdi
  2f2:	f3 48 ab             	rep stos %rax,%es:(%rdi)
  2f5:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
