@@ -6,7 +6,14 @@
 # options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection
 	.text
 .Ltext0:
-	.file 0 "/home/student/myos/kernel" "memory.c"
+	.file 0 "/workspace/myos/kernel" "memory.c"
+	.globl	memory_management_struct
+	.bss
+	.align 32
+	.type	memory_management_struct, @object
+	.size	memory_management_struct, 776
+memory_management_struct:
+	.zero	776
 	.globl	font_ascii
 	.data
 	.align 32
@@ -3086,17 +3093,20 @@ buf:
 	.string	"Display physics address Map,Type(1:RAM,2:ROM or Reserved,3:ACPI Reclaim Memory,4:ACPI NVS Memory,others:Undefine)\n"
 	.align 8
 .LC1:
-	.string	"address:%#010x,%08x\tLength:%#010x,%08x\tType:%#010x\n"
+	.string	"address:%#018lx\tLength:%#018lx\tType:%#010x\n"
 	.align 8
 .LC2:
-	.string	"OS Can Used Total RAM:%#0181x\n"
+	.string	"OS Can Used Total RAM:%#018lx\n"
+	.align 8
+.LC3:
+	.string	"OS Can Used Total 2M PAGEs:%#010x=%010d\n"
 	.text
 	.globl	init_memory
 	.type	init_memory, @function
 init_memory:
 .LFB34:
 	.file 1 "memory.c"
-	.loc 1 5 19
+	.loc 1 29 19
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -3106,157 +3116,352 @@ init_memory:
 	.cfi_def_cfa_register 6
 	pushq	%r15	#
 	pushq	%rbx	#
-	subq	$32, %rsp	#,
+	subq	$64, %rsp	#,
 	.cfi_offset 15, -24
 	.cfi_offset 3, -32
-.L8:
-	leaq	.L8(%rip), %rbx	#, tmp82
-	movabsq	$_GLOBAL_OFFSET_TABLE_-.L8, %r11	#,
+.L15:
+	leaq	.L15(%rip), %rbx	#, tmp82
+	movabsq	$_GLOBAL_OFFSET_TABLE_-.L15, %r11	#,
 	addq	%r11, %rbx	#, tmp82
-# memory.c:8: 	unsigned long TotalMem =0;
-	.loc 1 8 16
-	movq	$0, -24(%rbp)	#, TotalMem
-# memory.c:9: 	struct Memory_E820_Formate *p =NULL;
-	.loc 1 9 30
-	movq	$0, -32(%rbp)	#, p
-# memory.c:10: 	color_printk(BLUE,BLACK,"Display physics address Map,Type(1:RAM,2:ROM or Reserved,3:ACPI Reclaim Memory,4:ACPI NVS Memory,others:Undefine)\n");
-	.loc 1 10 2
-	movabsq	$.LC0@GOTOFF, %rax	#, tmp95
-	leaq	(%rbx,%rax), %rax	#, tmp94
-	movq	%rax, %rdx	# tmp94,
+# memory.c:32: 	unsigned long TotalMem =0;
+	.loc 1 32 16
+	movq	$0, -32(%rbp)	#, TotalMem
+# memory.c:33: 	struct E820 *p =NULL;
+	.loc 1 33 15
+	movq	$0, -40(%rbp)	#, p
+# memory.c:34: 	color_printk(BLUE,BLACK,"Display physics address Map,Type(1:RAM,2:ROM or Reserved,3:ACPI Reclaim Memory,4:ACPI NVS Memory,others:Undefine)\n");
+	.loc 1 34 2
+	movabsq	$.LC0@GOTOFF, %rax	#, tmp107
+	leaq	(%rbx,%rax), %rax	#, tmp106
+	movq	%rax, %rdx	# tmp106,
 	movl	$0, %esi	#,
 	movl	$255, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp96
-	addq	%rbx, %rcx	# tmp82, tmp96
-	call	*%rcx	# tmp96
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp108
+	addq	%rbx, %rcx	# tmp82, tmp108
+	call	*%rcx	# tmp108
 .LVL0:
-# memory.c:11: 	p=(struct Memory_E820_Formate *)0xffff800000007e00;
-	.loc 1 11 3
-	movabsq	$-140737488323072, %rax	#, tmp115
-	movq	%rax, -32(%rbp)	# tmp115, p
+# memory.c:35: 	p=(struct E820 *)0xffff800000007e00;
+	.loc 1 35 3
+	movabsq	$-140737488323072, %rax	#, tmp212
+	movq	%rax, -40(%rbp)	# tmp212, p
 .LBB2:
-# memory.c:12: 	for (int i = 0; i < 32; i++)
-	.loc 1 12 11
-	movl	$0, -36(%rbp)	#, i
-# memory.c:12: 	for (int i = 0; i < 32; i++)
-	.loc 1 12 2
+# memory.c:36: 	for (int i = 0; i < 32; i++)
+	.loc 1 36 11
+	movl	$0, -44(%rbp)	#, i
+# memory.c:36: 	for (int i = 0; i < 32; i++)
+	.loc 1 36 2
 	jmp	.L2	#
 .L6:
 .LBB3:
-# memory.c:14: 		color_printk(ORANGE,BLACK,"address:%#010x,%08x\tLength:%#010x,%08x\tType:%#010x\n",p->address2,p->address1,p->length2,p->length1,p->type);
-	.loc 1 14 3
-	movq	-32(%rbp), %rax	# p, tmp97
-	movl	16(%rax), %ecx	# p_15->type, _1
-	movq	-32(%rbp), %rax	# p, tmp98
-	movl	8(%rax), %edx	# p_15->length1, _2
-	movq	-32(%rbp), %rax	# p, tmp99
-	movl	12(%rax), %edi	# p_15->length2, _3
-	movq	-32(%rbp), %rax	# p, tmp100
-	movl	(%rax), %esi	# p_15->address1, _4
-	movq	-32(%rbp), %rax	# p, tmp101
-	movl	4(%rax), %eax	# p_15->address2, _5
-	pushq	%rcx	# _1
-	pushq	%rdx	# _2
-	movl	%edi, %r9d	# _3,
-	movl	%esi, %r8d	# _4,
-	movl	%eax, %ecx	# _5,
-	movabsq	$.LC1@GOTOFF, %rax	#, tmp103
-	leaq	(%rbx,%rax), %rax	#, tmp102
-	movq	%rax, %rdx	# tmp102,
+# memory.c:39: 		color_printk(ORANGE,BLACK,"address:%#018lx\tLength:%#018lx\tType:%#010x\n",p->address,p->length,p->type);
+	.loc 1 39 3
+	movq	-40(%rbp), %rax	# p, tmp109
+	movq	16(%rax), %rcx	# p_30->type, _1
+	movq	-40(%rbp), %rax	# p, tmp110
+	movq	8(%rax), %rdx	# p_30->length, _2
+	movq	-40(%rbp), %rax	# p, tmp111
+	movq	(%rax), %rax	# p_30->address, _3
+	movq	%rcx, %r9	# _1,
+	movq	%rdx, %r8	# _2,
+	movq	%rax, %rcx	# _3,
+	movabsq	$.LC1@GOTOFF, %rax	#, tmp113
+	leaq	(%rbx,%rax), %rax	#, tmp112
+	movq	%rax, %rdx	# tmp112,
 	movl	$0, %esi	#,
 	movl	$16744448, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %r10	#, tmp104
-	addq	%rbx, %r10	# tmp82, tmp104
-	call	*%r10	# tmp104
+	movabsq	$color_printk@PLTOFF, %r10	#, tmp114
+	addq	%rbx, %r10	# tmp82, tmp114
+	call	*%r10	# tmp114
 .LVL1:
-	addq	$16, %rsp	#,
-# memory.c:15: 		unsigned long tmp =0;
-	.loc 1 15 17
-	movq	$0, -48(%rbp)	#, tmp
-# memory.c:16: 		if(p->type==1){
-	.loc 1 16 7
-	movq	-32(%rbp), %rax	# p, tmp105
-	movl	16(%rax), %eax	# p_15->type, _6
-# memory.c:16: 		if(p->type==1){
-	.loc 1 16 5
-	cmpl	$1, %eax	#, _6
+# memory.c:40: 		unsigned long tmp =0;
+	.loc 1 40 17
+	movq	$0, -56(%rbp)	#, tmp
+# memory.c:41: 		if(p->type==1){
+	.loc 1 41 7
+	movq	-40(%rbp), %rax	# p, tmp115
+	movq	16(%rax), %rax	# p_30->type, _4
+# memory.c:41: 		if(p->type==1){
+	.loc 1 41 5
+	cmpq	$1, %rax	#, _4
 	jne	.L3	#,
-# memory.c:17: 			tmp=p->length2;
-	.loc 1 17 9
-	movq	-32(%rbp), %rax	# p, tmp106
-	movl	12(%rax), %eax	# p_15->length2, _7
-# memory.c:17: 			tmp=p->length2;
-	.loc 1 17 7
-	movl	%eax, %eax	# _7, tmp116
-	movq	%rax, -48(%rbp)	# tmp116, tmp
-# memory.c:18: 			TotalMem += p->length1;
-	.loc 1 18 17
-	movq	-32(%rbp), %rax	# p, tmp107
-	movl	8(%rax), %eax	# p_15->length1, _8
-	movl	%eax, %eax	# _8, _9
-# memory.c:18: 			TotalMem += p->length1;
-	.loc 1 18 13
-	addq	%rax, -24(%rbp)	# _9, TotalMem
-# memory.c:19: 			TotalMem += tmp << 32;
-	.loc 1 19 20
-	movq	-48(%rbp), %rax	# tmp, tmp108
-	salq	$32, %rax	#, _10
-# memory.c:19: 			TotalMem += tmp << 32;
-	.loc 1 19 13
-	addq	%rax, -24(%rbp)	# _10, TotalMem
+# memory.c:42: 			TotalMem +=p->length;
+	.loc 1 42 16
+	movq	-40(%rbp), %rax	# p, tmp116
+	movq	8(%rax), %rax	# p_30->length, _5
+# memory.c:42: 			TotalMem +=p->length;
+	.loc 1 42 13
+	addq	%rax, -32(%rbp)	# _5, TotalMem
 .L3:
-# memory.c:21: 		p++;
-	.loc 1 21 4
-	addq	$20, -32(%rbp)	#, p
-# memory.c:22: 		if(p->type >4){
-	.loc 1 22 7
-	movq	-32(%rbp), %rax	# p, tmp109
-	movl	16(%rax), %eax	# p_30->type, _11
-# memory.c:22: 		if(p->type >4){
-	.loc 1 22 5
-	cmpl	$4, %eax	#, _11
-	ja	.L7	#,
+# memory.c:44: 		memory_management_struct.e820[i].address+=p->address;
+	.loc 1 44 35
+	movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp117
+	movl	-44(%rbp), %eax	# i, tmp119
+	movslq	%eax, %rdx	# tmp119, tmp118
+	addq	%rbx, %rcx	# tmp82, tmp120
+	movq	%rdx, %rax	# tmp118, tmp122
+	addq	%rax, %rax	# tmp122
+	addq	%rdx, %rax	# tmp118, tmp122
+	salq	$3, %rax	#, tmp123
+	addq	%rcx, %rax	# tmp120, tmp124
+	movq	(%rax), %rdx	# memory_management_struct.e820[i_31].address, _6
+# memory.c:44: 		memory_management_struct.e820[i].address+=p->address;
+	.loc 1 44 46
+	movq	-40(%rbp), %rax	# p, tmp125
+	movq	(%rax), %rax	# p_30->address, _7
+# memory.c:44: 		memory_management_struct.e820[i].address+=p->address;
+	.loc 1 44 43
+	leaq	(%rdx,%rax), %rcx	#, _8
+	movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp126
+	movl	-44(%rbp), %eax	# i, tmp128
+	movslq	%eax, %rdx	# tmp128, tmp127
+	addq	%rbx, %rsi	# tmp82, tmp129
+	movq	%rdx, %rax	# tmp127, tmp131
+	addq	%rax, %rax	# tmp131
+	addq	%rdx, %rax	# tmp127, tmp131
+	salq	$3, %rax	#, tmp132
+	addq	%rsi, %rax	# tmp129, tmp133
+	movq	%rcx, (%rax)	# _8, memory_management_struct.e820[i_31].address
+# memory.c:45: 		memory_management_struct.e820[i].length+=p->length;
+	.loc 1 45 35
+	movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp134
+	movl	-44(%rbp), %eax	# i, tmp136
+	movslq	%eax, %rdx	# tmp136, tmp135
+	movq	%rdx, %rax	# tmp135, tmp137
+	addq	%rax, %rax	# tmp137
+	addq	%rdx, %rax	# tmp135, tmp137
+	salq	$3, %rax	#, tmp138
+	addq	%rbx, %rax	# tmp82, tmp139
+	addq	%rcx, %rax	# tmp134, tmp140
+	addq	$8, %rax	#, tmp141
+	movq	(%rax), %rdx	# memory_management_struct.e820[i_31].length, _9
+# memory.c:45: 		memory_management_struct.e820[i].length+=p->length;
+	.loc 1 45 45
+	movq	-40(%rbp), %rax	# p, tmp142
+	movq	8(%rax), %rax	# p_30->length, _10
+# memory.c:45: 		memory_management_struct.e820[i].length+=p->length;
+	.loc 1 45 42
+	leaq	(%rdx,%rax), %rcx	#, _11
+	movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp143
+	movl	-44(%rbp), %eax	# i, tmp145
+	movslq	%eax, %rdx	# tmp145, tmp144
+	movq	%rdx, %rax	# tmp144, tmp146
+	addq	%rax, %rax	# tmp146
+	addq	%rdx, %rax	# tmp144, tmp146
+	salq	$3, %rax	#, tmp147
+	addq	%rbx, %rax	# tmp82, tmp148
+	addq	%rsi, %rax	# tmp143, tmp149
+	addq	$8, %rax	#, tmp150
+	movq	%rcx, (%rax)	# _11, memory_management_struct.e820[i_31].length
+# memory.c:46: 		memory_management_struct.e820[i].type=p->type;
+	.loc 1 46 42
+	movq	-40(%rbp), %rax	# p, tmp151
+	movq	16(%rax), %rcx	# p_30->type, _12
+# memory.c:46: 		memory_management_struct.e820[i].type=p->type;
+	.loc 1 46 40
+	movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp152
+	movl	-44(%rbp), %eax	# i, tmp154
+	movslq	%eax, %rdx	# tmp154, tmp153
+	addq	%rbx, %rsi	# tmp82, tmp155
+	movq	%rdx, %rax	# tmp153, tmp156
+	addq	%rax, %rax	# tmp156
+	addq	%rdx, %rax	# tmp153, tmp156
+	salq	$3, %rax	#, tmp157
+	addq	%rsi, %rax	# tmp155, tmp158
+	addq	$16, %rax	#, tmp159
+	movq	%rcx, (%rax)	# _12, memory_management_struct.e820[i_31].type
+# memory.c:47: 		memory_management_struct.e820_length =i;
+	.loc 1 47 40
+	movl	-44(%rbp), %eax	# i, tmp160
+	cltq
+	movabsq	$memory_management_struct@GOTOFF, %rdx	#, tmp161
+	movq	%rax, 768(%rbx,%rdx)	# _13, memory_management_struct.e820_length
+# memory.c:48: 		p++;
+	.loc 1 48 4
+	addq	$24, -40(%rbp)	#, p
+# memory.c:49: 		if(p->type >4){
+	.loc 1 49 7
+	movq	-40(%rbp), %rax	# p, tmp162
+	movq	16(%rax), %rax	# p_47->type, _14
+# memory.c:49: 		if(p->type >4){
+	.loc 1 49 5
+	cmpq	$4, %rax	#, _14
+	ja	.L12	#,
 .LBE3:
-# memory.c:12: 	for (int i = 0; i < 32; i++)
-	.loc 1 12 27 discriminator 2
-	addl	$1, -36(%rbp)	#, i
+# memory.c:36: 	for (int i = 0; i < 32; i++)
+	.loc 1 36 27 discriminator 2
+	addl	$1, -44(%rbp)	#, i
 .L2:
-# memory.c:12: 	for (int i = 0; i < 32; i++)
-	.loc 1 12 20 discriminator 1
-	cmpl	$31, -36(%rbp)	#, i
+# memory.c:36: 	for (int i = 0; i < 32; i++)
+	.loc 1 36 20 discriminator 1
+	cmpl	$31, -44(%rbp)	#, i
 	jle	.L6	#,
 	jmp	.L5	#
-.L7:
+.L12:
 .LBB4:
-# memory.c:23: 			break;
-	.loc 1 23 4
+# memory.c:50: 			break;
+	.loc 1 50 4
 	nop	
 .L5:
 .LBE4:
 .LBE2:
-# memory.c:26: 	color_printk(ORANGE,BLACK,"OS Can Used Total RAM:%#0181x\n",TotalMem);
-	.loc 1 26 2
-	movq	-24(%rbp), %rax	# TotalMem, tmp110
-	movq	%rax, %rcx	# tmp110,
-	movabsq	$.LC2@GOTOFF, %rax	#, tmp112
-	leaq	(%rbx,%rax), %rax	#, tmp111
-	movq	%rax, %rdx	# tmp111,
+# memory.c:53: 	color_printk(ORANGE,BLACK,"OS Can Used Total RAM:%#018lx\n",TotalMem);
+	.loc 1 53 2
+	movq	-32(%rbp), %rax	# TotalMem, tmp163
+	movq	%rax, %rcx	# tmp163,
+	movabsq	$.LC2@GOTOFF, %rax	#, tmp165
+	leaq	(%rbx,%rax), %rax	#, tmp164
+	movq	%rax, %rdx	# tmp164,
 	movl	$0, %esi	#,
 	movl	$16744448, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %r8	#, tmp113
-	addq	%rbx, %r8	# tmp82, tmp113
-	call	*%r8	# tmp113
+	movabsq	$color_printk@PLTOFF, %r8	#, tmp166
+	addq	%rbx, %r8	# tmp82, tmp166
+	call	*%r8	# tmp166
 .LVL2:
-# memory.c:27: }
-	.loc 1 27 1
+# memory.c:54: 	TotalMem=0;
+	.loc 1 54 10
+	movq	$0, -32(%rbp)	#, TotalMem
+# memory.c:55: 	for(i=0;i<=memory_management_struct.e820_length;i++){
+	.loc 1 55 7
+	movl	$0, -20(%rbp)	#, i
+# memory.c:55: 	for(i=0;i<=memory_management_struct.e820_length;i++){
+	.loc 1 55 2
+	jmp	.L7	#
+.L11:
+.LBB5:
+# memory.c:57: 		if(memory_management_struct.e820[i].type!=1){
+	.loc 1 57 38
+	movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp167
+	movl	-20(%rbp), %eax	# i, tmp169
+	movslq	%eax, %rdx	# tmp169, tmp168
+	addq	%rbx, %rcx	# tmp82, tmp170
+	movq	%rdx, %rax	# tmp168, tmp171
+	addq	%rax, %rax	# tmp171
+	addq	%rdx, %rax	# tmp168, tmp171
+	salq	$3, %rax	#, tmp172
+	addq	%rcx, %rax	# tmp170, tmp173
+	addq	$16, %rax	#, tmp174
+	movq	(%rax), %rax	# memory_management_struct.e820[i_24].type, _15
+# memory.c:57: 		if(memory_management_struct.e820[i].type!=1){
+	.loc 1 57 5
+	cmpq	$1, %rax	#, _15
+	jne	.L13	#,
+# memory.c:60: 		start=PAGE_2M_ALIGN(memory_management_struct.e820[i].address);
+	.loc 1 60 9
+	movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp175
+	movl	-20(%rbp), %eax	# i, tmp177
+	movslq	%eax, %rdx	# tmp177, tmp176
+	addq	%rbx, %rcx	# tmp82, tmp178
+	movq	%rdx, %rax	# tmp176, tmp180
+	addq	%rax, %rax	# tmp180
+	addq	%rdx, %rax	# tmp176, tmp180
+	salq	$3, %rax	#, tmp181
+	addq	%rcx, %rax	# tmp178, tmp182
+	movq	(%rax), %rax	# memory_management_struct.e820[i_24].address, _16
+	addq	$2097151, %rax	#, _17
+# memory.c:60: 		start=PAGE_2M_ALIGN(memory_management_struct.e820[i].address);
+	.loc 1 60 8
+	andq	$-2097152, %rax	#, tmp183
+	movq	%rax, -64(%rbp)	# tmp183, start
+# memory.c:61: 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].length)>>PAGE_2M_SHIFT)<<PAGE_2M_SHIFT;
+	.loc 1 61 41
+	movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp184
+	movl	-20(%rbp), %eax	# i, tmp186
+	movslq	%eax, %rdx	# tmp186, tmp185
+	addq	%rbx, %rcx	# tmp82, tmp187
+	movq	%rdx, %rax	# tmp185, tmp189
+	addq	%rax, %rax	# tmp189
+	addq	%rdx, %rax	# tmp185, tmp189
+	salq	$3, %rax	#, tmp190
+	addq	%rcx, %rax	# tmp187, tmp191
+	movq	(%rax), %rcx	# memory_management_struct.e820[i_24].address, _18
+# memory.c:61: 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].length)>>PAGE_2M_SHIFT)<<PAGE_2M_SHIFT;
+	.loc 1 61 82
+	movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp192
+	movl	-20(%rbp), %eax	# i, tmp194
+	movslq	%eax, %rdx	# tmp194, tmp193
+	movq	%rdx, %rax	# tmp193, tmp195
+	addq	%rax, %rax	# tmp195
+	addq	%rdx, %rax	# tmp193, tmp195
+	salq	$3, %rax	#, tmp196
+	addq	%rbx, %rax	# tmp82, tmp197
+	addq	%rsi, %rax	# tmp192, tmp198
+	addq	$8, %rax	#, tmp199
+	movq	(%rax), %rax	# memory_management_struct.e820[i_24].length, _19
+# memory.c:61: 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].length)>>PAGE_2M_SHIFT)<<PAGE_2M_SHIFT;
+	.loc 1 61 49
+	addq	%rcx, %rax	# _18, _20
+# memory.c:61: 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].length)>>PAGE_2M_SHIFT)<<PAGE_2M_SHIFT;
+	.loc 1 61 6
+	andq	$-2097152, %rax	#, tmp200
+	movq	%rax, -72(%rbp)	# tmp200, end
+# memory.c:62: 		if(end<=start){
+	.loc 1 62 5
+	movq	-72(%rbp), %rax	# end, tmp201
+	cmpq	%rax, -64(%rbp)	# tmp201, start
+	jnb	.L14	#,
+# memory.c:65: 		TotalMem=(end-start)>>PAGE_2M_SHIFT;
+	.loc 1 65 16
+	movq	-72(%rbp), %rax	# end, tmp202
+	subq	-64(%rbp), %rax	# start, _21
+# memory.c:65: 		TotalMem=(end-start)>>PAGE_2M_SHIFT;
+	.loc 1 65 11
+	shrq	$21, %rax	#, tmp203
+	movq	%rax, -32(%rbp)	# tmp203, TotalMem
+	jmp	.L9	#
+.L13:
+# memory.c:58: 			continue;
+	.loc 1 58 4
 	nop	
-	leaq	-16(%rbp), %rsp	#,
+	jmp	.L9	#
+.L14:
+# memory.c:63: 			continue;
+	.loc 1 63 4
+	nop	
+.L9:
+.LBE5:
+# memory.c:55: 	for(i=0;i<=memory_management_struct.e820_length;i++){
+	.loc 1 55 51 discriminator 2
+	addl	$1, -20(%rbp)	#, i
+.L7:
+# memory.c:55: 	for(i=0;i<=memory_management_struct.e820_length;i++){
+	.loc 1 55 11 discriminator 1
+	movl	-20(%rbp), %eax	# i, tmp204
+	cltq
+# memory.c:55: 	for(i=0;i<=memory_management_struct.e820_length;i++){
+	.loc 1 55 37 discriminator 1
+	movabsq	$memory_management_struct@GOTOFF, %rdx	#, tmp205
+	movq	768(%rbx,%rdx), %rdx	# memory_management_struct.e820_length, _23
+# memory.c:55: 	for(i=0;i<=memory_management_struct.e820_length;i++){
+	.loc 1 55 11 discriminator 1
+	cmpq	%rax, %rdx	# _22, _23
+	jnb	.L11	#,
+# memory.c:67: 	color_printk(ORANGE,BLACK,"OS Can Used Total 2M PAGEs:%#010x=%010d\n",TotalMem,TotalMem);
+	.loc 1 67 2
+	movq	-32(%rbp), %rdx	# TotalMem, tmp206
+	movq	-32(%rbp), %rax	# TotalMem, tmp207
+	movq	%rdx, %r8	# tmp206,
+	movq	%rax, %rcx	# tmp207,
+	movabsq	$.LC3@GOTOFF, %rax	#, tmp209
+	leaq	(%rbx,%rax), %rax	#, tmp208
+	movq	%rax, %rdx	# tmp208,
+	movl	$0, %esi	#,
+	movl	$16744448, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %r9	#, tmp210
+	addq	%rbx, %r9	# tmp82, tmp210
+	call	*%r9	# tmp210
+.LVL3:
+# memory.c:68: }
+	.loc 1 68 1
+	nop	
+	addq	$64, %rsp	#,
 	popq	%rbx	#
 	popq	%r15	#
 	popq	%rbp	#
@@ -3267,282 +3472,335 @@ init_memory:
 	.size	init_memory, .-init_memory
 .Letext0:
 	.file 2 "memory.h"
-	.file 3 "printk.h"
-	.file 4 "font.h"
+	.file 3 "font.h"
+	.file 4 "printk.h"
 	.section	.debug_info,"",@progbits
 .Ldebug_info0:
-	.long	0x254
+	.long	0x2d1
 	.value	0x5
 	.byte	0x1
 	.byte	0x8
 	.long	.Ldebug_abbrev0
-	.uleb128 0xc
-	.long	.LASF23
+	.uleb128 0xe
+	.long	.LASF26
 	.byte	0x1d
 	.long	.LASF0
 	.long	.LASF1
 	.quad	.Ltext0
 	.quad	.Letext0-.Ltext0
 	.long	.Ldebug_line0
-	.uleb128 0x7
-	.long	.LASF10
-	.byte	0x14
+	.uleb128 0x3
+	.byte	0x4
+	.byte	0x7
+	.long	.LASF5
+	.uleb128 0x9
+	.long	.LASF7
+	.byte	0x18
 	.byte	0x2
-	.byte	0x11
-	.long	0x7c
+	.byte	0x56
+	.long	0x69
 	.uleb128 0x1
 	.long	.LASF2
 	.byte	0x2
+	.byte	0x58
 	.byte	0x13
-	.byte	0xf
-	.long	0x7c
+	.long	0x69
 	.byte	0
 	.uleb128 0x1
 	.long	.LASF3
 	.byte	0x2
-	.byte	0x14
-	.byte	0xf
-	.long	0x7c
-	.byte	0x4
+	.byte	0x59
+	.byte	0x13
+	.long	0x69
+	.byte	0x8
 	.uleb128 0x1
 	.long	.LASF4
 	.byte	0x2
-	.byte	0x15
-	.byte	0xf
-	.long	0x7c
-	.byte	0x8
-	.uleb128 0x1
-	.long	.LASF5
-	.byte	0x2
-	.byte	0x16
-	.byte	0xf
-	.long	0x7c
-	.byte	0xc
-	.uleb128 0x1
-	.long	.LASF6
-	.byte	0x2
-	.byte	0x17
-	.byte	0xf
-	.long	0x7c
+	.byte	0x5a
+	.byte	0x13
+	.long	0x69
 	.byte	0x10
 	.byte	0
-	.uleb128 0x2
-	.byte	0x4
-	.byte	0x7
-	.long	.LASF7
-	.uleb128 0x2
+	.uleb128 0x3
 	.byte	0x8
 	.byte	0x7
+	.long	.LASF6
+	.uleb128 0xf
 	.long	.LASF8
-	.uleb128 0x8
-	.long	0xa0
-	.long	0xa0
+	.value	0x308
+	.byte	0x2
+	.byte	0x5d
+	.byte	0x8
+	.long	0x9a
+	.uleb128 0x1
+	.long	.LASF9
+	.byte	0x2
+	.byte	0x5f
+	.byte	0xe
+	.long	0x9a
+	.byte	0
+	.uleb128 0x10
+	.long	.LASF10
+	.byte	0x2
+	.byte	0x60
+	.byte	0x10
+	.long	0x69
+	.value	0x300
+	.byte	0
+	.uleb128 0x5
+	.long	0x35
+	.long	0xaa
+	.uleb128 0x6
+	.long	0x69
+	.byte	0x1f
+	.byte	0
+	.uleb128 0xa
+	.long	.LASF12
+	.byte	0x2
+	.byte	0x63
+	.byte	0x21
+	.long	0x70
 	.uleb128 0x9
-	.long	0x83
+	.byte	0x3
+	.quad	memory_management_struct
+	.uleb128 0x5
+	.long	0xd6
+	.long	0xd6
+	.uleb128 0x6
+	.long	0x69
 	.byte	0xff
-	.uleb128 0x9
-	.long	0x83
+	.uleb128 0x6
+	.long	0x69
 	.byte	0xf
 	.byte	0
-	.uleb128 0x2
+	.uleb128 0x3
 	.byte	0x1
 	.byte	0x8
-	.long	.LASF9
-	.uleb128 0xd
-	.long	.LASF20
-	.byte	0x4
+	.long	.LASF11
+	.uleb128 0xa
+	.long	.LASF13
+	.byte	0x3
 	.byte	0x6
 	.byte	0xf
-	.long	0x8a
+	.long	0xc0
 	.uleb128 0x9
 	.byte	0x3
 	.quad	font_ascii
-	.uleb128 0x7
-	.long	.LASF11
-	.byte	0x28
-	.byte	0x3
-	.byte	0x20
-	.long	0x132
-	.uleb128 0x1
-	.long	.LASF12
-	.byte	0x3
-	.byte	0x22
-	.byte	0x9
-	.long	0x132
-	.byte	0
-	.uleb128 0x1
-	.long	.LASF13
-	.byte	0x3
-	.byte	0x23
-	.byte	0x9
-	.long	0x132
-	.byte	0x4
-	.uleb128 0x1
+	.uleb128 0x9
 	.long	.LASF14
-	.byte	0x3
-	.byte	0x24
-	.byte	0x9
-	.long	0x132
-	.byte	0x8
+	.byte	0x28
+	.byte	0x4
+	.byte	0x20
+	.long	0x168
 	.uleb128 0x1
 	.long	.LASF15
-	.byte	0x3
-	.byte	0x25
+	.byte	0x4
+	.byte	0x22
 	.byte	0x9
-	.long	0x132
-	.byte	0xc
+	.long	0x168
+	.byte	0
 	.uleb128 0x1
 	.long	.LASF16
-	.byte	0x3
-	.byte	0x26
+	.byte	0x4
+	.byte	0x23
 	.byte	0x9
-	.long	0x132
-	.byte	0x10
+	.long	0x168
+	.byte	0x4
 	.uleb128 0x1
 	.long	.LASF17
-	.byte	0x3
-	.byte	0x27
+	.byte	0x4
+	.byte	0x24
 	.byte	0x9
-	.long	0x132
-	.byte	0x14
+	.long	0x168
+	.byte	0x8
 	.uleb128 0x1
 	.long	.LASF18
-	.byte	0x3
-	.byte	0x28
-	.byte	0x14
-	.long	0x139
-	.byte	0x18
+	.byte	0x4
+	.byte	0x25
+	.byte	0x9
+	.long	0x168
+	.byte	0xc
 	.uleb128 0x1
 	.long	.LASF19
-	.byte	0x3
+	.byte	0x4
+	.byte	0x26
+	.byte	0x9
+	.long	0x168
+	.byte	0x10
+	.uleb128 0x1
+	.long	.LASF20
+	.byte	0x4
+	.byte	0x27
+	.byte	0x9
+	.long	0x168
+	.byte	0x14
+	.uleb128 0x1
+	.long	.LASF21
+	.byte	0x4
+	.byte	0x28
+	.byte	0x14
+	.long	0x16f
+	.byte	0x18
+	.uleb128 0x1
+	.long	.LASF22
+	.byte	0x4
 	.byte	0x29
 	.byte	0x13
-	.long	0x83
+	.long	0x69
 	.byte	0x20
 	.byte	0
-	.uleb128 0xe
+	.uleb128 0x11
 	.byte	0x4
 	.byte	0x5
 	.string	"int"
-	.uleb128 0x3
-	.long	0x7c
-	.uleb128 0xa
+	.uleb128 0x7
+	.long	0x2e
+	.uleb128 0xb
 	.string	"Pos"
 	.byte	0x2a
 	.byte	0x2
-	.long	0xbd
+	.long	0xf3
 	.uleb128 0x9
 	.byte	0x3
 	.quad	Pos
-	.uleb128 0x8
-	.long	0x164
-	.long	0x164
-	.uleb128 0xf
-	.long	0x83
+	.uleb128 0x5
+	.long	0x19a
+	.long	0x19a
+	.uleb128 0x12
+	.long	0x69
 	.value	0xfff
 	.byte	0
-	.uleb128 0x2
+	.uleb128 0x3
 	.byte	0x1
 	.byte	0x6
-	.long	.LASF21
-	.uleb128 0x10
-	.long	0x164
-	.uleb128 0xa
+	.long	.LASF23
+	.uleb128 0x13
+	.long	0x19a
+	.uleb128 0xb
 	.string	"buf"
 	.byte	0x2e
 	.byte	0x6
-	.long	0x153
+	.long	0x189
 	.uleb128 0x9
 	.byte	0x3
 	.quad	buf
-	.uleb128 0x11
-	.long	.LASF24
-	.byte	0x3
+	.uleb128 0x14
+	.long	.LASF27
+	.byte	0x4
 	.byte	0x3b
 	.byte	0x5
-	.long	0x132
-	.long	0x1a6
-	.uleb128 0x4
-	.long	0x7c
-	.uleb128 0x4
-	.long	0x7c
-	.uleb128 0x4
-	.long	0x1a6
-	.uleb128 0x12
+	.long	0x168
+	.long	0x1dc
+	.uleb128 0x8
+	.long	0x2e
+	.uleb128 0x8
+	.long	0x2e
+	.uleb128 0x8
+	.long	0x1dc
+	.uleb128 0x15
 	.byte	0
-	.uleb128 0x3
-	.long	0x16b
-	.uleb128 0x13
-	.long	.LASF25
+	.uleb128 0x7
+	.long	0x1a1
+	.uleb128 0x16
+	.long	.LASF28
 	.byte	0x1
-	.byte	0x5
+	.byte	0x1d
 	.byte	0x6
 	.quad	.LFB34
 	.quad	.LFE34-.LFB34
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x252
-	.uleb128 0xb
+	.long	0x2cf
+	.uleb128 0x2
 	.string	"i"
+	.byte	0x1e
 	.byte	0x6
-	.long	0x132
-	.uleb128 0xb
-	.string	"j"
-	.byte	0x8
-	.long	0x132
-	.uleb128 0x14
-	.long	.LASF22
-	.byte	0x1
-	.byte	0x8
-	.byte	0x10
-	.long	0x83
+	.long	0x168
 	.uleb128 0x2
 	.byte	0x91
-	.sleb128 -40
-	.uleb128 0x5
-	.string	"p"
-	.byte	0x9
+	.sleb128 -36
+	.uleb128 0x17
+	.string	"j"
+	.byte	0x1
 	.byte	0x1e
-	.long	0x252
+	.byte	0x8
+	.long	0x168
+	.uleb128 0xc
+	.long	.LASF24
+	.byte	0x20
+	.byte	0x10
+	.long	0x69
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -48
-	.uleb128 0x15
+	.uleb128 0x2
+	.string	"p"
+	.byte	0x21
+	.byte	0xf
+	.long	0x2cf
+	.uleb128 0x2
+	.byte	0x91
+	.sleb128 -56
+	.uleb128 0xd
 	.quad	.LBB2
 	.quad	.LBE2-.LBB2
-	.long	0x237
-	.uleb128 0x5
+	.long	0x273
+	.uleb128 0x2
 	.string	"i"
-	.byte	0xc
+	.byte	0x24
 	.byte	0xb
-	.long	0x132
+	.long	0x168
 	.uleb128 0x2
 	.byte	0x91
-	.sleb128 -52
-	.uleb128 0x16
+	.sleb128 -60
+	.uleb128 0x18
 	.long	.LLRL0
-	.uleb128 0x5
-	.string	"tmp"
-	.byte	0xf
-	.byte	0x11
-	.long	0x83
 	.uleb128 0x2
-	.byte	0x91
-	.sleb128 -64
-	.uleb128 0x6
-	.quad	.LVL1
-	.long	0x185
-	.byte	0
-	.byte	0
-	.uleb128 0x6
-	.quad	.LVL0
-	.long	0x185
-	.uleb128 0x6
-	.quad	.LVL2
-	.long	0x185
-	.byte	0
+	.string	"tmp"
+	.byte	0x28
+	.byte	0x11
+	.long	0x69
 	.uleb128 0x3
-	.long	0x2e
+	.byte	0x91
+	.sleb128 -72
+	.uleb128 0x4
+	.quad	.LVL1
+	.long	0x1bb
+	.byte	0
+	.byte	0
+	.uleb128 0xd
+	.quad	.LBB5
+	.quad	.LBE5-.LBB5
+	.long	0x2a7
+	.uleb128 0xc
+	.long	.LASF25
+	.byte	0x38
+	.byte	0x11
+	.long	0x69
+	.uleb128 0x3
+	.byte	0x91
+	.sleb128 -80
+	.uleb128 0x2
+	.string	"end"
+	.byte	0x38
+	.byte	0x17
+	.long	0x69
+	.uleb128 0x3
+	.byte	0x91
+	.sleb128 -88
+	.byte	0
+	.uleb128 0x4
+	.quad	.LVL0
+	.long	0x1bb
+	.uleb128 0x4
+	.quad	.LVL2
+	.long	0x1bb
+	.uleb128 0x4
+	.quad	.LVL3
+	.long	0x1bb
+	.byte	0
+	.uleb128 0x7
+	.long	0x35
 	.byte	0
 	.section	.debug_abbrev,"",@progbits
 .Ldebug_abbrev0:
@@ -3564,34 +3822,6 @@ init_memory:
 	.byte	0
 	.byte	0
 	.uleb128 0x2
-	.uleb128 0x24
-	.byte	0
-	.uleb128 0xb
-	.uleb128 0xb
-	.uleb128 0x3e
-	.uleb128 0xb
-	.uleb128 0x3
-	.uleb128 0xe
-	.byte	0
-	.byte	0
-	.uleb128 0x3
-	.uleb128 0xf
-	.byte	0
-	.uleb128 0xb
-	.uleb128 0x21
-	.sleb128 8
-	.uleb128 0x49
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x4
-	.uleb128 0x5
-	.byte	0
-	.uleb128 0x49
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x5
 	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
@@ -3609,7 +3839,18 @@ init_memory:
 	.uleb128 0x18
 	.byte	0
 	.byte	0
-	.uleb128 0x6
+	.uleb128 0x3
+	.uleb128 0x24
+	.byte	0
+	.uleb128 0xb
+	.uleb128 0xb
+	.uleb128 0x3e
+	.uleb128 0xb
+	.uleb128 0x3
+	.uleb128 0xe
+	.byte	0
+	.byte	0
+	.uleb128 0x4
 	.uleb128 0x48
 	.byte	0
 	.uleb128 0x7d
@@ -3618,7 +3859,42 @@ init_memory:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
+	.uleb128 0x5
+	.uleb128 0x1
+	.byte	0x1
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x1
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x6
+	.uleb128 0x21
+	.byte	0
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x2f
+	.uleb128 0xb
+	.byte	0
+	.byte	0
 	.uleb128 0x7
+	.uleb128 0xf
+	.byte	0
+	.uleb128 0xb
+	.uleb128 0x21
+	.sleb128 8
+	.uleb128 0x49
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x8
+	.uleb128 0x5
+	.byte	0
+	.uleb128 0x49
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x9
 	.uleb128 0x13
 	.byte	0x1
 	.uleb128 0x3
@@ -3636,32 +3912,13 @@ init_memory:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x8
-	.uleb128 0x1
-	.byte	0x1
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x1
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x9
-	.uleb128 0x21
-	.byte	0
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x2f
-	.uleb128 0xb
-	.byte	0
-	.byte	0
 	.uleb128 0xa
 	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
-	.uleb128 0x8
+	.uleb128 0xe
 	.uleb128 0x3a
-	.uleb128 0x21
-	.sleb128 3
+	.uleb128 0xb
 	.uleb128 0x3b
 	.uleb128 0xb
 	.uleb128 0x39
@@ -3681,17 +3938,49 @@ init_memory:
 	.uleb128 0x8
 	.uleb128 0x3a
 	.uleb128 0x21
-	.sleb128 1
+	.sleb128 4
 	.uleb128 0x3b
-	.uleb128 0x21
-	.sleb128 6
+	.uleb128 0xb
 	.uleb128 0x39
 	.uleb128 0xb
 	.uleb128 0x49
 	.uleb128 0x13
+	.uleb128 0x3f
+	.uleb128 0x19
+	.uleb128 0x2
+	.uleb128 0x18
 	.byte	0
 	.byte	0
 	.uleb128 0xc
+	.uleb128 0x34
+	.byte	0
+	.uleb128 0x3
+	.uleb128 0xe
+	.uleb128 0x3a
+	.uleb128 0x21
+	.sleb128 1
+	.uleb128 0x3b
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0xb
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x2
+	.uleb128 0x18
+	.byte	0
+	.byte	0
+	.uleb128 0xd
+	.uleb128 0xb
+	.byte	0x1
+	.uleb128 0x11
+	.uleb128 0x1
+	.uleb128 0x12
+	.uleb128 0x7
+	.uleb128 0x1
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0xe
 	.uleb128 0x11
 	.byte	0x1
 	.uleb128 0x25
@@ -3710,8 +3999,25 @@ init_memory:
 	.uleb128 0x17
 	.byte	0
 	.byte	0
+	.uleb128 0xf
+	.uleb128 0x13
+	.byte	0x1
+	.uleb128 0x3
+	.uleb128 0xe
+	.uleb128 0xb
+	.uleb128 0x5
+	.uleb128 0x3a
+	.uleb128 0xb
+	.uleb128 0x3b
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0xb
+	.uleb128 0x1
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x10
 	.uleb128 0xd
-	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
 	.uleb128 0xe
@@ -3723,13 +4029,11 @@ init_memory:
 	.uleb128 0xb
 	.uleb128 0x49
 	.uleb128 0x13
-	.uleb128 0x3f
-	.uleb128 0x19
-	.uleb128 0x2
-	.uleb128 0x18
+	.uleb128 0x38
+	.uleb128 0x5
 	.byte	0
 	.byte	0
-	.uleb128 0xe
+	.uleb128 0x11
 	.uleb128 0x24
 	.byte	0
 	.uleb128 0xb
@@ -3740,7 +4044,7 @@ init_memory:
 	.uleb128 0x8
 	.byte	0
 	.byte	0
-	.uleb128 0xf
+	.uleb128 0x12
 	.uleb128 0x21
 	.byte	0
 	.uleb128 0x49
@@ -3749,14 +4053,14 @@ init_memory:
 	.uleb128 0x5
 	.byte	0
 	.byte	0
-	.uleb128 0x10
+	.uleb128 0x13
 	.uleb128 0x26
 	.byte	0
 	.uleb128 0x49
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x11
+	.uleb128 0x14
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -3779,12 +4083,12 @@ init_memory:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x12
+	.uleb128 0x15
 	.uleb128 0x18
 	.byte	0
 	.byte	0
 	.byte	0
-	.uleb128 0x13
+	.uleb128 0x16
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -3809,11 +4113,11 @@ init_memory:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x14
+	.uleb128 0x17
 	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
-	.uleb128 0xe
+	.uleb128 0x8
 	.uleb128 0x3a
 	.uleb128 0xb
 	.uleb128 0x3b
@@ -3822,22 +4126,9 @@ init_memory:
 	.uleb128 0xb
 	.uleb128 0x49
 	.uleb128 0x13
-	.uleb128 0x2
+	.byte	0
+	.byte	0
 	.uleb128 0x18
-	.byte	0
-	.byte	0
-	.uleb128 0x15
-	.uleb128 0xb
-	.byte	0x1
-	.uleb128 0x11
-	.uleb128 0x1
-	.uleb128 0x12
-	.uleb128 0x7
-	.uleb128 0x1
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x16
 	.uleb128 0xb
 	.byte	0x1
 	.uleb128 0x55
@@ -3877,57 +4168,63 @@ init_memory:
 	.section	.debug_line,"",@progbits
 .Ldebug_line0:
 	.section	.debug_str,"MS",@progbits,1
-.LASF19:
-	.string	"FB_length"
-.LASF6:
-	.string	"type"
-.LASF16:
-	.string	"XCharSize"
 .LASF15:
-	.string	"YPosition"
-.LASF2:
-	.string	"address1"
-.LASF3:
-	.string	"address2"
-.LASF8:
-	.string	"long unsigned int"
-.LASF23:
-	.string	"GNU C17 13.3.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
-.LASF20:
-	.string	"font_ascii"
-.LASF12:
 	.string	"XResolution"
-.LASF22:
-	.string	"TotalMem"
-.LASF25:
-	.string	"init_memory"
-.LASF13:
-	.string	"YResolution"
+.LASF26:
+	.string	"GNU C17 13.3.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
+.LASF19:
+	.string	"XCharSize"
 .LASF9:
-	.string	"unsigned char"
-.LASF21:
-	.string	"char"
-.LASF4:
-	.string	"length1"
-.LASF5:
-	.string	"length2"
-.LASF11:
-	.string	"position"
-.LASF18:
-	.string	"FB_addr"
-.LASF17:
-	.string	"YCharSize"
-.LASF14:
-	.string	"XPosition"
-.LASF24:
-	.string	"color_printk"
-.LASF10:
-	.string	"Memory_E820_Formate"
+	.string	"e820"
+.LASF25:
+	.string	"start"
 .LASF7:
+	.string	"E820"
+.LASF10:
+	.string	"e820_length"
+.LASF11:
+	.string	"unsigned char"
+.LASF13:
+	.string	"font_ascii"
+.LASF6:
+	.string	"long unsigned int"
+.LASF21:
+	.string	"FB_addr"
+.LASF20:
+	.string	"YCharSize"
+.LASF24:
+	.string	"TotalMem"
+.LASF14:
+	.string	"position"
+.LASF5:
 	.string	"unsigned int"
+.LASF27:
+	.string	"color_printk"
+.LASF2:
+	.string	"address"
+.LASF23:
+	.string	"char"
+.LASF28:
+	.string	"init_memory"
+.LASF22:
+	.string	"FB_length"
+.LASF18:
+	.string	"YPosition"
+.LASF17:
+	.string	"XPosition"
+.LASF16:
+	.string	"YResolution"
+.LASF12:
+	.string	"memory_management_struct"
+.LASF4:
+	.string	"type"
+.LASF8:
+	.string	"Global_Memory_Descriptor"
+.LASF3:
+	.string	"length"
 	.section	.debug_line_str,"MS",@progbits,1
 .LASF1:
-	.string	"/home/student/myos/kernel"
+	.string	"/workspace/myos/kernel"
 .LASF0:
 	.string	"memory.c"
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"

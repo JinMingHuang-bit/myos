@@ -40,6 +40,7 @@ void Start_Kernel(void)
     set_tss64(0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,
 0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00);
     sys_vector_init();
+    struct  Global_Memory_Descriptor memory_management_struct={{0},0};
     // for(i=0;i<Pos.XResolution*20;i++){
     //     *((char*)addr+0)=(char)0x00;
     //     *((char*)addr+1)=(char)0x00;

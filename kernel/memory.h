@@ -6,7 +6,7 @@
 这个宏定义了内核空间的起始虚拟地址。在x86_64架构中，通常将高地址空间分配给内核。
 0xffff800000000000 是一个典型的直接映射区域的起始地址，用于将物理内存直接映射到内核虚拟地址空间
 */
-#define PAGE_OFFSET((unsigned long)0xffff800000000000)
+#define PAGE_OFFSET ((unsigned long)0xffff800000000000)
 /* 
 地址翻译流程：
 1. CR3寄存器 → PML4物理基址
@@ -34,11 +34,27 @@
 #define PAGE_2M_SHIFT 21
 //2的12次方 4096,即4k,这些是每种页表项代表的物理页容量
 #define PAGE_4K_SHIFT 12
-
+//1UL：无符号长整型常量1（64位）
+//2,097,152,即2M
 #define PAGE_2M_SIZE (1UL << PAGE_2M_SHIFT)
+//1UL << 12 = 4,096 = 4KB。
 #define PAGE_4K_SIZE (1UL << PAGE_4K_SHIFT)
+//这个掩码与任何地址进行“与”操作，都会将地址的低21位清零，从而得到该地址所在的2MB页的起始地址（2MB对齐）。
 #define PAGE_2M_MASK (~(PAGE_2M_SIZE - 1))
 #define PAGE_4K_MASK (~(PAGE_4K_SIZE - 1))
+/* 
+设 a = q·s + r，其中 0 ≤ r < s（r 是余数）
+情况 1: r = 0（已对齐）
+(a + s - 1) & ~(s-1) 
+= (q·s + s - 1) & ~(s-1)
+= ((q+1)·s - 1) & ~(s-1)
+= q·s   // 因为(q+1)·s-1的低位都是1，与~（s-1）与后保留高位
+情况 2: r > 0（未对齐）
+(a + s - 1) & ~(s-1)
+= (q·s + r + s - 1) & ~(s-1)
+= ((q+1)·s + (r-1)) & ~(s-1)
+= (q+1)·s  // 因为r-1 < s-1，清除低位后得到(q+1)·s
+*/
 #define PAGE_2M_ALIGN(addr) (((unsigned long)(addr) + PAGE_2M_SIZE - 1) & PAGE_2M_MASK)
 #define PAGE_4K_ALIGN(addr) (((unsigned long)(addr) + PAGE_4K_SIZE - 1) & PAGE_4K_MASK)
 #define Virt_To_Phys(addr) ((unsigned long)(addr) - PAGE_OFFSET)
@@ -66,19 +82,21 @@ struct Memory_E820_Formate
 	unsigned int type;
 };
 
+// 使用 packed：禁止填充
 struct E820
 {
-	unsigned long address;
-	unsigned long length;
-	unsigned long type;
-}__attribute__((packed));
+    unsigned long address;  // 内存区域的起始地址
+    unsigned long length;   // 内存区域的长度
+    unsigned long type;     // 内存区域的类型
+}__attribute__((packed));   // 强制为12字节，无填充
 
 struct Global_Memory_Descriptor
 {
 	struct E820 e820[32];
-	unsigned long e820_length;
-}
-extern struct Global_Memory_Descriptor memory_management_struct;
+	unsigned long e820_length;8
+};
+
+struct Global_Memory_Descriptor memory_management_struct;
 
 void init_memory();
 
