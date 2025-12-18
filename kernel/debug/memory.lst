@@ -9,14 +9,14 @@ GAS LISTING memory.s 			page 1
    6              	# options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-prote
    7              		.text
    8              	.Ltext0:
-   9              		.file 0 "/workspace/myos/kernel" "memory.c"
+   9              		.file 0 "/home/student/myos/kernel" "memory.c"
   10              		.globl	memory_management_struct
   11              		.bss
   12              		.align 32
   13              		.type	memory_management_struct, @object
-  14              		.size	memory_management_struct, 776
+  14              		.size	memory_management_struct, 648
   15              	memory_management_struct:
-  16 0000 00000000 		.zero	776
+  16 0000 00000000 		.zero	648
   16      00000000 
   16      00000000 
   16      00000000 
@@ -3481,7 +3481,7 @@ GAS LISTING memory.s 			page 1
 GAS LISTING memory.s 			page 59
 
 
- 3079 0308 00000000 		.align 32
+ 3079 0288 00000000 		.align 32
  3079      00000000 
  3079      00000000 
  3079      00000000 
@@ -3489,13 +3489,13 @@ GAS LISTING memory.s 			page 1
  3080              		.type	Pos, @object
  3081              		.size	Pos, 40
  3082              	Pos:
- 3083 0320 00000000 		.zero	40
+ 3083 02a0 00000000 		.zero	40
  3083      00000000 
  3083      00000000 
  3083      00000000 
  3083      00000000 
  3084              		.globl	buf
- 3085 0348 00000000 		.align 32
+ 3085 02c8 00000000 		.align 32
  3085      00000000 
  3085      00000000 
  3085      00000000 
@@ -3503,7 +3503,7 @@ GAS LISTING memory.s 			page 1
  3086              		.type	buf, @object
  3087              		.size	buf, 4096
  3088              	buf:
- 3089 0360 00000000 		.zero	4096
+ 3089 02e0 00000000 		.zero	4096
  3089      00000000 
  3089      00000000 
  3089      00000000 
@@ -3572,11 +3572,12 @@ GAS LISTING memory.s 			page 1
   23:memory.c      **** // 			break;
   24:memory.c      **** // 		}
   25:memory.c      **** // 	}
-  26:memory.c      **** // 	color_printk(ORANGE,BLACK,"OS Can Used Total RAM:%#0181x\n",TotalMem);
-  27:memory.c      **** // }
-  28:memory.c      **** 
-  29:memory.c      **** void init_memory(){
- 3109              		.loc 1 29 19
+  26:memory.c      **** // 	color_printk(ORANGE,BLACK,"OS Can Used Total RAM:%#018lx\n",TotalMem);
+  27:memory.c      **** // 	color_printk(ORANGE,BLACK,"OS Can Used Total RAM:%#0181x\n",TotalMem);
+  28:memory.c      **** // }
+  29:memory.c      **** 
+  30:memory.c      **** void init_memory(){
+ 3109              		.loc 1 30 19
  3110              		.cfi_startproc
  3111 0000 F30F1EFA 		endbr64	
  3112 0004 55       		pushq	%rbp	#
@@ -3596,24 +3597,24 @@ GAS LISTING memory.s 			page 1
  3124      00000000 
  3124      0000
  3125 0020 4C01DB   		addq	%r11, %rbx	#, tmp82
- 3126              	# memory.c:32: 	unsigned long TotalMem =0;
-  30:memory.c      **** 	int i,j;
+ 3126              	# memory.c:33: 	unsigned long TotalMem =0;
 GAS LISTING memory.s 			page 61
 
 
-  31:memory.c      **** 	
-  32:memory.c      **** 	unsigned long TotalMem =0;
- 3127              		.loc 1 32 16
+  31:memory.c      **** 	int i,j;
+  32:memory.c      **** 	
+  33:memory.c      **** 	unsigned long TotalMem =0;
+ 3127              		.loc 1 33 16
  3128 0023 48C745E0 		movq	$0, -32(%rbp)	#, TotalMem
  3128      00000000 
- 3129              	# memory.c:33: 	struct E820 *p =NULL;
-  33:memory.c      **** 	struct E820 *p =NULL;
- 3130              		.loc 1 33 15
+ 3129              	# memory.c:34: 	struct E820 *p =NULL;
+  34:memory.c      **** 	struct E820 *p =NULL;
+ 3130              		.loc 1 34 15
  3131 002b 48C745D8 		movq	$0, -40(%rbp)	#, p
  3131      00000000 
- 3132              	# memory.c:34: 	color_printk(BLUE,BLACK,"Display physics address Map,Type(1:RAM,2:ROM or Reserved,3
-  34:memory.c      **** 	color_printk(BLUE,BLACK,"Display physics address Map,Type(1:RAM,2:ROM or Reserved,3:ACPI Reclaim M
- 3133              		.loc 1 34 2
+ 3132              	# memory.c:35: 	color_printk(BLUE,BLACK,"Display physics address Map,Type(1:RAM,2:ROM or Reserved,3
+  35:memory.c      **** 	color_printk(BLUE,BLACK,"Display physics address Map,Type(1:RAM,2:ROM or Reserved,3:ACPI Reclaim M
+ 3133              		.loc 1 35 2
  3134 0033 48B80000 		movabsq	$.LC0@GOTOFF, %rax	#, tmp107
  3134      00000000 
  3134      0000
@@ -3632,143 +3633,143 @@ GAS LISTING memory.s 			page 1
  3142 0060 4801D9   		addq	%rbx, %rcx	# tmp82, tmp108
  3143 0063 FFD1     		call	*%rcx	# tmp108
  3144              	.LVL0:
- 3145              	# memory.c:35: 	p=(struct E820 *)0xffff800000007e00;
-  35:memory.c      **** 	p=(struct E820 *)0xffff800000007e00;
- 3146              		.loc 1 35 3
+ 3145              	# memory.c:36: 	p=(struct E820 *)0xffff800000007e00;
+  36:memory.c      **** 	p=(struct E820 *)0xffff800000007e00;
+ 3146              		.loc 1 36 3
  3147 0065 48B8007E 		movabsq	$-140737488323072, %rax	#, tmp212
  3147      00000080 
  3147      FFFF
  3148 006f 488945D8 		movq	%rax, -40(%rbp)	# tmp212, p
  3149              	.LBB2:
- 3150              	# memory.c:36: 	for (int i = 0; i < 32; i++)
-  36:memory.c      **** 	for (int i = 0; i < 32; i++)
- 3151              		.loc 1 36 11
+ 3150              	# memory.c:37: 	for (int i = 0; i < 32; i++)
+  37:memory.c      **** 	for (int i = 0; i < 32; i++)
+ 3151              		.loc 1 37 11
  3152 0073 C745D400 		movl	$0, -44(%rbp)	#, i
  3152      000000
- 3153              	# memory.c:36: 	for (int i = 0; i < 32; i++)
- 3154              		.loc 1 36 2
- 3155 007a E98C0100 		jmp	.L2	#
+ 3153              	# memory.c:37: 	for (int i = 0; i < 32; i++)
+ 3154              		.loc 1 37 2
+ 3155 007a E98A0100 		jmp	.L2	#
  3155      00
  3156              	.L6:
  3157              	.LBB3:
- 3158              	# memory.c:39: 		color_printk(ORANGE,BLACK,"address:%#018lx\tLength:%#018lx\tType:%#010x\n",p->addr
-  37:memory.c      **** 	{
-  38:memory.c      **** 		//以0x开头的16进制形式输出，总宽度为18个字符，左补零，长整型（unsigned
-  39:memory.c      **** 		color_printk(ORANGE,BLACK,"address:%#018lx\tLength:%#018lx\tType:%#010x\n",p->address,p->length,p
- 3159              		.loc 1 39 3
+ 3158              	# memory.c:40: 		color_printk(ORANGE,BLACK,"address:%#018lx\tLength:%#018lx\tType:%#010x\n",p->addr
+  38:memory.c      **** 	{
+  39:memory.c      **** 		//以0x开头的16进制形式输出，总宽度为18个字符，左补零，长整型（unsigned
+  40:memory.c      **** 		color_printk(ORANGE,BLACK,"address:%#018lx\tLength:%#018lx\tType:%#010x\n",p->address,p->length,p
+ 3159              		.loc 1 40 3
  3160 007f 488B45D8 		movq	-40(%rbp), %rax	# p, tmp109
- 3161 0083 488B4810 		movq	16(%rax), %rcx	# p_30->type, _1
 GAS LISTING memory.s 			page 62
 
 
- 3162 0087 488B45D8 		movq	-40(%rbp), %rax	# p, tmp110
- 3163 008b 488B5008 		movq	8(%rax), %rdx	# p_30->length, _2
- 3164 008f 488B45D8 		movq	-40(%rbp), %rax	# p, tmp111
- 3165 0093 488B00   		movq	(%rax), %rax	# p_30->address, _3
- 3166 0096 4989C9   		movq	%rcx, %r9	# _1,
- 3167 0099 4989D0   		movq	%rdx, %r8	# _2,
- 3168 009c 4889C1   		movq	%rax, %rcx	# _3,
- 3169 009f 48B80000 		movabsq	$.LC1@GOTOFF, %rax	#, tmp113
+ 3161 0083 8B4810   		movl	16(%rax), %ecx	# p_30->type, _1
+ 3162 0086 488B45D8 		movq	-40(%rbp), %rax	# p, tmp110
+ 3163 008a 488B5008 		movq	8(%rax), %rdx	# p_30->length, _2
+ 3164 008e 488B45D8 		movq	-40(%rbp), %rax	# p, tmp111
+ 3165 0092 488B00   		movq	(%rax), %rax	# p_30->address, _3
+ 3166 0095 4189C9   		movl	%ecx, %r9d	# _1,
+ 3167 0098 4989D0   		movq	%rdx, %r8	# _2,
+ 3168 009b 4889C1   		movq	%rax, %rcx	# _3,
+ 3169 009e 48B80000 		movabsq	$.LC1@GOTOFF, %rax	#, tmp113
  3169      00000000 
  3169      0000
- 3170 00a9 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp112
- 3171 00ad 4889C2   		movq	%rax, %rdx	# tmp112,
- 3172 00b0 BE000000 		movl	$0, %esi	#,
+ 3170 00a8 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp112
+ 3171 00ac 4889C2   		movq	%rax, %rdx	# tmp112,
+ 3172 00af BE000000 		movl	$0, %esi	#,
  3172      00
- 3173 00b5 BF0080FF 		movl	$16744448, %edi	#,
+ 3173 00b4 BF0080FF 		movl	$16744448, %edi	#,
  3173      00
- 3174 00ba 4989DF   		movq	%rbx, %r15	# tmp82,
- 3175 00bd B8000000 		movl	$0, %eax	#,
+ 3174 00b9 4989DF   		movq	%rbx, %r15	# tmp82,
+ 3175 00bc B8000000 		movl	$0, %eax	#,
  3175      00
- 3176 00c2 49BA0000 		movabsq	$color_printk@PLTOFF, %r10	#, tmp114
+ 3176 00c1 49BA0000 		movabsq	$color_printk@PLTOFF, %r10	#, tmp114
  3176      00000000 
  3176      0000
- 3177 00cc 4901DA   		addq	%rbx, %r10	# tmp82, tmp114
- 3178 00cf 41FFD2   		call	*%r10	# tmp114
+ 3177 00cb 4901DA   		addq	%rbx, %r10	# tmp82, tmp114
+ 3178 00ce 41FFD2   		call	*%r10	# tmp114
  3179              	.LVL1:
- 3180              	# memory.c:40: 		unsigned long tmp =0;
-  40:memory.c      **** 		unsigned long tmp =0;
- 3181              		.loc 1 40 17
- 3182 00d2 48C745C8 		movq	$0, -56(%rbp)	#, tmp
+ 3180              	# memory.c:41: 		unsigned long tmp =0;
+  41:memory.c      **** 		unsigned long tmp =0;
+ 3181              		.loc 1 41 17
+ 3182 00d1 48C745C8 		movq	$0, -56(%rbp)	#, tmp
  3182      00000000 
- 3183              	# memory.c:41: 		if(p->type==1){
-  41:memory.c      **** 		if(p->type==1){
- 3184              		.loc 1 41 7
- 3185 00da 488B45D8 		movq	-40(%rbp), %rax	# p, tmp115
- 3186 00de 488B4010 		movq	16(%rax), %rax	# p_30->type, _4
- 3187              	# memory.c:41: 		if(p->type==1){
- 3188              		.loc 1 41 5
- 3189 00e2 4883F801 		cmpq	$1, %rax	#, _4
- 3190 00e6 750C     		jne	.L3	#,
- 3191              	# memory.c:42: 			TotalMem +=p->length;
-  42:memory.c      **** 			TotalMem +=p->length;
- 3192              		.loc 1 42 16
- 3193 00e8 488B45D8 		movq	-40(%rbp), %rax	# p, tmp116
- 3194 00ec 488B4008 		movq	8(%rax), %rax	# p_30->length, _5
- 3195              	# memory.c:42: 			TotalMem +=p->length;
- 3196              		.loc 1 42 13
- 3197 00f0 480145E0 		addq	%rax, -32(%rbp)	# _5, TotalMem
+ 3183              	# memory.c:42: 		if(p->type==1){
+  42:memory.c      **** 		if(p->type==1){
+ 3184              		.loc 1 42 7
+ 3185 00d9 488B45D8 		movq	-40(%rbp), %rax	# p, tmp115
+ 3186 00dd 8B4010   		movl	16(%rax), %eax	# p_30->type, _4
+ 3187              	# memory.c:42: 		if(p->type==1){
+ 3188              		.loc 1 42 5
+ 3189 00e0 83F801   		cmpl	$1, %eax	#, _4
+ 3190 00e3 750C     		jne	.L3	#,
+ 3191              	# memory.c:43: 			TotalMem +=p->length;
+  43:memory.c      **** 			TotalMem +=p->length;
+ 3192              		.loc 1 43 16
+ 3193 00e5 488B45D8 		movq	-40(%rbp), %rax	# p, tmp116
+ 3194 00e9 488B4008 		movq	8(%rax), %rax	# p_30->length, _5
+ 3195              	# memory.c:43: 			TotalMem +=p->length;
+ 3196              		.loc 1 43 13
+ 3197 00ed 480145E0 		addq	%rax, -32(%rbp)	# _5, TotalMem
  3198              	.L3:
- 3199              	# memory.c:44: 		memory_management_struct.e820[i].address+=p->address;
-  43:memory.c      **** 		}
-  44:memory.c      **** 		memory_management_struct.e820[i].address+=p->address;
- 3200              		.loc 1 44 35
- 3201 00f4 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp117
+ 3199              	# memory.c:45: 		memory_management_struct.e820[i].address+=p->address;
+  44:memory.c      **** 		}
+  45:memory.c      **** 		memory_management_struct.e820[i].address+=p->address;
+ 3200              		.loc 1 45 35
+ 3201 00f1 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp117
  3201      00000000 
  3201      0000
- 3202 00fe 8B45D4   		movl	-44(%rbp), %eax	# i, tmp119
- 3203 0101 4863D0   		movslq	%eax, %rdx	# tmp119, tmp118
+ 3202 00fb 8B45D4   		movl	-44(%rbp), %eax	# i, tmp119
 GAS LISTING memory.s 			page 63
 
 
- 3204 0104 4801D9   		addq	%rbx, %rcx	# tmp82, tmp120
- 3205 0107 4889D0   		movq	%rdx, %rax	# tmp118, tmp122
- 3206 010a 4801C0   		addq	%rax, %rax	# tmp122
- 3207 010d 4801D0   		addq	%rdx, %rax	# tmp118, tmp122
- 3208 0110 48C1E003 		salq	$3, %rax	#, tmp123
- 3209 0114 4801C8   		addq	%rcx, %rax	# tmp120, tmp124
- 3210 0117 488B10   		movq	(%rax), %rdx	# memory_management_struct.e820[i_31].address, _6
- 3211              	# memory.c:44: 		memory_management_struct.e820[i].address+=p->address;
- 3212              		.loc 1 44 46
- 3213 011a 488B45D8 		movq	-40(%rbp), %rax	# p, tmp125
- 3214 011e 488B00   		movq	(%rax), %rax	# p_30->address, _7
- 3215              	# memory.c:44: 		memory_management_struct.e820[i].address+=p->address;
- 3216              		.loc 1 44 43
- 3217 0121 488D0C02 		leaq	(%rdx,%rax), %rcx	#, _8
- 3218 0125 48BE0000 		movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp126
+ 3203 00fe 4863D0   		movslq	%eax, %rdx	# tmp119, tmp118
+ 3204 0101 4801D9   		addq	%rbx, %rcx	# tmp82, tmp120
+ 3205 0104 4889D0   		movq	%rdx, %rax	# tmp118, tmp122
+ 3206 0107 48C1E002 		salq	$2, %rax	#, tmp122
+ 3207 010b 4801D0   		addq	%rdx, %rax	# tmp118, tmp122
+ 3208 010e 48C1E002 		salq	$2, %rax	#, tmp123
+ 3209 0112 4801C8   		addq	%rcx, %rax	# tmp120, tmp124
+ 3210 0115 488B10   		movq	(%rax), %rdx	# memory_management_struct.e820[i_31].address, _6
+ 3211              	# memory.c:45: 		memory_management_struct.e820[i].address+=p->address;
+ 3212              		.loc 1 45 46
+ 3213 0118 488B45D8 		movq	-40(%rbp), %rax	# p, tmp125
+ 3214 011c 488B00   		movq	(%rax), %rax	# p_30->address, _7
+ 3215              	# memory.c:45: 		memory_management_struct.e820[i].address+=p->address;
+ 3216              		.loc 1 45 43
+ 3217 011f 488D0C02 		leaq	(%rdx,%rax), %rcx	#, _8
+ 3218 0123 48BE0000 		movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp126
  3218      00000000 
  3218      0000
- 3219 012f 8B45D4   		movl	-44(%rbp), %eax	# i, tmp128
- 3220 0132 4863D0   		movslq	%eax, %rdx	# tmp128, tmp127
- 3221 0135 4801DE   		addq	%rbx, %rsi	# tmp82, tmp129
- 3222 0138 4889D0   		movq	%rdx, %rax	# tmp127, tmp131
- 3223 013b 4801C0   		addq	%rax, %rax	# tmp131
- 3224 013e 4801D0   		addq	%rdx, %rax	# tmp127, tmp131
- 3225 0141 48C1E003 		salq	$3, %rax	#, tmp132
- 3226 0145 4801F0   		addq	%rsi, %rax	# tmp129, tmp133
- 3227 0148 488908   		movq	%rcx, (%rax)	# _8, memory_management_struct.e820[i_31].address
- 3228              	# memory.c:45: 		memory_management_struct.e820[i].length+=p->length;
-  45:memory.c      **** 		memory_management_struct.e820[i].length+=p->length;
- 3229              		.loc 1 45 35
- 3230 014b 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp134
+ 3219 012d 8B45D4   		movl	-44(%rbp), %eax	# i, tmp128
+ 3220 0130 4863D0   		movslq	%eax, %rdx	# tmp128, tmp127
+ 3221 0133 4801DE   		addq	%rbx, %rsi	# tmp82, tmp129
+ 3222 0136 4889D0   		movq	%rdx, %rax	# tmp127, tmp131
+ 3223 0139 48C1E002 		salq	$2, %rax	#, tmp131
+ 3224 013d 4801D0   		addq	%rdx, %rax	# tmp127, tmp131
+ 3225 0140 48C1E002 		salq	$2, %rax	#, tmp132
+ 3226 0144 4801F0   		addq	%rsi, %rax	# tmp129, tmp133
+ 3227 0147 488908   		movq	%rcx, (%rax)	# _8, memory_management_struct.e820[i_31].address
+ 3228              	# memory.c:46: 		memory_management_struct.e820[i].length+=p->length;
+  46:memory.c      **** 		memory_management_struct.e820[i].length+=p->length;
+ 3229              		.loc 1 46 35
+ 3230 014a 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp134
  3230      00000000 
  3230      0000
- 3231 0155 8B45D4   		movl	-44(%rbp), %eax	# i, tmp136
- 3232 0158 4863D0   		movslq	%eax, %rdx	# tmp136, tmp135
- 3233 015b 4889D0   		movq	%rdx, %rax	# tmp135, tmp137
- 3234 015e 4801C0   		addq	%rax, %rax	# tmp137
+ 3231 0154 8B45D4   		movl	-44(%rbp), %eax	# i, tmp136
+ 3232 0157 4863D0   		movslq	%eax, %rdx	# tmp136, tmp135
+ 3233 015a 4889D0   		movq	%rdx, %rax	# tmp135, tmp137
+ 3234 015d 48C1E002 		salq	$2, %rax	#, tmp137
  3235 0161 4801D0   		addq	%rdx, %rax	# tmp135, tmp137
- 3236 0164 48C1E003 		salq	$3, %rax	#, tmp138
+ 3236 0164 48C1E002 		salq	$2, %rax	#, tmp138
  3237 0168 4801D8   		addq	%rbx, %rax	# tmp82, tmp139
  3238 016b 4801C8   		addq	%rcx, %rax	# tmp134, tmp140
  3239 016e 4883C008 		addq	$8, %rax	#, tmp141
  3240 0172 488B10   		movq	(%rax), %rdx	# memory_management_struct.e820[i_31].length, _9
- 3241              	# memory.c:45: 		memory_management_struct.e820[i].length+=p->length;
- 3242              		.loc 1 45 45
+ 3241              	# memory.c:46: 		memory_management_struct.e820[i].length+=p->length;
+ 3242              		.loc 1 46 45
  3243 0175 488B45D8 		movq	-40(%rbp), %rax	# p, tmp142
  3244 0179 488B4008 		movq	8(%rax), %rax	# p_30->length, _10
- 3245              	# memory.c:45: 		memory_management_struct.e820[i].length+=p->length;
- 3246              		.loc 1 45 42
+ 3245              	# memory.c:46: 		memory_management_struct.e820[i].length+=p->length;
+ 3246              		.loc 1 46 42
  3247 017d 488D0C02 		leaq	(%rdx,%rax), %rcx	#, _11
  3248 0181 48BE0000 		movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp143
  3248      00000000 
@@ -3776,23 +3777,23 @@ GAS LISTING memory.s 			page 1
  3249 018b 8B45D4   		movl	-44(%rbp), %eax	# i, tmp145
  3250 018e 4863D0   		movslq	%eax, %rdx	# tmp145, tmp144
  3251 0191 4889D0   		movq	%rdx, %rax	# tmp144, tmp146
- 3252 0194 4801C0   		addq	%rax, %rax	# tmp146
- 3253 0197 4801D0   		addq	%rdx, %rax	# tmp144, tmp146
+ 3252 0194 48C1E002 		salq	$2, %rax	#, tmp146
 GAS LISTING memory.s 			page 64
 
 
- 3254 019a 48C1E003 		salq	$3, %rax	#, tmp147
- 3255 019e 4801D8   		addq	%rbx, %rax	# tmp82, tmp148
- 3256 01a1 4801F0   		addq	%rsi, %rax	# tmp143, tmp149
- 3257 01a4 4883C008 		addq	$8, %rax	#, tmp150
- 3258 01a8 488908   		movq	%rcx, (%rax)	# _11, memory_management_struct.e820[i_31].length
- 3259              	# memory.c:46: 		memory_management_struct.e820[i].type=p->type;
-  46:memory.c      **** 		memory_management_struct.e820[i].type=p->type;
- 3260              		.loc 1 46 42
- 3261 01ab 488B45D8 		movq	-40(%rbp), %rax	# p, tmp151
- 3262 01af 488B4810 		movq	16(%rax), %rcx	# p_30->type, _12
- 3263              	# memory.c:46: 		memory_management_struct.e820[i].type=p->type;
- 3264              		.loc 1 46 40
+ 3253 0198 4801D0   		addq	%rdx, %rax	# tmp144, tmp146
+ 3254 019b 48C1E002 		salq	$2, %rax	#, tmp147
+ 3255 019f 4801D8   		addq	%rbx, %rax	# tmp82, tmp148
+ 3256 01a2 4801F0   		addq	%rsi, %rax	# tmp143, tmp149
+ 3257 01a5 4883C008 		addq	$8, %rax	#, tmp150
+ 3258 01a9 488908   		movq	%rcx, (%rax)	# _11, memory_management_struct.e820[i_31].length
+ 3259              	# memory.c:47: 		memory_management_struct.e820[i].type=p->type;
+  47:memory.c      **** 		memory_management_struct.e820[i].type=p->type;
+ 3260              		.loc 1 47 42
+ 3261 01ac 488B45D8 		movq	-40(%rbp), %rax	# p, tmp151
+ 3262 01b0 8B4810   		movl	16(%rax), %ecx	# p_30->type, _12
+ 3263              	# memory.c:47: 		memory_management_struct.e820[i].type=p->type;
+ 3264              		.loc 1 47 40
  3265 01b3 48BE0000 		movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp152
  3265      00000000 
  3265      0000
@@ -3800,254 +3801,254 @@ GAS LISTING memory.s 			page 1
  3267 01c0 4863D0   		movslq	%eax, %rdx	# tmp154, tmp153
  3268 01c3 4801DE   		addq	%rbx, %rsi	# tmp82, tmp155
  3269 01c6 4889D0   		movq	%rdx, %rax	# tmp153, tmp156
- 3270 01c9 4801C0   		addq	%rax, %rax	# tmp156
- 3271 01cc 4801D0   		addq	%rdx, %rax	# tmp153, tmp156
- 3272 01cf 48C1E003 		salq	$3, %rax	#, tmp157
- 3273 01d3 4801F0   		addq	%rsi, %rax	# tmp155, tmp158
- 3274 01d6 4883C010 		addq	$16, %rax	#, tmp159
- 3275 01da 488908   		movq	%rcx, (%rax)	# _12, memory_management_struct.e820[i_31].type
- 3276              	# memory.c:47: 		memory_management_struct.e820_length =i;
-  47:memory.c      **** 		memory_management_struct.e820_length =i;
- 3277              		.loc 1 47 40
+ 3270 01c9 48C1E002 		salq	$2, %rax	#, tmp156
+ 3271 01cd 4801D0   		addq	%rdx, %rax	# tmp153, tmp156
+ 3272 01d0 48C1E002 		salq	$2, %rax	#, tmp157
+ 3273 01d4 4801F0   		addq	%rsi, %rax	# tmp155, tmp158
+ 3274 01d7 4883C010 		addq	$16, %rax	#, tmp159
+ 3275 01db 8908     		movl	%ecx, (%rax)	# _12, memory_management_struct.e820[i_31].type
+ 3276              	# memory.c:48: 		memory_management_struct.e820_length =i;
+  48:memory.c      **** 		memory_management_struct.e820_length =i;
+ 3277              		.loc 1 48 40
  3278 01dd 8B45D4   		movl	-44(%rbp), %eax	# i, tmp160
  3279 01e0 4898     		cltq
  3280 01e2 48BA0000 		movabsq	$memory_management_struct@GOTOFF, %rdx	#, tmp161
  3280      00000000 
  3280      0000
- 3281 01ec 48898413 		movq	%rax, 768(%rbx,%rdx)	# _13, memory_management_struct.e820_length
- 3281      00030000 
- 3282              	# memory.c:48: 		p++;
-  48:memory.c      **** 		p++;
- 3283              		.loc 1 48 4
- 3284 01f4 488345D8 		addq	$24, -40(%rbp)	#, p
- 3284      18
- 3285              	# memory.c:49: 		if(p->type >4){
-  49:memory.c      **** 		if(p->type >4){
- 3286              		.loc 1 49 7
+ 3281 01ec 48898413 		movq	%rax, 640(%rbx,%rdx)	# _13, memory_management_struct.e820_length
+ 3281      80020000 
+ 3282              	# memory.c:49: 		p++;
+  49:memory.c      **** 		p++;
+ 3283              		.loc 1 49 4
+ 3284 01f4 488345D8 		addq	$20, -40(%rbp)	#, p
+ 3284      14
+ 3285              	# memory.c:50: 		if(p->type >4){
+  50:memory.c      **** 		if(p->type >4){
+ 3286              		.loc 1 50 7
  3287 01f9 488B45D8 		movq	-40(%rbp), %rax	# p, tmp162
- 3288 01fd 488B4010 		movq	16(%rax), %rax	# p_47->type, _14
- 3289              	# memory.c:49: 		if(p->type >4){
- 3290              		.loc 1 49 5
- 3291 0201 4883F804 		cmpq	$4, %rax	#, _14
- 3292 0205 7710     		ja	.L12	#,
+ 3288 01fd 8B4010   		movl	16(%rax), %eax	# p_47->type, _14
+ 3289              	# memory.c:50: 		if(p->type >4){
+ 3290              		.loc 1 50 5
+ 3291 0200 83F804   		cmpl	$4, %eax	#, _14
+ 3292 0203 7710     		ja	.L12	#,
  3293              	.LBE3:
- 3294              	# memory.c:36: 	for (int i = 0; i < 32; i++)
-  36:memory.c      **** 	{
- 3295              		.loc 1 36 27 discriminator 2
- 3296 0207 8345D401 		addl	$1, -44(%rbp)	#, i
+ 3294              	# memory.c:37: 	for (int i = 0; i < 32; i++)
+  37:memory.c      **** 	{
+ 3295              		.loc 1 37 27 discriminator 2
+ 3296 0205 8345D401 		addl	$1, -44(%rbp)	#, i
  3297              	.L2:
- 3298              	# memory.c:36: 	for (int i = 0; i < 32; i++)
-  36:memory.c      **** 	{
+ 3298              	# memory.c:37: 	for (int i = 0; i < 32; i++)
 GAS LISTING memory.s 			page 65
 
 
- 3299              		.loc 1 36 20 discriminator 1
- 3300 020b 837DD41F 		cmpl	$31, -44(%rbp)	#, i
- 3301 020f 0F8E6AFE 		jle	.L6	#,
+  37:memory.c      **** 	{
+ 3299              		.loc 1 37 20 discriminator 1
+ 3300 0209 837DD41F 		cmpl	$31, -44(%rbp)	#, i
+ 3301 020d 0F8E6CFE 		jle	.L6	#,
  3301      FFFF
- 3302 0215 EB01     		jmp	.L5	#
+ 3302 0213 EB01     		jmp	.L5	#
  3303              	.L12:
  3304              	.LBB4:
- 3305              	# memory.c:50: 			break;
-  50:memory.c      **** 			break;
- 3306              		.loc 1 50 4
- 3307 0217 90       		nop	
+ 3305              	# memory.c:51: 			break;
+  51:memory.c      **** 			break;
+ 3306              		.loc 1 51 4
+ 3307 0215 90       		nop	
  3308              	.L5:
  3309              	.LBE4:
  3310              	.LBE2:
- 3311              	# memory.c:53: 	color_printk(ORANGE,BLACK,"OS Can Used Total RAM:%#018lx\n",TotalMem);
-  51:memory.c      **** 		}
-  52:memory.c      **** 	}
-  53:memory.c      **** 	color_printk(ORANGE,BLACK,"OS Can Used Total RAM:%#018lx\n",TotalMem);
- 3312              		.loc 1 53 2
- 3313 0218 488B45E0 		movq	-32(%rbp), %rax	# TotalMem, tmp163
- 3314 021c 4889C1   		movq	%rax, %rcx	# tmp163,
- 3315 021f 48B80000 		movabsq	$.LC2@GOTOFF, %rax	#, tmp165
+ 3311              	# memory.c:54: 	color_printk(ORANGE,BLACK,"OS Can Used Total RAM:%#018lx\n",TotalMem);
+  52:memory.c      **** 		}
+  53:memory.c      **** 	}
+  54:memory.c      **** 	color_printk(ORANGE,BLACK,"OS Can Used Total RAM:%#018lx\n",TotalMem);
+ 3312              		.loc 1 54 2
+ 3313 0216 488B45E0 		movq	-32(%rbp), %rax	# TotalMem, tmp163
+ 3314 021a 4889C1   		movq	%rax, %rcx	# tmp163,
+ 3315 021d 48B80000 		movabsq	$.LC2@GOTOFF, %rax	#, tmp165
  3315      00000000 
  3315      0000
- 3316 0229 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp164
- 3317 022d 4889C2   		movq	%rax, %rdx	# tmp164,
- 3318 0230 BE000000 		movl	$0, %esi	#,
+ 3316 0227 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp164
+ 3317 022b 4889C2   		movq	%rax, %rdx	# tmp164,
+ 3318 022e BE000000 		movl	$0, %esi	#,
  3318      00
- 3319 0235 BF0080FF 		movl	$16744448, %edi	#,
+ 3319 0233 BF0080FF 		movl	$16744448, %edi	#,
  3319      00
- 3320 023a 4989DF   		movq	%rbx, %r15	# tmp82,
- 3321 023d B8000000 		movl	$0, %eax	#,
+ 3320 0238 4989DF   		movq	%rbx, %r15	# tmp82,
+ 3321 023b B8000000 		movl	$0, %eax	#,
  3321      00
- 3322 0242 49B80000 		movabsq	$color_printk@PLTOFF, %r8	#, tmp166
+ 3322 0240 49B80000 		movabsq	$color_printk@PLTOFF, %r8	#, tmp166
  3322      00000000 
  3322      0000
- 3323 024c 4901D8   		addq	%rbx, %r8	# tmp82, tmp166
- 3324 024f 41FFD0   		call	*%r8	# tmp166
+ 3323 024a 4901D8   		addq	%rbx, %r8	# tmp82, tmp166
+ 3324 024d 41FFD0   		call	*%r8	# tmp166
  3325              	.LVL2:
- 3326              	# memory.c:54: 	TotalMem=0;
-  54:memory.c      **** 	TotalMem=0;
- 3327              		.loc 1 54 10
- 3328 0252 48C745E0 		movq	$0, -32(%rbp)	#, TotalMem
+ 3326              	# memory.c:55: 	TotalMem=0;
+  55:memory.c      **** 	TotalMem=0;
+ 3327              		.loc 1 55 10
+ 3328 0250 48C745E0 		movq	$0, -32(%rbp)	#, TotalMem
  3328      00000000 
- 3329              	# memory.c:55: 	for(i=0;i<=memory_management_struct.e820_length;i++){
-  55:memory.c      **** 	for(i=0;i<=memory_management_struct.e820_length;i++){
- 3330              		.loc 1 55 7
- 3331 025a C745EC00 		movl	$0, -20(%rbp)	#, i
+ 3329              	# memory.c:56: 	for(i=0;i<=memory_management_struct.e820_length;i++){
+  56:memory.c      **** 	for(i=0;i<=memory_management_struct.e820_length;i++){
+ 3330              		.loc 1 56 7
+ 3331 0258 C745EC00 		movl	$0, -20(%rbp)	#, i
  3331      000000
- 3332              	# memory.c:55: 	for(i=0;i<=memory_management_struct.e820_length;i++){
- 3333              		.loc 1 55 2
- 3334 0261 E9EB0000 		jmp	.L7	#
+ 3332              	# memory.c:56: 	for(i=0;i<=memory_management_struct.e820_length;i++){
+ 3333              		.loc 1 56 2
+ 3334 025f E9ED0000 		jmp	.L7	#
  3334      00
  3335              	.L11:
  3336              	.LBB5:
- 3337              	# memory.c:57: 		if(memory_management_struct.e820[i].type!=1){
-  56:memory.c      **** 		unsigned long start,end;
+ 3337              	# memory.c:58: 		if(memory_management_struct.e820[i].type!=1){
 GAS LISTING memory.s 			page 66
 
 
-  57:memory.c      **** 		if(memory_management_struct.e820[i].type!=1){
- 3338              		.loc 1 57 38
- 3339 0266 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp167
+  57:memory.c      **** 		unsigned long start,end;
+  58:memory.c      **** 		if(memory_management_struct.e820[i].type!=1){
+ 3338              		.loc 1 58 38
+ 3339 0264 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp167
  3339      00000000 
  3339      0000
- 3340 0270 8B45EC   		movl	-20(%rbp), %eax	# i, tmp169
- 3341 0273 4863D0   		movslq	%eax, %rdx	# tmp169, tmp168
- 3342 0276 4801D9   		addq	%rbx, %rcx	# tmp82, tmp170
- 3343 0279 4889D0   		movq	%rdx, %rax	# tmp168, tmp171
- 3344 027c 4801C0   		addq	%rax, %rax	# tmp171
- 3345 027f 4801D0   		addq	%rdx, %rax	# tmp168, tmp171
- 3346 0282 48C1E003 		salq	$3, %rax	#, tmp172
- 3347 0286 4801C8   		addq	%rcx, %rax	# tmp170, tmp173
- 3348 0289 4883C010 		addq	$16, %rax	#, tmp174
- 3349 028d 488B00   		movq	(%rax), %rax	# memory_management_struct.e820[i_24].type, _15
- 3350              	# memory.c:57: 		if(memory_management_struct.e820[i].type!=1){
- 3351              		.loc 1 57 5
- 3352 0290 4883F801 		cmpq	$1, %rax	#, _15
- 3353 0294 0F85AF00 		jne	.L13	#,
+ 3340 026e 8B45EC   		movl	-20(%rbp), %eax	# i, tmp169
+ 3341 0271 4863D0   		movslq	%eax, %rdx	# tmp169, tmp168
+ 3342 0274 4801D9   		addq	%rbx, %rcx	# tmp82, tmp170
+ 3343 0277 4889D0   		movq	%rdx, %rax	# tmp168, tmp171
+ 3344 027a 48C1E002 		salq	$2, %rax	#, tmp171
+ 3345 027e 4801D0   		addq	%rdx, %rax	# tmp168, tmp171
+ 3346 0281 48C1E002 		salq	$2, %rax	#, tmp172
+ 3347 0285 4801C8   		addq	%rcx, %rax	# tmp170, tmp173
+ 3348 0288 4883C010 		addq	$16, %rax	#, tmp174
+ 3349 028c 8B00     		movl	(%rax), %eax	# memory_management_struct.e820[i_24].type, _15
+ 3350              	# memory.c:58: 		if(memory_management_struct.e820[i].type!=1){
+ 3351              		.loc 1 58 5
+ 3352 028e 83F801   		cmpl	$1, %eax	#, _15
+ 3353 0291 0F85B200 		jne	.L13	#,
  3353      0000
- 3354              	# memory.c:60: 		start=PAGE_2M_ALIGN(memory_management_struct.e820[i].address);
-  58:memory.c      **** 			continue;
-  59:memory.c      **** 		}
-  60:memory.c      **** 		start=PAGE_2M_ALIGN(memory_management_struct.e820[i].address);
- 3355              		.loc 1 60 9
- 3356 029a 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp175
+ 3354              	# memory.c:61: 		start=PAGE_2M_ALIGN(memory_management_struct.e820[i].address);
+  59:memory.c      **** 			continue;
+  60:memory.c      **** 		}
+  61:memory.c      **** 		start=PAGE_2M_ALIGN(memory_management_struct.e820[i].address);
+ 3355              		.loc 1 61 9
+ 3356 0297 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp175
  3356      00000000 
  3356      0000
- 3357 02a4 8B45EC   		movl	-20(%rbp), %eax	# i, tmp177
- 3358 02a7 4863D0   		movslq	%eax, %rdx	# tmp177, tmp176
- 3359 02aa 4801D9   		addq	%rbx, %rcx	# tmp82, tmp178
- 3360 02ad 4889D0   		movq	%rdx, %rax	# tmp176, tmp180
- 3361 02b0 4801C0   		addq	%rax, %rax	# tmp180
- 3362 02b3 4801D0   		addq	%rdx, %rax	# tmp176, tmp180
- 3363 02b6 48C1E003 		salq	$3, %rax	#, tmp181
- 3364 02ba 4801C8   		addq	%rcx, %rax	# tmp178, tmp182
- 3365 02bd 488B00   		movq	(%rax), %rax	# memory_management_struct.e820[i_24].address, _16
- 3366 02c0 4805FFFF 		addq	$2097151, %rax	#, _17
+ 3357 02a1 8B45EC   		movl	-20(%rbp), %eax	# i, tmp177
+ 3358 02a4 4863D0   		movslq	%eax, %rdx	# tmp177, tmp176
+ 3359 02a7 4801D9   		addq	%rbx, %rcx	# tmp82, tmp178
+ 3360 02aa 4889D0   		movq	%rdx, %rax	# tmp176, tmp180
+ 3361 02ad 48C1E002 		salq	$2, %rax	#, tmp180
+ 3362 02b1 4801D0   		addq	%rdx, %rax	# tmp176, tmp180
+ 3363 02b4 48C1E002 		salq	$2, %rax	#, tmp181
+ 3364 02b8 4801C8   		addq	%rcx, %rax	# tmp178, tmp182
+ 3365 02bb 488B00   		movq	(%rax), %rax	# memory_management_struct.e820[i_24].address, _16
+ 3366 02be 4805FFFF 		addq	$2097151, %rax	#, _17
  3366      1F00
- 3367              	# memory.c:60: 		start=PAGE_2M_ALIGN(memory_management_struct.e820[i].address);
- 3368              		.loc 1 60 8
- 3369 02c6 48250000 		andq	$-2097152, %rax	#, tmp183
+ 3367              	# memory.c:61: 		start=PAGE_2M_ALIGN(memory_management_struct.e820[i].address);
+ 3368              		.loc 1 61 8
+ 3369 02c4 48250000 		andq	$-2097152, %rax	#, tmp183
  3369      E0FF
- 3370 02cc 488945C0 		movq	%rax, -64(%rbp)	# tmp183, start
- 3371              	# memory.c:61: 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].le
-  61:memory.c      **** 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].length)>>PAGE_2M_
- 3372              		.loc 1 61 41
- 3373 02d0 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp184
+ 3370 02ca 488945C0 		movq	%rax, -64(%rbp)	# tmp183, start
+ 3371              	# memory.c:62: 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].le
+  62:memory.c      **** 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].length)>>PAGE_2M_
+ 3372              		.loc 1 62 41
+ 3373 02ce 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp184
  3373      00000000 
  3373      0000
- 3374 02da 8B45EC   		movl	-20(%rbp), %eax	# i, tmp186
- 3375 02dd 4863D0   		movslq	%eax, %rdx	# tmp186, tmp185
- 3376 02e0 4801D9   		addq	%rbx, %rcx	# tmp82, tmp187
- 3377 02e3 4889D0   		movq	%rdx, %rax	# tmp185, tmp189
- 3378 02e6 4801C0   		addq	%rax, %rax	# tmp189
- 3379 02e9 4801D0   		addq	%rdx, %rax	# tmp185, tmp189
- 3380 02ec 48C1E003 		salq	$3, %rax	#, tmp190
+ 3374 02d8 8B45EC   		movl	-20(%rbp), %eax	# i, tmp186
+ 3375 02db 4863D0   		movslq	%eax, %rdx	# tmp186, tmp185
+ 3376 02de 4801D9   		addq	%rbx, %rcx	# tmp82, tmp187
+ 3377 02e1 4889D0   		movq	%rdx, %rax	# tmp185, tmp189
+ 3378 02e4 48C1E002 		salq	$2, %rax	#, tmp189
+ 3379 02e8 4801D0   		addq	%rdx, %rax	# tmp185, tmp189
 GAS LISTING memory.s 			page 67
 
 
- 3381 02f0 4801C8   		addq	%rcx, %rax	# tmp187, tmp191
- 3382 02f3 488B08   		movq	(%rax), %rcx	# memory_management_struct.e820[i_24].address, _18
- 3383              	# memory.c:61: 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].le
- 3384              		.loc 1 61 82
- 3385 02f6 48BE0000 		movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp192
+ 3380 02eb 48C1E002 		salq	$2, %rax	#, tmp190
+ 3381 02ef 4801C8   		addq	%rcx, %rax	# tmp187, tmp191
+ 3382 02f2 488B08   		movq	(%rax), %rcx	# memory_management_struct.e820[i_24].address, _18
+ 3383              	# memory.c:62: 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].le
+ 3384              		.loc 1 62 82
+ 3385 02f5 48BE0000 		movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp192
  3385      00000000 
  3385      0000
- 3386 0300 8B45EC   		movl	-20(%rbp), %eax	# i, tmp194
- 3387 0303 4863D0   		movslq	%eax, %rdx	# tmp194, tmp193
- 3388 0306 4889D0   		movq	%rdx, %rax	# tmp193, tmp195
- 3389 0309 4801C0   		addq	%rax, %rax	# tmp195
+ 3386 02ff 8B45EC   		movl	-20(%rbp), %eax	# i, tmp194
+ 3387 0302 4863D0   		movslq	%eax, %rdx	# tmp194, tmp193
+ 3388 0305 4889D0   		movq	%rdx, %rax	# tmp193, tmp195
+ 3389 0308 48C1E002 		salq	$2, %rax	#, tmp195
  3390 030c 4801D0   		addq	%rdx, %rax	# tmp193, tmp195
- 3391 030f 48C1E003 		salq	$3, %rax	#, tmp196
+ 3391 030f 48C1E002 		salq	$2, %rax	#, tmp196
  3392 0313 4801D8   		addq	%rbx, %rax	# tmp82, tmp197
  3393 0316 4801F0   		addq	%rsi, %rax	# tmp192, tmp198
  3394 0319 4883C008 		addq	$8, %rax	#, tmp199
  3395 031d 488B00   		movq	(%rax), %rax	# memory_management_struct.e820[i_24].length, _19
- 3396              	# memory.c:61: 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].le
- 3397              		.loc 1 61 49
+ 3396              	# memory.c:62: 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].le
+ 3397              		.loc 1 62 49
  3398 0320 4801C8   		addq	%rcx, %rax	# _18, _20
- 3399              	# memory.c:61: 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].le
- 3400              		.loc 1 61 6
+ 3399              	# memory.c:62: 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].le
+ 3400              		.loc 1 62 6
  3401 0323 48250000 		andq	$-2097152, %rax	#, tmp200
  3401      E0FF
  3402 0329 488945B8 		movq	%rax, -72(%rbp)	# tmp200, end
- 3403              	# memory.c:62: 		if(end<=start){
-  62:memory.c      **** 		if(end<=start){
- 3404              		.loc 1 62 5
+ 3403              	# memory.c:63: 		if(end<=start){
+  63:memory.c      **** 		if(end<=start){
+ 3404              		.loc 1 63 5
  3405 032d 488B45B8 		movq	-72(%rbp), %rax	# end, tmp201
  3406 0331 483945C0 		cmpq	%rax, -64(%rbp)	# tmp201, start
  3407 0335 7315     		jnb	.L14	#,
- 3408              	# memory.c:65: 		TotalMem=(end-start)>>PAGE_2M_SHIFT;
-  63:memory.c      **** 			continue;
-  64:memory.c      **** 		}
-  65:memory.c      **** 		TotalMem=(end-start)>>PAGE_2M_SHIFT;
- 3409              		.loc 1 65 16
+ 3408              	# memory.c:66: 		TotalMem=(end-start)>>PAGE_2M_SHIFT;
+  64:memory.c      **** 			continue;
+  65:memory.c      **** 		}
+  66:memory.c      **** 		TotalMem=(end-start)>>PAGE_2M_SHIFT;
+ 3409              		.loc 1 66 16
  3410 0337 488B45B8 		movq	-72(%rbp), %rax	# end, tmp202
  3411 033b 482B45C0 		subq	-64(%rbp), %rax	# start, _21
- 3412              	# memory.c:65: 		TotalMem=(end-start)>>PAGE_2M_SHIFT;
- 3413              		.loc 1 65 11
+ 3412              	# memory.c:66: 		TotalMem=(end-start)>>PAGE_2M_SHIFT;
+ 3413              		.loc 1 66 11
  3414 033f 48C1E815 		shrq	$21, %rax	#, tmp203
  3415 0343 488945E0 		movq	%rax, -32(%rbp)	# tmp203, TotalMem
  3416 0347 EB04     		jmp	.L9	#
  3417              	.L13:
- 3418              	# memory.c:58: 			continue;
-  58:memory.c      **** 		}
- 3419              		.loc 1 58 4
+ 3418              	# memory.c:59: 			continue;
+  59:memory.c      **** 		}
+ 3419              		.loc 1 59 4
  3420 0349 90       		nop	
  3421 034a EB01     		jmp	.L9	#
  3422              	.L14:
- 3423              	# memory.c:63: 			continue;
-  63:memory.c      **** 			continue;
- 3424              		.loc 1 63 4
+ 3423              	# memory.c:64: 			continue;
+  64:memory.c      **** 			continue;
+ 3424              		.loc 1 64 4
  3425 034c 90       		nop	
  3426              	.L9:
  3427              	.LBE5:
- 3428              	# memory.c:55: 	for(i=0;i<=memory_management_struct.e820_length;i++){
 GAS LISTING memory.s 			page 68
 
 
-  55:memory.c      **** 		unsigned long start,end;
- 3429              		.loc 1 55 51 discriminator 2
+ 3428              	# memory.c:56: 	for(i=0;i<=memory_management_struct.e820_length;i++){
+  56:memory.c      **** 		unsigned long start,end;
+ 3429              		.loc 1 56 51 discriminator 2
  3430 034d 8345EC01 		addl	$1, -20(%rbp)	#, i
  3431              	.L7:
- 3432              	# memory.c:55: 	for(i=0;i<=memory_management_struct.e820_length;i++){
-  55:memory.c      **** 		unsigned long start,end;
- 3433              		.loc 1 55 11 discriminator 1
+ 3432              	# memory.c:56: 	for(i=0;i<=memory_management_struct.e820_length;i++){
+  56:memory.c      **** 		unsigned long start,end;
+ 3433              		.loc 1 56 11 discriminator 1
  3434 0351 8B45EC   		movl	-20(%rbp), %eax	# i, tmp204
  3435 0354 4898     		cltq
- 3436              	# memory.c:55: 	for(i=0;i<=memory_management_struct.e820_length;i++){
-  55:memory.c      **** 		unsigned long start,end;
- 3437              		.loc 1 55 37 discriminator 1
+ 3436              	# memory.c:56: 	for(i=0;i<=memory_management_struct.e820_length;i++){
+  56:memory.c      **** 		unsigned long start,end;
+ 3437              		.loc 1 56 37 discriminator 1
  3438 0356 48BA0000 		movabsq	$memory_management_struct@GOTOFF, %rdx	#, tmp205
  3438      00000000 
  3438      0000
- 3439 0360 488B9413 		movq	768(%rbx,%rdx), %rdx	# memory_management_struct.e820_length, _23
- 3439      00030000 
- 3440              	# memory.c:55: 	for(i=0;i<=memory_management_struct.e820_length;i++){
-  55:memory.c      **** 		unsigned long start,end;
- 3441              		.loc 1 55 11 discriminator 1
+ 3439 0360 488B9413 		movq	640(%rbx,%rdx), %rdx	# memory_management_struct.e820_length, _23
+ 3439      80020000 
+ 3440              	# memory.c:56: 	for(i=0;i<=memory_management_struct.e820_length;i++){
+  56:memory.c      **** 		unsigned long start,end;
+ 3441              		.loc 1 56 11 discriminator 1
  3442 0368 4839C2   		cmpq	%rax, %rdx	# _22, _23
- 3443 036b 0F83F5FE 		jnb	.L11	#,
+ 3443 036b 0F83F3FE 		jnb	.L11	#,
  3443      FFFF
- 3444              	# memory.c:67: 	color_printk(ORANGE,BLACK,"OS Can Used Total 2M PAGEs:%#010x=%010d\n",TotalMem,Tota
-  66:memory.c      **** 	}
-  67:memory.c      **** 	color_printk(ORANGE,BLACK,"OS Can Used Total 2M PAGEs:%#010x=%010d\n",TotalMem,TotalMem);
- 3445              		.loc 1 67 2
+ 3444              	# memory.c:68: 	color_printk(ORANGE,BLACK,"OS Can Used Total 2M PAGEs:%#010x=%010d\n",TotalMem,Tota
+  67:memory.c      **** 	}
+  68:memory.c      **** 	color_printk(ORANGE,BLACK,"OS Can Used Total 2M PAGEs:%#010x=%010d\n",TotalMem,TotalMem);
+ 3445              		.loc 1 68 2
  3446 0371 488B55E0 		movq	-32(%rbp), %rdx	# TotalMem, tmp206
  3447 0375 488B45E0 		movq	-32(%rbp), %rax	# TotalMem, tmp207
  3448 0379 4989D0   		movq	%rdx, %r8	# tmp206,
@@ -4070,17 +4071,17 @@ GAS LISTING memory.s 			page 1
  3458 03ac 4901D9   		addq	%rbx, %r9	# tmp82, tmp210
  3459 03af 41FFD1   		call	*%r9	# tmp210
  3460              	.LVL3:
- 3461              	# memory.c:68: }
-  68:memory.c      **** }
- 3462              		.loc 1 68 1
+ 3461              	# memory.c:69: }
+  69:memory.c      **** }
+ 3462              		.loc 1 69 1
  3463 03b2 90       		nop	
  3464 03b3 4883C440 		addq	$64, %rsp	#,
  3465 03b7 5B       		popq	%rbx	#
  3466 03b8 415F     		popq	%r15	#
- 3467 03ba 5D       		popq	%rbp	#
 GAS LISTING memory.s 			page 69
 
 
+ 3467 03ba 5D       		popq	%rbp	#
  3468              		.cfi_def_cfa 7, 8
  3469 03bb C3       		ret	
  3470              		.cfi_endproc
@@ -4113,7 +4114,7 @@ GAS LISTING memory.s 			page 1
  3495 0031 00000000 		.long	.LASF5
  3496 0035 09       		.uleb128 0x9
  3497 0036 00000000 		.long	.LASF7
- 3498 003a 18       		.byte	0x18
+ 3498 003a 14       		.byte	0x14
  3499 003b 02       		.byte	0x2
  3500 003c 56       		.byte	0x56
  3501 003d 69000000 		.long	0x69
@@ -4135,12 +4136,12 @@ GAS LISTING memory.s 			page 1
  3517 005c 00000000 		.long	.LASF4
  3518 0060 02       		.byte	0x2
  3519 0061 5A       		.byte	0x5a
- 3520 0062 13       		.byte	0x13
- 3521 0063 69000000 		.long	0x69
- 3522 0067 10       		.byte	0x10
+ 3520 0062 12       		.byte	0x12
+ 3521 0063 2E000000 		.long	0x2e
 GAS LISTING memory.s 			page 70
 
 
+ 3522 0067 10       		.byte	0x10
  3523 0068 00       		.byte	0
  3524 0069 03       		.uleb128 0x3
  3525 006a 08       		.byte	0x8
@@ -4148,7 +4149,7 @@ GAS LISTING memory.s 			page 1
  3527 006c 00000000 		.long	.LASF6
  3528 0070 0F       		.uleb128 0xf
  3529 0071 00000000 		.long	.LASF8
- 3530 0075 0803     		.value	0x308
+ 3530 0075 8802     		.value	0x288
  3531 0077 02       		.byte	0x2
  3532 0078 5D       		.byte	0x5d
  3533 0079 08       		.byte	0x8
@@ -4166,7 +4167,7 @@ GAS LISTING memory.s 			page 1
  3545 0091 60       		.byte	0x60
  3546 0092 10       		.byte	0x10
  3547 0093 69000000 		.long	0x69
- 3548 0097 0003     		.value	0x300
+ 3548 0097 8002     		.value	0x280
  3549 0099 00       		.byte	0
  3550 009a 05       		.uleb128 0x5
  3551 009b 35000000 		.long	0x35
@@ -4197,10 +4198,10 @@ GAS LISTING memory.s 			page 1
  3575 00d5 00       		.byte	0
  3576 00d6 03       		.uleb128 0x3
  3577 00d7 01       		.byte	0x1
- 3578 00d8 08       		.byte	0x8
 GAS LISTING memory.s 			page 71
 
 
+ 3578 00d8 08       		.byte	0x8
  3579 00d9 00000000 		.long	.LASF11
  3580 00dd 0A       		.uleb128 0xa
  3581 00de 00000000 		.long	.LASF13
@@ -4257,10 +4258,10 @@ GAS LISTING memory.s 			page 1
  3631 0141 00000000 		.long	.LASF20
  3632 0145 04       		.byte	0x4
  3633 0146 27       		.byte	0x27
- 3634 0147 09       		.byte	0x9
 GAS LISTING memory.s 			page 72
 
 
+ 3634 0147 09       		.byte	0x9
  3635 0148 68010000 		.long	0x168
  3636 014c 14       		.byte	0x14
  3637 014d 01       		.uleb128 0x1
@@ -4317,10 +4318,10 @@ GAS LISTING memory.s 			page 1
  3686      00000000 
  3687 01bb 14       		.uleb128 0x14
  3688 01bc 00000000 		.long	.LASF27
- 3689 01c0 04       		.byte	0x4
 GAS LISTING memory.s 			page 73
 
 
+ 3689 01c0 04       		.byte	0x4
  3690 01c1 3B       		.byte	0x3b
  3691 01c2 05       		.byte	0x5
  3692 01c3 68010000 		.long	0x168
@@ -4338,7 +4339,7 @@ GAS LISTING memory.s 			page 1
  3704 01e1 16       		.uleb128 0x16
  3705 01e2 00000000 		.long	.LASF28
  3706 01e6 01       		.byte	0x1
- 3707 01e7 1D       		.byte	0x1d
+ 3707 01e7 1E       		.byte	0x1e
  3708 01e8 06       		.byte	0x6
  3709 01e9 00000000 		.quad	.LFB34
  3709      00000000 
@@ -4349,7 +4350,7 @@ GAS LISTING memory.s 			page 1
  3713 01fb CF020000 		.long	0x2cf
  3714 01ff 02       		.uleb128 0x2
  3715 0200 6900     		.string	"i"
- 3716 0202 1E       		.byte	0x1e
+ 3716 0202 1F       		.byte	0x1f
  3717 0203 06       		.byte	0x6
  3718 0204 68010000 		.long	0x168
  3719 0208 02       		.uleb128 0x2
@@ -4358,12 +4359,12 @@ GAS LISTING memory.s 			page 1
  3722 020b 17       		.uleb128 0x17
  3723 020c 6A00     		.string	"j"
  3724 020e 01       		.byte	0x1
- 3725 020f 1E       		.byte	0x1e
+ 3725 020f 1F       		.byte	0x1f
  3726 0210 08       		.byte	0x8
  3727 0211 68010000 		.long	0x168
  3728 0215 0C       		.uleb128 0xc
  3729 0216 00000000 		.long	.LASF24
- 3730 021a 20       		.byte	0x20
+ 3730 021a 21       		.byte	0x21
  3731 021b 10       		.byte	0x10
  3732 021c 69000000 		.long	0x69
  3733 0220 02       		.uleb128 0x2
@@ -4371,24 +4372,24 @@ GAS LISTING memory.s 			page 1
  3735 0222 50       		.sleb128 -48
  3736 0223 02       		.uleb128 0x2
  3737 0224 7000     		.string	"p"
- 3738 0226 21       		.byte	0x21
+ 3738 0226 22       		.byte	0x22
  3739 0227 0F       		.byte	0xf
  3740 0228 CF020000 		.long	0x2cf
  3741 022c 02       		.uleb128 0x2
  3742 022d 91       		.byte	0x91
  3743 022e 48       		.sleb128 -56
- 3744 022f 0D       		.uleb128 0xd
 GAS LISTING memory.s 			page 74
 
 
+ 3744 022f 0D       		.uleb128 0xd
  3745 0230 00000000 		.quad	.LBB2
  3745      00000000 
- 3746 0238 A5010000 		.quad	.LBE2-.LBB2
+ 3746 0238 A3010000 		.quad	.LBE2-.LBB2
  3746      00000000 
  3747 0240 73020000 		.long	0x273
  3748 0244 02       		.uleb128 0x2
  3749 0245 6900     		.string	"i"
- 3750 0247 24       		.byte	0x24
+ 3750 0247 25       		.byte	0x25
  3751 0248 0B       		.byte	0xb
  3752 0249 68010000 		.long	0x168
  3753 024d 02       		.uleb128 0x2
@@ -4398,7 +4399,7 @@ GAS LISTING memory.s 			page 1
  3757 0251 00000000 		.long	.LLRL0
  3758 0255 02       		.uleb128 0x2
  3759 0256 746D7000 		.string	"tmp"
- 3760 025a 28       		.byte	0x28
+ 3760 025a 29       		.byte	0x29
  3761 025b 11       		.byte	0x11
  3762 025c 69000000 		.long	0x69
  3763 0260 03       		.uleb128 0x3
@@ -4413,12 +4414,12 @@ GAS LISTING memory.s 			page 1
  3771 0273 0D       		.uleb128 0xd
  3772 0274 00000000 		.quad	.LBB5
  3772      00000000 
- 3773 027c E7000000 		.quad	.LBE5-.LBB5
+ 3773 027c E9000000 		.quad	.LBE5-.LBB5
  3773      00000000 
  3774 0284 A7020000 		.long	0x2a7
  3775 0288 0C       		.uleb128 0xc
  3776 0289 00000000 		.long	.LASF25
- 3777 028d 38       		.byte	0x38
+ 3777 028d 39       		.byte	0x39
  3778 028e 11       		.byte	0x11
  3779 028f 69000000 		.long	0x69
  3780 0293 03       		.uleb128 0x3
@@ -4426,7 +4427,7 @@ GAS LISTING memory.s 			page 1
  3782 0295 B07F     		.sleb128 -80
  3783 0297 02       		.uleb128 0x2
  3784 0298 656E6400 		.string	"end"
- 3785 029c 38       		.byte	0x38
+ 3785 029c 39       		.byte	0x39
  3786 029d 17       		.byte	0x17
  3787 029e 69000000 		.long	0x69
  3788 02a2 03       		.uleb128 0x3
@@ -4437,10 +4438,10 @@ GAS LISTING memory.s 			page 1
  3793 02a8 00000000 		.quad	.LVL0
  3793      00000000 
  3794 02b0 BB010000 		.long	0x1bb
- 3795 02b4 04       		.uleb128 0x4
 GAS LISTING memory.s 			page 75
 
 
+ 3795 02b4 04       		.uleb128 0x4
  3796 02b5 00000000 		.quad	.LVL2
  3796      00000000 
  3797 02bd BB010000 		.long	0x1bb
@@ -4497,10 +4498,10 @@ GAS LISTING memory.s 			page 1
  3847 0028 3E       		.uleb128 0x3e
  3848 0029 0B       		.uleb128 0xb
  3849 002a 03       		.uleb128 0x3
- 3850 002b 0E       		.uleb128 0xe
 GAS LISTING memory.s 			page 76
 
 
+ 3850 002b 0E       		.uleb128 0xe
  3851 002c 00       		.byte	0
  3852 002d 00       		.byte	0
  3853 002e 04       		.uleb128 0x4
@@ -4557,10 +4558,10 @@ GAS LISTING memory.s 			page 1
  3904 0061 3A       		.uleb128 0x3a
  3905 0062 0B       		.uleb128 0xb
  3906 0063 3B       		.uleb128 0x3b
- 3907 0064 0B       		.uleb128 0xb
 GAS LISTING memory.s 			page 77
 
 
+ 3907 0064 0B       		.uleb128 0xb
  3908 0065 39       		.uleb128 0x39
  3909 0066 21       		.uleb128 0x21
  3910 0067 08       		.sleb128 8
@@ -4617,10 +4618,10 @@ GAS LISTING memory.s 			page 1
  3961 009a 01       		.sleb128 1
  3962 009b 3B       		.uleb128 0x3b
  3963 009c 0B       		.uleb128 0xb
- 3964 009d 39       		.uleb128 0x39
 GAS LISTING memory.s 			page 78
 
 
+ 3964 009d 39       		.uleb128 0x39
  3965 009e 0B       		.uleb128 0xb
  3966 009f 49       		.uleb128 0x49
  3967 00a0 13       		.uleb128 0x13
@@ -4677,10 +4678,10 @@ GAS LISTING memory.s 			page 1
  4018 00d3 00       		.byte	0
  4019 00d4 10       		.uleb128 0x10
  4020 00d5 0D       		.uleb128 0xd
- 4021 00d6 00       		.byte	0
 GAS LISTING memory.s 			page 79
 
 
+ 4021 00d6 00       		.byte	0
  4022 00d7 03       		.uleb128 0x3
  4023 00d8 0E       		.uleb128 0xe
  4024 00d9 3A       		.uleb128 0x3a
@@ -4737,10 +4738,10 @@ GAS LISTING memory.s 			page 1
  4075 010c 0B       		.uleb128 0xb
  4076 010d 27       		.uleb128 0x27
  4077 010e 19       		.uleb128 0x19
- 4078 010f 49       		.uleb128 0x49
 GAS LISTING memory.s 			page 80
 
 
+ 4078 010f 49       		.uleb128 0x49
  4079 0110 13       		.uleb128 0x13
  4080 0111 3C       		.uleb128 0x3c
  4081 0112 19       		.uleb128 0x19
@@ -4797,10 +4798,10 @@ GAS LISTING memory.s 			page 1
  4132 0145 0B       		.uleb128 0xb
  4133 0146 01       		.byte	0x1
  4134 0147 55       		.uleb128 0x55
- 4135 0148 17       		.uleb128 0x17
 GAS LISTING memory.s 			page 81
 
 
+ 4135 0148 17       		.uleb128 0x17
  4136 0149 00       		.byte	0
  4137 014a 00       		.byte	0
  4138 014b 00       		.byte	0
@@ -4831,10 +4832,10 @@ GAS LISTING memory.s 			page 1
  4159              	.LLRL0:
  4160 000c 04       		.byte	0x4
  4161 000d 7F       		.uleb128 .LBB3-.Ltext0
- 4162 000e 8704     		.uleb128 .LBE3-.Ltext0
+ 4162 000e 8504     		.uleb128 .LBE3-.Ltext0
  4163 0010 04       		.byte	0x4
- 4164 0011 9704     		.uleb128 .LBB4-.Ltext0
- 4165 0013 9804     		.uleb128 .LBE4-.Ltext0
+ 4164 0011 9504     		.uleb128 .LBB4-.Ltext0
+ 4165 0013 9604     		.uleb128 .LBE4-.Ltext0
  4166 0015 00       		.byte	0
  4167              	.Ldebug_ranges3:
  4168              		.section	.debug_line,"",@progbits
@@ -4857,10 +4858,10 @@ GAS LISTING memory.s 			page 1
  4175              	.LASF19:
  4176 00b7 58436861 		.string	"XCharSize"
  4176      7253697A 
- 4176      6500
 GAS LISTING memory.s 			page 82
 
 
+ 4176      6500
  4177              	.LASF9:
  4178 00c1 65383230 		.string	"e820"
  4178      00
@@ -4917,10 +4918,10 @@ GAS LISTING memory.s 			page 1
  4203              	.LASF2:
  4204 0146 61646472 		.string	"address"
  4204      65737300 
- 4205              	.LASF23:
 GAS LISTING memory.s 			page 83
 
 
+ 4205              	.LASF23:
  4206 014e 63686172 		.string	"char"
  4206      00
  4207              	.LASF28:
@@ -4963,24 +4964,24 @@ GAS LISTING memory.s 			page 1
  4224      746800
  4225              		.section	.debug_line_str,"MS",@progbits,1
  4226              	.LASF1:
- 4227 0000 2F776F72 		.string	"/workspace/myos/kernel"
- 4227      6B737061 
- 4227      63652F6D 
- 4227      796F732F 
- 4227      6B65726E 
+ 4227 0000 2F686F6D 		.string	"/home/student/myos/kernel"
+ 4227      652F7374 
+ 4227      7564656E 
+ 4227      742F6D79 
+ 4227      6F732F6B 
  4228              	.LASF0:
- 4229 0017 6D656D6F 		.string	"memory.c"
+ 4229 001a 6D656D6F 		.string	"memory.c"
  4229      72792E63 
  4229      00
  4230              		.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
- 4231 0020 2F776F72 		.section	.note.GNU-stack,"",@progbits
- 4231      6B737061 
- 4231      63652F6D 
- 4231      796F732F 
- 4231      6B65726E 
+ 4231 0023 2F686F6D 		.section	.note.GNU-stack,"",@progbits
+ 4231      652F7374 
+ 4231      7564656E 
+ 4231      742F6D79 
 GAS LISTING memory.s 			page 84
 
 
+ 4231      6F732F6B 
  4232              		.section	.note.gnu.property,"a"
  4233              		.align 8
  4234 0000 04000000 		.long	1f - 0f
@@ -5004,8 +5005,8 @@ DEFINED SYMBOLS
                             *ABS*:0000000000000000 memory.c
             memory.s:15     .bss:0000000000000000 memory_management_struct
             memory.s:22     .data:0000000000000000 font_ascii
-            memory.s:3082   .bss:0000000000000320 Pos
-            memory.s:3088   .bss:0000000000000360 buf
+            memory.s:3082   .bss:00000000000002a0 Pos
+            memory.s:3088   .bss:00000000000002e0 buf
             memory.s:3106   .text:0000000000000000 init_memory
             memory.s:3092   .rodata:0000000000000000 .LC0
             memory.s:3095   .rodata:0000000000000078 .LC1

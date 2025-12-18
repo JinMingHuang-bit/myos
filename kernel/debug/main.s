@@ -6,7 +6,7 @@
 # options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection
 	.text
 .Ltext0:
-	.file 0 "/workspace/myos/kernel" "main.c"
+	.file 0 "/home/student/myos/kernel" "main.c"
 	.globl	font_ascii
 	.data
 	.align 32
@@ -3207,9 +3207,9 @@ set_tss64:
 	.bss
 	.align 32
 	.type	memory_management_struct, @object
-	.size	memory_management_struct, 776
+	.size	memory_management_struct, 648
 memory_management_struct:
-	.zero	776
+	.zero	648
 	.section	.rodata
 .LC0:
 	.string	"hello\t\t kernel!\n"
@@ -3240,7 +3240,7 @@ Start_Kernel:
 	.cfi_def_cfa_register 6
 	pushq	%r15	#
 	pushq	%rbx	#
-	subq	$800, %rsp	#,
+	subq	$672, %rsp	#,
 	.cfi_offset 15, -24
 	.cfi_offset 3, -32
 .L5:
@@ -3363,9 +3363,9 @@ Start_Kernel:
 .LVL1:
 # main.c:43:     struct  Global_Memory_Descriptor memory_management_struct={{0},0};
 	.loc 2 43 38
-	leaq	-816(%rbp), %rdx	#, tmp108
+	leaq	-688(%rbp), %rdx	#, tmp108
 	movl	$0, %eax	#, tmp109
-	movl	$97, %ecx	#, tmp110
+	movl	$81, %ecx	#, tmp110
 	movq	%rdx, %rdi	# tmp108, tmp108
 	rep stosq
 # main.c:75:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
@@ -3613,7 +3613,7 @@ Start_Kernel:
 	.long	0x137
 	.uleb128 0xb
 	.long	.LASF17
-	.byte	0x18
+	.byte	0x14
 	.byte	0x5
 	.byte	0x56
 	.long	0x187
@@ -3635,13 +3635,13 @@ Start_Kernel:
 	.long	.LASF20
 	.byte	0x5
 	.byte	0x5a
-	.byte	0x13
-	.long	0x2e
+	.byte	0x12
+	.long	0x35
 	.byte	0x10
 	.byte	0
 	.uleb128 0x14
 	.long	.LASF21
-	.value	0x308
+	.value	0x288
 	.byte	0x5
 	.byte	0x5d
 	.byte	0x8
@@ -3659,7 +3659,7 @@ Start_Kernel:
 	.byte	0x60
 	.byte	0x10
 	.long	0x2e
-	.value	0x300
+	.value	0x280
 	.byte	0
 	.uleb128 0x5
 	.long	0x153
@@ -3748,7 +3748,7 @@ Start_Kernel:
 	.long	0x187
 	.uleb128 0x3
 	.byte	0x91
-	.sleb128 -832
+	.sleb128 -704
 	.uleb128 0x3
 	.quad	.LVL0
 	.long	0x2d9
@@ -4362,10 +4362,10 @@ Start_Kernel:
 .LASF19:
 	.string	"length"
 	.section	.debug_line_str,"MS",@progbits,1
-.LASF1:
-	.string	"/workspace/myos/kernel"
 .LASF0:
 	.string	"main.c"
+.LASF1:
+	.string	"/home/student/myos/kernel"
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"
