@@ -63,7 +63,7 @@ void init_memory(){
 		if(end<=start){
 			continue;
 		}
-		TotalMem=(end-start)>>PAGE_2M_SHIFT;
+		TotalMem+=(end-start)>>PAGE_2M_SHIFT;
 	}
 	color_printk(ORANGE,BLACK,"OS Can Used Total 2M PAGEs:%#010x=%010d\n",TotalMem,TotalMem);
 }
