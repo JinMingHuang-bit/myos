@@ -72,7 +72,7 @@ void Start_Kernel(void)
     //     addr=addr+1;
 
     // }
-    color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
+    color_printk(WHITE,BLACK,"myos kernel 0.01\n");
     color_printk(YELLOW,BLACK,"hello,User\n");
     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
     // i=1/0;

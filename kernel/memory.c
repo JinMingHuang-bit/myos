@@ -53,6 +53,7 @@ void init_memory(){
 	}
 	color_printk(ORANGE,BLACK,"OS Can Used Total RAM:%#018lx\n",TotalMem);
 	TotalMem=0;
+	//计算2M对齐的内存大小,可能需要用<
 	for(i=0;i<=memory_management_struct.e820_length;i++){
 		unsigned long start,end;
 		if(memory_management_struct.e820[i].type!=1){
