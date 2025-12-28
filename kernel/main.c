@@ -26,6 +26,7 @@ void Start_Kernel(void)
     asm volatile("mov %0, %%cr4" : : "r"(cr4));
     
     int *addr=(int *)0xffff800000a00000;
+    //0xffff800000a00000 是一个线性地址
     int i;
     Pos.XResolution=1440;
     Pos.YResolution=900;
@@ -75,6 +76,7 @@ void Start_Kernel(void)
     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
     color_printk(YELLOW,BLACK,"hello,User\n");
     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
+    // 
     // i=1/0;
     /*
     0xffff80000aa00000 是一个高半内核地址（canonical form）
@@ -97,6 +99,7 @@ void Start_Kernel(void)
     
     // i=*(int*)0xffff80000aa00000; 
     init_memory();
+    //0xffff8000001043d4
     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
     // clear_screen(YELLOW,BLACK);
     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
