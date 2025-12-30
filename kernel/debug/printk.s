@@ -6,7 +6,7 @@
 # options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection
 	.text
 .Ltext0:
-	.file 0 "/home/student/myos/kernel" "printk.c"
+	.file 0 "/workspace/myos/kernel" "printk.c"
 	.globl	font_ascii
 	.data
 	.align 32
@@ -3085,7 +3085,7 @@ buf:
 Cstrlen:
 .LFB24:
 	.file 1 "lib.h"
-	.loc 1 527 1
+	.loc 1 560 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -3098,32 +3098,32 @@ Cstrlen:
 	movabsq	$_GLOBAL_OFFSET_TABLE_-.L5, %r11	#,
 	addq	%r11, %rax	#, tmp82
 	movq	%rdi, -24(%rbp)	# String, String
-# lib.h:528:     char *ptr = String;
-	.loc 1 528 11
+# lib.h:561:     char *ptr = String;
+	.loc 1 561 11
 	movq	-24(%rbp), %rax	# String, tmp87
 	movq	%rax, -8(%rbp)	# tmp87, ptr
-# lib.h:531:     while (*ptr != '\0') {
-	.loc 1 531 11
+# lib.h:564:     while (*ptr != '\0') {
+	.loc 1 564 11
 	jmp	.L2	#
 .L3:
-# lib.h:532:         ptr++;
-	.loc 1 532 12
+# lib.h:565:         ptr++;
+	.loc 1 565 12
 	addq	$1, -8(%rbp)	#, ptr
 .L2:
-# lib.h:531:     while (*ptr != '\0') {
-	.loc 1 531 12
+# lib.h:564:     while (*ptr != '\0') {
+	.loc 1 564 12
 	movq	-8(%rbp), %rax	# ptr, tmp88
 	movzbl	(%rax), %eax	# *ptr_3, _1
-# lib.h:531:     while (*ptr != '\0') {
-	.loc 1 531 17
+# lib.h:564:     while (*ptr != '\0') {
+	.loc 1 564 17
 	testb	%al, %al	# _1
 	jne	.L3	#,
-# lib.h:536:     return ptr - String;
-	.loc 1 536 16
+# lib.h:569:     return ptr - String;
+	.loc 1 569 16
 	movq	-8(%rbp), %rax	# ptr, tmp89
 	subq	-24(%rbp), %rax	# String, _2
-# lib.h:537: }
-	.loc 1 537 1
+# lib.h:570: }
+	.loc 1 570 1
 	popq	%rbp	#
 	.cfi_def_cfa 7, 8
 	ret	
@@ -6583,7 +6583,7 @@ vsprintf:
 	.uleb128 0x1f
 	.long	.LASF59
 	.byte	0x1
-	.value	0x20e
+	.value	0x22f
 	.byte	0x13
 	.long	0x143
 	.quad	.LFB24
@@ -6593,7 +6593,7 @@ vsprintf:
 	.uleb128 0x20
 	.long	.LASF53
 	.byte	0x1
-	.value	0x20e
+	.value	0x22f
 	.byte	0x21
 	.long	0x32f
 	.uleb128 0x2
@@ -6602,7 +6602,7 @@ vsprintf:
 	.uleb128 0xe
 	.string	"ptr"
 	.byte	0x1
-	.value	0x210
+	.value	0x231
 	.byte	0xb
 	.long	0x32f
 	.uleb128 0x2
@@ -7236,10 +7236,10 @@ vsprintf:
 .LASF33:
 	.string	"vsprintf"
 	.section	.debug_line_str,"MS",@progbits,1
+.LASF1:
+	.string	"/workspace/myos/kernel"
 .LASF0:
 	.string	"printk.c"
-.LASF1:
-	.string	"/home/student/myos/kernel"
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"

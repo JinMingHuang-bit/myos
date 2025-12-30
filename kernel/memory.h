@@ -94,6 +94,93 @@ struct Global_Memory_Descriptor
 {
 	struct E820 e820[32];
 	unsigned long e820_length;
+
+	unsigned long * bits_map;
+	unsigned long bits_size;
+	unsigned long bits_length;
+
+	struct Page * pages_struct;
+	unsigned long pages_size;
+	unsigned long pages_length;	
+
+	struct Zone * zones_struct;
+	unsigned long zones_size;
+	unsigned long zones_length;
+
+	unsigned long start_code;
+	unsigned long end_code;
+	unsigned long end_data;
+	unsigned long end_brk;
+
+	unsigned long end_of_struct;
+
+};
+/**
+ * @struct Page
+ * @brief 表示物理页帧的结构体
+ * 
+ * @var Page::zone_struct 
+ * 指向所属内存分区的指针
+ * @var Page::PHY_address 
+ * 物理地址（以字节为单位）
+ * @var Page::attribute 
+ * 页属性标志位（如可写、缓存等）
+ * @var Page::reference_count 
+ * 页引用计数（用于共享内存管理）
+ * @var Page::age 
+ * 页年龄（用于页面置换算法）
+ */
+
+/**
+ * @struct Zone
+ * @brief 表示内存分区的结构体
+ */
+struct Page {
+    struct Zone *zone_struct;      // 指向所属内存区域的指针
+    unsigned long PHY_address;     // 页面的物理地址
+    unsigned long attribute;       // 页面属性（只读、可执行等）
+    unsigned long reference_count; // 引用计数（用于共享内存、COW等）
+    unsigned long age;             // 页面年龄（用于页面置换算法如LRU）
+};
+
+/**
+ * @struct Zone
+ * @brief 内存区域描述结构体，用于管理物理内存页
+ * 
+ * @var Zone::pages_group 
+ * 指向该区域页描述符数组的指针
+ * @var Zone::pages_length 
+ * 该区域包含的物理页总数
+ * @var Zone::zone_start_address 
+ * 内存区域的起始物理地址
+ * @var Zone::zone_end_address 
+ * 内存区域的结束物理地址
+ * @var Zone::zone_length 
+ * 内存区域的总长度（字节数）
+ * @var Zone::attribute 
+ * 区域属性标志位
+ * @var Zone::GMD_struct 
+ * 指向全局内存描述符的指针
+ * @var Zone::page_using_count 
+ * 已使用的物理页计数
+ * @var Zone::page_free_count 
+ * 空闲的物理页计数
+ * @var Zone::total_pages_link 
+ * 本区域物理页被引用次数
+ */
+struct Zone{
+	struct Page * pages_group;
+	unsigned long pages_length;
+	unsigned long zone_start_address;
+	unsigned long zone_end_address;
+	unsigned long zone_length;
+	unsigned long attribute;
+
+	struct Global_Memory_Descriptor * GMD_struct;
+	unsigned long page_using_count;
+	unsigned long page_free_count;
+
+	unsigned long total_pages_link;
 };
 
 struct Global_Memory_Descriptor memory_management_struct;

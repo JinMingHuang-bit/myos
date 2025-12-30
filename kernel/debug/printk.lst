@@ -9,7 +9,7 @@ GAS LISTING printk.s 			page 1
    6              	# options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-prote
    7              		.text
    8              	.Ltext0:
-   9              		.file 0 "/home/student/myos/kernel" "printk.c"
+   9              		.file 0 "/workspace/myos/kernel" "printk.c"
   10              		.globl	font_ascii
   11              		.data
   12              		.align 32
@@ -3502,557 +3502,593 @@ GAS LISTING printk.s 			page 1
    2:lib.h         **** #ifndef _LIB_H_
    3:lib.h         **** #define _LIB_H_
    4:lib.h         **** 
-   5:lib.h         **** #define NULL 0
-   6:lib.h         **** /*&(((type *)0)->member)
-   7:lib.h         **** 将地址0强制转换为type*类型
-   8:lib.h         **** 
-   9:lib.h         **** 访问该结构体的member成员
-  10:lib.h         **** 
-  11:lib.h         **** 取该成员的地址
-  12:lib.h         **** 
-  13:lib.h         **** 结果: 得到member在结构体中的偏移量（因为基地址为0）
-  14:lib.h         **** 
-  15:lib.h         ****  (unsigned long)p - (unsigned long)&(((type *)0)->member)
-  16:lib.h         **** 从成员的实际地址中减去该成员在结构体中的偏移量
-  17:lib.h         **** 
-  18:lib.h         **** 结果: 得到整个结构体的起始地址
-  19:lib.h         **** */
-  20:lib.h         **** 
-  21:lib.h         **** // allow interrupt 
-  22:lib.h         **** /*As for memory modification, 
-  23:lib.h         **** Make sure that before executing this sti/cli/nop instruction, 
-  24:lib.h         **** all modifications to the memory in the C/C++ code have actually been written to the memory, 
-  25:lib.h         **** rather than remaining in the register cache.
-  26:lib.h         ****  At the same time, it will also prevent the compiler from mistakenly using the old values 
-  27:lib.h         ****  of the cached memory in the registers after this assembly instruction.
-  28:lib.h         **** */
-  29:lib.h         **** #define sti()       __asm__ __volatile__ ("sti \n\t":::"memory")
-  30:lib.h         **** // disable interrupt
-  31:lib.h         **** #define cli()	 	__asm__ __volatile__ ("cli	\n\t":::"memory")
-  32:lib.h         **** /*nop:The program counter (PC) increments by one (indicating the next instruction) 
-  33:lib.h         **** and consumes one instruction cycle of time.*/
-  34:lib.h         **** #define nop()       __asm__ __volatile__ ("nop \n\t":::"memory")
-  35:lib.h         **** //确保所有在 mfence 指令之前发出的内存加载（load/读）和存储（store/写）操
-  36:lib.h         **** //都在 mfence 指令之后发出的任何内存操作之前完成
-  37:lib.h         **** #define io_mfence() 	__asm__ __volatile__ ("mfence	\n\t":::"memory")
-  38:lib.h         **** #define container_of(ptr,type,member)							\
-  39:lib.h         **** ({											\
-  40:lib.h         **** 	typeof(((type *)0)->member) * p = (ptr);					\
+   5:lib.h         **** //#define NULL 0
+   6:lib.h         **** #define NULL ((void *)0)
+   7:lib.h         **** /*&(((type *)0)->member)
+   8:lib.h         **** 将地址0强制转换为type*类型
+   9:lib.h         **** 
+  10:lib.h         **** 访问该结构体的member成员
+  11:lib.h         **** 
+  12:lib.h         **** 取该成员的地址
+  13:lib.h         **** 
+  14:lib.h         **** 结果: 得到member在结构体中的偏移量（因为基地址为0）
+  15:lib.h         **** 
+  16:lib.h         ****  (unsigned long)p - (unsigned long)&(((type *)0)->member)
+  17:lib.h         **** 从成员的实际地址中减去该成员在结构体中的偏移量
+  18:lib.h         **** 
+  19:lib.h         **** 结果: 得到整个结构体的起始地址
+  20:lib.h         **** */
+  21:lib.h         **** 
+  22:lib.h         **** // allow interrupt 
+  23:lib.h         **** /*As for memory modification, 
+  24:lib.h         **** Make sure that before executing this sti/cli/nop instruction, 
+  25:lib.h         **** all modifications to the memory in the C/C++ code have actually been written to the memory, 
+  26:lib.h         **** rather than remaining in the register cache.
+  27:lib.h         ****  At the same time, it will also prevent the compiler from mistakenly using the old values 
+  28:lib.h         ****  of the cached memory in the registers after this assembly instruction.
+  29:lib.h         **** */
+  30:lib.h         **** #define sti()       __asm__ __volatile__ ("sti \n\t":::"memory")
+  31:lib.h         **** // disable interrupt
+  32:lib.h         **** #define cli()	 	__asm__ __volatile__ ("cli	\n\t":::"memory")
+  33:lib.h         **** /*nop:The program counter (PC) increments by one (indicating the next instruction) 
+  34:lib.h         **** and consumes one instruction cycle of time.*/
+  35:lib.h         **** #define nop()       __asm__ __volatile__ ("nop \n\t":::"memory")
+  36:lib.h         **** //确保所有在 mfence 指令之前发出的内存加载（load/读）和存储（store/写）操
+  37:lib.h         **** //都在 mfence 指令之后发出的任何内存操作之前完成
+  38:lib.h         **** #define io_mfence() 	__asm__ __volatile__ ("mfence	\n\t":::"memory")
+  39:lib.h         **** #define container_of(ptr,type,member)							\
+  40:lib.h         **** ({											\
 GAS LISTING printk.s 			page 60
 
 
-  41:lib.h         **** 	(type *)((unsigned long)p - (unsigned long)&(((type *)0)->member));		\
-  42:lib.h         **** })
-  43:lib.h         **** 
-  44:lib.h         **** struct List
-  45:lib.h         **** {
-  46:lib.h         ****     struct List *next;
-  47:lib.h         ****     struct List *prev;
-  48:lib.h         **** };
-  49:lib.h         **** 
-  50:lib.h         **** static inline void list_init(struct List *list)
-  51:lib.h         **** {
-  52:lib.h         ****     list->next = list;
-  53:lib.h         ****     list->prev = list;
-  54:lib.h         **** }
-  55:lib.h         **** 
-  56:lib.h         **** static inline void list_add_to_behind(struct List *entry,struct List *new)
-  57:lib.h         **** {
-  58:lib.h         ****     new->next = entry->next;
-  59:lib.h         ****     new->prev = entry;
-  60:lib.h         ****     entry->next->prev = new;
-  61:lib.h         ****     entry->next = new;
-  62:lib.h         **** }
-  63:lib.h         **** static inline void list_add_to_before(struct List *entry,struct List*new ){
-  64:lib.h         ****     new->next = entry;
-  65:lib.h         ****     new->prev = entry->prev;
-  66:lib.h         ****     entry->prev->next = new;
-  67:lib.h         ****     entry->prev = new;
-  68:lib.h         **** }
-  69:lib.h         **** static inline void list_del(struct List *entry){
-  70:lib.h         ****     entry->prev->next = entry->next;
-  71:lib.h         ****     entry->next->prev = entry->prev;
-  72:lib.h         **** }
-  73:lib.h         **** 
-  74:lib.h         **** static inline long list_is_empty(struct List *entry){
-  75:lib.h         ****     if (entry->next == entry && entry->prev == entry)
-  76:lib.h         ****     {
-  77:lib.h         ****         return 1;
-  78:lib.h         ****     }else{
-  79:lib.h         ****         return 0;
-  80:lib.h         ****     }
-  81:lib.h         **** }
+  41:lib.h         **** 	typeof(((type *)0)->member) * p = (ptr);					\
+  42:lib.h         **** 	(type *)((unsigned long)p - (unsigned long)&(((type *)0)->member));		\
+  43:lib.h         **** })
+  44:lib.h         **** //linux version
+  45:lib.h         **** /**
+  46:lib.h         ****  * container_of - cast a member of a structure out to the containing structure
+  47:lib.h         ****  * @ptr:	the pointer to the member.
+  48:lib.h         ****  * @type:	the type of the container struct this is embedded in.
+  49:lib.h         ****  * @member:	the name of the member within the struct.
+  50:lib.h         ****  *
+  51:lib.h         ****  * WARNING: any const qualifier of @ptr is lost.
+  52:lib.h         ****  */
+  53:lib.h         **** 
+  54:lib.h         **** #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
+  55:lib.h         **** #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+  56:lib.h         **** 
+  57:lib.h         **** 
+  58:lib.h         **** #define container_of_linux(ptr, type, member) ({				\
+  59:lib.h         **** 	void *__mptr = (void *)(ptr);					\
+  60:lib.h         **** 	static_assert(__same_type(*(ptr), ((type *)0)->member) ||	\
+  61:lib.h         **** 		      __same_type(*(ptr), void),			\
+  62:lib.h         **** 		      "pointer type mismatch in container_of_linux()");	\
+  63:lib.h         **** 	((type *)(__mptr - offsetof(type, member))); })
+  64:lib.h         **** 
+  65:lib.h         **** /**
+  66:lib.h         ****  * container_of_const - cast a member of a structure out to the containing
+  67:lib.h         ****  *			structure and preserve the const-ness of the pointer
+  68:lib.h         ****  * @ptr:		the pointer to the member
+  69:lib.h         ****  * @type:		the type of the container struct this is embedded in.
+  70:lib.h         ****  * @member:		the name of the member within the struct.
+  71:lib.h         ****  */
+  72:lib.h         **** #define container_of_const(ptr, type, member)				\
+  73:lib.h         **** 	_Generic(ptr,							\
+  74:lib.h         **** 		const typeof(*(ptr)) *: ((const type *)container_of_linux(ptr, type, member)),\
+  75:lib.h         **** 		default: ((type *)container_of_linux(ptr, type, member))	\
+  76:lib.h         **** 	)
+  77:lib.h         **** struct List
+  78:lib.h         **** {
+  79:lib.h         ****     struct List *next;
+  80:lib.h         ****     struct List *prev;
+  81:lib.h         **** };
   82:lib.h         **** 
-  83:lib.h         **** static inline struct List *list_prev(struct List *entry){
-  84:lib.h         ****     if (entry->prev != NULL)
-  85:lib.h         ****     {
-  86:lib.h         ****         return entry->prev;
-  87:lib.h         ****     }else{
-  88:lib.h         ****         return NULL;
-  89:lib.h         ****     }
-  90:lib.h         **** }
-  91:lib.h         **** 
-  92:lib.h         **** static inline struct List *list_next(struct List *entry){
-  93:lib.h         ****     if (entry->next != NULL)
-  94:lib.h         ****     {
-  95:lib.h         ****         return entry->next;
-  96:lib.h         ****     }else{
-  97:lib.h         ****         return NULL;
+  83:lib.h         **** static inline void list_init(struct List *list)
+  84:lib.h         **** {
+  85:lib.h         ****     list->next = list;
+  86:lib.h         ****     list->prev = list;
+  87:lib.h         **** }
+  88:lib.h         **** 
+  89:lib.h         **** static inline void list_add_to_behind(struct List *entry,struct List *new)
+  90:lib.h         **** {
+  91:lib.h         ****     new->next = entry->next;
+  92:lib.h         ****     new->prev = entry;
+  93:lib.h         ****     entry->next->prev = new;
+  94:lib.h         ****     entry->next = new;
+  95:lib.h         **** }
+  96:lib.h         **** static inline void list_add_to_before(struct List *entry,struct List*new ){
+  97:lib.h         ****     new->next = entry;
 GAS LISTING printk.s 			page 61
 
 
-  98:lib.h         ****     }
-  99:lib.h         **** }
- 100:lib.h         **** static inline void *memcpy(void *From,void *To,long Num){
- 101:lib.h         ****     int d0,d1,d2;
- 102:lib.h         ****     __asm__ __volatile__ ("cld \n\t"
- 103:lib.h         ****         "rep \n\t"
- 104:lib.h         ****         "movsq \n\t"
- 105:lib.h         ****         "testb $4,%b4 \n\t"
- 106:lib.h         ****         "je 1f \n\t"
- 107:lib.h         ****         "movsl \n\t"
- 108:lib.h         ****         "1: \n\t"
- 109:lib.h         ****         "testb $2,%b4 \n\t"
- 110:lib.h         ****         "je 2f \n\t"
- 111:lib.h         ****         "movsw \n\t"
- 112:lib.h         ****         "2:"
- 113:lib.h         ****         "testb $1,%b4 \n\t"
- 114:lib.h         ****         "je 3f \n\t"
- 115:lib.h         ****         "movsb \n\t"
- 116:lib.h         ****         "3:  \n\t"
- 117:lib.h         ****         :"=&c"(d0),"=&D"(d1),"=&S"(d2)
- 118:lib.h         ****         :"0"(Num/8),"q"(Num),"1"(To),"2"(From)
- 119:lib.h         ****         :"memory"
- 120:lib.h         ****     );
- 121:lib.h         ****     return To;
- 122:lib.h         **** }
- 123:lib.h         **** static inline void * Cmemcpy(void *To, void *From, long Num)
- 124:lib.h         **** {
- 125:lib.h         ****     char *to = (char *)To;
- 126:lib.h         ****     char *from = (char *)From;
- 127:lib.h         ****     long remaining = Num;
- 128:lib.h         ****     
- 129:lib.h         ****     // 复制8字节块（64位）
- 130:lib.h         ****     while (remaining >= 8) {
- 131:lib.h         ****         *((long *)to) = *((long *)from);
- 132:lib.h         ****         to += 8;
- 133:lib.h         ****         from += 8;
- 134:lib.h         ****         remaining -= 8;
- 135:lib.h         ****     }
- 136:lib.h         ****     
- 137:lib.h         ****     // 检查是否需要复制4字节块
- 138:lib.h         ****     if (remaining & 4) {
- 139:lib.h         ****         *((int *)to) = *((int *)from);
- 140:lib.h         ****         to += 4;
- 141:lib.h         ****         from += 4;
- 142:lib.h         ****     }
- 143:lib.h         ****     
- 144:lib.h         ****     // 检查是否需要复制2字节块
- 145:lib.h         ****     if (remaining & 2) {
- 146:lib.h         ****         *((short *)to) = *((short *)from);
- 147:lib.h         ****         to += 2;
- 148:lib.h         ****         from += 2;
- 149:lib.h         ****     }
- 150:lib.h         ****     
- 151:lib.h         ****     // 检查是否需要复制1字节
- 152:lib.h         ****     if (remaining & 1) {
- 153:lib.h         ****         *to = *from;
- 154:lib.h         ****     }
+  98:lib.h         ****     new->prev = entry->prev;
+  99:lib.h         ****     entry->prev->next = new;
+ 100:lib.h         ****     entry->prev = new;
+ 101:lib.h         **** }
+ 102:lib.h         **** static inline void list_del(struct List *entry){
+ 103:lib.h         ****     entry->prev->next = entry->next;
+ 104:lib.h         ****     entry->next->prev = entry->prev;
+ 105:lib.h         **** }
+ 106:lib.h         **** 
+ 107:lib.h         **** static inline long list_is_empty(struct List *entry){
+ 108:lib.h         ****     if (entry->next == entry && entry->prev == entry)
+ 109:lib.h         ****     {
+ 110:lib.h         ****         return 1;
+ 111:lib.h         ****     }else{
+ 112:lib.h         ****         return 0;
+ 113:lib.h         ****     }
+ 114:lib.h         **** }
+ 115:lib.h         **** 
+ 116:lib.h         **** static inline struct List *list_prev(struct List *entry){
+ 117:lib.h         ****     if (entry->prev != NULL)
+ 118:lib.h         ****     {
+ 119:lib.h         ****         return entry->prev;
+ 120:lib.h         ****     }else{
+ 121:lib.h         ****         return NULL;
+ 122:lib.h         ****     }
+ 123:lib.h         **** }
+ 124:lib.h         **** 
+ 125:lib.h         **** static inline struct List *list_next(struct List *entry){
+ 126:lib.h         ****     if (entry->next != NULL)
+ 127:lib.h         ****     {
+ 128:lib.h         ****         return entry->next;
+ 129:lib.h         ****     }else{
+ 130:lib.h         ****         return NULL;
+ 131:lib.h         ****     }
+ 132:lib.h         **** }
+ 133:lib.h         **** static inline void *memcpy(void *From,void *To,long Num){
+ 134:lib.h         ****     int d0,d1,d2;
+ 135:lib.h         ****     __asm__ __volatile__ ("cld \n\t"
+ 136:lib.h         ****         "rep \n\t"
+ 137:lib.h         ****         "movsq \n\t"
+ 138:lib.h         ****         "testb $4,%b4 \n\t"
+ 139:lib.h         ****         "je 1f \n\t"
+ 140:lib.h         ****         "movsl \n\t"
+ 141:lib.h         ****         "1: \n\t"
+ 142:lib.h         ****         "testb $2,%b4 \n\t"
+ 143:lib.h         ****         "je 2f \n\t"
+ 144:lib.h         ****         "movsw \n\t"
+ 145:lib.h         ****         "2:"
+ 146:lib.h         ****         "testb $1,%b4 \n\t"
+ 147:lib.h         ****         "je 3f \n\t"
+ 148:lib.h         ****         "movsb \n\t"
+ 149:lib.h         ****         "3:  \n\t"
+ 150:lib.h         ****         :"=&c"(d0),"=&D"(d1),"=&S"(d2)
+ 151:lib.h         ****         :"0"(Num/8),"q"(Num),"1"(To),"2"(From)
+ 152:lib.h         ****         :"memory"
+ 153:lib.h         ****     );
+ 154:lib.h         ****     return To;
 GAS LISTING printk.s 			page 62
 
 
- 155:lib.h         ****     
- 156:lib.h         ****     return To;
- 157:lib.h         **** }
- 158:lib.h         **** 
- 159:lib.h         **** 
- 160:lib.h         **** // inline int memcmp(void* FirstPart,void* SecondPart,long Count){
- 161:lib.h         **** //     register int __res;
- 162:lib.h         **** //     __asm__ __volatile__ ("cld \n\t"      //clean direction
- 163:lib.h         **** //         "repe \n\t"     // 重复执行下条指令直到ecx=0或ZF=0
- 164:lib.h         **** //         "cmpsb \n\t"    // 比较[esi]和[edi]的字节，同时递增指针
- 165:lib.h         **** //         "je 1f \n\t"     // 如果全部相等，跳转到标签1
- 166:lib.h         **** //         "movl $1,%%eax \n\t" // 设置eax=1（FirstPart > SecondPart）
- 167:lib.h         **** //         "jl 1f \n\t"    // 如果小于，跳转到标签1（保持eax=1）
- 168:lib.h         **** //         "negl %%eax \n\t"   // 否则取反eax（eax=-1，FirstPart < SecondPart）
- 169:lib.h         **** //         "1: \n\t"
- 170:lib.h         **** //         :"=a"(__res)
- 171:lib.h         **** //         :"0"(0),            //0：内存块相等
- 172:lib.h         **** //         "D"(FirstPart),
- 173:lib.h         **** //         "S"(SecondPart),
- 174:lib.h         **** //         "c"(Count)
- 175:lib.h         **** //         :
- 176:lib.h         **** //     );
- 177:lib.h         **** //     return __res;
- 178:lib.h         **** // }
- 179:lib.h         **** 
- 180:lib.h         **** static inline int memcmp(void* FirstPart, void* SecondPart, long Count) {
- 181:lib.h         ****     if (Count == 0) return 0;
- 182:lib.h         ****     
- 183:lib.h         ****     register int __res;
- 184:lib.h         ****     __asm__ __volatile__ (
- 185:lib.h         ****         "cld \n\t"
- 186:lib.h         ****         "repe \n\t"
- 187:lib.h         ****         "cmpsb \n\t"
- 188:lib.h         ****         "jne 1f \n\t"
- 189:lib.h         ****         "xorl %%eax, %%eax \n\t"  // 相等
- 190:lib.h         ****         "jmp 2f \n\t"
- 191:lib.h         ****         "1: \n\t"
- 192:lib.h         ****         "movzbl -1(%%esi), %%edx \n\t"  // 第二个字符串的字符
- 193:lib.h         ****         "movzbl -1(%%edi), %%eax \n\t"  // 第一个字符串的字符  
- 194:lib.h         ****         "subl %%edx, %%eax \n\t"        // 计算差值
- 195:lib.h         ****         "2: \n\t"
- 196:lib.h         ****         :"=a"(__res)
- 197:lib.h         ****         :"D"(FirstPart),
- 198:lib.h         ****          "S"(SecondPart),
- 199:lib.h         ****          "c"(Count)
- 200:lib.h         ****         : "edx", "cc", "memory"
- 201:lib.h         ****     );
- 202:lib.h         ****     return __res;
- 203:lib.h         **** }
- 204:lib.h         **** 
- 205:lib.h         **** static inline int Cmemcmp(void *FirstPart, void *SecondPart, long Count)
- 206:lib.h         **** {
- 207:lib.h         ****     unsigned char *p1 = (unsigned char *)FirstPart;
- 208:lib.h         ****     unsigned char *p2 = (unsigned char *)SecondPart;
- 209:lib.h         ****     
- 210:lib.h         ****     // 逐字节比较
- 211:lib.h         ****     while (Count-- > 0) {
+ 155:lib.h         **** }
+ 156:lib.h         **** static inline void * Cmemcpy(void *To, void *From, long Num)
+ 157:lib.h         **** {
+ 158:lib.h         ****     char *to = (char *)To;
+ 159:lib.h         ****     char *from = (char *)From;
+ 160:lib.h         ****     long remaining = Num;
+ 161:lib.h         ****     
+ 162:lib.h         ****     // 复制8字节块（64位）
+ 163:lib.h         ****     while (remaining >= 8) {
+ 164:lib.h         ****         *((long *)to) = *((long *)from);
+ 165:lib.h         ****         to += 8;
+ 166:lib.h         ****         from += 8;
+ 167:lib.h         ****         remaining -= 8;
+ 168:lib.h         ****     }
+ 169:lib.h         ****     
+ 170:lib.h         ****     // 检查是否需要复制4字节块
+ 171:lib.h         ****     if (remaining & 4) {
+ 172:lib.h         ****         *((int *)to) = *((int *)from);
+ 173:lib.h         ****         to += 4;
+ 174:lib.h         ****         from += 4;
+ 175:lib.h         ****     }
+ 176:lib.h         ****     
+ 177:lib.h         ****     // 检查是否需要复制2字节块
+ 178:lib.h         ****     if (remaining & 2) {
+ 179:lib.h         ****         *((short *)to) = *((short *)from);
+ 180:lib.h         ****         to += 2;
+ 181:lib.h         ****         from += 2;
+ 182:lib.h         ****     }
+ 183:lib.h         ****     
+ 184:lib.h         ****     // 检查是否需要复制1字节
+ 185:lib.h         ****     if (remaining & 1) {
+ 186:lib.h         ****         *to = *from;
+ 187:lib.h         ****     }
+ 188:lib.h         ****     
+ 189:lib.h         ****     return To;
+ 190:lib.h         **** }
+ 191:lib.h         **** 
+ 192:lib.h         **** 
+ 193:lib.h         **** // inline int memcmp(void* FirstPart,void* SecondPart,long Count){
+ 194:lib.h         **** //     register int __res;
+ 195:lib.h         **** //     __asm__ __volatile__ ("cld \n\t"      //clean direction
+ 196:lib.h         **** //         "repe \n\t"     // 重复执行下条指令直到ecx=0或ZF=0
+ 197:lib.h         **** //         "cmpsb \n\t"    // 比较[esi]和[edi]的字节，同时递增指针
+ 198:lib.h         **** //         "je 1f \n\t"     // 如果全部相等，跳转到标签1
+ 199:lib.h         **** //         "movl $1,%%eax \n\t" // 设置eax=1（FirstPart > SecondPart）
+ 200:lib.h         **** //         "jl 1f \n\t"    // 如果小于，跳转到标签1（保持eax=1）
+ 201:lib.h         **** //         "negl %%eax \n\t"   // 否则取反eax（eax=-1，FirstPart < SecondPart）
+ 202:lib.h         **** //         "1: \n\t"
+ 203:lib.h         **** //         :"=a"(__res)
+ 204:lib.h         **** //         :"0"(0),            //0：内存块相等
+ 205:lib.h         **** //         "D"(FirstPart),
+ 206:lib.h         **** //         "S"(SecondPart),
+ 207:lib.h         **** //         "c"(Count)
+ 208:lib.h         **** //         :
+ 209:lib.h         **** //     );
+ 210:lib.h         **** //     return __res;
+ 211:lib.h         **** // }
 GAS LISTING printk.s 			page 63
 
 
- 212:lib.h         ****         if (*p1 != *p2) {
- 213:lib.h         ****             // 返回差值（符号表示大小关系）
- 214:lib.h         ****             return (*p1 > *p2) ? 1 : -1;
- 215:lib.h         ****         }
- 216:lib.h         ****         p1++;
- 217:lib.h         ****         p2++;
- 218:lib.h         ****     }
- 219:lib.h         ****     
- 220:lib.h         ****     // 所有字节都相等
- 221:lib.h         ****     return 0;
- 222:lib.h         **** }
- 223:lib.h         **** 
- 224:lib.h         **** static inline void * memset(void *Address,unsigned char C,long Count){
- 225:lib.h         ****     int d0,d1;
- 226:lib.h         ****     //将单字节值复制到64位值的每个字节中
- 227:lib.h         ****     unsigned long tmp=C*0x0101010101010101UL;
- 228:lib.h         ****     __asm__ __volatile__ ("cld \n\t"
- 229:lib.h         ****         "rep \n\t"
- 230:lib.h         ****         "stosq \n\t"
- 231:lib.h         ****         "testb $4,%b3 \n\t"
- 232:lib.h         ****         "je 1f \n\t"
- 233:lib.h         ****         "stosl \n\t"
- 234:lib.h         ****         "1: \n\t"
- 235:lib.h         ****         "testb $2,%b3 \n\t"
- 236:lib.h         ****         "je 2f \n\t"
- 237:lib.h         ****         "stosw \n\t"
- 238:lib.h         ****         "2:"
- 239:lib.h         ****         "testb $1,%b3 \n\t"
- 240:lib.h         ****         "je 3f \n\t"
- 241:lib.h         ****         "stosb \n\t"
- 242:lib.h         ****         "3: \n\t"
- 243:lib.h         ****         :"=&c"(d0),"=&D"(d1)
- 244:lib.h         ****         :"a"(tmp),"q"(Count),"0"(Count/8),"1"(Address)
- 245:lib.h         ****         :"memory"
- 246:lib.h         ****     );
- 247:lib.h         ****     return Address;
- 248:lib.h         **** }
- 249:lib.h         **** static inline void * Cmemset(void *Address, unsigned char C, long Count)
- 250:lib.h         **** {
- 251:lib.h         ****     unsigned char *ptr = (unsigned char *)Address;
- 252:lib.h         ****     unsigned long pattern = C;
- 253:lib.h         ****     
- 254:lib.h         ****     // 扩展单字节到8字节模式（0x0101010101010101乘法效果）
- 255:lib.h         ****     //这样可以用64位写入代替逐字节写入
- 256:lib.h         ****     //按位或运算符（|）
- 257:lib.h         ****     /*
- 258:lib.h         ****     0 | 0 = 0
- 259:lib.h         ****     0 | 1 = 1
- 260:lib.h         ****     1 | 0 = 1
- 261:lib.h         ****     1 | 1 = 1
- 262:lib.h         ****     */
- 263:lib.h         ****     pattern |= (pattern << 8);
- 264:lib.h         ****     pattern |= (pattern << 16);
- 265:lib.h         ****     pattern |= (pattern << 32);
- 266:lib.h         ****     
- 267:lib.h         ****     long remaining = Count;
- 268:lib.h         ****     
+ 212:lib.h         **** 
+ 213:lib.h         **** static inline int memcmp(void* FirstPart, void* SecondPart, long Count) {
+ 214:lib.h         ****     if (Count == 0) return 0;
+ 215:lib.h         ****     
+ 216:lib.h         ****     register int __res;
+ 217:lib.h         ****     __asm__ __volatile__ (
+ 218:lib.h         ****         "cld \n\t"
+ 219:lib.h         ****         "repe \n\t"
+ 220:lib.h         ****         "cmpsb \n\t"
+ 221:lib.h         ****         "jne 1f \n\t"
+ 222:lib.h         ****         "xorl %%eax, %%eax \n\t"  // 相等
+ 223:lib.h         ****         "jmp 2f \n\t"
+ 224:lib.h         ****         "1: \n\t"
+ 225:lib.h         ****         "movzbl -1(%%esi), %%edx \n\t"  // 第二个字符串的字符
+ 226:lib.h         ****         "movzbl -1(%%edi), %%eax \n\t"  // 第一个字符串的字符  
+ 227:lib.h         ****         "subl %%edx, %%eax \n\t"        // 计算差值
+ 228:lib.h         ****         "2: \n\t"
+ 229:lib.h         ****         :"=a"(__res)
+ 230:lib.h         ****         :"D"(FirstPart),
+ 231:lib.h         ****          "S"(SecondPart),
+ 232:lib.h         ****          "c"(Count)
+ 233:lib.h         ****         : "edx", "cc", "memory"
+ 234:lib.h         ****     );
+ 235:lib.h         ****     return __res;
+ 236:lib.h         **** }
+ 237:lib.h         **** 
+ 238:lib.h         **** static inline int Cmemcmp(void *FirstPart, void *SecondPart, long Count)
+ 239:lib.h         **** {
+ 240:lib.h         ****     unsigned char *p1 = (unsigned char *)FirstPart;
+ 241:lib.h         ****     unsigned char *p2 = (unsigned char *)SecondPart;
+ 242:lib.h         ****     
+ 243:lib.h         ****     // 逐字节比较
+ 244:lib.h         ****     while (Count-- > 0) {
+ 245:lib.h         ****         if (*p1 != *p2) {
+ 246:lib.h         ****             // 返回差值（符号表示大小关系）
+ 247:lib.h         ****             return (*p1 > *p2) ? 1 : -1;
+ 248:lib.h         ****         }
+ 249:lib.h         ****         p1++;
+ 250:lib.h         ****         p2++;
+ 251:lib.h         ****     }
+ 252:lib.h         ****     
+ 253:lib.h         ****     // 所有字节都相等
+ 254:lib.h         ****     return 0;
+ 255:lib.h         **** }
+ 256:lib.h         **** 
+ 257:lib.h         **** static inline void * memset(void *Address,unsigned char C,long Count){
+ 258:lib.h         ****     int d0,d1;
+ 259:lib.h         ****     //将单字节值复制到64位值的每个字节中
+ 260:lib.h         ****     unsigned long tmp=C*0x0101010101010101UL;
+ 261:lib.h         ****     __asm__ __volatile__ ("cld \n\t"
+ 262:lib.h         ****         "rep \n\t"
+ 263:lib.h         ****         "stosq \n\t"
+ 264:lib.h         ****         "testb $4,%b3 \n\t"
+ 265:lib.h         ****         "je 1f \n\t"
+ 266:lib.h         ****         "stosl \n\t"
+ 267:lib.h         ****         "1: \n\t"
+ 268:lib.h         ****         "testb $2,%b3 \n\t"
 GAS LISTING printk.s 			page 64
 
 
- 269:lib.h         ****     // 先按8字节块填充（64位）
- 270:lib.h         ****     while (remaining >= 8) {
- 271:lib.h         ****         *((unsigned long *)ptr) = pattern;
- 272:lib.h         ****         ptr += 8;
- 273:lib.h         ****         remaining -= 8;
- 274:lib.h         ****     }
- 275:lib.h         ****     
- 276:lib.h         ****     // 检查是否需要填充4字节
- 277:lib.h         ****     if (remaining & 4) {
- 278:lib.h         ****         *((unsigned int *)ptr) = (unsigned int)pattern;
- 279:lib.h         ****         ptr += 4;
- 280:lib.h         ****     }
- 281:lib.h         ****     
- 282:lib.h         ****     // 检查是否需要填充2字节
- 283:lib.h         ****     if (remaining & 2) {
- 284:lib.h         ****         *((unsigned short *)ptr) = (unsigned short)pattern;
- 285:lib.h         ****         ptr += 2;
- 286:lib.h         ****     }
- 287:lib.h         ****     
- 288:lib.h         ****     // 检查是否需要填充1字节
- 289:lib.h         ****     if (remaining & 1) {
- 290:lib.h         ****         *ptr = C;
- 291:lib.h         ****     }
- 292:lib.h         ****     
- 293:lib.h         ****     return Address;
- 294:lib.h         **** }
- 295:lib.h         **** static inline char * strcpy(char * Dest,char * Src){
- 296:lib.h         ****     __asm__ __volatile__ (  "cld \n\t"
- 297:lib.h         ****         "1: \n\t"
- 298:lib.h         ****         "lodsb \n\t"
- 299:lib.h         ****         "stosb \n\t"
- 300:lib.h         ****         "testb %%al, %%al \n\t"
- 301:lib.h         ****         "jne 1b \n\t"
- 302:lib.h         ****         :
- 303:lib.h         ****         :"S"(Src),"D"(Dest)
- 304:lib.h         ****         :
- 305:lib.h         ****     );
- 306:lib.h         ****     return Dest ;
- 307:lib.h         **** }
- 308:lib.h         **** static inline char * Cstrcpy(char *Dest, char *Src)
- 309:lib.h         **** {
- 310:lib.h         ****     char *dest_ptr = Dest;
- 311:lib.h         ****     char *src_ptr = Src;
- 312:lib.h         ****     
- 313:lib.h         ****     // 逐字节复制，直到遇到空字符
- 314:lib.h         ****     do {
- 315:lib.h         ****         *dest_ptr = *src_ptr;
- 316:lib.h         ****         dest_ptr++;
- 317:lib.h         ****         src_ptr++;
- 318:lib.h         ****     } while (*(src_ptr - 1) != '\0');  // 检查刚刚复制的字符是否为结束符
- 319:lib.h         ****     
- 320:lib.h         ****     return Dest;
- 321:lib.h         **** }
- 322:lib.h         **** // lodsb作用: 从[ESI]加载一个字节到AL寄存器，并递增ESI
- 323:lib.h         **** // stosb 作用: 将AL寄存器的值存储到[EDI]，并递增EDI
- 324:lib.h         **** 
- 325:lib.h         **** static inline char * strncpy(char * Dest,char * Src,long Count){
+ 269:lib.h         ****         "je 2f \n\t"
+ 270:lib.h         ****         "stosw \n\t"
+ 271:lib.h         ****         "2:"
+ 272:lib.h         ****         "testb $1,%b3 \n\t"
+ 273:lib.h         ****         "je 3f \n\t"
+ 274:lib.h         ****         "stosb \n\t"
+ 275:lib.h         ****         "3: \n\t"
+ 276:lib.h         ****         :"=&c"(d0),"=&D"(d1)
+ 277:lib.h         ****         :"a"(tmp),"q"(Count),"0"(Count/8),"1"(Address)
+ 278:lib.h         ****         :"memory"
+ 279:lib.h         ****     );
+ 280:lib.h         ****     return Address;
+ 281:lib.h         **** }
+ 282:lib.h         **** static inline void * Cmemset(void *Address, unsigned char C, long Count)
+ 283:lib.h         **** {
+ 284:lib.h         ****     unsigned char *ptr = (unsigned char *)Address;
+ 285:lib.h         ****     unsigned long pattern = C;
+ 286:lib.h         ****     
+ 287:lib.h         ****     // 扩展单字节到8字节模式（0x0101010101010101乘法效果）
+ 288:lib.h         ****     //这样可以用64位写入代替逐字节写入
+ 289:lib.h         ****     //按位或运算符（|）
+ 290:lib.h         ****     /*
+ 291:lib.h         ****     0 | 0 = 0
+ 292:lib.h         ****     0 | 1 = 1
+ 293:lib.h         ****     1 | 0 = 1
+ 294:lib.h         ****     1 | 1 = 1
+ 295:lib.h         ****     */
+ 296:lib.h         ****     pattern |= (pattern << 8);
+ 297:lib.h         ****     pattern |= (pattern << 16);
+ 298:lib.h         ****     pattern |= (pattern << 32);
+ 299:lib.h         ****     
+ 300:lib.h         ****     long remaining = Count;
+ 301:lib.h         ****     
+ 302:lib.h         ****     // 先按8字节块填充（64位）
+ 303:lib.h         ****     while (remaining >= 8) {
+ 304:lib.h         ****         *((unsigned long *)ptr) = pattern;
+ 305:lib.h         ****         ptr += 8;
+ 306:lib.h         ****         remaining -= 8;
+ 307:lib.h         ****     }
+ 308:lib.h         ****     
+ 309:lib.h         ****     // 检查是否需要填充4字节
+ 310:lib.h         ****     if (remaining & 4) {
+ 311:lib.h         ****         *((unsigned int *)ptr) = (unsigned int)pattern;
+ 312:lib.h         ****         ptr += 4;
+ 313:lib.h         ****     }
+ 314:lib.h         ****     
+ 315:lib.h         ****     // 检查是否需要填充2字节
+ 316:lib.h         ****     if (remaining & 2) {
+ 317:lib.h         ****         *((unsigned short *)ptr) = (unsigned short)pattern;
+ 318:lib.h         ****         ptr += 2;
+ 319:lib.h         ****     }
+ 320:lib.h         ****     
+ 321:lib.h         ****     // 检查是否需要填充1字节
+ 322:lib.h         ****     if (remaining & 1) {
+ 323:lib.h         ****         *ptr = C;
+ 324:lib.h         ****     }
+ 325:lib.h         ****     
 GAS LISTING printk.s 			page 65
 
 
- 326:lib.h         ****     __asm__ __volatile__( "cld \n\t"
- 327:lib.h         ****         "1: \n\t"
- 328:lib.h         ****         "decq %2 \n\t"
- 329:lib.h         ****         "js 2f \n\t"
- 330:lib.h         ****         "lodsb \n\t"
- 331:lib.h         ****         "stosb  \n\t"
- 332:lib.h         ****         "testb  %%al, %%al \n\t"
- 333:lib.h         ****         "jne 1b \n\t"
- 334:lib.h         ****         "rep \n\t"
- 335:lib.h         ****         "stosb \n\t"
- 336:lib.h         ****         "2: \n\t"
+ 326:lib.h         ****     return Address;
+ 327:lib.h         **** }
+ 328:lib.h         **** static inline char * strcpy(char * Dest,char * Src){
+ 329:lib.h         ****     __asm__ __volatile__ (  "cld \n\t"
+ 330:lib.h         ****         "1: \n\t"
+ 331:lib.h         ****         "lodsb \n\t"
+ 332:lib.h         ****         "stosb \n\t"
+ 333:lib.h         ****         "testb %%al, %%al \n\t"
+ 334:lib.h         ****         "jne 1b \n\t"
+ 335:lib.h         ****         :
+ 336:lib.h         ****         :"S"(Src),"D"(Dest)
  337:lib.h         ****         :
- 338:lib.h         ****         :"S"(Src),"D"(Dest),"c"(Count)
- 339:lib.h         ****         :
- 340:lib.h         ****         );
- 341:lib.h         ****     return Dest;
- 342:lib.h         **** }
- 343:lib.h         **** static inline char * Cstrncpy(char *Dest, char *Src, long Count)
- 344:lib.h         **** {
- 345:lib.h         ****     char *dest_ptr = Dest;
- 346:lib.h         ****     char *src_ptr = Src;
- 347:lib.h         ****     long remaining = Count;
- 348:lib.h         ****     
- 349:lib.h         ****     // 复制字符直到遇到空字符或达到Count
- 350:lib.h         ****     while (remaining > 0 && *src_ptr != '\0') {
- 351:lib.h         ****         *dest_ptr++ = *src_ptr++;
- 352:lib.h         ****         remaining--;
- 353:lib.h         ****     }
- 354:lib.h         ****     
- 355:lib.h         ****     // 如果还有剩余空间，用空字符填充
- 356:lib.h         ****     while (remaining > 0) {
- 357:lib.h         ****         *dest_ptr++ = '\0';
- 358:lib.h         ****         remaining--;
- 359:lib.h         ****     }
- 360:lib.h         ****     
- 361:lib.h         ****     return Dest;
- 362:lib.h         **** }
- 363:lib.h         **** 
- 364:lib.h         **** static inline  char * strcat(char * Dest,char * Src){
- 365:lib.h         ****     __asm__ __volatile__("cld \n\t"
- 366:lib.h         ****         "repne \n\t"
- 367:lib.h         ****         "scasb \n\t"
- 368:lib.h         ****         "decq %1 \n\t"
- 369:lib.h         ****         "1: \n\t"
- 370:lib.h         ****         "lodsb \n\t"
- 371:lib.h         ****         "stosb \n\t"
- 372:lib.h         ****         "testb  %%al , %%al\n\t"
- 373:lib.h         ****         "jne 1b \n\t"
- 374:lib.h         ****         :
- 375:lib.h         ****         :"S"(Src),"D"(Dest),"a"(0),"c"(0xffffffff)
- 376:lib.h         ****         :
- 377:lib.h         ****         );
- 378:lib.h         ****     return Dest;
- 379:lib.h         **** }
- 380:lib.h         **** 
- 381:lib.h         **** static inline char * Cstrcat(char *Dest, char *Src)
- 382:lib.h         **** {
+ 338:lib.h         ****     );
+ 339:lib.h         ****     return Dest ;
+ 340:lib.h         **** }
+ 341:lib.h         **** static inline char * Cstrcpy(char *Dest, char *Src)
+ 342:lib.h         **** {
+ 343:lib.h         ****     char *dest_ptr = Dest;
+ 344:lib.h         ****     char *src_ptr = Src;
+ 345:lib.h         ****     
+ 346:lib.h         ****     // 逐字节复制，直到遇到空字符
+ 347:lib.h         ****     do {
+ 348:lib.h         ****         *dest_ptr = *src_ptr;
+ 349:lib.h         ****         dest_ptr++;
+ 350:lib.h         ****         src_ptr++;
+ 351:lib.h         ****     } while (*(src_ptr - 1) != '\0');  // 检查刚刚复制的字符是否为结束符
+ 352:lib.h         ****     
+ 353:lib.h         ****     return Dest;
+ 354:lib.h         **** }
+ 355:lib.h         **** // lodsb作用: 从[ESI]加载一个字节到AL寄存器，并递增ESI
+ 356:lib.h         **** // stosb 作用: 将AL寄存器的值存储到[EDI]，并递增EDI
+ 357:lib.h         **** 
+ 358:lib.h         **** static inline char * strncpy(char * Dest,char * Src,long Count){
+ 359:lib.h         ****     __asm__ __volatile__( "cld \n\t"
+ 360:lib.h         ****         "1: \n\t"
+ 361:lib.h         ****         "decq %2 \n\t"
+ 362:lib.h         ****         "js 2f \n\t"
+ 363:lib.h         ****         "lodsb \n\t"
+ 364:lib.h         ****         "stosb  \n\t"
+ 365:lib.h         ****         "testb  %%al, %%al \n\t"
+ 366:lib.h         ****         "jne 1b \n\t"
+ 367:lib.h         ****         "rep \n\t"
+ 368:lib.h         ****         "stosb \n\t"
+ 369:lib.h         ****         "2: \n\t"
+ 370:lib.h         ****         :
+ 371:lib.h         ****         :"S"(Src),"D"(Dest),"c"(Count)
+ 372:lib.h         ****         :
+ 373:lib.h         ****         );
+ 374:lib.h         ****     return Dest;
+ 375:lib.h         **** }
+ 376:lib.h         **** static inline char * Cstrncpy(char *Dest, char *Src, long Count)
+ 377:lib.h         **** {
+ 378:lib.h         ****     char *dest_ptr = Dest;
+ 379:lib.h         ****     char *src_ptr = Src;
+ 380:lib.h         ****     long remaining = Count;
+ 381:lib.h         ****     
+ 382:lib.h         ****     // 复制字符直到遇到空字符或达到Count
 GAS LISTING printk.s 			page 66
 
 
- 383:lib.h         ****     char *dest_ptr = Dest;
- 384:lib.h         ****     
- 385:lib.h         ****     // 找到Dest字符串的结尾（空字符位置）
- 386:lib.h         ****     while (*dest_ptr != '\0') {
- 387:lib.h         ****         dest_ptr++;
- 388:lib.h         ****     }
- 389:lib.h         ****     
- 390:lib.h         ****     // 将Src字符串复制到Dest的结尾
- 391:lib.h         ****     while (*Src != '\0') {
- 392:lib.h         ****         *dest_ptr++ = *Src++;
- 393:lib.h         ****     }
- 394:lib.h         ****     
- 395:lib.h         ****     // 添加字符串结束符
- 396:lib.h         ****     *dest_ptr = '\0';
- 397:lib.h         ****     
- 398:lib.h         ****     return Dest;
- 399:lib.h         **** }
- 400:lib.h         **** 
- 401:lib.h         **** static inline int strcmp(char * FirstPart,char * SecondPart)
- 402:lib.h         **** {
- 403:lib.h         ****     register int __res;
- 404:lib.h         ****     __asm__ __volatile__    (   "cld    \n\t"
- 405:lib.h         ****                     "1: \n\t"
- 406:lib.h         ****                     "lodsb  \n\t"
- 407:lib.h         ****                     "scasb  \n\t"
- 408:lib.h         ****                     "jne    2f  \n\t"
- 409:lib.h         ****                     "testb  %%al,   %%al    \n\t"
- 410:lib.h         ****                     "jne    1b  \n\t"
- 411:lib.h         ****                     "xorl   %%eax,  %%eax   \n\t"
- 412:lib.h         ****                     "jmp    3f  \n\t"
- 413:lib.h         ****                     "2: \n\t"
- 414:lib.h         ****                     "movl   $1, %%eax   \n\t"
- 415:lib.h         ****                     "jl 3f  \n\t"
- 416:lib.h         ****                     "negl   %%eax   \n\t"
- 417:lib.h         ****                     "3: \n\t"
- 418:lib.h         ****                     :"=a"(__res)
- 419:lib.h         ****                     :"D"(FirstPart),"S"(SecondPart)
- 420:lib.h         ****                     :                   
- 421:lib.h         ****                 );
- 422:lib.h         ****     return __res;
- 423:lib.h         **** }
- 424:lib.h         **** 
- 425:lib.h         **** static inline int Cstrcmp(char *FirstPart, char *SecondPart)
- 426:lib.h         **** {
- 427:lib.h         ****     unsigned char *p1 = (unsigned char *)FirstPart;
- 428:lib.h         ****     unsigned char *p2 = (unsigned char *)SecondPart;
- 429:lib.h         ****     
- 430:lib.h         ****     // 逐字节比较，直到遇到不相等的字符或字符串结束
- 431:lib.h         ****     while (*p1 != '\0' && *p1 == *p2) {
- 432:lib.h         ****         p1++;
- 433:lib.h         ****         p2++;
- 434:lib.h         ****     }
- 435:lib.h         ****     
- 436:lib.h         ****     // 返回差值（符号表示大小关系）
- 437:lib.h         ****     if (*p1 == *p2) {
- 438:lib.h         ****         return 0;  // 字符串完全相等
- 439:lib.h         ****     } else if (*p1 < *p2) {
+ 383:lib.h         ****     while (remaining > 0 && *src_ptr != '\0') {
+ 384:lib.h         ****         *dest_ptr++ = *src_ptr++;
+ 385:lib.h         ****         remaining--;
+ 386:lib.h         ****     }
+ 387:lib.h         ****     
+ 388:lib.h         ****     // 如果还有剩余空间，用空字符填充
+ 389:lib.h         ****     while (remaining > 0) {
+ 390:lib.h         ****         *dest_ptr++ = '\0';
+ 391:lib.h         ****         remaining--;
+ 392:lib.h         ****     }
+ 393:lib.h         ****     
+ 394:lib.h         ****     return Dest;
+ 395:lib.h         **** }
+ 396:lib.h         **** 
+ 397:lib.h         **** static inline  char * strcat(char * Dest,char * Src){
+ 398:lib.h         ****     __asm__ __volatile__("cld \n\t"
+ 399:lib.h         ****         "repne \n\t"
+ 400:lib.h         ****         "scasb \n\t"
+ 401:lib.h         ****         "decq %1 \n\t"
+ 402:lib.h         ****         "1: \n\t"
+ 403:lib.h         ****         "lodsb \n\t"
+ 404:lib.h         ****         "stosb \n\t"
+ 405:lib.h         ****         "testb  %%al , %%al\n\t"
+ 406:lib.h         ****         "jne 1b \n\t"
+ 407:lib.h         ****         :
+ 408:lib.h         ****         :"S"(Src),"D"(Dest),"a"(0),"c"(0xffffffff)
+ 409:lib.h         ****         :
+ 410:lib.h         ****         );
+ 411:lib.h         ****     return Dest;
+ 412:lib.h         **** }
+ 413:lib.h         **** 
+ 414:lib.h         **** static inline char * Cstrcat(char *Dest, char *Src)
+ 415:lib.h         **** {
+ 416:lib.h         ****     char *dest_ptr = Dest;
+ 417:lib.h         ****     
+ 418:lib.h         ****     // 找到Dest字符串的结尾（空字符位置）
+ 419:lib.h         ****     while (*dest_ptr != '\0') {
+ 420:lib.h         ****         dest_ptr++;
+ 421:lib.h         ****     }
+ 422:lib.h         ****     
+ 423:lib.h         ****     // 将Src字符串复制到Dest的结尾
+ 424:lib.h         ****     while (*Src != '\0') {
+ 425:lib.h         ****         *dest_ptr++ = *Src++;
+ 426:lib.h         ****     }
+ 427:lib.h         ****     
+ 428:lib.h         ****     // 添加字符串结束符
+ 429:lib.h         ****     *dest_ptr = '\0';
+ 430:lib.h         ****     
+ 431:lib.h         ****     return Dest;
+ 432:lib.h         **** }
+ 433:lib.h         **** 
+ 434:lib.h         **** static inline int strcmp(char * FirstPart,char * SecondPart)
+ 435:lib.h         **** {
+ 436:lib.h         ****     register int __res;
+ 437:lib.h         ****     __asm__ __volatile__    (   "cld    \n\t"
+ 438:lib.h         ****                     "1: \n\t"
+ 439:lib.h         ****                     "lodsb  \n\t"
 GAS LISTING printk.s 			page 67
 
 
- 440:lib.h         ****         return -1; // FirstPart < SecondPart
- 441:lib.h         ****     } else {
- 442:lib.h         ****         return 1;  // FirstPart > SecondPart
- 443:lib.h         ****     }
- 444:lib.h         **** }
- 445:lib.h         **** /*
- 446:lib.h         ****         string compare FirstPart and SecondPart with Count Bytes
- 447:lib.h         ****         FirstPart = SecondPart =>  0
- 448:lib.h         ****         FirstPart > SecondPart =>  1
- 449:lib.h         ****         FirstPart < SecondPart => -1
- 450:lib.h         **** */
- 451:lib.h         **** 
- 452:lib.h         **** //same as linux code
- 453:lib.h         **** static inline int strncmp(char * FirstPart,char * SecondPart,long Count)
- 454:lib.h         **** {   
- 455:lib.h         ****     register int __res;
- 456:lib.h         ****     __asm__ __volatile__    (   "cld    \n\t"
- 457:lib.h         ****                     "1: \n\t"
- 458:lib.h         ****                     "decq   %3  \n\t"
- 459:lib.h         ****                     "js 2f  \n\t"
- 460:lib.h         ****                     "lodsb  \n\t"
- 461:lib.h         ****                     "scasb  \n\t"
- 462:lib.h         ****                     "jne    3f  \n\t"
- 463:lib.h         ****                     "testb  %%al,   %%al    \n\t"
- 464:lib.h         ****                     "jne    1b  \n\t"
- 465:lib.h         ****                     "2: \n\t"
- 466:lib.h         ****                     "xorl   %%eax,  %%eax   \n\t"
- 467:lib.h         ****                     "jmp    4f  \n\t"
- 468:lib.h         ****                     "3: \n\t"
- 469:lib.h         ****                     "movl   $1, %%eax   \n\t"
- 470:lib.h         ****                     "jl 4f  \n\t"
- 471:lib.h         ****                     "negl   %%eax   \n\t"
- 472:lib.h         ****                     "4: \n\t"
- 473:lib.h         ****                     :"=a"(__res)
- 474:lib.h         ****                     :"D"(FirstPart),"S"(SecondPart),"c"(Count)
- 475:lib.h         ****                     :
- 476:lib.h         ****                 );
- 477:lib.h         ****     return __res;
- 478:lib.h         **** }
- 479:lib.h         **** 
- 480:lib.h         **** static inline int Cstrncmp(char *FirstPart, char *SecondPart, long Count)
- 481:lib.h         **** {
- 482:lib.h         ****     unsigned char *p1 = (unsigned char *)FirstPart;
- 483:lib.h         ****     unsigned char *p2 = (unsigned char *)SecondPart;
- 484:lib.h         ****     long remaining = Count;
- 485:lib.h         ****     
- 486:lib.h         ****     // 逐字节比较，直到遇到不相等的字符、字符串结束或达到Count
- 487:lib.h         ****     while (remaining > 0 && *p1 != '\0' && *p1 == *p2) {
- 488:lib.h         ****         p1++;
- 489:lib.h         ****         p2++;
- 490:lib.h         ****         remaining--;
- 491:lib.h         ****     }
- 492:lib.h         ****     
- 493:lib.h         ****     // 如果达到Count限制或两个字符串都结束，返回0
- 494:lib.h         ****     if (remaining == 0 || (*p1 == '\0' && *p2 == '\0')) {
- 495:lib.h         ****         return 0;
- 496:lib.h         ****     }
+ 440:lib.h         ****                     "scasb  \n\t"
+ 441:lib.h         ****                     "jne    2f  \n\t"
+ 442:lib.h         ****                     "testb  %%al,   %%al    \n\t"
+ 443:lib.h         ****                     "jne    1b  \n\t"
+ 444:lib.h         ****                     "xorl   %%eax,  %%eax   \n\t"
+ 445:lib.h         ****                     "jmp    3f  \n\t"
+ 446:lib.h         ****                     "2: \n\t"
+ 447:lib.h         ****                     "movl   $1, %%eax   \n\t"
+ 448:lib.h         ****                     "jl 3f  \n\t"
+ 449:lib.h         ****                     "negl   %%eax   \n\t"
+ 450:lib.h         ****                     "3: \n\t"
+ 451:lib.h         ****                     :"=a"(__res)
+ 452:lib.h         ****                     :"D"(FirstPart),"S"(SecondPart)
+ 453:lib.h         ****                     :                   
+ 454:lib.h         ****                 );
+ 455:lib.h         ****     return __res;
+ 456:lib.h         **** }
+ 457:lib.h         **** 
+ 458:lib.h         **** static inline int Cstrcmp(char *FirstPart, char *SecondPart)
+ 459:lib.h         **** {
+ 460:lib.h         ****     unsigned char *p1 = (unsigned char *)FirstPart;
+ 461:lib.h         ****     unsigned char *p2 = (unsigned char *)SecondPart;
+ 462:lib.h         ****     
+ 463:lib.h         ****     // 逐字节比较，直到遇到不相等的字符或字符串结束
+ 464:lib.h         ****     while (*p1 != '\0' && *p1 == *p2) {
+ 465:lib.h         ****         p1++;
+ 466:lib.h         ****         p2++;
+ 467:lib.h         ****     }
+ 468:lib.h         ****     
+ 469:lib.h         ****     // 返回差值（符号表示大小关系）
+ 470:lib.h         ****     if (*p1 == *p2) {
+ 471:lib.h         ****         return 0;  // 字符串完全相等
+ 472:lib.h         ****     } else if (*p1 < *p2) {
+ 473:lib.h         ****         return -1; // FirstPart < SecondPart
+ 474:lib.h         ****     } else {
+ 475:lib.h         ****         return 1;  // FirstPart > SecondPart
+ 476:lib.h         ****     }
+ 477:lib.h         **** }
+ 478:lib.h         **** /*
+ 479:lib.h         ****         string compare FirstPart and SecondPart with Count Bytes
+ 480:lib.h         ****         FirstPart = SecondPart =>  0
+ 481:lib.h         ****         FirstPart > SecondPart =>  1
+ 482:lib.h         ****         FirstPart < SecondPart => -1
+ 483:lib.h         **** */
+ 484:lib.h         **** 
+ 485:lib.h         **** //same as linux code
+ 486:lib.h         **** static inline int strncmp(char * FirstPart,char * SecondPart,long Count)
+ 487:lib.h         **** {   
+ 488:lib.h         ****     register int __res;
+ 489:lib.h         ****     __asm__ __volatile__    (   "cld    \n\t"
+ 490:lib.h         ****                     "1: \n\t"
+ 491:lib.h         ****                     "decq   %3  \n\t"
+ 492:lib.h         ****                     "js 2f  \n\t"
+ 493:lib.h         ****                     "lodsb  \n\t"
+ 494:lib.h         ****                     "scasb  \n\t"
+ 495:lib.h         ****                     "jne    3f  \n\t"
+ 496:lib.h         ****                     "testb  %%al,   %%al    \n\t"
 GAS LISTING printk.s 			page 68
 
 
- 497:lib.h         ****     
- 498:lib.h         ****     // 返回差值（符号表示大小关系）
- 499:lib.h         ****     if (*p1 < *p2) {
- 500:lib.h         ****         return -1; // FirstPart < SecondPart
- 501:lib.h         ****     } else if (*p1 > *p2) {
- 502:lib.h         ****         return 1;  // FirstPart > SecondPart
- 503:lib.h         ****     }
- 504:lib.h         ****     
- 505:lib.h         ****     return 0; 
- 506:lib.h         **** }
- 507:lib.h         **** /*
- 508:lib.h         **** 
- 509:lib.h         **** */
- 510:lib.h         **** 
- 511:lib.h         **** static inline int strlen(char * String)
- 512:lib.h         **** {
- 513:lib.h         ****     register int __res;
- 514:lib.h         ****     __asm__ __volatile__    (   "cld    \n\t"
- 515:lib.h         ****                     "repne  \n\t"
- 516:lib.h         ****                     "scasb  \n\t"
- 517:lib.h         ****                     "notl   %0  \n\t"
- 518:lib.h         ****                     "decl   %0  \n\t"
- 519:lib.h         ****                     :"=c"(__res)
- 520:lib.h         ****                     :"D"(String),"a"(0),"0"(0xffffffff)
- 521:lib.h         ****                     :
- 522:lib.h         ****                 );
- 523:lib.h         ****     return __res;
- 524:lib.h         **** }
- 525:lib.h         **** 
- 526:lib.h         **** static inline int Cstrlen(char *String)
- 527:lib.h         **** {
- 3088              		.loc 1 527 1
+ 497:lib.h         ****                     "jne    1b  \n\t"
+ 498:lib.h         ****                     "2: \n\t"
+ 499:lib.h         ****                     "xorl   %%eax,  %%eax   \n\t"
+ 500:lib.h         ****                     "jmp    4f  \n\t"
+ 501:lib.h         ****                     "3: \n\t"
+ 502:lib.h         ****                     "movl   $1, %%eax   \n\t"
+ 503:lib.h         ****                     "jl 4f  \n\t"
+ 504:lib.h         ****                     "negl   %%eax   \n\t"
+ 505:lib.h         ****                     "4: \n\t"
+ 506:lib.h         ****                     :"=a"(__res)
+ 507:lib.h         ****                     :"D"(FirstPart),"S"(SecondPart),"c"(Count)
+ 508:lib.h         ****                     :
+ 509:lib.h         ****                 );
+ 510:lib.h         ****     return __res;
+ 511:lib.h         **** }
+ 512:lib.h         **** 
+ 513:lib.h         **** static inline int Cstrncmp(char *FirstPart, char *SecondPart, long Count)
+ 514:lib.h         **** {
+ 515:lib.h         ****     unsigned char *p1 = (unsigned char *)FirstPart;
+ 516:lib.h         ****     unsigned char *p2 = (unsigned char *)SecondPart;
+ 517:lib.h         ****     long remaining = Count;
+ 518:lib.h         ****     
+ 519:lib.h         ****     // 逐字节比较，直到遇到不相等的字符、字符串结束或达到Count
+ 520:lib.h         ****     while (remaining > 0 && *p1 != '\0' && *p1 == *p2) {
+ 521:lib.h         ****         p1++;
+ 522:lib.h         ****         p2++;
+ 523:lib.h         ****         remaining--;
+ 524:lib.h         ****     }
+ 525:lib.h         ****     
+ 526:lib.h         ****     // 如果达到Count限制或两个字符串都结束，返回0
+ 527:lib.h         ****     if (remaining == 0 || (*p1 == '\0' && *p2 == '\0')) {
+ 528:lib.h         ****         return 0;
+ 529:lib.h         ****     }
+ 530:lib.h         ****     
+ 531:lib.h         ****     // 返回差值（符号表示大小关系）
+ 532:lib.h         ****     if (*p1 < *p2) {
+ 533:lib.h         ****         return -1; // FirstPart < SecondPart
+ 534:lib.h         ****     } else if (*p1 > *p2) {
+ 535:lib.h         ****         return 1;  // FirstPart > SecondPart
+ 536:lib.h         ****     }
+ 537:lib.h         ****     
+ 538:lib.h         ****     return 0; 
+ 539:lib.h         **** }
+ 540:lib.h         **** /*
+ 541:lib.h         **** 
+ 542:lib.h         **** */
+ 543:lib.h         **** 
+ 544:lib.h         **** static inline int strlen(char * String)
+ 545:lib.h         **** {
+ 546:lib.h         ****     register int __res;
+ 547:lib.h         ****     __asm__ __volatile__    (   "cld    \n\t"
+ 548:lib.h         ****                     "repne  \n\t"
+ 549:lib.h         ****                     "scasb  \n\t"
+ 550:lib.h         ****                     "notl   %0  \n\t"
+ 551:lib.h         ****                     "decl   %0  \n\t"
+ 552:lib.h         ****                     :"=c"(__res)
+ 553:lib.h         ****                     :"D"(String),"a"(0),"0"(0xffffffff)
+GAS LISTING printk.s 			page 69
+
+
+ 554:lib.h         ****                     :
+ 555:lib.h         ****                 );
+ 556:lib.h         ****     return __res;
+ 557:lib.h         **** }
+ 558:lib.h         **** 
+ 559:lib.h         **** static inline int Cstrlen(char *String)
+ 560:lib.h         **** {
+ 3088              		.loc 1 560 1
  3089              		.cfi_startproc
  3090 0000 F30F1EFA 		endbr64	
  3091 0004 55       		pushq	%rbp	#
@@ -4068,48 +4104,48 @@ GAS LISTING printk.s 			page 1
  3098      0000
  3099 0019 4C01D8   		addq	%r11, %rax	#, tmp82
  3100 001c 48897DE8 		movq	%rdi, -24(%rbp)	# String, String
- 3101              	# lib.h:528:     char *ptr = String;
- 528:lib.h         ****     char *ptr = String;
- 3102              		.loc 1 528 11
+ 3101              	# lib.h:561:     char *ptr = String;
+ 561:lib.h         ****     char *ptr = String;
+ 3102              		.loc 1 561 11
  3103 0020 488B45E8 		movq	-24(%rbp), %rax	# String, tmp87
  3104 0024 488945F8 		movq	%rax, -8(%rbp)	# tmp87, ptr
- 3105              	# lib.h:531:     while (*ptr != '\0') {
- 529:lib.h         ****     
- 530:lib.h         ****     // 遍历字符串直到遇到空字符
- 531:lib.h         ****     while (*ptr != '\0') {
- 3106              		.loc 1 531 11
-GAS LISTING printk.s 			page 69
-
-
+ 3105              	# lib.h:564:     while (*ptr != '\0') {
+ 562:lib.h         ****     
+ 563:lib.h         ****     // 遍历字符串直到遇到空字符
+ 564:lib.h         ****     while (*ptr != '\0') {
+ 3106              		.loc 1 564 11
  3107 0028 EB05     		jmp	.L2	#
  3108              	.L3:
- 3109              	# lib.h:532:         ptr++;
- 532:lib.h         ****         ptr++;
- 3110              		.loc 1 532 12
+ 3109              	# lib.h:565:         ptr++;
+ 565:lib.h         ****         ptr++;
+ 3110              		.loc 1 565 12
  3111 002a 488345F8 		addq	$1, -8(%rbp)	#, ptr
  3111      01
  3112              	.L2:
- 3113              	# lib.h:531:     while (*ptr != '\0') {
- 531:lib.h         ****         ptr++;
- 3114              		.loc 1 531 12
+ 3113              	# lib.h:564:     while (*ptr != '\0') {
+ 564:lib.h         ****         ptr++;
+ 3114              		.loc 1 564 12
  3115 002f 488B45F8 		movq	-8(%rbp), %rax	# ptr, tmp88
  3116 0033 0FB600   		movzbl	(%rax), %eax	# *ptr_3, _1
- 3117              	# lib.h:531:     while (*ptr != '\0') {
- 531:lib.h         ****         ptr++;
- 3118              		.loc 1 531 17
+ 3117              	# lib.h:564:     while (*ptr != '\0') {
+ 564:lib.h         ****         ptr++;
+ 3118              		.loc 1 564 17
  3119 0036 84C0     		testb	%al, %al	# _1
  3120 0038 75F0     		jne	.L3	#,
- 3121              	# lib.h:536:     return ptr - String;
- 533:lib.h         ****     }
- 534:lib.h         ****     
- 535:lib.h         ****     // 计算长度（指针差值）
- 536:lib.h         ****     return ptr - String;
- 3122              		.loc 1 536 16
+ 3121              	# lib.h:569:     return ptr - String;
+ 566:lib.h         ****     }
+ 567:lib.h         ****     
+ 568:lib.h         ****     // 计算长度（指针差值）
+ 569:lib.h         ****     return ptr - String;
+ 3122              		.loc 1 569 16
+GAS LISTING printk.s 			page 70
+
+
  3123 003a 488B45F8 		movq	-8(%rbp), %rax	# ptr, tmp89
  3124 003e 482B45E8 		subq	-24(%rbp), %rax	# String, _2
- 3125              	# lib.h:537: }
- 537:lib.h         **** }
- 3126              		.loc 1 537 1
+ 3125              	# lib.h:570: }
+ 570:lib.h         **** }
+ 3126              		.loc 1 570 1
  3127 0042 5D       		popq	%rbp	#
  3128              		.cfi_def_cfa 7, 8
  3129 0043 C3       		ret	
@@ -4138,9 +4174,6 @@ GAS LISTING printk.s 			page 1
  3146              	.L13:
  3147 004c 488D05F9 		leaq	.L13(%rip), %rax	#, tmp82
  3147      FFFFFF
-GAS LISTING printk.s 			page 70
-
-
  3148 0053 49BB0000 		movabsq	$_GLOBAL_OFFSET_TABLE_-.L13, %r11	#,
  3148      00000000 
  3148      0000
@@ -4165,6 +4198,9 @@ GAS LISTING printk.s 			page 1
  3163      000000
  3164              	# printk.c:9: 	unsigned int *addr = NULL;
    9:printk.c      **** 	unsigned int *addr = NULL;
+GAS LISTING printk.s 			page 71
+
+
  3165              		.loc 2 9 16
  3166 0089 48C745F0 		movq	$0, -16(%rbp)	#, addr
  3166      00000000 
@@ -4198,9 +4234,6 @@ GAS LISTING printk.s 			page 1
  3186              		.loc 2 13 7
  3187 00c3 C745FC00 		movl	$0, -4(%rbp)	#, i
  3187      000000
-GAS LISTING printk.s 			page 71
-
-
  3188              	# printk.c:13: 	for(i=0;i<16;i++){
  3189              		.loc 2 13 2
  3190 00ca EB7A     		jmp	.L7	#
@@ -4225,6 +4258,9 @@ GAS LISTING printk.s 			page 1
  3206      00000000 
  3207              	# printk.c:15: 		addr=fb+Xsize*(y+i)+x;
  3208              		.loc 2 15 7
+GAS LISTING printk.s 			page 72
+
+
  3209 00eb 488B45D8 		movq	-40(%rbp), %rax	# fb, tmp106
  3210 00ef 4801D0   		addq	%rdx, %rax	# _7, tmp105
  3211 00f2 488945F0 		movq	%rax, -16(%rbp)	# tmp105, addr
@@ -4258,9 +4294,6 @@ GAS LISTING printk.s 			page 1
  3233              	# printk.c:19: 			if(*fontp & testval){
  3234              		.loc 2 19 6
  3235 0116 85C0     		testl	%eax, %eax	# _10
-GAS LISTING printk.s 			page 72
-
-
  3236 0118 740B     		je	.L9	#,
  3237              	# printk.c:20: 				*addr =FRcolor;
   20:printk.c      **** 				*addr =FRcolor;
@@ -4285,6 +4318,9 @@ GAS LISTING printk.s 			page 1
  3252 012e 488345F0 		addq	$4, -16(%rbp)	#, addr
  3252      04
  3253              	# printk.c:17: 		for(j=0;j<8;j++){
+GAS LISTING printk.s 			page 73
+
+
   17:printk.c      **** 			testval =testval >>1;
  3254              		.loc 2 17 16 discriminator 2
  3255 0133 8345F801 		addl	$1, -8(%rbp)	#, j
@@ -4318,9 +4354,6 @@ GAS LISTING printk.s 			page 1
  3275 014d 90       		nop	
  3276 014e 5D       		popq	%rbp	#
  3277              		.cfi_def_cfa 7, 8
-GAS LISTING printk.s 			page 73
-
-
  3278 014f C3       		ret	
  3279              		.cfi_endproc
  3280              	.LFE34:
@@ -4345,6 +4378,9 @@ GAS LISTING printk.s 			page 1
  3296              		.cfi_offset 3, -24
  3297              	.L29:
  3298 0160 488D1DF9 		leaq	.L29(%rip), %rbx	#, tmp82
+GAS LISTING printk.s 			page 74
+
+
  3298      FFFFFF
  3299 0167 49BB0000 		movabsq	$_GLOBAL_OFFSET_TABLE_-.L29, %r11	#,
  3299      00000000 
@@ -4378,9 +4414,6 @@ GAS LISTING printk.s 			page 1
   31:printk.c      **** 	int i=0;
  3319              		.loc 2 31 6
  3320 01c3 C78534FF 		movl	$0, -204(%rbp)	#, i
-GAS LISTING printk.s 			page 74
-
-
  3320      FFFF0000 
  3320      0000
  3321              	# printk.c:32: 	int count=0;
@@ -4405,6 +4438,9 @@ GAS LISTING printk.s 			page 1
  3330 01eb C7851CFF 		movl	$48, -228(%rbp)	#, MEM[(struct [1] *)&args].fp_offset
  3330      FFFF3000 
  3330      0000
+GAS LISTING printk.s 			page 75
+
+
  3331 01f5 488D4510 		leaq	16(%rbp), %rax	#, tmp256
  3332 01f9 48898520 		movq	%rax, -224(%rbp)	# tmp256, MEM[(struct [1] *)&args].overflow_arg_area
  3332      FFFFFF
@@ -4438,9 +4474,6 @@ GAS LISTING printk.s 			page 1
   38:printk.c      **** 	for(count=0;count<i || line;count++){
  3349              		.loc 2 38 11
  3350 0246 C7853CFF 		movl	$0, -196(%rbp)	#, count
-GAS LISTING printk.s 			page 75
-
-
  3350      FFFF0000 
  3350      0000
  3351              	# printk.c:38: 	for(count=0;count<i || line;count++){
@@ -4465,6 +4498,9 @@ GAS LISTING printk.s 			page 1
  3364 0265 E9450200 		jmp	.L18	#
  3364      00
  3365              	.L17:
+GAS LISTING printk.s 			page 76
+
+
  3366              	# printk.c:43: 		if((unsigned char)*(buf+count)=='\n'){
   42:printk.c      **** 		}
   43:printk.c      **** 		if((unsigned char)*(buf+count)=='\n'){
@@ -4498,9 +4534,6 @@ GAS LISTING printk.s 			page 1
  3387      00000000 
  3387      0000
  3388 02a6 8954030C 		movl	%edx, 12(%rbx,%rax)	# _5, Pos.YPosition
-GAS LISTING printk.s 			page 76
-
-
  3389              	# printk.c:45: 			Pos.XPosition=0;
   45:printk.c      **** 			Pos.XPosition=0;
  3390              		.loc 2 45 17
@@ -4525,6 +4558,9 @@ GAS LISTING printk.s 			page 1
  3401 02d8 4801D0   		addq	%rdx, %rax	# _6, _7
  3402              	# printk.c:46: 		}else if((unsigned char)*(buf+count)=='\b'){
  3403              		.loc 2 46 27
+GAS LISTING printk.s 			page 77
+
+
  3404 02db 0FB600   		movzbl	(%rax), %eax	# *_7, _8
  3405              	# printk.c:46: 		}else if((unsigned char)*(buf+count)=='\b'){
  3406              		.loc 2 46 11
@@ -4558,9 +4594,6 @@ GAS LISTING printk.s 			page 1
  3425 0315 0F89B200 		jns	.L22	#,
  3425      0000
  3426              	# printk.c:49: 				Pos.XPosition=(Pos.XResolution/ Pos.XCharSize-1)*Pos.XCharSize;
-GAS LISTING printk.s 			page 77
-
-
   49:printk.c      **** 				Pos.XPosition=(Pos.XResolution/ Pos.XCharSize-1)*Pos.XCharSize;
  3427              		.loc 2 49 23
  3428 031b 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp181
@@ -4585,6 +4618,9 @@ GAS LISTING printk.s 			page 1
  3443 033c 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp185
  3443      00000000 
  3443      0000
+GAS LISTING printk.s 			page 78
+
+
  3444 0346 8B440310 		movl	16(%rbx,%rax), %eax	# Pos.XCharSize, _16
  3445              	# printk.c:49: 				Pos.XPosition=(Pos.XResolution/ Pos.XCharSize-1)*Pos.XCharSize;
  3446              		.loc 2 49 53
@@ -4618,9 +4654,6 @@ GAS LISTING printk.s 			page 1
  3464 0384 8B44030C 		movl	12(%rbx,%rax), %eax	# Pos.YPosition, _20
  3465              	# printk.c:51: 				if(Pos.YPosition<0){
  3466              		.loc 2 51 7
-GAS LISTING printk.s 			page 78
-
-
  3467 0388 85C0     		testl	%eax, %eax	# _20
  3468 038a 7941     		jns	.L22	#,
  3469              	# printk.c:52: 					Pos.YPosition=(Pos.YResolution/ Pos.YCharSize-1)*Pos.YCharSize;
@@ -4645,6 +4678,9 @@ GAS LISTING printk.s 			page 1
  3483 03ab 8D50FF   		leal	-1(%rax), %edx	#, _24
  3484              	# printk.c:52: 					Pos.YPosition=(Pos.YResolution/ Pos.YCharSize-1)*Pos.YCharSize;
  3485              		.loc 2 52 58
+GAS LISTING printk.s 			page 79
+
+
  3486 03ae 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp194
  3486      00000000 
  3486      0000
@@ -4678,9 +4714,6 @@ GAS LISTING printk.s 			page 1
  3505              		.loc 2 55 4
  3506 03e9 89D1     		movl	%edx, %ecx	# _27, _27
  3507 03eb 0FAFC8   		imull	%eax, %ecx	# _28, _27
-GAS LISTING printk.s 			page 79
-
-
  3508              	# printk.c:55: 			putchar(Pos.FB_addr,Pos.XResolution,Pos.XPosition*Pos.XCharSize,Pos.YPosition*Pos
  3509              		.loc 2 55 43
  3510 03ee 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp198
@@ -4705,6 +4738,9 @@ GAS LISTING printk.s 			page 1
  3521      0000
  3522 0424 488B4403 		movq	24(%rbx,%rax), %rax	# Pos.FB_addr, _34
  3522      18
+GAS LISTING printk.s 			page 80
+
+
  3523 0429 448B8508 		movl	-248(%rbp), %r8d	# BKcolor, tmp202
  3523      FFFFFF
  3524 0430 8BBD0CFF 		movl	-244(%rbp), %edi	# FRcolor, tmp203
@@ -4738,9 +4774,6 @@ GAS LISTING printk.s 			page 1
  3544              	# printk.c:56: 		}else if((unsigned char)*(buf+count)=='\t'){
  3545              		.loc 2 56 27
  3546 0478 0FB600   		movzbl	(%rax), %eax	# *_36, _37
-GAS LISTING printk.s 			page 80
-
-
  3547              	# printk.c:56: 		}else if((unsigned char)*(buf+count)=='\t'){
  3548              		.loc 2 56 11
  3549 047b 3C09     		cmpb	$9, %al	#, _37
@@ -4765,6 +4798,9 @@ GAS LISTING printk.s 			page 1
  3562              	# printk.c:59: 				line =((Pos.XPosition+8)& ~(8-1))-Pos.XPosition;
  3563              		.loc 2 59 42
  3564 0499 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp210
+GAS LISTING printk.s 			page 81
+
+
  3564      00000000 
  3564      0000
  3565 04a3 8B440308 		movl	8(%rbx,%rax), %eax	# Pos.XPosition, _41
@@ -4798,9 +4834,6 @@ GAS LISTING printk.s 			page 1
  3584 04d2 89D1     		movl	%edx, %ecx	# _42, _42
  3585 04d4 0FAFC8   		imull	%eax, %ecx	# _43, _42
  3586              	# printk.c:62: 				putchar(Pos.FB_addr,Pos.XResolution,Pos.XPosition*Pos.XCharSize,Pos.YPosition*Po
-GAS LISTING printk.s 			page 81
-
-
  3587              		.loc 2 62 44
  3588 04d7 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp214
  3588      00000000 
@@ -4825,6 +4858,9 @@ GAS LISTING printk.s 			page 1
  3600 050d 488B4403 		movq	24(%rbx,%rax), %rax	# Pos.FB_addr, _49
  3600      18
  3601 0512 448B8508 		movl	-248(%rbp), %r8d	# BKcolor, tmp218
+GAS LISTING printk.s 			page 82
+
+
  3601      FFFFFF
  3602 0519 8BBD0CFF 		movl	-244(%rbp), %edi	# FRcolor, tmp219
  3602      FFFF
@@ -4858,9 +4894,6 @@ GAS LISTING printk.s 			page 1
  3622      00
  3623              	.L23:
  3624              	# printk.c:65: 			putchar(Pos.FB_addr,Pos.XResolution,Pos.XPosition*Pos.XCharSize,Pos.YPosition*Pos
-GAS LISTING printk.s 			page 82
-
-
   64:printk.c      **** 		}else{
   65:printk.c      **** 			putchar(Pos.FB_addr,Pos.XResolution,Pos.XPosition*Pos.XCharSize,Pos.YPosition*Pos.YCharSize,FRco
  3625              		.loc 2 65 132
@@ -4885,6 +4918,9 @@ GAS LISTING printk.s 			page 1
  3639      0000
  3640 0590 8B54030C 		movl	12(%rbx,%rax), %edx	# Pos.YPosition, _57
  3641              	# printk.c:65: 			putchar(Pos.FB_addr,Pos.XResolution,Pos.XPosition*Pos.XCharSize,Pos.YPosition*Pos
+GAS LISTING printk.s 			page 83
+
+
  3642              		.loc 2 65 85
  3643 0594 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp228
  3643      00000000 
@@ -4918,9 +4954,6 @@ GAS LISTING printk.s 			page 1
  3662      0000
  3663 05dd 488B4403 		movq	24(%rbx,%rax), %rax	# Pos.FB_addr, _64
  3663      18
-GAS LISTING printk.s 			page 83
-
-
  3664 05e2 448B8D08 		movl	-248(%rbp), %r9d	# BKcolor, tmp233
  3664      FFFFFF
  3665 05e9 448B850C 		movl	-244(%rbp), %r8d	# FRcolor, tmp234
@@ -4945,6 +4978,9 @@ GAS LISTING printk.s 			page 1
  3678              	# printk.c:66: 			Pos.XPosition++;
  3679              		.loc 2 66 17
  3680 061a 8D5001   		leal	1(%rax), %edx	#, _66
+GAS LISTING printk.s 			page 84
+
+
  3681 061d 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp238
  3681      00000000 
  3681      0000
@@ -4978,9 +5014,6 @@ GAS LISTING printk.s 			page 1
  3701              		.loc 2 68 5
  3702 0657 39C1     		cmpl	%eax, %ecx	# _70, _67
  3703 0659 7C31     		jl	.L24	#,
-GAS LISTING printk.s 			page 84
-
-
  3704              	# printk.c:69: 			Pos.YPosition++;
   69:printk.c      **** 			Pos.YPosition++;
  3705              		.loc 2 69 7
@@ -5005,6 +5038,9 @@ GAS LISTING printk.s 			page 1
  3716      00000000 
  3717              	.L24:
  3718              	# printk.c:72: 		if(Pos.YPosition>=(Pos.YResolution/Pos.YCharSize)){
+GAS LISTING printk.s 			page 85
+
+
   71:printk.c      **** 	}
   72:printk.c      **** 		if(Pos.YPosition>=(Pos.YResolution/Pos.YCharSize)){
  3719              		.loc 2 72 9
@@ -5038,9 +5074,6 @@ GAS LISTING printk.s 			page 1
  3740 06bd 48B80000 		movabsq	$Pos@GOTOFF, %rax	#, tmp252
  3740      00000000 
  3740      0000
-GAS LISTING printk.s 			page 85
-
-
  3741 06c7 C744030C 		movl	$0, 12(%rbx,%rax)	#, Pos.YPosition
  3741      00000000 
  3742              	.L25:
@@ -5065,6 +5098,9 @@ GAS LISTING printk.s 			page 1
  3754 06e8 83BD38FF 		cmpl	$0, -200(%rbp)	#, line
  3754      FFFF00
  3755 06ef 0F8560FB 		jne	.L26	#,
+GAS LISTING printk.s 			page 86
+
+
  3755      FFFF
  3756              	# printk.c:76: return i;
   74:printk.c      **** 		}
@@ -5098,9 +5134,6 @@ GAS LISTING printk.s 			page 1
  3777              		.cfi_offset 6, -16
  3778 0706 4889E5   		movq	%rsp, %rbp	#,
  3779              		.cfi_def_cfa_register 6
-GAS LISTING printk.s 			page 86
-
-
  3780 0709 53       		pushq	%rbx	#
  3781 070a 4883EC18 		subq	$24, %rsp	#,
  3782              		.cfi_offset 3, -24
@@ -5125,6 +5158,9 @@ GAS LISTING printk.s 			page 1
  3795 0735 48BA0000 		movabsq	$Pos@GOTOFF, %rdx	#, tmp94
  3795      00000000 
  3795      0000
+GAS LISTING printk.s 			page 87
+
+
  3796 073f 8B4C1310 		movl	16(%rbx,%rdx), %ecx	# Pos.XCharSize, _2
  3797              	# printk.c:81:     int cols = Pos.XResolution / Pos.XCharSize;
  3798              		.loc 2 81 9
@@ -5158,9 +5194,6 @@ GAS LISTING printk.s 			page 1
  3818      000000
  3819              	# printk.c:84:     for (int y = 0; y < rows; y++) {
  3820              		.loc 2 84 5
-GAS LISTING printk.s 			page 87
-
-
  3821 0772 E9830000 		jmp	.L31	#
  3821      00
  3822              	.L34:
@@ -5185,6 +5218,9 @@ GAS LISTING printk.s 			page 1
  3835              	# printk.c:86:             putchar(Pos.FB_addr, Pos.XResolution, 
   86:printk.c      ****             putchar(Pos.FB_addr, Pos.XResolution, 
  3836              		.loc 2 86 13
+GAS LISTING printk.s 			page 88
+
+
  3837 078e 0FAF45F4 		imull	-12(%rbp), %eax	# y, _5
  3838 0792 89C1     		movl	%eax, %ecx	# _5, _6
  3839              	# printk.c:87:                    x * Pos.XCharSize, y * Pos.YCharSize,
@@ -5218,9 +5254,6 @@ GAS LISTING printk.s 			page 1
  3857      0000
  3858 07e0 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp107
  3859 07e4 FFD0     		call	*%rax	# tmp107
-GAS LISTING printk.s 			page 88
-
-
  3860              	.LVL4:
  3861 07e6 4883C408 		addq	$8, %rsp	#,
  3862              	# printk.c:85:         for (int x = 0; x < cols; x++) {
@@ -5245,6 +5278,9 @@ GAS LISTING printk.s 			page 1
  3877              		.loc 2 84 23 discriminator 1
  3878 07fa 8B45F4   		movl	-12(%rbp), %eax	# y, tmp110
  3879 07fd 3B45E8   		cmpl	-24(%rbp), %eax	# rows, tmp110
+GAS LISTING printk.s 			page 89
+
+
  3880 0800 0F8C71FF 		jl	.L34	#,
  3880      FFFF
  3881              	.LBE2:
@@ -5278,9 +5314,6 @@ GAS LISTING printk.s 			page 1
  3896 0830 C3       		ret	
  3897              		.cfi_endproc
  3898              	.LFE36:
-GAS LISTING printk.s 			page 89
-
-
  3899              		.size	clear_screen, .-clear_screen
  3900              		.globl	skip_atoi2
  3901              		.type	skip_atoi2, @function
@@ -5305,6 +5338,9 @@ GAS LISTING printk.s 			page 1
  3914      00000000 
  3914      0000
  3915 084a 4C01D8   		addq	%r11, %rax	#, tmp82
+GAS LISTING printk.s 			page 90
+
+
  3916 084d 48897DE8 		movq	%rdi, -24(%rbp)	# s, s
  3917              	# printk.c:99: 	int i=0;
   99:printk.c      **** 	int i=0;
@@ -5338,9 +5374,6 @@ GAS LISTING printk.s 			page 1
  3940 0872 488B45E8 		movq	-24(%rbp), %rax	# s, tmp98
  3941 0876 488910   		movq	%rdx, (%rax)	# _3, *s_15(D)
  3942              	# printk.c:104: 		i = i * 10 + (current_char - '0');  // 更新数值
-GAS LISTING printk.s 			page 90
-
-
  104:printk.c      **** 		i = i * 10 + (current_char - '0');  // 更新数值
  3943              		.loc 2 104 9
  3944 0879 8B55FC   		movl	-4(%rbp), %edx	# i, tmp99
@@ -5365,6 +5398,9 @@ GAS LISTING printk.s 			page 1
  3962 0893 488B45E8 		movq	-24(%rbp), %rax	# s, tmp103
  3963 0897 488B00   		movq	(%rax), %rax	# *s_15(D), _7
  3964 089a 0FB600   		movzbl	(%rax), %eax	# *_7, _8
+GAS LISTING printk.s 			page 91
+
+
  3965 089d 3C2F     		cmpb	$47, %al	#, _8
  3966 089f 7E0E     		jle	.L38	#,
  3967              	# printk.c:100: 	while(is_digit(**s)){
@@ -5398,9 +5434,6 @@ GAS LISTING printk.s 			page 1
  109:printk.c      **** int skip_atoi(const char **s){
  3990              		.loc 2 109 30
  3991              		.cfi_startproc
-GAS LISTING printk.s 			page 91
-
-
  3992 08b4 F30F1EFA 		endbr64	
  3993 08b8 55       		pushq	%rbp	#
  3994              		.cfi_def_cfa_offset 16
@@ -5425,6 +5458,9 @@ GAS LISTING printk.s 			page 1
  112:printk.c      ****  	while(is_digit(current_char = **s)){
  4007              		.loc 2 112 8
  4008 08db EB2C     		jmp	.L43	#
+GAS LISTING printk.s 			page 92
+
+
  4009              	.L45:
  4010              	# printk.c:113:  		(*s)++;                   // 指针向后移动
  113:printk.c      ****  		(*s)++;                   // 指针向后移动
@@ -5458,9 +5494,6 @@ GAS LISTING printk.s 			page 1
  112:printk.c      ****  		(*s)++;                   // 指针向后移动
  4037              		.loc 2 112 9
  4038 0909 488B45E8 		movq	-24(%rbp), %rax	# s, tmp98
-GAS LISTING printk.s 			page 92
-
-
  4039 090d 488B00   		movq	(%rax), %rax	# *s_12(D), _6
  4040 0910 0FB600   		movzbl	(%rax), %eax	# *_6, tmp99
  4041 0913 8845FB   		movb	%al, -5(%rbp)	# tmp99, current_char
@@ -5485,6 +5518,9 @@ GAS LISTING printk.s 			page 1
  117:printk.c      **** }
  4057              		.loc 2 117 1
  4058 0932 5D       		popq	%rbp	#
+GAS LISTING printk.s 			page 93
+
+
  4059              		.cfi_def_cfa 7, 8
  4060 0933 C3       		ret	
  4061              		.cfi_endproc
@@ -5518,9 +5554,6 @@ GAS LISTING printk.s 			page 1
  124:printk.c      **** //     // 1. 跳过前导空白字符
  125:printk.c      **** //     while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || 
  126:printk.c      **** //            str[i] == '\r' || str[i] == '\f' || str[i] == '\v') {
-GAS LISTING printk.s 			page 93
-
-
  127:printk.c      **** //         i++;
  128:printk.c      **** //     }
  129:printk.c      ****     
@@ -5545,6 +5578,9 @@ GAS LISTING printk.s 			page 1
  148:printk.c      **** //         i++;
  149:printk.c      **** //     }
  150:printk.c      ****     
+GAS LISTING printk.s 			page 94
+
+
  151:printk.c      **** //     // 4. 返回结果（考虑符号）
  152:printk.c      **** //     return sign * result;
  153:printk.c      **** // }
@@ -5578,9 +5614,6 @@ GAS LISTING printk.s 			page 1
  4095 0966 48BA0000 		movabsq	$.LC0@GOTOFF, %rdx	#, tmp123
  4095      00000000 
  4095      0000
-GAS LISTING printk.s 			page 94
-
-
  4096 0970 488D1410 		leaq	(%rax,%rdx), %rdx	#, tmp122
  4097 0974 488955F0 		movq	%rdx, -16(%rbp)	# tmp122, digits
  4098              	# printk.c:158: 	int i=0;
@@ -5605,6 +5638,9 @@ GAS LISTING printk.s 			page 1
  4111      0000
  4112 0993 488D0410 		leaq	(%rax,%rdx), %rax	#, tmp125
  4113 0997 488945F0 		movq	%rax, -16(%rbp)	# tmp125, digits
+GAS LISTING printk.s 			page 95
+
+
  4114              	.L49:
  4115              	# printk.c:162: 	if(type & LEFT){
  161:printk.c      **** 	}
@@ -5638,9 +5674,6 @@ GAS LISTING printk.s 			page 1
  4138 09b5 B8000000 		movl	$0, %eax	#, _61
  4138      00
  4139 09ba E90F0200 		jmp	.L83	#
-GAS LISTING printk.s 			page 95
-
-
  4139      00
  4140              	.L52:
  4141              	# printk.c:168: 	c=(type & ZEROPAD) ? '0' : ' ';
@@ -5665,6 +5698,9 @@ GAS LISTING printk.s 			page 1
  4156      00
  4157              	.L55:
  4158              	# printk.c:168: 	c=(type & ZEROPAD) ? '0' : ' ';
+GAS LISTING printk.s 			page 96
+
+
  4159              		.loc 2 168 3 discriminator 4
  4160 09d5 8845EB   		movb	%al, -21(%rbp)	# iftmp.0_62, c
  4161              	# printk.c:169: 	sign=0;
@@ -5698,9 +5734,6 @@ GAS LISTING printk.s 			page 1
  4184              	# printk.c:174: 		sign=(type & PLUS)? '+':((type&SPACE)?' ' :0);
  173:printk.c      **** 	}else{
  174:printk.c      **** 		sign=(type & PLUS)? '+':((type&SPACE)?' ' :0);
-GAS LISTING printk.s 			page 96
-
-
  4185              		.loc 2 174 14
  4186 09f7 8B4590   		movl	-112(%rbp), %eax	# type, tmp130
  4187 09fa 83E004   		andl	$4, %eax	#, _5
@@ -5725,6 +5758,9 @@ GAS LISTING printk.s 			page 1
  4205              	# printk.c:174: 		sign=(type & PLUS)? '+':((type&SPACE)?' ' :0);
  4206              		.loc 2 174 7 discriminator 4
  4207 0a11 8845FF   		movb	%al, -1(%rbp)	# iftmp.1_63, sign
+GAS LISTING printk.s 			page 97
+
+
  4208              	.L57:
  4209              	# printk.c:177: 	if(sign){
  175:printk.c      **** 	}
@@ -5758,9 +5794,6 @@ GAS LISTING printk.s 			page 1
  4230              		.loc 2 182 8
  4231 0a2e 836D9802 		subl	$2, -104(%rbp)	#, size
  4232 0a32 EB0A     		jmp	.L61	#
-GAS LISTING printk.s 			page 97
-
-
  4233              	.L62:
  4234              	# printk.c:183: 		}else if(base==8){
  183:printk.c      **** 		}else if(base==8){
@@ -5785,6 +5818,9 @@ GAS LISTING printk.s 			page 1
  4247              		.loc 2 188 8
  4248 0a45 8B45EC   		movl	-20(%rbp), %eax	# i, i.2_9
  4249 0a48 8D5001   		leal	1(%rax), %edx	#, tmp133
+GAS LISTING printk.s 			page 98
+
+
  4250 0a4b 8955EC   		movl	%edx, -20(%rbp)	# tmp133, i
  4251              	# printk.c:188: 		tmp[i++]='0';
  4252              		.loc 2 188 11
@@ -5818,9 +5854,6 @@ GAS LISTING printk.s 			page 1
  4274              	# printk.c:191: 		tmp[i++]=digits[do_div2(num,base)];
  191:printk.c      **** 		tmp[i++]=digits[do_div2(num,base)];
  4275              		.loc 2 191 18
-GAS LISTING printk.s 			page 98
-
-
  4276 0a76 488B45F0 		movq	-16(%rbp), %rax	# digits, tmp140
  4277 0a7a 488D0C02 		leaq	(%rdx,%rax), %rcx	#, _12
  4278              	# printk.c:191: 		tmp[i++]=digits[do_div2(num,base)];
@@ -5845,6 +5878,9 @@ GAS LISTING printk.s 			page 1
  4293 0a90 48837DA0 		cmpq	$0, -96(%rbp)	#, num
  4293      00
  4294 0a95 75C0     		jne	.L66	#,
+GAS LISTING printk.s 			page 99
+
+
  4295              	.L64:
  4296              	# printk.c:193: 	if(i>precision){
  193:printk.c      **** 	if(i>precision){
@@ -5878,9 +5914,6 @@ GAS LISTING printk.s 			page 1
  4319              		.loc 2 198 8
  4320 0ab5 EB0F     		jmp	.L69	#
  4321              	.L70:
-GAS LISTING printk.s 			page 99
-
-
  4322              	# printk.c:199: 			*str++=' ';
  199:printk.c      **** 			*str++=' ';
  4323              		.loc 2 199 8
@@ -5905,6 +5938,9 @@ GAS LISTING printk.s 			page 1
  4340              	.L68:
  4341              	# printk.c:202: 	if(sign){
  200:printk.c      **** 		}
+GAS LISTING printk.s 			page 100
+
+
  201:printk.c      **** 	}
  202:printk.c      **** 	if(sign){
  4342              		.loc 2 202 4
@@ -5938,9 +5974,6 @@ GAS LISTING printk.s 			page 1
  4366 0af9 7511     		jne	.L73	#,
  4367              	# printk.c:207: 			*str++='0';
  207:printk.c      **** 			*str++='0';
-GAS LISTING printk.s 			page 100
-
-
  4368              		.loc 2 207 8
  4369 0afb 488B45A8 		movq	-88(%rbp), %rax	# str, str.7_20
  4370 0aff 488D5001 		leaq	1(%rax), %rdx	#, tmp152
@@ -5965,6 +5998,9 @@ GAS LISTING printk.s 			page 1
  4387              		.loc 2 209 10
  4388 0b1e C60030   		movb	$48, (%rax)	#, *str.8_21
  4389              	# printk.c:210: 			*str++=digits[33];
+GAS LISTING printk.s 			page 101
+
+
  210:printk.c      **** 			*str++=digits[33];
  4390              		.loc 2 210 17
  4391 0b21 488B45F0 		movq	-16(%rbp), %rax	# digits, tmp154
@@ -5998,9 +6034,6 @@ GAS LISTING printk.s 			page 1
  4415 0b44 EB12     		jmp	.L75	#
  4416              	.L76:
  4417              	# printk.c:215: 			*str++=c;
-GAS LISTING printk.s 			page 101
-
-
  215:printk.c      **** 			*str++=c;
  4418              		.loc 2 215 8
  4419 0b46 488B45A8 		movq	-88(%rbp), %rax	# str, str.10_26
@@ -6025,6 +6058,9 @@ GAS LISTING printk.s 			page 1
  4436              	# printk.c:218: 	while(i<precision--){
  216:printk.c      **** 		}
  217:printk.c      **** 	}
+GAS LISTING printk.s 			page 102
+
+
  218:printk.c      **** 	while(i<precision--){
  4437              		.loc 2 218 7
  4438 0b65 EB0F     		jmp	.L77	#
@@ -6058,9 +6094,6 @@ GAS LISTING printk.s 			page 1
  4461              	.L80:
  4462              	# printk.c:222: 		*str++=tmp[i];
  222:printk.c      **** 		*str++=tmp[i];
-GAS LISTING printk.s 			page 102
-
-
  4463              		.loc 2 222 7
  4464 0b86 488B45A8 		movq	-88(%rbp), %rax	# str, str.14_30
  4465 0b8a 488D5001 		leaq	1(%rax), %rdx	#, tmp162
@@ -6085,6 +6118,9 @@ GAS LISTING printk.s 			page 1
  221:printk.c      **** 		*str++=tmp[i];
  4482              		.loc 2 221 12
  4483 0ba8 85C0     		testl	%eax, %eax	# i.15_32
+GAS LISTING printk.s 			page 103
+
+
  4484 0baa 7FDA     		jg	.L80	#,
  4485              	# printk.c:224: 	while(size-- >0){
  223:printk.c      **** 	}
@@ -6118,9 +6154,6 @@ GAS LISTING printk.s 			page 1
  227:printk.c      **** 	return str;
  4508              		.loc 2 227 9
  4509 0bca 488B45A8 		movq	-88(%rbp), %rax	# str, _61
-GAS LISTING printk.s 			page 103
-
-
  4510              	.L83:
  4511              	# printk.c:228: }
  228:printk.c      **** }
@@ -6145,6 +6178,9 @@ GAS LISTING printk.s 			page 1
  4527              		.cfi_def_cfa_offset 16
  4528              		.cfi_offset 6, -16
  4529 0bd5 4889E5   		movq	%rsp, %rbp	#,
+GAS LISTING printk.s 			page 104
+
+
  4530              		.cfi_def_cfa_register 6
  4531 0bd8 53       		pushq	%rbx	#
  4532 0bd9 4883EC68 		subq	$104, %rsp	#,
@@ -6178,9 +6214,6 @@ GAS LISTING printk.s 			page 1
  4547      00
  4548              	.L169:
  4549              	# printk.c:242: 		if (*fmt !='%')
-GAS LISTING printk.s 			page 104
-
-
  241:printk.c      **** 	{
  242:printk.c      **** 		if (*fmt !='%')
  4550              		.loc 2 242 7
@@ -6205,6 +6238,9 @@ GAS LISTING printk.s 			page 1
  4567 0c25 0FB612   		movzbl	(%rdx), %edx	# *fmt.19_3, _5
  4568              	# printk.c:244: 			*str++ =*fmt;
  4569              		.loc 2 244 11
+GAS LISTING printk.s 			page 105
+
+
  4570 0c28 8810     		movb	%dl, (%rax)	# _5, *str.20_4
  4571              	# printk.c:245: 			continue;
  245:printk.c      **** 			continue;
@@ -6238,9 +6274,6 @@ GAS LISTING printk.s 			page 1
  4592 0c4c 83E820   		subl	$32, %eax	#, tmp281
  4593 0c4f 83F810   		cmpl	$16, %eax	#, tmp281
  4594 0c52 7740     		ja	.L91	#,
-GAS LISTING printk.s 			page 105
-
-
  4595 0c54 89C0     		movl	%eax, %eax	# tmp281, tmp282
  4596 0c56 488D14C5 		leaq	0(,%rax,8), %rdx	#, tmp283
  4596      00000000 
@@ -6265,6 +6298,9 @@ GAS LISTING printk.s 			page 1
  4609      00000000 
  4610 0070 00000000 		.quad	.L91-.L93
  4610      00000000 
+GAS LISTING printk.s 			page 106
+
+
  4611 0078 00000000 		.quad	.L91-.L93
  4611      00000000 
  4612 0080 00000000 		.quad	.L91-.L93
@@ -6298,9 +6334,6 @@ GAS LISTING printk.s 			page 1
  4626              		.loc 2 253 11
  4627 0c76 834DDC10 		orl	$16, -36(%rbp)	#, flags
  4628              	# printk.c:254: 				goto repeat;
-GAS LISTING printk.s 			page 106
-
-
  254:printk.c      **** 				goto repeat;
  4629              		.loc 2 254 5
  4630 0c7a EBBA     		jmp	.L89	#
@@ -6325,6 +6358,9 @@ GAS LISTING printk.s 			page 1
  4643              		.loc 2 260 5
  4644 0c86 EBAE     		jmp	.L89	#
  4645              	.L96:
+GAS LISTING printk.s 			page 107
+
+
  4646              	# printk.c:262: 				flags |=SPECIAL;
  261:printk.c      **** 			case '#':
  262:printk.c      **** 				flags |=SPECIAL;
@@ -6358,9 +6394,6 @@ GAS LISTING printk.s 			page 1
  4665 0c9b 488B45A0 		movq	-96(%rbp), %rax	# fmt, fmt.23_11
  4666 0c9f 0FB600   		movzbl	(%rax), %eax	# *fmt.23_11, _12
  4667              	# printk.c:270: 		if (is_digit(*fmt))
-GAS LISTING printk.s 			page 107
-
-
  4668              		.loc 2 270 6
  4669 0ca2 3C2F     		cmpb	$47, %al	#, _12
  4670 0ca4 7E27     		jle	.L98	#,
@@ -6385,6 +6418,9 @@ GAS LISTING printk.s 			page 1
  4685 0cc8 8945D8   		movl	%eax, -40(%rbp)	# tmp291, field_width
  4686              	# printk.c:272: 			field_width= skip_atoi(&fmt);
  4687              		.loc 2 272 15
+GAS LISTING printk.s 			page 108
+
+
  4688 0ccb EB6C     		jmp	.L99	#
  4689              	.L98:
  4690              	# printk.c:274: 		else if (*fmt == '*')
@@ -6418,9 +6454,6 @@ GAS LISTING printk.s 			page 1
  4713 0cfd 89C0     		movl	%eax, %eax	# D.2382, D.2383
  4714 0cff 4801D0   		addq	%rdx, %rax	# D.2381, D.2386
  4715 0d02 488B5598 		movq	-104(%rbp), %rdx	# args, tmp295
-GAS LISTING printk.s 			page 108
-
-
  4716 0d06 8B12     		movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2384
  4717 0d08 8D4A08   		leal	8(%rdx), %ecx	#, D.2385
  4718 0d0b 488B5598 		movq	-104(%rbp), %rdx	# args, tmp296
@@ -6445,6 +6478,9 @@ GAS LISTING printk.s 			page 1
  280:printk.c      **** 				field_width=-field_width;
  4735              		.loc 2 280 16
  4736 0d32 F75DD8   		negl	-40(%rbp)	# field_width
+GAS LISTING printk.s 			page 109
+
+
  4737              	# printk.c:281: 				flags |=LEFT;
  281:printk.c      **** 				flags |=LEFT;
  4738              		.loc 2 281 11
@@ -6478,9 +6514,6 @@ GAS LISTING printk.s 			page 1
  288:printk.c      **** 			if (is_digit(*fmt))
  4758              		.loc 2 288 8
  4759 0d5b 488B45A0 		movq	-96(%rbp), %rax	# fmt, fmt.29_23
-GAS LISTING printk.s 			page 109
-
-
  4760 0d5f 0FB600   		movzbl	(%rax), %eax	# *fmt.29_23, _24
  4761              	# printk.c:288: 			if (is_digit(*fmt))
  4762              		.loc 2 288 7
@@ -6505,6 +6538,9 @@ GAS LISTING printk.s 			page 1
  4777 0d86 FFD0     		call	*%rax	# tmp301
  4778              	.LVL6:
  4779 0d88 8945D4   		movl	%eax, -44(%rbp)	# tmp303, precision
+GAS LISTING printk.s 			page 110
+
+
  4780              	# printk.c:290: 				precision=skip_atoi(&fmt);
  4781              		.loc 2 290 14
  4782 0d8b EB5F     		jmp	.L104	#
@@ -6538,9 +6574,6 @@ GAS LISTING printk.s 			page 1
  4806 0dbb 8B00     		movl	(%rax), %eax	# args_159(D)->gp_offset, D.2394
  4807 0dbd 89C0     		movl	%eax, %eax	# D.2394, D.2395
  4808 0dbf 4801D0   		addq	%rdx, %rax	# D.2393, D.2398
-GAS LISTING printk.s 			page 110
-
-
  4809 0dc2 488B5598 		movq	-104(%rbp), %rdx	# args, tmp307
  4810 0dc6 8B12     		movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2396
  4811 0dc8 8D4A08   		leal	8(%rdx), %ecx	#, D.2397
@@ -6565,6 +6598,9 @@ GAS LISTING printk.s 			page 1
  4828 0df0 7907     		jns	.L102	#,
  4829              	# printk.c:297: 				precision=0;
  297:printk.c      **** 				precision=0;
+GAS LISTING printk.s 			page 111
+
+
  4830              		.loc 2 297 14
  4831 0df2 C745D400 		movl	$0, -44(%rbp)	#, precision
  4831      000000
@@ -6598,9 +6634,6 @@ GAS LISTING printk.s 			page 1
  4850 0e12 3C6C     		cmpb	$108, %al	#, _34
  4851 0e14 7416     		je	.L107	#,
  4852              	# printk.c:305: 		if(*fmt =='h' || *fmt =='l' || *fmt =='L'||*fmt =='z'){
-GAS LISTING printk.s 			page 111
-
-
  4853              		.loc 2 305 34 discriminator 2
  4854 0e16 488B45A0 		movq	-96(%rbp), %rax	# fmt, fmt.35_35
  4855 0e1a 0FB600   		movzbl	(%rax), %eax	# *fmt.35_35, _36
@@ -6625,6 +6658,9 @@ GAS LISTING printk.s 			page 1
  4873              	# printk.c:306: 			qualifier =*fmt;
  4874              		.loc 2 306 14
  4875 0e33 0FBEC0   		movsbl	%al, %eax	# _40, tmp312
+GAS LISTING printk.s 			page 112
+
+
  4876 0e36 8945C8   		movl	%eax, -56(%rbp)	# tmp312, qualifier
  4877              	# printk.c:307: 			fmt++;
  307:printk.c      **** 			fmt++;
@@ -6658,9 +6694,6 @@ GAS LISTING printk.s 			page 1
  4899 0e7a 3EFFE0   		notrack jmp	*%rax	# tmp318
  4900              		.section	.rodata
  4901              		.align 8
-GAS LISTING printk.s 			page 112
-
-
  4902              		.align 4
  4903              	.L111:
  4904 00d8 00000000 		.quad	.L120-.L111
@@ -6685,6 +6718,9 @@ GAS LISTING printk.s 			page 1
  4913      00000000 
  4914 0128 00000000 		.quad	.L109-.L111
  4914      00000000 
+GAS LISTING printk.s 			page 113
+
+
  4915 0130 00000000 		.quad	.L109-.L111
  4915      00000000 
  4916 0138 00000000 		.quad	.L109-.L111
@@ -6718,9 +6754,6 @@ GAS LISTING printk.s 			page 1
  4930 01a8 00000000 		.quad	.L109-.L111
  4930      00000000 
  4931 01b0 00000000 		.quad	.L109-.L111
-GAS LISTING printk.s 			page 113
-
-
  4931      00000000 
  4932 01b8 00000000 		.quad	.L109-.L111
  4932      00000000 
@@ -6745,6 +6778,9 @@ GAS LISTING printk.s 			page 1
  4942 0208 00000000 		.quad	.L109-.L111
  4942      00000000 
  4943 0210 00000000 		.quad	.L109-.L111
+GAS LISTING printk.s 			page 114
+
+
  4943      00000000 
  4944 0218 00000000 		.quad	.L109-.L111
  4944      00000000 
@@ -6778,9 +6814,6 @@ GAS LISTING printk.s 			page 1
  4958      00000000 
  4959 0290 00000000 		.quad	.L109-.L111
  4959      00000000 
-GAS LISTING printk.s 			page 114
-
-
  4960 0298 00000000 		.quad	.L109-.L111
  4960      00000000 
  4961 02a0 00000000 		.quad	.L109-.L111
@@ -6805,6 +6838,9 @@ GAS LISTING printk.s 			page 1
  4970      00000000 
  4971 02f0 00000000 		.quad	.L109-.L111
  4971      00000000 
+GAS LISTING printk.s 			page 115
+
+
  4972 02f8 00000000 		.quad	.L117-.L111
  4972      00000000 
  4973 0300 00000000 		.quad	.L109-.L111
@@ -6838,9 +6874,6 @@ GAS LISTING printk.s 			page 1
  4987 0370 00000000 		.quad	.L110-.L111
  4987      00000000 
  4988              		.text
-GAS LISTING printk.s 			page 115
-
-
  4989              	.L118:
  4990              	# printk.c:311: 				if(!(flags &LEFT)){
  310:printk.c      **** 			case 'c':
@@ -6865,6 +6898,9 @@ GAS LISTING printk.s 			page 1
  5006 0e91 488955E8 		movq	%rdx, -24(%rbp)	# tmp321, str
  5007              	# printk.c:313: 						*str++ =' ';
  5008              		.loc 2 313 14
+GAS LISTING printk.s 			page 116
+
+
  5009 0e95 C60020   		movb	$32, (%rax)	#, *str.40_47
  5010              	.L122:
  5011              	# printk.c:312: 					while(--field_width>0){
@@ -6898,9 +6934,6 @@ GAS LISTING printk.s 			page 1
  5035              	.L124:
  5036 0ed1 488B4598 		movq	-104(%rbp), %rax	# args, tmp327
  5037 0ed5 488B4008 		movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2410
-GAS LISTING printk.s 			page 116
-
-
  5038 0ed9 488D4808 		leaq	8(%rax), %rcx	#, D.2411
  5039 0edd 488B5598 		movq	-104(%rbp), %rdx	# args, tmp328
  5040 0ee1 48894A08 		movq	%rcx, 8(%rdx)	# D.2411, args_159(D)->overflow_arg_area
@@ -6925,6 +6958,9 @@ GAS LISTING printk.s 			page 1
  5058              	# printk.c:318: 					*str++ =' ';
  318:printk.c      **** 					*str++ =' ';
  5059              		.loc 2 318 10
+GAS LISTING printk.s 			page 117
+
+
  5060 0ef9 488B45E8 		movq	-24(%rbp), %rax	# str, str.42_51
  5061 0efd 488D5001 		leaq	1(%rax), %rdx	#, tmp330
  5062 0f01 488955E8 		movq	%rdx, -24(%rbp)	# tmp330, str
@@ -6958,9 +6994,6 @@ GAS LISTING printk.s 			page 1
  5084 0f2a 488B4598 		movq	-104(%rbp), %rax	# args, tmp333
  5085 0f2e 8B00     		movl	(%rax), %eax	# args_159(D)->gp_offset, D.2418
  5086 0f30 89C0     		movl	%eax, %eax	# D.2418, D.2419
-GAS LISTING printk.s 			page 117
-
-
  5087 0f32 4801D0   		addq	%rdx, %rax	# D.2417, D.2422
  5088 0f35 488B5598 		movq	-104(%rbp), %rdx	# args, tmp334
  5089 0f39 8B12     		movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2420
@@ -6985,6 +7018,9 @@ GAS LISTING printk.s 			page 1
  5106 0f66 7508     		jne	.L130	#,
  5107              	# printk.c:324: 					s='\0';
  324:printk.c      **** 					s='\0';
+GAS LISTING printk.s 			page 118
+
+
  5108              		.loc 2 324 7
  5109 0f68 48C745E0 		movq	$0, -32(%rbp)	#, s
  5109      00000000 
@@ -7018,9 +7054,6 @@ GAS LISTING printk.s 			page 1
  5130              	# printk.c:331: 				else if(len >precision){
  330:printk.c      **** 				}
  331:printk.c      **** 				else if(len >precision){
-GAS LISTING printk.s 			page 118
-
-
  5131              		.loc 2 331 12
  5132 0f98 8B45D0   		movl	-48(%rbp), %eax	# len, tmp344
  5133 0f9b 3B45D4   		cmpl	-44(%rbp), %eax	# precision, tmp344
@@ -7045,6 +7078,9 @@ GAS LISTING printk.s 			page 1
  335:printk.c      **** 					while(len <field_width--){
  5149              		.loc 2 335 11
  5150 0fb0 EB0F     		jmp	.L134	#
+GAS LISTING printk.s 			page 119
+
+
  5151              	.L135:
  5152              	# printk.c:336: 						*str++ =' ';
  336:printk.c      **** 						*str++ =' ';
@@ -7078,9 +7114,6 @@ GAS LISTING printk.s 			page 1
  5174              	# printk.c:339: 				for(i=0;i<len;i++){
  5175              		.loc 2 339 5
  5176 0fd6 EB21     		jmp	.L136	#
-GAS LISTING printk.s 			page 119
-
-
  5177              	.L137:
  5178              	# printk.c:340: 						*str++ =*s++;
  340:printk.c      **** 						*str++ =*s++;
@@ -7105,6 +7138,9 @@ GAS LISTING printk.s 			page 1
  5196 0ff5 8345CC01 		addl	$1, -52(%rbp)	#, i
  5197              	.L136:
  5198              	# printk.c:339: 				for(i=0;i<len;i++){
+GAS LISTING printk.s 			page 120
+
+
  339:printk.c      **** 						*str++ =*s++;
  5199              		.loc 2 339 14 discriminator 1
  5200 0ff9 8B45CC   		movl	-52(%rbp), %eax	# i, tmp351
@@ -7138,9 +7174,6 @@ GAS LISTING printk.s 			page 1
  5223 101b 3945D0   		cmpl	%eax, -48(%rbp)	# field_width.48_59, len
  5224 101e 7CE3     		jl	.L139	#,
  5225              	# printk.c:345: 			break;
-GAS LISTING printk.s 			page 120
-
-
  344:printk.c      **** 					}
  345:printk.c      **** 			break;
  5226              		.loc 2 345 4
@@ -7165,6 +7198,9 @@ GAS LISTING printk.s 			page 1
  5235 102f 488B4598 		movq	-104(%rbp), %rax	# args, tmp354
  5236 1033 8B00     		movl	(%rax), %eax	# args_159(D)->gp_offset, D.2427
  5237 1035 83F82F   		cmpl	$47, %eax	#, D.2427
+GAS LISTING printk.s 			page 121
+
+
  5238 1038 7724     		ja	.L141	#,
  5239 103a 488B4598 		movq	-104(%rbp), %rax	# args, tmp355
  5240 103e 488B5010 		movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2429
@@ -7198,9 +7234,6 @@ GAS LISTING printk.s 			page 1
  5268 108b 89D1     		movl	%edx, %ecx	# tmp363,
  5269 108d BA080000 		movl	$8, %edx	#,
  5269      00
-GAS LISTING printk.s 			page 121
-
-
  5270 1092 4889FE   		movq	%rdi, %rsi	# _61,
  5271 1095 4889C7   		movq	%rax, %rdi	# tmp364,
  5272 1098 48B80000 		movabsq	$number@GOTOFF, %rax	#, tmp366
@@ -7225,6 +7258,9 @@ GAS LISTING printk.s 			page 1
  5282              		.loc 2 356 21
  5283 10b1 488B4598 		movq	-104(%rbp), %rax	# args, tmp368
  5284 10b5 8B00     		movl	(%rax), %eax	# args_159(D)->gp_offset, D.2439
+GAS LISTING printk.s 			page 122
+
+
  5285 10b7 83F82F   		cmpl	$47, %eax	#, D.2439
  5286 10ba 7724     		ja	.L144	#,
  5287 10bc 488B4598 		movq	-104(%rbp), %rax	# args, tmp369
@@ -7258,9 +7294,6 @@ GAS LISTING printk.s 			page 1
  5314 1105 4189F1   		movl	%esi, %r9d	# tmp375,
  5315 1108 4189C8   		movl	%ecx, %r8d	# tmp376,
  5316 110b 89D1     		movl	%edx, %ecx	# tmp377,
-GAS LISTING printk.s 			page 122
-
-
  5317 110d BA080000 		movl	$8, %edx	#,
  5317      00
  5318 1112 4889FE   		movq	%rdi, %rsi	# _63,
@@ -7285,6 +7318,9 @@ GAS LISTING printk.s 			page 1
  5332 1135 750B     		jne	.L146	#,
  5333              	# printk.c:362: 					field_width=sizeof(void *)*2;
  361:printk.c      **** 					//Automatically set the default width of the pointer as sizeof(void *) * 2
+GAS LISTING printk.s 			page 123
+
+
  362:printk.c      **** 					field_width=sizeof(void *)*2;
  5334              		.loc 2 362 17
  5335 1137 C745D810 		movl	$16, -40(%rbp)	#, field_width
@@ -7318,9 +7354,6 @@ GAS LISTING printk.s 			page 1
  5359 1171 488B4598 		movq	-104(%rbp), %rax	# args, tmp387
  5360 1175 488B4008 		movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2458
  5361 1179 488D4808 		leaq	8(%rax), %rcx	#, D.2459
-GAS LISTING printk.s 			page 123
-
-
  5362 117d 488B5598 		movq	-104(%rbp), %rdx	# args, tmp388
  5363 1181 48894A08 		movq	%rcx, 8(%rdx)	# D.2459, args_159(D)->overflow_arg_area
  5364              	.L148:
@@ -7345,6 +7378,9 @@ GAS LISTING printk.s 			page 1
  5380 11b5 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp393
  5381 11b9 FFD0     		call	*%rax	# tmp393
  5382              	.LVL10:
+GAS LISTING printk.s 			page 124
+
+
  5383 11bb 488945E8 		movq	%rax, -24(%rbp)	# tmp395, str
  5384              	# printk.c:366: 				break;
  366:printk.c      **** 				break;
@@ -7378,9 +7414,6 @@ GAS LISTING printk.s 			page 1
  5405 11e9 8B00     		movl	(%rax), %eax	# args_159(D)->gp_offset, D.2466
  5406 11eb 89C0     		movl	%eax, %eax	# D.2466, D.2467
  5407 11ed 4801D0   		addq	%rdx, %rax	# D.2465, D.2470
-GAS LISTING printk.s 			page 124
-
-
  5408 11f0 488B5598 		movq	-104(%rbp), %rdx	# args, tmp399
  5409 11f4 8B12     		movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2468
  5410 11f6 8D4A08   		leal	8(%rdx), %ecx	#, D.2469
@@ -7405,6 +7438,9 @@ GAS LISTING printk.s 			page 1
  5429 1228 4189F1   		movl	%esi, %r9d	# tmp403,
  5430 122b 4189C8   		movl	%ecx, %r8d	# tmp404,
  5431 122e 89D1     		movl	%edx, %ecx	# tmp405,
+GAS LISTING printk.s 			page 125
+
+
  5432 1230 BA100000 		movl	$16, %edx	#,
  5432      00
  5433 1235 4889FE   		movq	%rdi, %rsi	# _67,
@@ -7438,9 +7474,6 @@ GAS LISTING printk.s 			page 1
  5453 126b 8B00     		movl	(%rax), %eax	# args_159(D)->gp_offset, D.2478
  5454 126d 89C0     		movl	%eax, %eax	# D.2478, D.2479
  5455 126f 4801D0   		addq	%rdx, %rax	# D.2477, D.2482
-GAS LISTING printk.s 			page 125
-
-
  5456 1272 488B5598 		movq	-104(%rbp), %rdx	# args, tmp413
  5457 1276 8B12     		movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2480
  5458 1278 8D4A08   		leal	8(%rdx), %ecx	#, D.2481
@@ -7465,6 +7498,9 @@ GAS LISTING printk.s 			page 1
  5476 12a4 488B45E8 		movq	-24(%rbp), %rax	# str, tmp420
  5477 12a8 4189F1   		movl	%esi, %r9d	# tmp417,
  5478 12ab 4189C8   		movl	%ecx, %r8d	# tmp418,
+GAS LISTING printk.s 			page 126
+
+
  5479 12ae 89D1     		movl	%edx, %ecx	# tmp419,
  5480 12b0 BA100000 		movl	$16, %edx	#,
  5480      00
@@ -7498,9 +7534,6 @@ GAS LISTING printk.s 			page 1
  5499      0000
  5500              	# printk.c:381: 					str=number(str,va_arg(args,unsigned long),10,field_width,precision,flags);
  381:printk.c      **** 					str=number(str,va_arg(args,unsigned long),10,field_width,precision,flags);
-GAS LISTING printk.s 			page 126
-
-
  5501              		.loc 2 381 21
  5502 12e2 488B4598 		movq	-104(%rbp), %rax	# args, tmp424
  5503 12e6 8B00     		movl	(%rax), %eax	# args_159(D)->gp_offset, D.2487
@@ -7525,6 +7558,9 @@ GAS LISTING printk.s 			page 1
  5522 131d 488B5598 		movq	-104(%rbp), %rdx	# args, tmp430
  5523 1321 48894A08 		movq	%rcx, 8(%rdx)	# D.2495, args_159(D)->overflow_arg_area
  5524              	.L157:
+GAS LISTING printk.s 			page 127
+
+
  5525 1325 488B00   		movq	(%rax), %rax	# MEM[(long unsigned int * {ref-all})addr.66_267], _70
  5526              	# printk.c:381: 					str=number(str,va_arg(args,unsigned long),10,field_width,precision,flags);
  5527              		.loc 2 381 10 discriminator 1
@@ -7558,9 +7594,6 @@ GAS LISTING printk.s 			page 1
  5547              	.L155:
  5548              	# printk.c:383: 					str=number(str,va_arg(args,unsigned int),10,field_width,precision,flags);
  383:printk.c      **** 				}
-GAS LISTING printk.s 			page 127
-
-
  5549              		.loc 2 383 21
  5550 1364 488B4598 		movq	-104(%rbp), %rax	# args, tmp438
  5551 1368 8B00     		movl	(%rax), %eax	# args_159(D)->gp_offset, D.2499
@@ -7585,6 +7618,9 @@ GAS LISTING printk.s 			page 1
  5570 139f 488B5598 		movq	-104(%rbp), %rdx	# args, tmp444
  5571 13a3 48894A08 		movq	%rcx, 8(%rdx)	# D.2507, args_159(D)->overflow_arg_area
  5572              	.L160:
+GAS LISTING printk.s 			page 128
+
+
  5573 13a7 8B00     		movl	(%rax), %eax	# MEM[(unsigned int * {ref-all})addr.67_268], _72
  5574              	# printk.c:383: 					str=number(str,va_arg(args,unsigned int),10,field_width,precision,flags);
  383:printk.c      **** 				}
@@ -7618,9 +7654,6 @@ GAS LISTING printk.s 			page 1
  387:printk.c      **** 				if(qualifier =='l'){
  5597              		.loc 2 387 7
  5598 13e4 837DC86C 		cmpl	$108, -56(%rbp)	#, qualifier
-GAS LISTING printk.s 			page 128
-
-
  5599 13e8 7561     		jne	.L161	#,
  5600              	.LBB6:
  5601              	# printk.c:388: 					long *ip=va_arg(args,long *);
@@ -7645,6 +7678,9 @@ GAS LISTING printk.s 			page 1
  5619              	.L162:
  5620 1419 488B4598 		movq	-104(%rbp), %rax	# args, tmp457
  5621 141d 488B4008 		movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2518
+GAS LISTING printk.s 			page 129
+
+
  5622 1421 488D4808 		leaq	8(%rax), %rcx	#, D.2519
  5623 1425 488B5598 		movq	-104(%rbp), %rdx	# args, tmp458
  5624 1429 48894A08 		movq	%rcx, 8(%rdx)	# D.2519, args_159(D)->overflow_arg_area
@@ -7678,9 +7714,6 @@ GAS LISTING printk.s 			page 1
  5644              		.loc 2 391 11
  5645 144b 488B4598 		movq	-104(%rbp), %rax	# args, tmp462
  5646 144f 8B00     		movl	(%rax), %eax	# args_159(D)->gp_offset, D.2523
-GAS LISTING printk.s 			page 129
-
-
  5647 1451 83F82F   		cmpl	$47, %eax	#, D.2523
  5648 1454 7724     		ja	.L165	#,
  5649 1456 488B4598 		movq	-104(%rbp), %rax	# args, tmp463
@@ -7705,6 +7738,9 @@ GAS LISTING printk.s 			page 1
  5668 148e 488B00   		movq	(%rax), %rax	# MEM[(int * * {ref-all})addr.69_270], tmp469
  5669 1491 488945C0 		movq	%rax, -64(%rbp)	# tmp469, ip
  5670              	# printk.c:392: 					*ip=(str-buf);
+GAS LISTING printk.s 			page 130
+
+
  392:printk.c      **** 				}
  5671              		.loc 2 392 14
  5672 1495 488B45E8 		movq	-24(%rbp), %rax	# str, tmp470
@@ -7738,9 +7774,6 @@ GAS LISTING printk.s 			page 1
  5696              	# printk.c:399: 				*str++ ='%';
  398:printk.c      **** 			default:
  399:printk.c      **** 				*str++ ='%';
-GAS LISTING printk.s 			page 130
-
-
  5697              		.loc 2 399 9
  5698 14b8 488B45E8 		movq	-24(%rbp), %rax	# str, str.50_78
  5699 14bc 488D5001 		leaq	1(%rax), %rdx	#, tmp473
@@ -7765,6 +7798,9 @@ GAS LISTING printk.s 			page 1
  5716              		.loc 2 401 10
  5717 14d6 488B45E8 		movq	-24(%rbp), %rax	# str, str.53_82
  5718 14da 488D4801 		leaq	1(%rax), %rcx	#, tmp474
+GAS LISTING printk.s 			page 131
+
+
  5719 14de 48894DE8 		movq	%rcx, -24(%rbp)	# tmp474, str
  5720              	# printk.c:401: 					*str++ =*fmt;
  5721              		.loc 2 401 14
@@ -7798,9 +7834,6 @@ GAS LISTING printk.s 			page 1
  5744 14fe 488945A0 		movq	%rax, -96(%rbp)	# _87, fmt
  5745              	.L86:
  5746              	# printk.c:240: 	for (str=buf;*fmt;fmt++)
-GAS LISTING printk.s 			page 131
-
-
  240:printk.c      **** 	{
  5747              		.loc 2 240 15 discriminator 1
  5748 1502 488B45A0 		movq	-96(%rbp), %rax	# fmt, fmt.56_88
@@ -7825,6 +7858,9 @@ GAS LISTING printk.s 			page 1
  5761              		.loc 2 409 1
  5762 1520 488B5DF8 		movq	-8(%rbp), %rbx	#,
  5763 1524 C9       		leave	
+GAS LISTING printk.s 			page 132
+
+
  5764              		.cfi_def_cfa 7, 8
  5765 1525 C3       		ret	
  5766              		.cfi_endproc
@@ -7858,9 +7894,6 @@ GAS LISTING printk.s 			page 1
  5792 0034 1B       		.byte	0x1b
  5793 0035 39000000 		.long	0x39
  5794 0039 15       		.uleb128 0x15
-GAS LISTING printk.s 			page 132
-
-
  5795 003a 00000000 		.long	.LASF55
  5796 003e 42000000 		.long	0x42
  5797 0042 09       		.uleb128 0x9
@@ -7885,6 +7918,9 @@ GAS LISTING printk.s 			page 1
  5816 006a 8E000000 		.long	0x8e
  5817 006e 00       		.byte	0
  5818 006f 0B       		.uleb128 0xb
+GAS LISTING printk.s 			page 133
+
+
  5819 0070 00000000 		.long	.LASF3
  5820 0074 8E000000 		.long	0x8e
  5821 0078 04       		.byte	0x4
@@ -7918,9 +7954,6 @@ GAS LISTING printk.s 			page 1
  5849 00b2 52000000 		.long	0x52
  5850 00b6 0F       		.byte	0xf
  5851 00b7 00       		.byte	0
-GAS LISTING printk.s 			page 133
-
-
  5852 00b8 08       		.uleb128 0x8
  5853 00b9 01       		.byte	0x1
  5854 00ba 08       		.byte	0x8
@@ -7945,6 +7978,9 @@ GAS LISTING printk.s 			page 1
  5872 00e2 06       		.uleb128 0x6
  5873 00e3 00000000 		.long	.LASF11
  5874 00e7 22       		.byte	0x22
+GAS LISTING printk.s 			page 134
+
+
  5875 00e8 09       		.byte	0x9
  5876 00e9 43010000 		.long	0x143
  5877 00ed 00       		.byte	0
@@ -7978,9 +8014,6 @@ GAS LISTING printk.s 			page 1
  5905 0124 09       		.byte	0x9
  5906 0125 43010000 		.long	0x143
  5907 0129 14       		.byte	0x14
-GAS LISTING printk.s 			page 134
-
-
  5908 012a 06       		.uleb128 0x6
  5909 012b 00000000 		.long	.LASF17
  5910 012f 28       		.byte	0x28
@@ -8005,6 +8038,9 @@ GAS LISTING printk.s 			page 1
  5929 0154 2A       		.byte	0x2a
  5930 0155 02       		.byte	0x2
  5931 0156 D5000000 		.long	0xd5
+GAS LISTING printk.s 			page 135
+
+
  5932 015a 09       		.uleb128 0x9
  5933 015b 03       		.byte	0x3
  5934 015c 00000000 		.quad	Pos
@@ -8038,9 +8074,6 @@ GAS LISTING printk.s 			page 1
  5960 01a0 00000000 		.quad	.LFB40
  5960      00000000 
  5961 01a8 56090000 		.quad	.LFE40-.LFB40
-GAS LISTING printk.s 			page 135
-
-
  5961      00000000 
  5962 01b0 01       		.uleb128 0x1
  5963 01b1 9C       		.byte	0x9c
@@ -8065,6 +8098,9 @@ GAS LISTING printk.s 			page 1
  5982 01d5 00000000 		.long	.LASF21
  5983 01d9 E7       		.byte	0xe7
  5984 01da 30       		.byte	0x30
+GAS LISTING printk.s 			page 136
+
+
  5985 01db 39030000 		.long	0x339
  5986 01df 03       		.uleb128 0x3
  5987 01e0 91       		.byte	0x91
@@ -8098,9 +8134,6 @@ GAS LISTING printk.s 			page 1
  6015 0210 EB       		.byte	0xeb
  6016 0211 06       		.byte	0x6
  6017 0212 43010000 		.long	0x143
-GAS LISTING printk.s 			page 136
-
-
  6018 0216 02       		.uleb128 0x2
  6019 0217 91       		.byte	0x91
  6020 0218 48       		.sleb128 -56
@@ -8125,6 +8158,9 @@ GAS LISTING printk.s 			page 1
  6039 0238 EE       		.byte	0xee
  6040 0239 06       		.byte	0x6
  6041 023a 43010000 		.long	0x143
+GAS LISTING printk.s 			page 137
+
+
  6042 023e 03       		.uleb128 0x3
  6043 023f 91       		.byte	0x91
  6044 0240 BC7F     		.sleb128 -68
@@ -8158,9 +8194,6 @@ GAS LISTING printk.s 			page 1
  6069 0282 91       		.byte	0x91
  6070 0283 A87F     		.sleb128 -88
  6071 0285 00       		.byte	0
-GAS LISTING printk.s 			page 137
-
-
  6072 0286 12       		.uleb128 0x12
  6073 0287 00000000 		.quad	.LBB7
  6073      00000000 
@@ -8185,6 +8218,9 @@ GAS LISTING printk.s 			page 1
  6090 02ba 00000000 		.quad	.LVL6
  6090      00000000 
  6091 02c2 3F040000 		.long	0x43f
+GAS LISTING printk.s 			page 138
+
+
  6092 02c6 02       		.uleb128 0x2
  6093 02c7 00000000 		.quad	.LVL7
  6093      00000000 
@@ -8218,9 +8254,6 @@ GAS LISTING printk.s 			page 1
  6114      00000000 
  6115 032a 4F030000 		.long	0x34f
  6116 032e 00       		.byte	0
-GAS LISTING printk.s 			page 138
-
-
  6117 032f 07       		.uleb128 0x7
  6118 0330 75010000 		.long	0x175
  6119 0334 07       		.uleb128 0x7
@@ -8245,6 +8278,9 @@ GAS LISTING printk.s 			page 1
  6137      00000000 
  6138 0363 9C020000 		.quad	.LFE39-.LFB39
  6138      00000000 
+GAS LISTING printk.s 			page 139
+
+
  6139 036b 01       		.uleb128 0x1
  6140 036c 9C       		.byte	0x9c
  6141 036d 2F040000 		.long	0x42f
@@ -8278,9 +8314,6 @@ GAS LISTING printk.s 			page 1
  6169 03a4 35       		.byte	0x35
  6170 03a5 43010000 		.long	0x143
  6171 03a9 03       		.uleb128 0x3
-GAS LISTING printk.s 			page 139
-
-
  6172 03aa 91       		.byte	0x91
  6173 03ab 887F     		.sleb128 -120
  6174 03ad 04       		.uleb128 0x4
@@ -8305,6 +8338,9 @@ GAS LISTING printk.s 			page 1
  6193 03cf 07       		.byte	0x7
  6194 03d0 75010000 		.long	0x175
  6195 03d4 02       		.uleb128 0x2
+GAS LISTING printk.s 			page 140
+
+
  6196 03d5 91       		.byte	0x91
  6197 03d6 5B       		.sleb128 -37
  6198 03d7 01       		.uleb128 0x1
@@ -8338,9 +8374,6 @@ GAS LISTING printk.s 			page 1
  6226 0407 43010000 		.long	0x143
  6227 040b 02       		.uleb128 0x2
  6228 040c 91       		.byte	0x91
-GAS LISTING printk.s 			page 140
-
-
  6229 040d 5C       		.sleb128 -36
  6230 040e 0D       		.uleb128 0xd
  6231 040f 00000000 		.quad	.LBB5
@@ -8365,6 +8398,9 @@ GAS LISTING printk.s 			page 1
  6248 043d 31       		.byte	0x31
  6249 043e 00       		.byte	0
  6250 043f 0C       		.uleb128 0xc
+GAS LISTING printk.s 			page 141
+
+
  6251 0440 00000000 		.long	.LASF34
  6252 0444 6D       		.byte	0x6d
  6253 0445 43010000 		.long	0x143
@@ -8398,9 +8434,6 @@ GAS LISTING printk.s 			page 1
  6279 047e 75010000 		.long	0x175
  6280 0482 02       		.uleb128 0x2
  6281 0483 91       		.byte	0x91
-GAS LISTING printk.s 			page 141
-
-
  6282 0484 6B       		.sleb128 -21
  6283 0485 00       		.byte	0
  6284 0486 07       		.uleb128 0x7
@@ -8425,6 +8458,9 @@ GAS LISTING printk.s 			page 1
  6301 04b5 91       		.byte	0x91
  6302 04b6 58       		.sleb128 -40
  6303 04b7 03       		.uleb128 0x3
+GAS LISTING printk.s 			page 142
+
+
  6304 04b8 6900     		.string	"i"
  6305 04ba 63       		.byte	0x63
  6306 04bb 06       		.byte	0x6
@@ -8458,9 +8494,6 @@ GAS LISTING printk.s 			page 1
  6330 04fb 9C       		.byte	0x9c
  6331 04fc 82050000 		.long	0x582
  6332 0500 04       		.uleb128 0x4
-GAS LISTING printk.s 			page 142
-
-
  6333 0501 00000000 		.long	.LASF37
  6334 0505 50       		.byte	0x50
  6335 0506 20       		.byte	0x20
@@ -8485,6 +8518,9 @@ GAS LISTING printk.s 			page 1
  6354 0528 91       		.byte	0x91
  6355 0529 5C       		.sleb128 -36
  6356 052a 01       		.uleb128 0x1
+GAS LISTING printk.s 			page 143
+
+
  6357 052b 00000000 		.long	.LASF40
  6358 052f 52       		.byte	0x52
  6359 0530 09       		.byte	0x9
@@ -8518,9 +8554,6 @@ GAS LISTING printk.s 			page 1
  6383 056f 02       		.uleb128 0x2
  6384 0570 91       		.byte	0x91
  6385 0571 60       		.sleb128 -32
-GAS LISTING printk.s 			page 143
-
-
  6386 0572 02       		.uleb128 0x2
  6387 0573 00000000 		.quad	.LVL4
  6387      00000000 
@@ -8545,6 +8578,9 @@ GAS LISTING printk.s 			page 1
  6404 05a8 1F       		.byte	0x1f
  6405 05a9 8E000000 		.long	0x8e
  6406 05ad 03       		.uleb128 0x3
+GAS LISTING printk.s 			page 144
+
+
  6407 05ae 91       		.byte	0x91
  6408 05af FC7D     		.sleb128 -260
  6409 05b1 04       		.uleb128 0x4
@@ -8578,9 +8614,6 @@ GAS LISTING printk.s 			page 1
  6437 05e3 06       		.byte	0x6
  6438 05e4 43010000 		.long	0x143
  6439 05e8 03       		.uleb128 0x3
-GAS LISTING printk.s 			page 144
-
-
  6440 05e9 91       		.byte	0x91
  6441 05ea AC7E     		.sleb128 -212
  6442 05ec 01       		.uleb128 0x1
@@ -8605,6 +8638,9 @@ GAS LISTING printk.s 			page 1
  6461 0610 04       		.byte	0x4
  6462 0611 00000000 		.quad	.L18
  6462      00000000 
+GAS LISTING printk.s 			page 145
+
+
  6463 0619 02       		.uleb128 0x2
  6464 061a 00000000 		.quad	.LVL0
  6464      00000000 
@@ -8638,9 +8674,6 @@ GAS LISTING printk.s 			page 1
  6487 066f 1C       		.byte	0x1c
  6488 0670 4A010000 		.long	0x14a
  6489 0674 02       		.uleb128 0x2
-GAS LISTING printk.s 			page 145
-
-
  6490 0675 91       		.byte	0x91
  6491 0676 48       		.sleb128 -56
  6492 0677 04       		.uleb128 0x4
@@ -8665,6 +8698,9 @@ GAS LISTING printk.s 			page 1
  6511 0695 33       		.byte	0x33
  6512 0696 43010000 		.long	0x143
  6513 069a 03       		.uleb128 0x3
+GAS LISTING printk.s 			page 146
+
+
  6514 069b 91       		.byte	0x91
  6515 069c BC7F     		.sleb128 -68
  6516 069e 04       		.uleb128 0x4
@@ -8698,9 +8734,6 @@ GAS LISTING printk.s 			page 1
  6544 06d0 43010000 		.long	0x143
  6545 06d4 02       		.uleb128 0x2
  6546 06d5 91       		.byte	0x91
-GAS LISTING printk.s 			page 146
-
-
  6547 06d6 6C       		.sleb128 -20
  6548 06d7 03       		.uleb128 0x3
  6549 06d8 6A00     		.string	"j"
@@ -8725,6 +8758,9 @@ GAS LISTING printk.s 			page 1
  6568 06f8 0E070000 		.long	0x70e
  6569 06fc 02       		.uleb128 0x2
  6570 06fd 91       		.byte	0x91
+GAS LISTING printk.s 			page 147
+
+
  6571 06fe 58       		.sleb128 -40
  6572 06ff 01       		.uleb128 0x1
  6573 0700 00000000 		.long	.LASF52
@@ -8740,7 +8776,7 @@ GAS LISTING printk.s 			page 1
  6583 0713 1F       		.uleb128 0x1f
  6584 0714 00000000 		.long	.LASF59
  6585 0718 01       		.byte	0x1
- 6586 0719 0E02     		.value	0x20e
+ 6586 0719 2F02     		.value	0x22f
  6587 071b 13       		.byte	0x13
  6588 071c 43010000 		.long	0x143
  6589 0720 00000000 		.quad	.LFB24
@@ -8752,19 +8788,16 @@ GAS LISTING printk.s 			page 1
  6593 0732 20       		.uleb128 0x20
  6594 0733 00000000 		.long	.LASF53
  6595 0737 01       		.byte	0x1
- 6596 0738 0E02     		.value	0x20e
+ 6596 0738 2F02     		.value	0x22f
  6597 073a 21       		.byte	0x21
  6598 073b 2F030000 		.long	0x32f
  6599 073f 02       		.uleb128 0x2
  6600 0740 91       		.byte	0x91
  6601 0741 58       		.sleb128 -40
-GAS LISTING printk.s 			page 147
-
-
  6602 0742 0E       		.uleb128 0xe
  6603 0743 70747200 		.string	"ptr"
  6604 0747 01       		.byte	0x1
- 6605 0748 1002     		.value	0x210
+ 6605 0748 3102     		.value	0x231
  6606 074a 0B       		.byte	0xb
  6607 074b 2F030000 		.long	0x32f
  6608 074f 02       		.uleb128 0x2
@@ -8785,6 +8818,9 @@ GAS LISTING printk.s 			page 1
  6623 0008 3B       		.uleb128 0x3b
  6624 0009 0B       		.uleb128 0xb
  6625 000a 39       		.uleb128 0x39
+GAS LISTING printk.s 			page 148
+
+
  6626 000b 0B       		.uleb128 0xb
  6627 000c 49       		.uleb128 0x49
  6628 000d 13       		.uleb128 0x13
@@ -8818,9 +8854,6 @@ GAS LISTING printk.s 			page 1
  6656 0029 02       		.uleb128 0x2
  6657 002a 18       		.uleb128 0x18
  6658 002b 00       		.byte	0
-GAS LISTING printk.s 			page 148
-
-
  6659 002c 00       		.byte	0
  6660 002d 04       		.uleb128 0x4
  6661 002e 05       		.uleb128 0x5
@@ -8845,6 +8878,9 @@ GAS LISTING printk.s 			page 1
  6680 0041 00       		.byte	0
  6681 0042 03       		.uleb128 0x3
  6682 0043 08       		.uleb128 0x8
+GAS LISTING printk.s 			page 149
+
+
  6683 0044 3A       		.uleb128 0x3a
  6684 0045 21       		.uleb128 0x21
  6685 0046 02       		.sleb128 2
@@ -8878,9 +8914,6 @@ GAS LISTING printk.s 			page 1
  6713 0062 00       		.byte	0
  6714 0063 07       		.uleb128 0x7
  6715 0064 0F       		.uleb128 0xf
-GAS LISTING printk.s 			page 149
-
-
  6716 0065 00       		.byte	0
  6717 0066 0B       		.uleb128 0xb
  6718 0067 21       		.uleb128 0x21
@@ -8905,6 +8938,9 @@ GAS LISTING printk.s 			page 1
  6737 007a 01       		.byte	0x1
  6738 007b 49       		.uleb128 0x49
  6739 007c 13       		.uleb128 0x13
+GAS LISTING printk.s 			page 150
+
+
  6740 007d 01       		.uleb128 0x1
  6741 007e 13       		.uleb128 0x13
  6742 007f 00       		.byte	0
@@ -8938,9 +8974,6 @@ GAS LISTING printk.s 			page 1
  6770 009b 0C       		.uleb128 0xc
  6771 009c 2E       		.uleb128 0x2e
  6772 009d 01       		.byte	0x1
-GAS LISTING printk.s 			page 150
-
-
  6773 009e 3F       		.uleb128 0x3f
  6774 009f 19       		.uleb128 0x19
  6775 00a0 03       		.uleb128 0x3
@@ -8965,6 +8998,9 @@ GAS LISTING printk.s 			page 1
  6794 00b3 18       		.uleb128 0x18
  6795 00b4 7A       		.uleb128 0x7a
  6796 00b5 19       		.uleb128 0x19
+GAS LISTING printk.s 			page 151
+
+
  6797 00b6 01       		.uleb128 0x1
  6798 00b7 13       		.uleb128 0x13
  6799 00b8 00       		.byte	0
@@ -8998,9 +9034,6 @@ GAS LISTING printk.s 			page 1
  6827 00d4 0F       		.uleb128 0xf
  6828 00d5 16       		.uleb128 0x16
  6829 00d6 00       		.byte	0
-GAS LISTING printk.s 			page 151
-
-
  6830 00d7 03       		.uleb128 0x3
  6831 00d8 0E       		.uleb128 0xe
  6832 00d9 3A       		.uleb128 0x3a
@@ -9025,6 +9058,9 @@ GAS LISTING printk.s 			page 1
  6851 00ec 3B       		.uleb128 0x3b
  6852 00ed 0B       		.uleb128 0xb
  6853 00ee 39       		.uleb128 0x39
+GAS LISTING printk.s 			page 152
+
+
  6854 00ef 0B       		.uleb128 0xb
  6855 00f0 49       		.uleb128 0x49
  6856 00f1 13       		.uleb128 0x13
@@ -9058,9 +9094,6 @@ GAS LISTING printk.s 			page 1
  6884 010d 12       		.uleb128 0x12
  6885 010e 07       		.uleb128 0x7
  6886 010f 01       		.uleb128 0x1
-GAS LISTING printk.s 			page 152
-
-
  6887 0110 13       		.uleb128 0x13
  6888 0111 00       		.byte	0
  6889 0112 00       		.byte	0
@@ -9085,6 +9118,9 @@ GAS LISTING printk.s 			page 1
  6908 0125 01       		.uleb128 0x1
  6909 0126 12       		.uleb128 0x12
  6910 0127 07       		.uleb128 0x7
+GAS LISTING printk.s 			page 153
+
+
  6911 0128 40       		.uleb128 0x40
  6912 0129 18       		.uleb128 0x18
  6913 012a 7A       		.uleb128 0x7a
@@ -9118,9 +9154,6 @@ GAS LISTING printk.s 			page 1
  6941 0146 03       		.uleb128 0x3
  6942 0147 0E       		.uleb128 0xe
  6943 0148 49       		.uleb128 0x49
-GAS LISTING printk.s 			page 153
-
-
  6944 0149 13       		.uleb128 0x13
  6945 014a 00       		.byte	0
  6946 014b 00       		.byte	0
@@ -9145,6 +9178,9 @@ GAS LISTING printk.s 			page 1
  6965 015e 0B       		.uleb128 0xb
  6966 015f 0B       		.uleb128 0xb
  6967 0160 00       		.byte	0
+GAS LISTING printk.s 			page 154
+
+
  6968 0161 00       		.byte	0
  6969 0162 18       		.uleb128 0x18
  6970 0163 34       		.uleb128 0x34
@@ -9178,9 +9214,6 @@ GAS LISTING printk.s 			page 1
  6998 017f 0B       		.uleb128 0xb
  6999 0180 39       		.uleb128 0x39
  7000 0181 0B       		.uleb128 0xb
-GAS LISTING printk.s 			page 154
-
-
  7001 0182 01       		.uleb128 0x1
  7002 0183 13       		.uleb128 0x13
  7003 0184 00       		.byte	0
@@ -9205,6 +9238,9 @@ GAS LISTING printk.s 			page 1
  7022 0197 05       		.uleb128 0x5
  7023 0198 00       		.byte	0
  7024 0199 00       		.byte	0
+GAS LISTING printk.s 			page 155
+
+
  7025 019a 1C       		.uleb128 0x1c
  7026 019b 26       		.uleb128 0x26
  7027 019c 00       		.byte	0
@@ -9238,9 +9274,6 @@ GAS LISTING printk.s 			page 1
  7055 01b8 01       		.uleb128 0x1
  7056 01b9 13       		.uleb128 0x13
  7057 01ba 00       		.byte	0
-GAS LISTING printk.s 			page 155
-
-
  7058 01bb 00       		.byte	0
  7059 01bc 1E       		.uleb128 0x1e
  7060 01bd 18       		.uleb128 0x18
@@ -9265,6 +9298,9 @@ GAS LISTING printk.s 			page 1
  7079 01d0 11       		.uleb128 0x11
  7080 01d1 01       		.uleb128 0x1
  7081 01d2 12       		.uleb128 0x12
+GAS LISTING printk.s 			page 156
+
+
  7082 01d3 07       		.uleb128 0x7
  7083 01d4 40       		.uleb128 0x40
  7084 01d5 18       		.uleb128 0x18
@@ -9298,9 +9334,6 @@ GAS LISTING printk.s 			page 1
  7112 000b 00       		.byte	0
  7113 000c 0000     		.value	0
  7114 000e 0000     		.value	0
-GAS LISTING printk.s 			page 156
-
-
  7115 0010 00000000 		.quad	.Ltext0
  7115      00000000 
  7116 0018 26150000 		.quad	.Letext0-.Ltext0
@@ -9325,6 +9358,9 @@ GAS LISTING printk.s 			page 1
  7126              	.LASF11:
  7127 000f 58526573 		.string	"XResolution"
  7127      6F6C7574 
+GAS LISTING printk.s 			page 157
+
+
  7127      696F6E00 
  7128              	.LASF54:
  7129 001b 474E5520 		.string	"GNU C17 13.3.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stac
@@ -9358,9 +9394,6 @@ GAS LISTING printk.s 			page 1
  7139      00
  7140              	.LASF53:
  7141 0106 53747269 		.string	"String"
-GAS LISTING printk.s 			page 157
-
-
  7141      6E6700
  7142              	.LASF41:
  7143 010d 636F6C6F 		.string	"color_printk"
@@ -9385,6 +9418,9 @@ GAS LISTING printk.s 			page 1
  7151      20636861 
  7151      7200
  7152              	.LASF19:
+GAS LISTING printk.s 			page 158
+
+
  7153 0146 666F6E74 		.string	"font_ascii"
  7153      5F617363 
  7153      696900
@@ -9418,9 +9454,6 @@ GAS LISTING printk.s 			page 1
  7169 0196 70757463 		.string	"putchar"
  7169      68617200 
  7170              	.LASF2:
-GAS LISTING printk.s 			page 158
-
-
  7171 019e 67705F6F 		.string	"gp_offset"
  7171      66667365 
  7171      7400
@@ -9445,6 +9478,9 @@ GAS LISTING printk.s 			page 1
  7181      5F617265 
  7181      6100
  7182              	.LASF25:
+GAS LISTING printk.s 			page 159
+
+
  7183 01d6 7175616C 		.string	"qualifier"
  7183      69666965 
  7183      7200
@@ -9478,9 +9514,6 @@ GAS LISTING printk.s 			page 1
  7199      00
  7200              	.LASF14:
  7201 021f 59506F73 		.string	"YPosition"
-GAS LISTING printk.s 			page 159
-
-
  7201      6974696F 
  7201      6E00
  7202              	.LASF13:
@@ -9505,6 +9538,9 @@ GAS LISTING printk.s 			page 1
  7213 0254 6669656C 		.string	"field_width"
  7213      645F7769 
  7213      64746800 
+GAS LISTING printk.s 			page 160
+
+
  7214              	.LASF21:
  7215 0260 61726773 		.string	"args"
  7215      00
@@ -9538,9 +9574,6 @@ GAS LISTING printk.s 			page 1
  7231      6700
  7232              	.LASF32:
  7233 02a6 5F5F7265 		.string	"__res"
-GAS LISTING printk.s 			page 160
-
-
  7233      7300
  7234              	.LASF28:
  7235 02ac 73697A65 		.string	"size"
@@ -9550,22 +9583,25 @@ GAS LISTING printk.s 			page 1
  7237      696E7466 
  7237      00
  7238              		.section	.debug_line_str,"MS",@progbits,1
- 7239              	.LASF0:
- 7240 0000 7072696E 		.string	"printk.c"
- 7240      746B2E63 
- 7240      00
- 7241              	.LASF1:
- 7242 0009 2F686F6D 		.string	"/home/student/myos/kernel"
- 7242      652F7374 
- 7242      7564656E 
- 7242      742F6D79 
- 7242      6F732F6B 
+ 7239              	.LASF1:
+ 7240 0000 2F776F72 		.string	"/workspace/myos/kernel"
+ 7240      6B737061 
+ 7240      63652F6D 
+ 7240      796F732F 
+ 7240      6B65726E 
+ 7241              	.LASF0:
+ 7242 0017 7072696E 		.string	"printk.c"
+ 7242      746B2E63 
+ 7242      00
  7243              		.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
- 7244 0023 2F686F6D 		.section	.note.GNU-stack,"",@progbits
- 7244      652F7374 
- 7244      7564656E 
- 7244      742F6D79 
- 7244      6F732F6B 
+ 7244 0020 2F776F72 		.section	.note.GNU-stack,"",@progbits
+ 7244      6B737061 
+ 7244      63652F6D 
+ 7244      796F732F 
+GAS LISTING printk.s 			page 161
+
+
+ 7244      6B65726E 
  7245              		.section	.note.gnu.property,"a"
  7246              		.align 8
  7247 0000 04000000 		.long	1f - 0f
@@ -9582,7 +9618,7 @@ GAS LISTING printk.s 			page 1
  7258              	3:
  7259 001c 00000000 		.align 8
  7260              	4:
-GAS LISTING printk.s 			page 161
+GAS LISTING printk.s 			page 162
 
 
 DEFINED SYMBOLS

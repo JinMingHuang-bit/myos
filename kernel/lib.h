@@ -2,21 +2,8 @@
 #ifndef _LIB_H_
 #define _LIB_H_
 
-#define NULL 0
-/*&(((type *)0)->member)
-将地址0强制转换为type*类型
-
-访问该结构体的member成员
-
-取该成员的地址
-
-结果: 得到member在结构体中的偏移量（因为基地址为0）
-
- (unsigned long)p - (unsigned long)&(((type *)0)->member)
-从成员的实际地址中减去该成员在结构体中的偏移量
-
-结果: 得到整个结构体的起始地址
-*/
+//#define NULL 0
+#define NULL ((void *)0)
 
 // allow interrupt 
 /*As for memory modification, 
@@ -35,12 +22,68 @@ and consumes one instruction cycle of time.*/
 //确保所有在 mfence 指令之前发出的内存加载（load/读）和存储（store/写）操作，
 //都在 mfence 指令之后发出的任何内存操作之前完成
 #define io_mfence() 	__asm__ __volatile__ ("mfence	\n\t":::"memory")
+/*&(((type *)0)->member)
+将地址0强制转换为type*类型
+
+访问该结构体的member成员
+
+取该成员的地址
+
+结果: 得到member在结构体中的偏移量（因为基地址为0）
+
+ (unsigned long)p - (unsigned long)&(((type *)0)->member)
+从成员的实际地址中减去该成员在结构体中的偏移量
+
+结果: 得到整个结构体的起始地址
+*/
 #define container_of(ptr,type,member)							\
 ({											\
 	typeof(((type *)0)->member) * p = (ptr);					\
 	(type *)((unsigned long)p - (unsigned long)&(((type *)0)->member));		\
 })
+//linux version
+enum {
+	false	= 0,
+	true	= 1
+};
 
+/**
+ * container_of_linux - cast a member of a structure out to the containing structure
+ * @ptr:	the pointer to the member.
+ * @type:	the type of the container struct this is embedded in.
+ * @member:	the name of the member within the struct.
+ *
+ * WARNING: any const qualifier of @ptr is lost.
+ */
+
+//取消定义(如果有)
+#undef offsetof
+//定义offsetof为编译器固有的offsetof
+#define offsetof(TYPE, MEMBER)	__builtin_offsetof(TYPE, MEMBER)
+
+#define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
+#define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+#define typeof_member(T, m)	typeof(((T*)0)->m)
+
+#define container_of_linux(ptr, type, member) ({				\
+	void *__mptr = (void *)(ptr);					\
+	static_assert(__same_type(*(ptr), ((type *)0)->member) ||	\
+		      __same_type(*(ptr), void),			\
+		      "pointer type mismatch in container_of_linux()");	\
+	((type *)(__mptr - offsetof(type, member))); })
+
+/**
+ * container_of_const - cast a member of a structure out to the containing
+ *			structure and preserve the const-ness of the pointer
+ * @ptr:		the pointer to the member
+ * @type:		the type of the container struct this is embedded in.
+ * @member:		the name of the member within the struct.
+ */
+#define container_of_const(ptr, type, member)				\
+	_Generic(ptr,							\
+		const typeof(*(ptr)) *: ((const type *)container_of_linux(ptr, type, member)),\
+		default: ((type *)container_of_linux(ptr, type, member))	\
+	)
 struct List
 {
     struct List *next;
