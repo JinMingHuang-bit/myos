@@ -41,12 +41,12 @@ and consumes one instruction cycle of time.*/
 	typeof(((type *)0)->member) * p = (ptr);					\
 	(type *)((unsigned long)p - (unsigned long)&(((type *)0)->member));		\
 })
-//linux version
+
 enum {
 	false	= 0,
 	true	= 1
 };
-
+//linux version
 /**
  * container_of_linux - cast a member of a structure out to the containing structure
  * @ptr:	the pointer to the member.
@@ -110,16 +110,16 @@ static inline void list_add_to_before(struct List *entry,struct List*new ){
     entry->prev = new;
 }
 static inline void list_del(struct List *entry){
-    entry->prev->next = entry->next;
     entry->next->prev = entry->prev;
+	entry->prev->next = entry->next;
 }
 
 static inline long list_is_empty(struct List *entry){
     if (entry->next == entry && entry->prev == entry)
     {
-        return 1;
+        return true;
     }else{
-        return 0;
+        return false;
     }
 }
 

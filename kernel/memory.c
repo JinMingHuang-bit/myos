@@ -47,7 +47,7 @@ void init_memory(){
 		memory_management_struct.e820[i].type=p->type;
 		memory_management_struct.e820_length =i;
 		p++;
-		if(p->type >4){
+		if(p->type >4 ||p->length==0 || p->type<1){
 			break;
 		}
 	}
@@ -67,4 +67,12 @@ void init_memory(){
 		TotalMem+=(end-start)>>PAGE_2M_SHIFT;
 	}
 	color_printk(ORANGE,BLACK,"OS Can Used Total 2M PAGEs:%#010x=%010d\n",TotalMem,TotalMem);
+	TotalMem=memory_management_struct.e820[memory_management_struct.e820_length].address+memory_management_struct.e820[memory_management_struct.e820_length].length;
+	color_printk(ORANGE,BLACK,"Now OS Can Used Total 2M PAGEs:%#010x=%010d\n",TotalMem,TotalMem);
+
+	//bits map contruction init
+	memory_management_struct.bits_map=(unsigned long *)((memory_management_struct.end_brk+PAGE_4K_SIZE-1)&PAGE_4K_MASK);
+	memory_management_struct.bits_size=TotalMem>>PAGE_2M_SHIFT;	
+	memory_management_struct.bits_map_length=(((unsigned long)(TotalMem>>PAGE_2M_SHIFT)+sizeof(long)*8-1)/8)&(~(sizeof(long)-1));
+	
 }

@@ -25,6 +25,11 @@ void Start_Kernel(void)
     cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
     asm volatile("mov %0, %%cr4" : : "r"(cr4));
     
+    extern char _text;
+    extern char _etext;
+    extern char _edata;
+    extern char _end;
+    color_printk(YELLOW,BLACK,"_text:%#018lx,_etext:%#018lx,_edata:%#018lx,_end:%#018lx\n",&_text,&_etext,&_edata,&_end);
     int *addr=(int *)0xffff800000a00000;
     //0xffff800000a00000 是一个线性地址
     int i;
@@ -35,44 +40,17 @@ void Start_Kernel(void)
     Pos.XCharSize=8;
     Pos.YCharSize=16;
     Pos.FB_addr=(int *)0xffff800000a00000;
-    Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+    Pos.FB_length=(Pos.XResolution*Pos.YResolution*4+PAGE_4K_SIZE -1)&~(PAGE_4K_MASK);
     load_TR(8);
-    //set_tss64(0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00);
     set_tss64(0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,
 0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00);
     sys_vector_init();
-    struct  Global_Memory_Descriptor memory_management_struct={{0},0};
-    // for(i=0;i<Pos.XResolution*20;i++){
-    //     *((char*)addr+0)=(char)0x00;
-    //     *((char*)addr+1)=(char)0x00;
-    //     *((char*)addr+2)=(char)0xff;
-    //     *((char*)addr+3)=(char)0x00;
-    //     addr=addr+1;
+    struct  Global_Memory_Descriptor memory_management_struct;
+    memory_management_struct.start_code=(unsigned long)&_text;
+    memory_management_struct.end_code=(unsigned long)&_etext;
+    memory_management_struct.end_data=(unsigned long)&_edata;
+    memory_management_struct.end_brk=(unsigned long)&_end;
 
-    // }
-    // for(i=0;i<Pos.XResolution*20;i++){
-    //     *((char*)addr+0)=(char)0x00;
-    //     *((char*)addr+1)=(char)0xff;
-    //     *((char*)addr+2)=(char)0x00;
-    //     *((char*)addr+3)=(char)0x00;
-    //     addr=addr+1;
-
-    // }
-    // for(i=0;i<Pos.XResolution*20;i++){
-    //     *((char*)addr+0)=(char)0xff;
-    //     *((char*)addr+1)=(char)0x00;
-    //     *((char*)addr+2)=(char)0x00;
-    //     *((char*)addr+3)=(char)0x00;
-    //     addr=addr+1;
-    // }
-    // for(i=0;i<Pos.XResolution*20;i++){
-    //     *((char*)addr+0)=(char)0xff;
-    //     *((char*)addr+1)=(char)0xff;
-    //     *((char*)addr+2)=(char)0xff;
-    //     *((char*)addr+3)=(char)0x00;
-    //     addr=addr+1;
-
-    // }
     color_printk(WHITE,BLACK,"myos kernel 0.01\n");
     color_printk(YELLOW,BLACK,"hello,User\n");
     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
