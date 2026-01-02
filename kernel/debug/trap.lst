@@ -7601,73 +7601,73 @@ GAS LISTING trap.s 			page 1
  5664      00000000 
  5665 002a 00000000 		.long	.Ldebug_line0
  5666 002e 0F       		.uleb128 0xf
- 5667 002f 08       		.byte	0x8
+ 5667 002f 04       		.byte	0x4
  5668 0030 07       		.byte	0x7
  5669 0031 00000000 		.long	.LASF2
  5670 0035 0F       		.uleb128 0xf
- 5671 0036 01       		.byte	0x1
- 5672 0037 08       		.byte	0x8
+ 5671 0036 08       		.byte	0x8
+ 5672 0037 07       		.byte	0x7
  5673 0038 00000000 		.long	.LASF3
- 5674 003c 14       		.uleb128 0x14
- 5675 003d 00000000 		.long	.LASF8
- 5676 0041 10       		.byte	0x10
- 5677 0042 01       		.byte	0x1
- 5678 0043 09       		.byte	0x9
- 5679 0044 54000000 		.long	0x54
- 5680 0048 19       		.uleb128 0x19
- 5681 0049 7800     		.string	"x"
- 5682 004b 01       		.byte	0x1
- 5683 004c 0B       		.byte	0xb
+ 5674 003c 0F       		.uleb128 0xf
+ 5675 003d 01       		.byte	0x1
+ 5676 003e 08       		.byte	0x8
+ 5677 003f 00000000 		.long	.LASF4
+ 5678 0043 14       		.uleb128 0x14
+ 5679 0044 00000000 		.long	.LASF8
+ 5680 0048 10       		.byte	0x10
+ 5681 0049 01       		.byte	0x1
+ 5682 004a 09       		.byte	0x9
+ 5683 004b 5B000000 		.long	0x5b
 GAS LISTING trap.s 			page 128
 
 
- 5684 004d 12       		.byte	0x12
- 5685 004e 54000000 		.long	0x54
- 5686 0052 00       		.byte	0
- 5687 0053 00       		.byte	0
- 5688 0054 0A       		.uleb128 0xa
- 5689 0055 35000000 		.long	0x35
- 5690 0059 64000000 		.long	0x64
- 5691 005d 10       		.uleb128 0x10
- 5692 005e 2E000000 		.long	0x2e
- 5693 0062 0F       		.byte	0xf
- 5694 0063 00       		.byte	0
- 5695 0064 0A       		.uleb128 0xa
- 5696 0065 3C000000 		.long	0x3c
- 5697 0069 6F000000 		.long	0x6f
- 5698 006d 1A       		.uleb128 0x1a
- 5699 006e 00       		.byte	0
- 5700 006f 15       		.uleb128 0x15
- 5701 0070 00000000 		.long	.LASF5
- 5702 0074 0E       		.byte	0xe
- 5703 0075 1B       		.byte	0x1b
- 5704 0076 64000000 		.long	0x64
- 5705 007a 0A       		.uleb128 0xa
- 5706 007b 8A000000 		.long	0x8a
- 5707 007f 8A000000 		.long	0x8a
- 5708 0083 10       		.uleb128 0x10
- 5709 0084 2E000000 		.long	0x2e
- 5710 0088 19       		.byte	0x19
- 5711 0089 00       		.byte	0
- 5712 008a 0F       		.uleb128 0xf
- 5713 008b 04       		.byte	0x4
- 5714 008c 07       		.byte	0x7
- 5715 008d 00000000 		.long	.LASF4
+ 5684 004f 19       		.uleb128 0x19
+ 5685 0050 7800     		.string	"x"
+ 5686 0052 01       		.byte	0x1
+ 5687 0053 0B       		.byte	0xb
+ 5688 0054 12       		.byte	0x12
+ 5689 0055 5B000000 		.long	0x5b
+ 5690 0059 00       		.byte	0
+ 5691 005a 00       		.byte	0
+ 5692 005b 0A       		.uleb128 0xa
+ 5693 005c 3C000000 		.long	0x3c
+ 5694 0060 6B000000 		.long	0x6b
+ 5695 0064 10       		.uleb128 0x10
+ 5696 0065 35000000 		.long	0x35
+ 5697 0069 0F       		.byte	0xf
+ 5698 006a 00       		.byte	0
+ 5699 006b 0A       		.uleb128 0xa
+ 5700 006c 43000000 		.long	0x43
+ 5701 0070 76000000 		.long	0x76
+ 5702 0074 1A       		.uleb128 0x1a
+ 5703 0075 00       		.byte	0
+ 5704 0076 15       		.uleb128 0x15
+ 5705 0077 00000000 		.long	.LASF5
+ 5706 007b 0E       		.byte	0xe
+ 5707 007c 1B       		.byte	0x1b
+ 5708 007d 6B000000 		.long	0x6b
+ 5709 0081 0A       		.uleb128 0xa
+ 5710 0082 2E000000 		.long	0x2e
+ 5711 0086 91000000 		.long	0x91
+ 5712 008a 10       		.uleb128 0x10
+ 5713 008b 35000000 		.long	0x35
+ 5714 008f 19       		.byte	0x19
+ 5715 0090 00       		.byte	0
  5716 0091 15       		.uleb128 0x15
  5717 0092 00000000 		.long	.LASF6
  5718 0096 0F       		.byte	0xf
  5719 0097 15       		.byte	0x15
- 5720 0098 7A000000 		.long	0x7a
+ 5720 0098 81000000 		.long	0x81
  5721 009c 1B       		.uleb128 0x1b
  5722 009d 08       		.byte	0x8
  5723 009e 0A       		.uleb128 0xa
- 5724 009f 35000000 		.long	0x35
+ 5724 009f 3C000000 		.long	0x3c
  5725 00a3 B4000000 		.long	0xb4
  5726 00a7 10       		.uleb128 0x10
- 5727 00a8 2E000000 		.long	0x2e
+ 5727 00a8 35000000 		.long	0x35
  5728 00ac FF       		.byte	0xff
  5729 00ad 10       		.uleb128 0x10
- 5730 00ae 2E000000 		.long	0x2e
+ 5730 00ae 35000000 		.long	0x35
  5731 00b2 0F       		.byte	0xf
  5732 00b3 00       		.byte	0
  5733 00b4 1C       		.uleb128 0x1c
@@ -7735,7 +7735,7 @@ GAS LISTING trap.s 			page 1
  5791 012b 00000000 		.long	.LASF17
  5792 012f 29       		.byte	0x29
  5793 0130 13       		.byte	0x13
- 5794 0131 2E000000 		.long	0x2e
+ 5794 0131 35000000 		.long	0x35
  5795 0135 20       		.byte	0x20
  5796 0136 00       		.byte	0
 GAS LISTING trap.s 			page 130
@@ -7746,7 +7746,7 @@ GAS LISTING trap.s 			page 1
  5799 0139 05       		.byte	0x5
  5800 013a 696E7400 		.string	"int"
  5801 013e 11       		.uleb128 0x11
- 5802 013f 8A000000 		.long	0x8a
+ 5802 013f 2E000000 		.long	0x2e
  5803 0143 16       		.uleb128 0x16
  5804 0144 506F7300 		.string	"Pos"
  5805 0148 2A       		.byte	0x2a
@@ -7760,7 +7760,7 @@ GAS LISTING trap.s 			page 1
  5812 0159 69010000 		.long	0x169
  5813 015d 69010000 		.long	0x169
  5814 0161 1E       		.uleb128 0x1e
- 5815 0162 2E000000 		.long	0x2e
+ 5815 0162 35000000 		.long	0x35
  5816 0166 FF0F     		.value	0xfff
  5817 0168 00       		.byte	0
  5818 0169 0F       		.uleb128 0xf
@@ -7914,9 +7914,9 @@ GAS LISTING trap.s 			page 1
  5959 0284 37010000 		.long	0x137
  5960 0288 9D020000 		.long	0x29d
  5961 028c 12       		.uleb128 0x12
- 5962 028d 8A000000 		.long	0x8a
+ 5962 028d 2E000000 		.long	0x2e
  5963 0291 12       		.uleb128 0x12
- 5964 0292 8A000000 		.long	0x8a
+ 5964 0292 2E000000 		.long	0x2e
  5965 0296 12       		.uleb128 0x12
 GAS LISTING trap.s 			page 133
 
@@ -8036,7 +8036,7 @@ GAS LISTING trap.s 			page 1
  6051 03e4 72737000 		.string	"rsp"
  6052 03e8 4001     		.value	0x140
  6053 03ea 30       		.byte	0x30
- 6054 03eb 2E000000 		.long	0x2e
+ 6054 03eb 35000000 		.long	0x35
  6055 03ef 02       		.uleb128 0x2
 GAS LISTING trap.s 			page 135
 
@@ -8047,7 +8047,7 @@ GAS LISTING trap.s 			page 1
  6059 03f3 00000000 		.long	.LASF38
  6060 03f7 4001     		.value	0x140
  6061 03f9 42       		.byte	0x42
- 6062 03fa 2E000000 		.long	0x2e
+ 6062 03fa 35000000 		.long	0x35
  6063 03fe 02       		.uleb128 0x2
  6064 03ff 91       		.byte	0x91
  6065 0400 40       		.sleb128 -64
@@ -8064,7 +8064,7 @@ GAS LISTING trap.s 			page 1
  6075 0416 7C020000 		.long	0x27c
  6076 041a 00       		.byte	0
  6077 041b 11       		.uleb128 0x11
- 6078 041c 2E000000 		.long	0x2e
+ 6078 041c 35000000 		.long	0x35
  6079 0420 0B       		.uleb128 0xb
  6080 0421 00000000 		.long	.LASF40
  6081 0425 3401     		.value	0x134
@@ -8079,7 +8079,7 @@ GAS LISTING trap.s 			page 1
  6088 043e 72737000 		.string	"rsp"
  6089 0442 3401     		.value	0x134
  6090 0444 26       		.byte	0x26
- 6091 0445 2E000000 		.long	0x2e
+ 6091 0445 35000000 		.long	0x35
  6092 0449 02       		.uleb128 0x2
  6093 044a 91       		.byte	0x91
  6094 044b 48       		.sleb128 -56
@@ -8087,7 +8087,7 @@ GAS LISTING trap.s 			page 1
  6096 044d 00000000 		.long	.LASF38
  6097 0451 3401     		.value	0x134
  6098 0453 38       		.byte	0x38
- 6099 0454 2E000000 		.long	0x2e
+ 6099 0454 35000000 		.long	0x35
  6100 0458 02       		.uleb128 0x2
  6101 0459 91       		.byte	0x91
  6102 045a 40       		.sleb128 -64
@@ -8120,7 +8120,7 @@ GAS LISTING trap.s 			page 1
  6123 0493 72737000 		.string	"rsp"
  6124 0497 2801     		.value	0x128
  6125 0499 25       		.byte	0x25
- 6126 049a 2E000000 		.long	0x2e
+ 6126 049a 35000000 		.long	0x35
  6127 049e 02       		.uleb128 0x2
  6128 049f 91       		.byte	0x91
  6129 04a0 48       		.sleb128 -56
@@ -8128,7 +8128,7 @@ GAS LISTING trap.s 			page 1
  6131 04a2 00000000 		.long	.LASF38
  6132 04a6 2801     		.value	0x128
  6133 04a8 37       		.byte	0x37
- 6134 04a9 2E000000 		.long	0x2e
+ 6134 04a9 35000000 		.long	0x35
  6135 04ad 02       		.uleb128 0x2
  6136 04ae 91       		.byte	0x91
  6137 04af 40       		.sleb128 -64
@@ -8161,7 +8161,7 @@ GAS LISTING trap.s 			page 1
 GAS LISTING trap.s 			page 137
 
 
- 6161 04ef 2E000000 		.long	0x2e
+ 6161 04ef 35000000 		.long	0x35
  6162 04f3 02       		.uleb128 0x2
  6163 04f4 91       		.byte	0x91
  6164 04f5 48       		.sleb128 -56
@@ -8169,7 +8169,7 @@ GAS LISTING trap.s 			page 1
  6166 04f7 00000000 		.long	.LASF38
  6167 04fb 1C01     		.value	0x11c
  6168 04fd 39       		.byte	0x39
- 6169 04fe 2E000000 		.long	0x2e
+ 6169 04fe 35000000 		.long	0x35
  6170 0502 02       		.uleb128 0x2
  6171 0503 91       		.byte	0x91
  6172 0504 40       		.sleb128 -64
@@ -8199,7 +8199,7 @@ GAS LISTING trap.s 			page 1
  6193 053d 72737000 		.string	"rsp"
  6194 0541 1001     		.value	0x110
  6195 0543 25       		.byte	0x25
- 6196 0544 2E000000 		.long	0x2e
+ 6196 0544 35000000 		.long	0x35
  6197 0548 02       		.uleb128 0x2
  6198 0549 91       		.byte	0x91
  6199 054a 48       		.sleb128 -56
@@ -8207,7 +8207,7 @@ GAS LISTING trap.s 			page 1
  6201 054c 00000000 		.long	.LASF38
  6202 0550 1001     		.value	0x110
  6203 0552 37       		.byte	0x37
- 6204 0553 2E000000 		.long	0x2e
+ 6204 0553 35000000 		.long	0x35
  6205 0557 02       		.uleb128 0x2
  6206 0558 91       		.byte	0x91
  6207 0559 40       		.sleb128 -64
@@ -8242,7 +8242,7 @@ GAS LISTING trap.s 			page 1
  6230 0596 02       		.byte	0x2
  6231 0597 EA       		.byte	0xea
  6232 0598 22       		.byte	0x22
- 6233 0599 2E000000 		.long	0x2e
+ 6233 0599 35000000 		.long	0x35
  6234 059d 02       		.uleb128 0x2
  6235 059e 91       		.byte	0x91
  6236 059f 48       		.sleb128 -56
@@ -8251,7 +8251,7 @@ GAS LISTING trap.s 			page 1
  6239 05a5 02       		.byte	0x2
  6240 05a6 EA       		.byte	0xea
  6241 05a7 34       		.byte	0x34
- 6242 05a8 2E000000 		.long	0x2e
+ 6242 05a8 35000000 		.long	0x35
  6243 05ac 02       		.uleb128 0x2
  6244 05ad 91       		.byte	0x91
  6245 05ae 40       		.sleb128 -64
@@ -8267,7 +8267,7 @@ GAS LISTING trap.s 			page 1
  6255 05bc 63723200 		.string	"cr2"
  6256 05c0 ED       		.byte	0xed
  6257 05c1 10       		.byte	0x10
- 6258 05c2 2E000000 		.long	0x2e
+ 6258 05c2 35000000 		.long	0x35
  6259 05c6 02       		.uleb128 0x2
  6260 05c7 91       		.byte	0x91
  6261 05c8 50       		.sleb128 -48
@@ -8331,7 +8331,7 @@ GAS LISTING trap.s 			page 1
  6304 066e 02       		.byte	0x2
  6305 066f CD       		.byte	0xcd
  6306 0670 2A       		.byte	0x2a
- 6307 0671 2E000000 		.long	0x2e
+ 6307 0671 35000000 		.long	0x35
  6308 0675 02       		.uleb128 0x2
  6309 0676 91       		.byte	0x91
  6310 0677 48       		.sleb128 -56
@@ -8343,7 +8343,7 @@ GAS LISTING trap.s 			page 1
 
  6314 067e CD       		.byte	0xcd
  6315 067f 3C       		.byte	0x3c
- 6316 0680 2E000000 		.long	0x2e
+ 6316 0680 35000000 		.long	0x35
  6317 0684 02       		.uleb128 0x2
  6318 0685 91       		.byte	0x91
  6319 0686 40       		.sleb128 -64
@@ -8403,7 +8403,7 @@ GAS LISTING trap.s 			page 1
 
  6362 0712 B0       		.byte	0xb0
  6363 0713 2B       		.byte	0x2b
- 6364 0714 2E000000 		.long	0x2e
+ 6364 0714 35000000 		.long	0x35
  6365 0718 02       		.uleb128 0x2
  6366 0719 91       		.byte	0x91
  6367 071a 48       		.sleb128 -56
@@ -8412,7 +8412,7 @@ GAS LISTING trap.s 			page 1
  6370 0720 02       		.byte	0x2
  6371 0721 B0       		.byte	0xb0
  6372 0722 3D       		.byte	0x3d
- 6373 0723 2E000000 		.long	0x2e
+ 6373 0723 35000000 		.long	0x35
  6374 0727 02       		.uleb128 0x2
  6375 0728 91       		.byte	0x91
  6376 0729 40       		.sleb128 -64
@@ -8472,7 +8472,7 @@ GAS LISTING trap.s 			page 1
  6418 07b4 02       		.byte	0x2
  6419 07b5 93       		.byte	0x93
  6420 07b6 2B       		.byte	0x2b
- 6421 07b7 2E000000 		.long	0x2e
+ 6421 07b7 35000000 		.long	0x35
  6422 07bb 02       		.uleb128 0x2
  6423 07bc 91       		.byte	0x91
  6424 07bd 48       		.sleb128 -56
@@ -8481,7 +8481,7 @@ GAS LISTING trap.s 			page 1
  6427 07c3 02       		.byte	0x2
  6428 07c4 93       		.byte	0x93
  6429 07c5 3D       		.byte	0x3d
- 6430 07c6 2E000000 		.long	0x2e
+ 6430 07c6 35000000 		.long	0x35
  6431 07ca 02       		.uleb128 0x2
  6432 07cb 91       		.byte	0x91
  6433 07cc 40       		.sleb128 -64
@@ -8541,7 +8541,7 @@ GAS LISTING trap.s 			page 1
  6475 0857 02       		.byte	0x2
  6476 0858 76       		.byte	0x76
  6477 0859 23       		.byte	0x23
- 6478 085a 2E000000 		.long	0x2e
+ 6478 085a 35000000 		.long	0x35
  6479 085e 02       		.uleb128 0x2
  6480 085f 91       		.byte	0x91
  6481 0860 48       		.sleb128 -56
@@ -8550,7 +8550,7 @@ GAS LISTING trap.s 			page 1
  6484 0866 02       		.byte	0x2
  6485 0867 76       		.byte	0x76
  6486 0868 35       		.byte	0x35
- 6487 0869 2E000000 		.long	0x2e
+ 6487 0869 35000000 		.long	0x35
  6488 086d 02       		.uleb128 0x2
  6489 086e 91       		.byte	0x91
  6490 086f 40       		.sleb128 -64
@@ -8610,7 +8610,7 @@ GAS LISTING trap.s 			page 1
  6532 08fa 02       		.byte	0x2
  6533 08fb 6E       		.byte	0x6e
  6534 08fc 33       		.byte	0x33
- 6535 08fd 2E000000 		.long	0x2e
+ 6535 08fd 35000000 		.long	0x35
  6536 0901 02       		.uleb128 0x2
  6537 0902 91       		.byte	0x91
  6538 0903 48       		.sleb128 -56
@@ -8619,7 +8619,7 @@ GAS LISTING trap.s 			page 1
  6541 0909 02       		.byte	0x2
  6542 090a 6E       		.byte	0x6e
  6543 090b 45       		.byte	0x45
- 6544 090c 2E000000 		.long	0x2e
+ 6544 090c 35000000 		.long	0x35
  6545 0910 02       		.uleb128 0x2
  6546 0911 91       		.byte	0x91
  6547 0912 40       		.sleb128 -64
@@ -8655,7 +8655,7 @@ GAS LISTING trap.s 			page 1
  6571 094f 02       		.byte	0x2
  6572 0950 62       		.byte	0x62
  6573 0951 24       		.byte	0x24
- 6574 0952 2E000000 		.long	0x2e
+ 6574 0952 35000000 		.long	0x35
  6575 0956 02       		.uleb128 0x2
  6576 0957 91       		.byte	0x91
  6577 0958 48       		.sleb128 -56
@@ -8664,7 +8664,7 @@ GAS LISTING trap.s 			page 1
  6580 095e 02       		.byte	0x2
  6581 095f 62       		.byte	0x62
  6582 0960 36       		.byte	0x36
- 6583 0961 2E000000 		.long	0x2e
+ 6583 0961 35000000 		.long	0x35
  6584 0965 02       		.uleb128 0x2
  6585 0966 91       		.byte	0x91
  6586 0967 40       		.sleb128 -64
@@ -8697,7 +8697,7 @@ GAS LISTING trap.s 			page 1
  6610 09a4 02       		.byte	0x2
  6611 09a5 56       		.byte	0x56
  6612 09a6 29       		.byte	0x29
- 6613 09a7 2E000000 		.long	0x2e
+ 6613 09a7 35000000 		.long	0x35
 GAS LISTING trap.s 			page 146
 
 
@@ -8709,7 +8709,7 @@ GAS LISTING trap.s 			page 1
  6619 09b3 02       		.byte	0x2
  6620 09b4 56       		.byte	0x56
  6621 09b5 3B       		.byte	0x3b
- 6622 09b6 2E000000 		.long	0x2e
+ 6622 09b6 35000000 		.long	0x35
  6623 09ba 02       		.uleb128 0x2
  6624 09bb 91       		.byte	0x91
  6625 09bc 40       		.sleb128 -64
@@ -8742,7 +8742,7 @@ GAS LISTING trap.s 			page 1
  6649 09f9 02       		.byte	0x2
  6650 09fa 4A       		.byte	0x4a
  6651 09fb 28       		.byte	0x28
- 6652 09fc 2E000000 		.long	0x2e
+ 6652 09fc 35000000 		.long	0x35
  6653 0a00 02       		.uleb128 0x2
  6654 0a01 91       		.byte	0x91
  6655 0a02 48       		.sleb128 -56
@@ -8751,7 +8751,7 @@ GAS LISTING trap.s 			page 1
  6658 0a08 02       		.byte	0x2
  6659 0a09 4A       		.byte	0x4a
  6660 0a0a 3A       		.byte	0x3a
- 6661 0a0b 2E000000 		.long	0x2e
+ 6661 0a0b 35000000 		.long	0x35
  6662 0a0f 02       		.uleb128 0x2
  6663 0a10 91       		.byte	0x91
  6664 0a11 40       		.sleb128 -64
@@ -8787,7 +8787,7 @@ GAS LISTING trap.s 			page 1
  6688 0a4e 02       		.byte	0x2
  6689 0a4f 3E       		.byte	0x3e
  6690 0a50 1E       		.byte	0x1e
- 6691 0a51 2E000000 		.long	0x2e
+ 6691 0a51 35000000 		.long	0x35
  6692 0a55 02       		.uleb128 0x2
  6693 0a56 91       		.byte	0x91
  6694 0a57 48       		.sleb128 -56
@@ -8796,7 +8796,7 @@ GAS LISTING trap.s 			page 1
  6697 0a5d 02       		.byte	0x2
  6698 0a5e 3E       		.byte	0x3e
  6699 0a5f 30       		.byte	0x30
- 6700 0a60 2E000000 		.long	0x2e
+ 6700 0a60 35000000 		.long	0x35
  6701 0a64 02       		.uleb128 0x2
  6702 0a65 91       		.byte	0x91
  6703 0a66 40       		.sleb128 -64
@@ -8832,7 +8832,7 @@ GAS LISTING trap.s 			page 1
  6727 0aa3 02       		.byte	0x2
  6728 0aa4 32       		.byte	0x32
  6729 0aa5 20       		.byte	0x20
- 6730 0aa6 2E000000 		.long	0x2e
+ 6730 0aa6 35000000 		.long	0x35
  6731 0aaa 02       		.uleb128 0x2
  6732 0aab 91       		.byte	0x91
  6733 0aac 48       		.sleb128 -56
@@ -8841,7 +8841,7 @@ GAS LISTING trap.s 			page 1
  6736 0ab2 02       		.byte	0x2
  6737 0ab3 32       		.byte	0x32
  6738 0ab4 32       		.byte	0x32
- 6739 0ab5 2E000000 		.long	0x2e
+ 6739 0ab5 35000000 		.long	0x35
  6740 0ab9 02       		.uleb128 0x2
  6741 0aba 91       		.byte	0x91
  6742 0abb 40       		.sleb128 -64
@@ -8874,7 +8874,7 @@ GAS LISTING trap.s 			page 1
  6766 0af8 02       		.byte	0x2
  6767 0af9 26       		.byte	0x26
  6768 0afa 1C       		.byte	0x1c
- 6769 0afb 2E000000 		.long	0x2e
+ 6769 0afb 35000000 		.long	0x35
  6770 0aff 02       		.uleb128 0x2
  6771 0b00 91       		.byte	0x91
  6772 0b01 48       		.sleb128 -56
@@ -8886,7 +8886,7 @@ GAS LISTING trap.s 			page 1
  6775 0b07 02       		.byte	0x2
  6776 0b08 26       		.byte	0x26
  6777 0b09 2E       		.byte	0x2e
- 6778 0b0a 2E000000 		.long	0x2e
+ 6778 0b0a 35000000 		.long	0x35
  6779 0b0e 02       		.uleb128 0x2
  6780 0b0f 91       		.byte	0x91
  6781 0b10 40       		.sleb128 -64
@@ -8919,7 +8919,7 @@ GAS LISTING trap.s 			page 1
  6805 0b4d 02       		.byte	0x2
  6806 0b4e 1A       		.byte	0x1a
  6807 0b4f 1B       		.byte	0x1b
- 6808 0b50 2E000000 		.long	0x2e
+ 6808 0b50 35000000 		.long	0x35
  6809 0b54 02       		.uleb128 0x2
  6810 0b55 91       		.byte	0x91
  6811 0b56 48       		.sleb128 -56
@@ -8928,7 +8928,7 @@ GAS LISTING trap.s 			page 1
  6814 0b5c 02       		.byte	0x2
  6815 0b5d 1A       		.byte	0x1a
  6816 0b5e 2D       		.byte	0x2d
- 6817 0b5f 2E000000 		.long	0x2e
+ 6817 0b5f 35000000 		.long	0x35
  6818 0b63 02       		.uleb128 0x2
  6819 0b64 91       		.byte	0x91
  6820 0b65 40       		.sleb128 -64
@@ -8964,7 +8964,7 @@ GAS LISTING trap.s 			page 1
  6844 0ba2 02       		.byte	0x2
  6845 0ba3 0E       		.byte	0xe
  6846 0ba4 1D       		.byte	0x1d
- 6847 0ba5 2E000000 		.long	0x2e
+ 6847 0ba5 35000000 		.long	0x35
  6848 0ba9 02       		.uleb128 0x2
  6849 0baa 91       		.byte	0x91
  6850 0bab 48       		.sleb128 -56
@@ -8973,7 +8973,7 @@ GAS LISTING trap.s 			page 1
  6853 0bb1 02       		.byte	0x2
  6854 0bb2 0E       		.byte	0xe
  6855 0bb3 2F       		.byte	0x2f
- 6856 0bb4 2E000000 		.long	0x2e
+ 6856 0bb4 35000000 		.long	0x35
  6857 0bb8 02       		.uleb128 0x2
  6858 0bb9 91       		.byte	0x91
  6859 0bba 40       		.sleb128 -64
@@ -9009,7 +9009,7 @@ GAS LISTING trap.s 			page 1
  6883 0bf7 02       		.byte	0x2
  6884 0bf8 05       		.byte	0x5
  6885 0bf9 24       		.byte	0x24
- 6886 0bfa 2E000000 		.long	0x2e
+ 6886 0bfa 35000000 		.long	0x35
  6887 0bfe 02       		.uleb128 0x2
  6888 0bff 91       		.byte	0x91
  6889 0c00 48       		.sleb128 -56
@@ -9018,7 +9018,7 @@ GAS LISTING trap.s 			page 1
  6892 0c06 02       		.byte	0x2
  6893 0c07 05       		.byte	0x5
  6894 0c08 36       		.byte	0x36
- 6895 0c09 2E000000 		.long	0x2e
+ 6895 0c09 35000000 		.long	0x35
  6896 0c0d 02       		.uleb128 0x2
  6897 0c0e 91       		.byte	0x91
  6898 0c0f 40       		.sleb128 -64
@@ -9051,7 +9051,7 @@ GAS LISTING trap.s 			page 1
  6922 0c4c 01       		.byte	0x1
  6923 0c4d 94       		.byte	0x94
  6924 0c4e 1E       		.byte	0x1e
- 6925 0c4f 2E000000 		.long	0x2e
+ 6925 0c4f 35000000 		.long	0x35
  6926 0c53 02       		.uleb128 0x2
  6927 0c54 91       		.byte	0x91
  6928 0c55 68       		.sleb128 -24
@@ -9063,7 +9063,7 @@ GAS LISTING trap.s 			page 1
 
  6932 0c5c 94       		.byte	0x94
  6933 0c5d 31       		.byte	0x31
- 6934 0c5e 2E000000 		.long	0x2e
+ 6934 0c5e 35000000 		.long	0x35
  6935 0c62 02       		.uleb128 0x2
  6936 0c63 91       		.byte	0x91
  6937 0c64 60       		.sleb128 -32
@@ -9072,7 +9072,7 @@ GAS LISTING trap.s 			page 1
  6940 0c6a 01       		.byte	0x1
  6941 0c6b 94       		.byte	0x94
  6942 0c6c 44       		.byte	0x44
- 6943 0c6d 2E000000 		.long	0x2e
+ 6943 0c6d 35000000 		.long	0x35
  6944 0c71 02       		.uleb128 0x2
  6945 0c72 91       		.byte	0x91
  6946 0c73 58       		.sleb128 -40
@@ -9081,7 +9081,7 @@ GAS LISTING trap.s 			page 1
  6949 0c79 01       		.byte	0x1
  6950 0c7a 94       		.byte	0x94
  6951 0c7b 57       		.byte	0x57
- 6952 0c7c 2E000000 		.long	0x2e
+ 6952 0c7c 35000000 		.long	0x35
  6953 0c80 02       		.uleb128 0x2
  6954 0c81 91       		.byte	0x91
  6955 0c82 50       		.sleb128 -48
@@ -9090,7 +9090,7 @@ GAS LISTING trap.s 			page 1
  6958 0c88 01       		.byte	0x1
  6959 0c89 94       		.byte	0x94
  6960 0c8a 6A       		.byte	0x6a
- 6961 0c8b 2E000000 		.long	0x2e
+ 6961 0c8b 35000000 		.long	0x35
  6962 0c8f 02       		.uleb128 0x2
  6963 0c90 91       		.byte	0x91
  6964 0c91 48       		.sleb128 -56
@@ -9099,7 +9099,7 @@ GAS LISTING trap.s 			page 1
  6967 0c97 01       		.byte	0x1
  6968 0c98 94       		.byte	0x94
  6969 0c99 7D       		.byte	0x7d
- 6970 0c9a 2E000000 		.long	0x2e
+ 6970 0c9a 35000000 		.long	0x35
  6971 0c9e 02       		.uleb128 0x2
  6972 0c9f 91       		.byte	0x91
  6973 0ca0 40       		.sleb128 -64
@@ -9108,7 +9108,7 @@ GAS LISTING trap.s 			page 1
  6976 0ca6 01       		.byte	0x1
  6977 0ca7 95       		.byte	0x95
  6978 0ca8 0F       		.byte	0xf
- 6979 0ca9 2E000000 		.long	0x2e
+ 6979 0ca9 35000000 		.long	0x35
  6980 0cad 02       		.uleb128 0x2
  6981 0cae 91       		.byte	0x91
  6982 0caf 00       		.sleb128 0
@@ -9117,7 +9117,7 @@ GAS LISTING trap.s 			page 1
  6985 0cb5 01       		.byte	0x1
  6986 0cb6 95       		.byte	0x95
  6987 0cb7 22       		.byte	0x22
- 6988 0cb8 2E000000 		.long	0x2e
+ 6988 0cb8 35000000 		.long	0x35
 GAS LISTING trap.s 			page 153
 
 
@@ -9129,7 +9129,7 @@ GAS LISTING trap.s 			page 1
  6994 0cc4 01       		.byte	0x1
  6995 0cc5 95       		.byte	0x95
  6996 0cc6 35       		.byte	0x35
- 6997 0cc7 2E000000 		.long	0x2e
+ 6997 0cc7 35000000 		.long	0x35
  6998 0ccb 02       		.uleb128 0x2
  6999 0ccc 91       		.byte	0x91
  7000 0ccd 10       		.sleb128 16
@@ -9138,7 +9138,7 @@ GAS LISTING trap.s 			page 1
  7003 0cd3 01       		.byte	0x1
  7004 0cd4 95       		.byte	0x95
  7005 0cd5 48       		.byte	0x48
- 7006 0cd6 2E000000 		.long	0x2e
+ 7006 0cd6 35000000 		.long	0x35
  7007 0cda 02       		.uleb128 0x2
  7008 0cdb 91       		.byte	0x91
  7009 0cdc 18       		.sleb128 24
@@ -9158,7 +9158,7 @@ GAS LISTING trap.s 			page 1
  7021 0cfd 01       		.byte	0x1
  7022 0cfe 8B       		.byte	0x8b
  7023 0cff 31       		.byte	0x31
- 7024 0d00 8A000000 		.long	0x8a
+ 7024 0d00 2E000000 		.long	0x2e
  7025 0d04 02       		.uleb128 0x2
  7026 0d05 91       		.byte	0x91
  7027 0d06 5C       		.sleb128 -36
@@ -9167,7 +9167,7 @@ GAS LISTING trap.s 			page 1
  7030 0d0c 01       		.byte	0x1
  7031 0d0d 8B       		.byte	0x8b
  7032 0d0e 42       		.byte	0x42
- 7033 0d0f 35000000 		.long	0x35
+ 7033 0d0f 3C000000 		.long	0x3c
  7034 0d13 02       		.uleb128 0x2
  7035 0d14 91       		.byte	0x91
  7036 0d15 58       		.sleb128 -40
@@ -9191,14 +9191,14 @@ GAS LISTING trap.s 			page 1
  7049 0d36 09       		.uleb128 0x9
  7050 0d37 00000000 		.long	.LASF71
  7051 0d3b 8C       		.byte	0x8c
- 7052 0d3c 2E000000 		.long	0x2e
+ 7052 0d3c 35000000 		.long	0x35
  7053 0d40 02       		.uleb128 0x2
  7054 0d41 91       		.byte	0x91
  7055 0d42 68       		.sleb128 -24
  7056 0d43 09       		.uleb128 0x9
  7057 0d44 00000000 		.long	.LASF72
  7058 0d48 8C       		.byte	0x8c
- 7059 0d49 2E000000 		.long	0x2e
+ 7059 0d49 35000000 		.long	0x35
  7060 0d4d 02       		.uleb128 0x2
  7061 0d4e 91       		.byte	0x91
  7062 0d4f 60       		.sleb128 -32
@@ -9219,7 +9219,7 @@ GAS LISTING trap.s 			page 1
  7075 0d71 01       		.byte	0x1
  7076 0d72 85       		.byte	0x85
  7077 0d73 2F       		.byte	0x2f
- 7078 0d74 8A000000 		.long	0x8a
+ 7078 0d74 2E000000 		.long	0x2e
  7079 0d78 02       		.uleb128 0x2
  7080 0d79 91       		.byte	0x91
  7081 0d7a 5C       		.sleb128 -36
@@ -9228,7 +9228,7 @@ GAS LISTING trap.s 			page 1
  7084 0d80 01       		.byte	0x1
  7085 0d81 85       		.byte	0x85
  7086 0d82 40       		.byte	0x40
- 7087 0d83 35000000 		.long	0x35
+ 7087 0d83 3C000000 		.long	0x3c
  7088 0d87 02       		.uleb128 0x2
  7089 0d88 91       		.byte	0x91
  7090 0d89 58       		.sleb128 -40
@@ -9252,14 +9252,14 @@ GAS LISTING trap.s 			page 1
  7103 0daa 09       		.uleb128 0x9
  7104 0dab 00000000 		.long	.LASF71
  7105 0daf 87       		.byte	0x87
- 7106 0db0 2E000000 		.long	0x2e
+ 7106 0db0 35000000 		.long	0x35
  7107 0db4 02       		.uleb128 0x2
  7108 0db5 91       		.byte	0x91
  7109 0db6 68       		.sleb128 -24
  7110 0db7 09       		.uleb128 0x9
  7111 0db8 00000000 		.long	.LASF72
  7112 0dbc 87       		.byte	0x87
- 7113 0dbd 2E000000 		.long	0x2e
+ 7113 0dbd 35000000 		.long	0x35
  7114 0dc1 02       		.uleb128 0x2
  7115 0dc2 91       		.byte	0x91
  7116 0dc3 60       		.sleb128 -32
@@ -9281,7 +9281,7 @@ GAS LISTING trap.s 			page 1
  7130 0de3 01       		.byte	0x1
  7131 0de4 67       		.byte	0x67
  7132 0de5 2F       		.byte	0x2f
- 7133 0de6 8A000000 		.long	0x8a
+ 7133 0de6 2E000000 		.long	0x2e
  7134 0dea 02       		.uleb128 0x2
  7135 0deb 91       		.byte	0x91
  7136 0dec 5C       		.sleb128 -36
@@ -9290,7 +9290,7 @@ GAS LISTING trap.s 			page 1
  7139 0df2 01       		.byte	0x1
  7140 0df3 67       		.byte	0x67
  7141 0df4 40       		.byte	0x40
- 7142 0df5 35000000 		.long	0x35
+ 7142 0df5 3C000000 		.long	0x3c
  7143 0df9 02       		.uleb128 0x2
  7144 0dfa 91       		.byte	0x91
  7145 0dfb 58       		.sleb128 -40
@@ -9314,14 +9314,14 @@ GAS LISTING trap.s 			page 1
  7158 0e1c 09       		.uleb128 0x9
  7159 0e1d 00000000 		.long	.LASF71
  7160 0e21 68       		.byte	0x68
- 7161 0e22 2E000000 		.long	0x2e
+ 7161 0e22 35000000 		.long	0x35
  7162 0e26 02       		.uleb128 0x2
  7163 0e27 91       		.byte	0x91
  7164 0e28 68       		.sleb128 -24
  7165 0e29 09       		.uleb128 0x9
  7166 0e2a 00000000 		.long	.LASF72
  7167 0e2e 68       		.byte	0x68
- 7168 0e2f 2E000000 		.long	0x2e
+ 7168 0e2f 35000000 		.long	0x35
  7169 0e33 02       		.uleb128 0x2
  7170 0e34 91       		.byte	0x91
  7171 0e35 60       		.sleb128 -32
@@ -10111,7 +10111,7 @@ GAS LISTING trap.s 			page 1
  7824 01a9 646F5F6F 		.string	"do_overflow"
  7824      76657266 
  7824      6C6F7700 
- 7825              	.LASF3:
+ 7825              	.LASF4:
  7826 01b5 756E7369 		.string	"unsigned char"
  7826      676E6564 
  7826      20636861 
@@ -10136,7 +10136,7 @@ GAS LISTING trap.s 			page 1
  7836 01ec 7365745F 		.string	"set_tss64"
  7836      74737336 
  7836      3400
- 7837              	.LASF4:
+ 7837              	.LASF2:
  7838 01f6 756E7369 		.string	"unsigned int"
 GAS LISTING trap.s 			page 170
 
@@ -10218,7 +10218,7 @@ GAS LISTING trap.s 			page 1
  7871              	.LASF67:
  7872 0359 69737435 		.string	"ist5"
  7872      00
- 7873              	.LASF2:
+ 7873              	.LASF3:
  7874 035e 6C6F6E67 		.string	"long unsigned int"
  7874      20756E73 
  7874      69676E65 

@@ -3085,7 +3085,7 @@ buf:
 Cstrlen:
 .LFB24:
 	.file 1 "lib.h"
-	.loc 1 560 1
+	.loc 1 570 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -3098,32 +3098,32 @@ Cstrlen:
 	movabsq	$_GLOBAL_OFFSET_TABLE_-.L5, %r11	#,
 	addq	%r11, %rax	#, tmp82
 	movq	%rdi, -24(%rbp)	# String, String
-# lib.h:561:     char *ptr = String;
-	.loc 1 561 11
+# lib.h:571:     char *ptr = String;
+	.loc 1 571 11
 	movq	-24(%rbp), %rax	# String, tmp87
 	movq	%rax, -8(%rbp)	# tmp87, ptr
-# lib.h:564:     while (*ptr != '\0') {
-	.loc 1 564 11
+# lib.h:574:     while (*ptr != '\0') {
+	.loc 1 574 11
 	jmp	.L2	#
 .L3:
-# lib.h:565:         ptr++;
-	.loc 1 565 12
+# lib.h:575:         ptr++;
+	.loc 1 575 12
 	addq	$1, -8(%rbp)	#, ptr
 .L2:
-# lib.h:564:     while (*ptr != '\0') {
-	.loc 1 564 12
+# lib.h:574:     while (*ptr != '\0') {
+	.loc 1 574 12
 	movq	-8(%rbp), %rax	# ptr, tmp88
 	movzbl	(%rax), %eax	# *ptr_3, _1
-# lib.h:564:     while (*ptr != '\0') {
-	.loc 1 564 17
+# lib.h:574:     while (*ptr != '\0') {
+	.loc 1 574 17
 	testb	%al, %al	# _1
 	jne	.L3	#,
-# lib.h:569:     return ptr - String;
-	.loc 1 569 16
+# lib.h:579:     return ptr - String;
+	.loc 1 579 16
 	movq	-8(%rbp), %rax	# ptr, tmp89
 	subq	-24(%rbp), %rax	# String, _2
-# lib.h:570: }
-	.loc 1 570 1
+# lib.h:580: }
+	.loc 1 580 1
 	popq	%rbp	#
 	.cfi_def_cfa 7, 8
 	ret	
@@ -4703,27 +4703,27 @@ vsprintf:
 # printk.c:277: 			field_width=va_arg(args,int);
 	.loc 2 277 15
 	movq	-104(%rbp), %rax	# args, tmp292
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2379
-	cmpl	$47, %eax	#, D.2379
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2382
+	cmpl	$47, %eax	#, D.2382
 	ja	.L100	#,
 	movq	-104(%rbp), %rax	# args, tmp293
-	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2381
+	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2384
 	movq	-104(%rbp), %rax	# args, tmp294
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2382
-	movl	%eax, %eax	# D.2382, D.2383
-	addq	%rdx, %rax	# D.2381, D.2386
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2385
+	movl	%eax, %eax	# D.2385, D.2386
+	addq	%rdx, %rax	# D.2384, D.2389
 	movq	-104(%rbp), %rdx	# args, tmp295
-	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2384
-	leal	8(%rdx), %ecx	#, D.2385
+	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2387
+	leal	8(%rdx), %ecx	#, D.2388
 	movq	-104(%rbp), %rdx	# args, tmp296
-	movl	%ecx, (%rdx)	# D.2385, args_159(D)->gp_offset
+	movl	%ecx, (%rdx)	# D.2388, args_159(D)->gp_offset
 	jmp	.L101	#
 .L100:
 	movq	-104(%rbp), %rax	# args, tmp297
-	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2386
-	leaq	8(%rax), %rcx	#, D.2387
+	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2389
+	leaq	8(%rax), %rcx	#, D.2390
 	movq	-104(%rbp), %rdx	# args, tmp298
-	movq	%rcx, 8(%rdx)	# D.2387, args_159(D)->overflow_arg_area
+	movq	%rcx, 8(%rdx)	# D.2390, args_159(D)->overflow_arg_area
 .L101:
 	movl	(%rax), %eax	# MEM[(int * {ref-all})addr.57_258], tmp299
 	movl	%eax, -40(%rbp)	# tmp299, field_width
@@ -4797,27 +4797,27 @@ vsprintf:
 # printk.c:294: 				precision =va_arg(args,int);
 	.loc 2 294 15
 	movq	-104(%rbp), %rax	# args, tmp304
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2391
-	cmpl	$47, %eax	#, D.2391
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2394
+	cmpl	$47, %eax	#, D.2394
 	ja	.L105	#,
 	movq	-104(%rbp), %rax	# args, tmp305
-	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2393
+	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2396
 	movq	-104(%rbp), %rax	# args, tmp306
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2394
-	movl	%eax, %eax	# D.2394, D.2395
-	addq	%rdx, %rax	# D.2393, D.2398
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2397
+	movl	%eax, %eax	# D.2397, D.2398
+	addq	%rdx, %rax	# D.2396, D.2401
 	movq	-104(%rbp), %rdx	# args, tmp307
-	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2396
-	leal	8(%rdx), %ecx	#, D.2397
+	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2399
+	leal	8(%rdx), %ecx	#, D.2400
 	movq	-104(%rbp), %rdx	# args, tmp308
-	movl	%ecx, (%rdx)	# D.2397, args_159(D)->gp_offset
+	movl	%ecx, (%rdx)	# D.2400, args_159(D)->gp_offset
 	jmp	.L106	#
 .L105:
 	movq	-104(%rbp), %rax	# args, tmp309
-	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2398
-	leaq	8(%rax), %rcx	#, D.2399
+	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2401
+	leaq	8(%rax), %rcx	#, D.2402
 	movq	-104(%rbp), %rdx	# args, tmp310
-	movq	%rcx, 8(%rdx)	# D.2399, args_159(D)->overflow_arg_area
+	movq	%rcx, 8(%rdx)	# D.2402, args_159(D)->overflow_arg_area
 .L106:
 	movl	(%rax), %eax	# MEM[(int * {ref-all})addr.58_259], tmp311
 	movl	%eax, -44(%rbp)	# tmp311, precision
@@ -5017,27 +5017,27 @@ vsprintf:
 # printk.c:316: 				*str++ =(unsigned char)va_arg(args,int);
 	.loc 2 316 28
 	movq	-104(%rbp), %rax	# args, tmp322
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2403
-	cmpl	$47, %eax	#, D.2403
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2406
+	cmpl	$47, %eax	#, D.2406
 	ja	.L124	#,
 	movq	-104(%rbp), %rax	# args, tmp323
-	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2405
+	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2408
 	movq	-104(%rbp), %rax	# args, tmp324
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2406
-	movl	%eax, %eax	# D.2406, D.2407
-	addq	%rdx, %rax	# D.2405, D.2410
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2409
+	movl	%eax, %eax	# D.2409, D.2410
+	addq	%rdx, %rax	# D.2408, D.2413
 	movq	-104(%rbp), %rdx	# args, tmp325
-	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2408
-	leal	8(%rdx), %ecx	#, D.2409
+	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2411
+	leal	8(%rdx), %ecx	#, D.2412
 	movq	-104(%rbp), %rdx	# args, tmp326
-	movl	%ecx, (%rdx)	# D.2409, args_159(D)->gp_offset
+	movl	%ecx, (%rdx)	# D.2412, args_159(D)->gp_offset
 	jmp	.L125	#
 .L124:
 	movq	-104(%rbp), %rax	# args, tmp327
-	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2410
-	leaq	8(%rax), %rcx	#, D.2411
+	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2413
+	leaq	8(%rax), %rcx	#, D.2414
 	movq	-104(%rbp), %rdx	# args, tmp328
-	movq	%rcx, 8(%rdx)	# D.2411, args_159(D)->overflow_arg_area
+	movq	%rcx, 8(%rdx)	# D.2414, args_159(D)->overflow_arg_area
 .L125:
 	movl	(%rax), %ecx	# MEM[(int * {ref-all})addr.59_260], _48
 # printk.c:316: 				*str++ =(unsigned char)va_arg(args,int);
@@ -5076,27 +5076,27 @@ vsprintf:
 # printk.c:322: 				s=va_arg(args,char *);
 	.loc 2 322 6
 	movq	-104(%rbp), %rax	# args, tmp331
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2415
-	cmpl	$47, %eax	#, D.2415
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2418
+	cmpl	$47, %eax	#, D.2418
 	ja	.L128	#,
 	movq	-104(%rbp), %rax	# args, tmp332
-	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2417
+	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2420
 	movq	-104(%rbp), %rax	# args, tmp333
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2418
-	movl	%eax, %eax	# D.2418, D.2419
-	addq	%rdx, %rax	# D.2417, D.2422
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2421
+	movl	%eax, %eax	# D.2421, D.2422
+	addq	%rdx, %rax	# D.2420, D.2425
 	movq	-104(%rbp), %rdx	# args, tmp334
-	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2420
-	leal	8(%rdx), %ecx	#, D.2421
+	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2423
+	leal	8(%rdx), %ecx	#, D.2424
 	movq	-104(%rbp), %rdx	# args, tmp335
-	movl	%ecx, (%rdx)	# D.2421, args_159(D)->gp_offset
+	movl	%ecx, (%rdx)	# D.2424, args_159(D)->gp_offset
 	jmp	.L129	#
 .L128:
 	movq	-104(%rbp), %rax	# args, tmp336
-	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2422
-	leaq	8(%rax), %rcx	#, D.2423
+	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2425
+	leaq	8(%rax), %rcx	#, D.2426
 	movq	-104(%rbp), %rdx	# args, tmp337
-	movq	%rcx, 8(%rdx)	# D.2423, args_159(D)->overflow_arg_area
+	movq	%rcx, 8(%rdx)	# D.2426, args_159(D)->overflow_arg_area
 .L129:
 	movq	(%rax), %rax	# MEM[(char * * {ref-all})addr.60_261], tmp338
 	movq	%rax, -32(%rbp)	# tmp338, s
@@ -5233,27 +5233,27 @@ vsprintf:
 # printk.c:353: 					str=number(str,va_arg(args,unsigned long),8,field_width,precision,flags);
 	.loc 2 353 21
 	movq	-104(%rbp), %rax	# args, tmp354
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2427
-	cmpl	$47, %eax	#, D.2427
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2430
+	cmpl	$47, %eax	#, D.2430
 	ja	.L141	#,
 	movq	-104(%rbp), %rax	# args, tmp355
-	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2429
+	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2432
 	movq	-104(%rbp), %rax	# args, tmp356
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2430
-	movl	%eax, %eax	# D.2430, D.2431
-	addq	%rdx, %rax	# D.2429, D.2434
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2433
+	movl	%eax, %eax	# D.2433, D.2434
+	addq	%rdx, %rax	# D.2432, D.2437
 	movq	-104(%rbp), %rdx	# args, tmp357
-	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2432
-	leal	8(%rdx), %ecx	#, D.2433
+	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2435
+	leal	8(%rdx), %ecx	#, D.2436
 	movq	-104(%rbp), %rdx	# args, tmp358
-	movl	%ecx, (%rdx)	# D.2433, args_159(D)->gp_offset
+	movl	%ecx, (%rdx)	# D.2436, args_159(D)->gp_offset
 	jmp	.L142	#
 .L141:
 	movq	-104(%rbp), %rax	# args, tmp359
-	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2434
-	leaq	8(%rax), %rcx	#, D.2435
+	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2437
+	leaq	8(%rax), %rcx	#, D.2438
 	movq	-104(%rbp), %rdx	# args, tmp360
-	movq	%rcx, 8(%rdx)	# D.2435, args_159(D)->overflow_arg_area
+	movq	%rcx, 8(%rdx)	# D.2438, args_159(D)->overflow_arg_area
 .L142:
 	movq	(%rax), %rax	# MEM[(long unsigned int * {ref-all})addr.61_262], _60
 # printk.c:353: 					str=number(str,va_arg(args,unsigned long),8,field_width,precision,flags);
@@ -5281,27 +5281,27 @@ vsprintf:
 # printk.c:356: 					str=number(str,va_arg(args,unsigned int),8,field_width,precision,flags);
 	.loc 2 356 21
 	movq	-104(%rbp), %rax	# args, tmp368
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2439
-	cmpl	$47, %eax	#, D.2439
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2442
+	cmpl	$47, %eax	#, D.2442
 	ja	.L144	#,
 	movq	-104(%rbp), %rax	# args, tmp369
-	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2441
+	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2444
 	movq	-104(%rbp), %rax	# args, tmp370
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2442
-	movl	%eax, %eax	# D.2442, D.2443
-	addq	%rdx, %rax	# D.2441, D.2446
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2445
+	movl	%eax, %eax	# D.2445, D.2446
+	addq	%rdx, %rax	# D.2444, D.2449
 	movq	-104(%rbp), %rdx	# args, tmp371
-	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2444
-	leal	8(%rdx), %ecx	#, D.2445
+	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2447
+	leal	8(%rdx), %ecx	#, D.2448
 	movq	-104(%rbp), %rdx	# args, tmp372
-	movl	%ecx, (%rdx)	# D.2445, args_159(D)->gp_offset
+	movl	%ecx, (%rdx)	# D.2448, args_159(D)->gp_offset
 	jmp	.L145	#
 .L144:
 	movq	-104(%rbp), %rax	# args, tmp373
-	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2446
-	leaq	8(%rax), %rcx	#, D.2447
+	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2449
+	leaq	8(%rax), %rcx	#, D.2450
 	movq	-104(%rbp), %rdx	# args, tmp374
-	movq	%rcx, 8(%rdx)	# D.2447, args_159(D)->overflow_arg_area
+	movq	%rcx, 8(%rdx)	# D.2450, args_159(D)->overflow_arg_area
 .L145:
 	movl	(%rax), %eax	# MEM[(unsigned int * {ref-all})addr.62_263], _62
 # printk.c:356: 					str=number(str,va_arg(args,unsigned int),8,field_width,precision,flags);
@@ -5340,27 +5340,27 @@ vsprintf:
 # printk.c:365: 				str=number(str,(unsigned long)va_arg(args,void *),16,field_width,precision,flags);
 	.loc 2 365 35
 	movq	-104(%rbp), %rax	# args, tmp382
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2451
-	cmpl	$47, %eax	#, D.2451
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2454
+	cmpl	$47, %eax	#, D.2454
 	ja	.L147	#,
 	movq	-104(%rbp), %rax	# args, tmp383
-	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2453
+	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2456
 	movq	-104(%rbp), %rax	# args, tmp384
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2454
-	movl	%eax, %eax	# D.2454, D.2455
-	addq	%rdx, %rax	# D.2453, D.2458
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2457
+	movl	%eax, %eax	# D.2457, D.2458
+	addq	%rdx, %rax	# D.2456, D.2461
 	movq	-104(%rbp), %rdx	# args, tmp385
-	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2456
-	leal	8(%rdx), %ecx	#, D.2457
+	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2459
+	leal	8(%rdx), %ecx	#, D.2460
 	movq	-104(%rbp), %rdx	# args, tmp386
-	movl	%ecx, (%rdx)	# D.2457, args_159(D)->gp_offset
+	movl	%ecx, (%rdx)	# D.2460, args_159(D)->gp_offset
 	jmp	.L148	#
 .L147:
 	movq	-104(%rbp), %rax	# args, tmp387
-	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2458
-	leaq	8(%rax), %rcx	#, D.2459
+	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2461
+	leaq	8(%rax), %rcx	#, D.2462
 	movq	-104(%rbp), %rdx	# args, tmp388
-	movq	%rcx, 8(%rdx)	# D.2459, args_159(D)->overflow_arg_area
+	movq	%rcx, 8(%rdx)	# D.2462, args_159(D)->overflow_arg_area
 .L148:
 	movq	(%rax), %rax	# MEM[(void * * {ref-all})addr.63_264], _64
 # printk.c:365: 				str=number(str,(unsigned long)va_arg(args,void *),16,field_width,precision,flags);
@@ -5396,27 +5396,27 @@ vsprintf:
 # printk.c:371: 					str=number(str,va_arg(args,unsigned long),16,field_width,precision,flags);	
 	.loc 2 371 21
 	movq	-104(%rbp), %rax	# args, tmp396
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2463
-	cmpl	$47, %eax	#, D.2463
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2466
+	cmpl	$47, %eax	#, D.2466
 	ja	.L150	#,
 	movq	-104(%rbp), %rax	# args, tmp397
-	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2465
+	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2468
 	movq	-104(%rbp), %rax	# args, tmp398
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2466
-	movl	%eax, %eax	# D.2466, D.2467
-	addq	%rdx, %rax	# D.2465, D.2470
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2469
+	movl	%eax, %eax	# D.2469, D.2470
+	addq	%rdx, %rax	# D.2468, D.2473
 	movq	-104(%rbp), %rdx	# args, tmp399
-	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2468
-	leal	8(%rdx), %ecx	#, D.2469
+	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2471
+	leal	8(%rdx), %ecx	#, D.2472
 	movq	-104(%rbp), %rdx	# args, tmp400
-	movl	%ecx, (%rdx)	# D.2469, args_159(D)->gp_offset
+	movl	%ecx, (%rdx)	# D.2472, args_159(D)->gp_offset
 	jmp	.L151	#
 .L150:
 	movq	-104(%rbp), %rax	# args, tmp401
-	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2470
-	leaq	8(%rax), %rcx	#, D.2471
+	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2473
+	leaq	8(%rax), %rcx	#, D.2474
 	movq	-104(%rbp), %rdx	# args, tmp402
-	movq	%rcx, 8(%rdx)	# D.2471, args_159(D)->overflow_arg_area
+	movq	%rcx, 8(%rdx)	# D.2474, args_159(D)->overflow_arg_area
 .L151:
 	movq	(%rax), %rax	# MEM[(long unsigned int * {ref-all})addr.64_265], _66
 # printk.c:371: 					str=number(str,va_arg(args,unsigned long),16,field_width,precision,flags);	
@@ -5444,27 +5444,27 @@ vsprintf:
 # printk.c:373: 					str=number(str,va_arg(args,unsigned int),16,field_width,precision,flags);
 	.loc 2 373 21
 	movq	-104(%rbp), %rax	# args, tmp410
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2475
-	cmpl	$47, %eax	#, D.2475
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2478
+	cmpl	$47, %eax	#, D.2478
 	ja	.L153	#,
 	movq	-104(%rbp), %rax	# args, tmp411
-	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2477
+	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2480
 	movq	-104(%rbp), %rax	# args, tmp412
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2478
-	movl	%eax, %eax	# D.2478, D.2479
-	addq	%rdx, %rax	# D.2477, D.2482
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2481
+	movl	%eax, %eax	# D.2481, D.2482
+	addq	%rdx, %rax	# D.2480, D.2485
 	movq	-104(%rbp), %rdx	# args, tmp413
-	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2480
-	leal	8(%rdx), %ecx	#, D.2481
+	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2483
+	leal	8(%rdx), %ecx	#, D.2484
 	movq	-104(%rbp), %rdx	# args, tmp414
-	movl	%ecx, (%rdx)	# D.2481, args_159(D)->gp_offset
+	movl	%ecx, (%rdx)	# D.2484, args_159(D)->gp_offset
 	jmp	.L154	#
 .L153:
 	movq	-104(%rbp), %rax	# args, tmp415
-	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2482
-	leaq	8(%rax), %rcx	#, D.2483
+	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2485
+	leaq	8(%rax), %rcx	#, D.2486
 	movq	-104(%rbp), %rdx	# args, tmp416
-	movq	%rcx, 8(%rdx)	# D.2483, args_159(D)->overflow_arg_area
+	movq	%rcx, 8(%rdx)	# D.2486, args_159(D)->overflow_arg_area
 .L154:
 	movl	(%rax), %eax	# MEM[(unsigned int * {ref-all})addr.65_266], _68
 # printk.c:373: 					str=number(str,va_arg(args,unsigned int),16,field_width,precision,flags);
@@ -5500,27 +5500,27 @@ vsprintf:
 # printk.c:381: 					str=number(str,va_arg(args,unsigned long),10,field_width,precision,flags);
 	.loc 2 381 21
 	movq	-104(%rbp), %rax	# args, tmp424
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2487
-	cmpl	$47, %eax	#, D.2487
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2490
+	cmpl	$47, %eax	#, D.2490
 	ja	.L156	#,
 	movq	-104(%rbp), %rax	# args, tmp425
-	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2489
+	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2492
 	movq	-104(%rbp), %rax	# args, tmp426
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2490
-	movl	%eax, %eax	# D.2490, D.2491
-	addq	%rdx, %rax	# D.2489, D.2494
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2493
+	movl	%eax, %eax	# D.2493, D.2494
+	addq	%rdx, %rax	# D.2492, D.2497
 	movq	-104(%rbp), %rdx	# args, tmp427
-	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2492
-	leal	8(%rdx), %ecx	#, D.2493
+	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2495
+	leal	8(%rdx), %ecx	#, D.2496
 	movq	-104(%rbp), %rdx	# args, tmp428
-	movl	%ecx, (%rdx)	# D.2493, args_159(D)->gp_offset
+	movl	%ecx, (%rdx)	# D.2496, args_159(D)->gp_offset
 	jmp	.L157	#
 .L156:
 	movq	-104(%rbp), %rax	# args, tmp429
-	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2494
-	leaq	8(%rax), %rcx	#, D.2495
+	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2497
+	leaq	8(%rax), %rcx	#, D.2498
 	movq	-104(%rbp), %rdx	# args, tmp430
-	movq	%rcx, 8(%rdx)	# D.2495, args_159(D)->overflow_arg_area
+	movq	%rcx, 8(%rdx)	# D.2498, args_159(D)->overflow_arg_area
 .L157:
 	movq	(%rax), %rax	# MEM[(long unsigned int * {ref-all})addr.66_267], _70
 # printk.c:381: 					str=number(str,va_arg(args,unsigned long),10,field_width,precision,flags);
@@ -5548,27 +5548,27 @@ vsprintf:
 # printk.c:383: 					str=number(str,va_arg(args,unsigned int),10,field_width,precision,flags);
 	.loc 2 383 21
 	movq	-104(%rbp), %rax	# args, tmp438
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2499
-	cmpl	$47, %eax	#, D.2499
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2502
+	cmpl	$47, %eax	#, D.2502
 	ja	.L159	#,
 	movq	-104(%rbp), %rax	# args, tmp439
-	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2501
+	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2504
 	movq	-104(%rbp), %rax	# args, tmp440
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2502
-	movl	%eax, %eax	# D.2502, D.2503
-	addq	%rdx, %rax	# D.2501, D.2506
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2505
+	movl	%eax, %eax	# D.2505, D.2506
+	addq	%rdx, %rax	# D.2504, D.2509
 	movq	-104(%rbp), %rdx	# args, tmp441
-	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2504
-	leal	8(%rdx), %ecx	#, D.2505
+	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2507
+	leal	8(%rdx), %ecx	#, D.2508
 	movq	-104(%rbp), %rdx	# args, tmp442
-	movl	%ecx, (%rdx)	# D.2505, args_159(D)->gp_offset
+	movl	%ecx, (%rdx)	# D.2508, args_159(D)->gp_offset
 	jmp	.L160	#
 .L159:
 	movq	-104(%rbp), %rax	# args, tmp443
-	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2506
-	leaq	8(%rax), %rcx	#, D.2507
+	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2509
+	leaq	8(%rax), %rcx	#, D.2510
 	movq	-104(%rbp), %rdx	# args, tmp444
-	movq	%rcx, 8(%rdx)	# D.2507, args_159(D)->overflow_arg_area
+	movq	%rcx, 8(%rdx)	# D.2510, args_159(D)->overflow_arg_area
 .L160:
 	movl	(%rax), %eax	# MEM[(unsigned int * {ref-all})addr.67_268], _72
 # printk.c:383: 					str=number(str,va_arg(args,unsigned int),10,field_width,precision,flags);
@@ -5601,27 +5601,27 @@ vsprintf:
 # printk.c:388: 					long *ip=va_arg(args,long *);
 	.loc 2 388 12
 	movq	-104(%rbp), %rax	# args, tmp452
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2511
-	cmpl	$47, %eax	#, D.2511
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2514
+	cmpl	$47, %eax	#, D.2514
 	ja	.L162	#,
 	movq	-104(%rbp), %rax	# args, tmp453
-	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2513
+	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2516
 	movq	-104(%rbp), %rax	# args, tmp454
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2514
-	movl	%eax, %eax	# D.2514, D.2515
-	addq	%rdx, %rax	# D.2513, D.2518
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2517
+	movl	%eax, %eax	# D.2517, D.2518
+	addq	%rdx, %rax	# D.2516, D.2521
 	movq	-104(%rbp), %rdx	# args, tmp455
-	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2516
-	leal	8(%rdx), %ecx	#, D.2517
+	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2519
+	leal	8(%rdx), %ecx	#, D.2520
 	movq	-104(%rbp), %rdx	# args, tmp456
-	movl	%ecx, (%rdx)	# D.2517, args_159(D)->gp_offset
+	movl	%ecx, (%rdx)	# D.2520, args_159(D)->gp_offset
 	jmp	.L163	#
 .L162:
 	movq	-104(%rbp), %rax	# args, tmp457
-	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2518
-	leaq	8(%rax), %rcx	#, D.2519
+	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2521
+	leaq	8(%rax), %rcx	#, D.2522
 	movq	-104(%rbp), %rdx	# args, tmp458
-	movq	%rcx, 8(%rdx)	# D.2519, args_159(D)->overflow_arg_area
+	movq	%rcx, 8(%rdx)	# D.2522, args_159(D)->overflow_arg_area
 .L163:
 	movq	(%rax), %rax	# MEM[(long int * * {ref-all})addr.68_269], tmp459
 	movq	%rax, -72(%rbp)	# tmp459, ip
@@ -5643,27 +5643,27 @@ vsprintf:
 # printk.c:391: 					int *ip=va_arg(args,int *);
 	.loc 2 391 11
 	movq	-104(%rbp), %rax	# args, tmp462
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2523
-	cmpl	$47, %eax	#, D.2523
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2526
+	cmpl	$47, %eax	#, D.2526
 	ja	.L165	#,
 	movq	-104(%rbp), %rax	# args, tmp463
-	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2525
+	movq	16(%rax), %rdx	# args_159(D)->reg_save_area, D.2528
 	movq	-104(%rbp), %rax	# args, tmp464
-	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2526
-	movl	%eax, %eax	# D.2526, D.2527
-	addq	%rdx, %rax	# D.2525, D.2530
+	movl	(%rax), %eax	# args_159(D)->gp_offset, D.2529
+	movl	%eax, %eax	# D.2529, D.2530
+	addq	%rdx, %rax	# D.2528, D.2533
 	movq	-104(%rbp), %rdx	# args, tmp465
-	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2528
-	leal	8(%rdx), %ecx	#, D.2529
+	movl	(%rdx), %edx	# args_159(D)->gp_offset, D.2531
+	leal	8(%rdx), %ecx	#, D.2532
 	movq	-104(%rbp), %rdx	# args, tmp466
-	movl	%ecx, (%rdx)	# D.2529, args_159(D)->gp_offset
+	movl	%ecx, (%rdx)	# D.2532, args_159(D)->gp_offset
 	jmp	.L166	#
 .L165:
 	movq	-104(%rbp), %rax	# args, tmp467
-	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2530
-	leaq	8(%rax), %rcx	#, D.2531
+	movq	8(%rax), %rax	# args_159(D)->overflow_arg_area, D.2533
+	leaq	8(%rax), %rcx	#, D.2534
 	movq	-104(%rbp), %rdx	# args, tmp468
-	movq	%rcx, 8(%rdx)	# D.2531, args_159(D)->overflow_arg_area
+	movq	%rcx, 8(%rdx)	# D.2534, args_159(D)->overflow_arg_area
 .L166:
 	movq	(%rax), %rax	# MEM[(int * * {ref-all})addr.69_270], tmp469
 	movq	%rax, -64(%rbp)	# tmp469, ip
@@ -6583,7 +6583,7 @@ vsprintf:
 	.uleb128 0x1f
 	.long	.LASF59
 	.byte	0x1
-	.value	0x22f
+	.value	0x239
 	.byte	0x13
 	.long	0x143
 	.quad	.LFB24
@@ -6593,7 +6593,7 @@ vsprintf:
 	.uleb128 0x20
 	.long	.LASF53
 	.byte	0x1
-	.value	0x22f
+	.value	0x239
 	.byte	0x21
 	.long	0x32f
 	.uleb128 0x2
@@ -6602,7 +6602,7 @@ vsprintf:
 	.uleb128 0xe
 	.string	"ptr"
 	.byte	0x1
-	.value	0x231
+	.value	0x23b
 	.byte	0xb
 	.long	0x32f
 	.uleb128 0x2

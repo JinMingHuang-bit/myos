@@ -71,8 +71,27 @@ E820 is a convenient tool for BIOS of X86-based computer systems to map memory t
 By setting the AX register to the hexadecimal value E820, it can be accessed through the INT15H call, 
 reporting which memory address ranges are available and which are reserved for use by the BIOS.
 */
+//刷新TLB
+#define flush_tlb()		\
+do {
+	unsigned long tmpreq;								\
+	__asm__ __volatile__("movq %%cr3, %0  \n\t"			\
+	                      "movq %0, %%cr3 \n\t"			\
+	                      : "=r"(tmpreq)				\
+	                      : 							\
+	                      : "memory"
+	                     );								\
+} while (0)
 
-
+inline unsigned long *Get_gdt(){
+	unsigned long * tmp;
+	__asm__ __volatile__("movq %%cr3, %0  \n\t"			\
+	                      : "=r"(tmp)				\
+	                      : 							\
+	                      : "memory"
+	                     );								\
+	return tmp;
+}
 struct Memory_E820_Formate
 {
 	unsigned int address1;
@@ -90,27 +109,63 @@ struct E820
     unsigned int type;     // 内存区域的类型
 }__attribute__((packed));   // 强制为12字节，无填充
 
+
+
 struct Global_Memory_Descriptor
 {
 	struct E820 e820[32];
 	unsigned long e820_length;
-
+/*
+bits_map指向的内存：
+[ 32位 ][ 32位 ][ 32位 ]...
+每个bit代表一个物理页：
+  0 = 空闲页面
+  1 = 已分配页面
+  
+示例：管理4GB内存（1048576个4KB页）
+bits_length = 1048576
+bits_size = 1048576/8 = 131072字节 = 128KB
+ */
 	unsigned long * bits_map;
 	unsigned long bits_size;
 	unsigned long bits_length;
-
+/*
+pages_struct指向：
+┌─────────┬─────────┬─────────┬───
+│ Page 0  │ Page 1  │ Page 2  │ ... (每个对应一个物理页)
+└─────────┴─────────┴─────────┴───
+pages_length = 物理页面总数
+pages_size = pages_length * sizeof(struct Page)
+*/
 	struct Page * pages_struct;
 	unsigned long pages_size;
 	unsigned long pages_length;	
-
+/*
+Zone数组组织内存区域：
+┌──────────┬──────────┬──────────┐
+│ DMA Zone │ Normal   │ HighMem  │
+└──────────┴──────────┴──────────┘
+每个Zone管理一段连续的物理页
+*/
 	struct Zone * zones_struct;
 	unsigned long zones_size;
 	unsigned long zones_length;
-
+/*
+物理内存布局：
+0x100000 ┌──────────────┐ ← start_code
+         │ 内核代码段    │
+0x200000 ├──────────────┤ ← end_code
+         │ 内核数据段    │
+0x300000 ├──────────────┤ ← end_data
+         │ 未初始化数据 │
+0x320000 ├──────────────┤ ← end_brk (当前堆顶)
+         │ 空闲内存     │
+         └──────────────┘
+ */
 	unsigned long start_code;
 	unsigned long end_code;
 	unsigned long end_data;
-	unsigned long end_brk;
+	unsigned long end_brk;//内核堆结束地址（brk是堆的末尾）。
 
 	unsigned long end_of_struct;
 

@@ -5664,70 +5664,70 @@ sys_vector_init:
 	.quad	.Letext0-.Ltext0
 	.long	.Ldebug_line0
 	.uleb128 0xf
-	.byte	0x8
+	.byte	0x4
 	.byte	0x7
 	.long	.LASF2
 	.uleb128 0xf
+	.byte	0x8
+	.byte	0x7
+	.long	.LASF3
+	.uleb128 0xf
 	.byte	0x1
 	.byte	0x8
-	.long	.LASF3
+	.long	.LASF4
 	.uleb128 0x14
 	.long	.LASF8
 	.byte	0x10
 	.byte	0x1
 	.byte	0x9
-	.long	0x54
+	.long	0x5b
 	.uleb128 0x19
 	.string	"x"
 	.byte	0x1
 	.byte	0xb
 	.byte	0x12
-	.long	0x54
+	.long	0x5b
 	.byte	0
-	.byte	0
-	.uleb128 0xa
-	.long	0x35
-	.long	0x64
-	.uleb128 0x10
-	.long	0x2e
-	.byte	0xf
 	.byte	0
 	.uleb128 0xa
 	.long	0x3c
-	.long	0x6f
+	.long	0x6b
+	.uleb128 0x10
+	.long	0x35
+	.byte	0xf
+	.byte	0
+	.uleb128 0xa
+	.long	0x43
+	.long	0x76
 	.uleb128 0x1a
 	.byte	0
 	.uleb128 0x15
 	.long	.LASF5
 	.byte	0xe
 	.byte	0x1b
-	.long	0x64
+	.long	0x6b
 	.uleb128 0xa
-	.long	0x8a
-	.long	0x8a
-	.uleb128 0x10
 	.long	0x2e
+	.long	0x91
+	.uleb128 0x10
+	.long	0x35
 	.byte	0x19
 	.byte	0
-	.uleb128 0xf
-	.byte	0x4
-	.byte	0x7
-	.long	.LASF4
 	.uleb128 0x15
 	.long	.LASF6
 	.byte	0xf
 	.byte	0x15
-	.long	0x7a
+	.long	0x81
 	.uleb128 0x1b
 	.byte	0x8
 	.uleb128 0xa
-	.long	0x35
+	.long	0x3c
 	.long	0xb4
 	.uleb128 0x10
-	.long	0x2e
+	.long	0x35
 	.byte	0xff
 	.uleb128 0x10
-	.long	0x2e
+	.long	0x35
 	.byte	0xf
 	.byte	0
 	.uleb128 0x1c
@@ -5791,7 +5791,7 @@ sys_vector_init:
 	.long	.LASF17
 	.byte	0x29
 	.byte	0x13
-	.long	0x2e
+	.long	0x35
 	.byte	0x20
 	.byte	0
 	.uleb128 0x1d
@@ -5799,7 +5799,7 @@ sys_vector_init:
 	.byte	0x5
 	.string	"int"
 	.uleb128 0x11
-	.long	0x8a
+	.long	0x2e
 	.uleb128 0x16
 	.string	"Pos"
 	.byte	0x2a
@@ -5812,7 +5812,7 @@ sys_vector_init:
 	.long	0x169
 	.long	0x169
 	.uleb128 0x1e
-	.long	0x2e
+	.long	0x35
 	.value	0xfff
 	.byte	0
 	.uleb128 0xf
@@ -5959,9 +5959,9 @@ sys_vector_init:
 	.long	0x137
 	.long	0x29d
 	.uleb128 0x12
-	.long	0x8a
+	.long	0x2e
 	.uleb128 0x12
-	.long	0x8a
+	.long	0x2e
 	.uleb128 0x12
 	.long	0x29d
 	.uleb128 0x3
@@ -6051,7 +6051,7 @@ sys_vector_init:
 	.string	"rsp"
 	.value	0x140
 	.byte	0x30
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6059,7 +6059,7 @@ sys_vector_init:
 	.long	.LASF38
 	.value	0x140
 	.byte	0x42
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6075,7 +6075,7 @@ sys_vector_init:
 	.long	0x27c
 	.byte	0
 	.uleb128 0x11
-	.long	0x2e
+	.long	0x35
 	.uleb128 0xb
 	.long	.LASF40
 	.value	0x134
@@ -6088,7 +6088,7 @@ sys_vector_init:
 	.string	"rsp"
 	.value	0x134
 	.byte	0x26
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6096,7 +6096,7 @@ sys_vector_init:
 	.long	.LASF38
 	.value	0x134
 	.byte	0x38
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6123,7 +6123,7 @@ sys_vector_init:
 	.string	"rsp"
 	.value	0x128
 	.byte	0x25
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6131,7 +6131,7 @@ sys_vector_init:
 	.long	.LASF38
 	.value	0x128
 	.byte	0x37
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6158,7 +6158,7 @@ sys_vector_init:
 	.string	"rsp"
 	.value	0x11c
 	.byte	0x27
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6166,7 +6166,7 @@ sys_vector_init:
 	.long	.LASF38
 	.value	0x11c
 	.byte	0x39
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6193,7 +6193,7 @@ sys_vector_init:
 	.string	"rsp"
 	.value	0x110
 	.byte	0x25
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6201,7 +6201,7 @@ sys_vector_init:
 	.long	.LASF38
 	.value	0x110
 	.byte	0x37
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6230,7 +6230,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0xea
 	.byte	0x22
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6239,7 +6239,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0xea
 	.byte	0x34
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6255,7 +6255,7 @@ sys_vector_init:
 	.string	"cr2"
 	.byte	0xed
 	.byte	0x10
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -48
@@ -6304,7 +6304,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0xcd
 	.byte	0x2a
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6313,7 +6313,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0xcd
 	.byte	0x3c
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6361,7 +6361,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0xb0
 	.byte	0x2b
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6370,7 +6370,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0xb0
 	.byte	0x3d
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6418,7 +6418,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x93
 	.byte	0x2b
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6427,7 +6427,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x93
 	.byte	0x3d
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6475,7 +6475,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x76
 	.byte	0x23
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6484,7 +6484,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x76
 	.byte	0x35
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6532,7 +6532,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x6e
 	.byte	0x33
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6541,7 +6541,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x6e
 	.byte	0x45
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6571,7 +6571,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x62
 	.byte	0x24
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6580,7 +6580,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x62
 	.byte	0x36
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6610,7 +6610,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x56
 	.byte	0x29
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6619,7 +6619,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x56
 	.byte	0x3b
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6649,7 +6649,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x4a
 	.byte	0x28
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6658,7 +6658,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x4a
 	.byte	0x3a
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6688,7 +6688,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x3e
 	.byte	0x1e
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6697,7 +6697,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x3e
 	.byte	0x30
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6727,7 +6727,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x32
 	.byte	0x20
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6736,7 +6736,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x32
 	.byte	0x32
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6766,7 +6766,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x26
 	.byte	0x1c
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6775,7 +6775,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x26
 	.byte	0x2e
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6805,7 +6805,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x1a
 	.byte	0x1b
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6814,7 +6814,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x1a
 	.byte	0x2d
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6844,7 +6844,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0xe
 	.byte	0x1d
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6853,7 +6853,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0xe
 	.byte	0x2f
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6883,7 +6883,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x5
 	.byte	0x24
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6892,7 +6892,7 @@ sys_vector_init:
 	.byte	0x2
 	.byte	0x5
 	.byte	0x36
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6922,7 +6922,7 @@ sys_vector_init:
 	.byte	0x1
 	.byte	0x94
 	.byte	0x1e
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
@@ -6931,7 +6931,7 @@ sys_vector_init:
 	.byte	0x1
 	.byte	0x94
 	.byte	0x31
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -32
@@ -6940,7 +6940,7 @@ sys_vector_init:
 	.byte	0x1
 	.byte	0x94
 	.byte	0x44
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
@@ -6949,7 +6949,7 @@ sys_vector_init:
 	.byte	0x1
 	.byte	0x94
 	.byte	0x57
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -48
@@ -6958,7 +6958,7 @@ sys_vector_init:
 	.byte	0x1
 	.byte	0x94
 	.byte	0x6a
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
@@ -6967,7 +6967,7 @@ sys_vector_init:
 	.byte	0x1
 	.byte	0x94
 	.byte	0x7d
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
@@ -6976,7 +6976,7 @@ sys_vector_init:
 	.byte	0x1
 	.byte	0x95
 	.byte	0xf
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 0
@@ -6985,7 +6985,7 @@ sys_vector_init:
 	.byte	0x1
 	.byte	0x95
 	.byte	0x22
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 8
@@ -6994,7 +6994,7 @@ sys_vector_init:
 	.byte	0x1
 	.byte	0x95
 	.byte	0x35
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 16
@@ -7003,7 +7003,7 @@ sys_vector_init:
 	.byte	0x1
 	.byte	0x95
 	.byte	0x48
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 24
@@ -7021,7 +7021,7 @@ sys_vector_init:
 	.byte	0x1
 	.byte	0x8b
 	.byte	0x31
-	.long	0x8a
+	.long	0x2e
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -36
@@ -7030,7 +7030,7 @@ sys_vector_init:
 	.byte	0x1
 	.byte	0x8b
 	.byte	0x42
-	.long	0x35
+	.long	0x3c
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
@@ -7049,14 +7049,14 @@ sys_vector_init:
 	.uleb128 0x9
 	.long	.LASF71
 	.byte	0x8c
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.uleb128 0x9
 	.long	.LASF72
 	.byte	0x8c
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -32
@@ -7075,7 +7075,7 @@ sys_vector_init:
 	.byte	0x1
 	.byte	0x85
 	.byte	0x2f
-	.long	0x8a
+	.long	0x2e
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -36
@@ -7084,7 +7084,7 @@ sys_vector_init:
 	.byte	0x1
 	.byte	0x85
 	.byte	0x40
-	.long	0x35
+	.long	0x3c
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
@@ -7103,14 +7103,14 @@ sys_vector_init:
 	.uleb128 0x9
 	.long	.LASF71
 	.byte	0x87
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.uleb128 0x9
 	.long	.LASF72
 	.byte	0x87
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -32
@@ -7130,7 +7130,7 @@ sys_vector_init:
 	.byte	0x1
 	.byte	0x67
 	.byte	0x2f
-	.long	0x8a
+	.long	0x2e
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -36
@@ -7139,7 +7139,7 @@ sys_vector_init:
 	.byte	0x1
 	.byte	0x67
 	.byte	0x40
-	.long	0x35
+	.long	0x3c
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
@@ -7158,14 +7158,14 @@ sys_vector_init:
 	.uleb128 0x9
 	.long	.LASF71
 	.byte	0x68
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.uleb128 0x9
 	.long	.LASF72
 	.byte	0x68
-	.long	0x2e
+	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -32
@@ -7822,7 +7822,7 @@ sys_vector_init:
 	.string	"do_int3"
 .LASF54:
 	.string	"do_overflow"
-.LASF3:
+.LASF4:
 	.string	"unsigned char"
 .LASF51:
 	.string	"do_dev_not_available"
@@ -7834,7 +7834,7 @@ sys_vector_init:
 	.string	"rsp2"
 .LASF59:
 	.string	"set_tss64"
-.LASF4:
+.LASF2:
 	.string	"unsigned int"
 .LASF28:
 	.string	"invalid_TSS"
@@ -7870,7 +7870,7 @@ sys_vector_init:
 	.string	"ist4"
 .LASF67:
 	.string	"ist5"
-.LASF2:
+.LASF3:
 	.string	"long unsigned int"
 .LASF23:
 	.string	"x87_FPU_error"
