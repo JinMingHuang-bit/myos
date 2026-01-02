@@ -66,12 +66,12 @@ GAS LISTING entry.s 			page 1
   53 0025 50       	    pushq %rax
   54 0026 488D0500 	    leaq do_divide_error(%rip), %rax
   54      000000
-  55              	    //(%rsp) is a pointer,point to 栈顶指针 RSP 寄存器所指向的内存地址中的内容
+  55              	    //(%rsp) is a pointer,point to the content of the memory address pointed to by the stack top po
   56 002d 48870424 	    xchgq %rax, (%rsp)
   57 0031 EB00     	    jmp error_code
   58              	/*
-  59              	bp 寄存器:SP,BP一般与段寄存器SS 联用，以确定堆栈寄存器中某一单元的地址
-  60              	SP用以指示栈顶的偏移地址，而BP可 作为堆栈区中的一个基地址，用以确定�
+  59              	BP register: SP and BP are usually used in conjunction with the segment register SS to determine th
+  60              	SP is used to indicate the offset address of the top of the stack, while BP can be used as a base a
   61              	
   62              	*/
   63              	
@@ -99,7 +99,7 @@ GAS LISTING entry.s 			page 1
   85 0051 4157     	    pushq %r15
   86              	
   87              	    /*
-  88              	    将错误码和栈指针分别存入RSI和RDX,供异常处理函数使用
+  88              	Store the error code and the stack pointer separately into RSI and RDX, for use by the exception ha
   89              	    */
   90              	
   91 0053 FC       	    cld
@@ -116,7 +116,7 @@ GAS LISTING entry.s 			page 1
   99 0072 FFD2     	    callq *%rdx
  100 0074 EB00     	    jmp ret_from_exception
  101              	
- 102              	// 还原被中断程序的现场
+ 102              	// Restore the state of the interrupted program
  103              	ret_from_exception:
 GAS LISTING entry.s 			page 3
 
@@ -132,8 +132,8 @@ GAS LISTING entry.s 			page 1
  111 0082 48870424 	    xchgq   %rax,   (%rsp)
  112 0086 EBAB     	    jmp error_code
  113              	
- 114              	//NMI不可屏蔽中断是一个特殊的中断，它不携带任何参数，也不返回任何值�
- 115              	//NMI中断的处理程序可以通过执行一条指令来结束，也可以通过执行一条指�
+ 114              	// The non-maskable interrupt (NMI) is a special type of interrupt that does not carry any paramete
+ 115              	// The handler for the NMI interrupt can either terminate by executing an instruction or continue e
  116              	ENTRY(nmi)
  117 0088 50       	    pushq %rax
  118 0089 FC       	    cld
@@ -160,10 +160,10 @@ GAS LISTING entry.s 			page 1
  139 00a7 4156     	    pushq %r14
  140 00a9 4157     	    pushq %r15
  141              	
- 142 00ab 48C7C210 	    movq $0x10,%rdx   // # 0x10通常是内核数据段选择子
+ 142 00ab 48C7C210 	    movq $0x10,%rdx   // # 0x10 is usually the selector for the kernel data segment.
  142      000000
- 143 00b2 8EDA     	    movq %rdx,%ds    // # 设置DS为内核数据段
- 144 00b4 8EC2     	    movq %rdx,%es    //# 设置ES为内核数据段
+ 143 00b2 8EDA     	    movq %rdx,%ds    // # Set DS as the kernel data segment
+ 144 00b4 8EC2     	    movq %rdx,%es    //# Set ES as the kernel data segment
  145              	
  146 00b6 48C7C700 	    movq $0,%rdi
  146      000000

@@ -19,22 +19,18 @@ rather than remaining in the register cache.
 /*nop:The program counter (PC) increments by one (indicating the next instruction) 
 and consumes one instruction cycle of time.*/
 #define nop()       __asm__ __volatile__ ("nop \n\t":::"memory")
-//确保所有在 mfence 指令之前发出的内存加载（load/读）和存储（store/写）操作，
-//都在 mfence 指令之后发出的任何内存操作之前完成
+// Ensure that all memory loads (reads) and stores (writes) that are issued before the mfence instruction,
+// are completed before any memory operations that are issued after the mfence instruction.
 #define io_mfence() 	__asm__ __volatile__ ("mfence	\n\t":::"memory")
 /*&(((type *)0)->member)
-将地址0强制转换为type*类型
-
-访问该结构体的member成员
-
-取该成员的地址
-
-结果: 得到member在结构体中的偏移量（因为基地址为0）
+Convert the address 0 to the type *type 
+Access the "member" member of this structure. 
+Retrieve the address of this member 
+Result: Obtained the offset of the member within the structure (since the base address is 0)
 
  (unsigned long)p - (unsigned long)&(((type *)0)->member)
-从成员的实际地址中减去该成员在结构体中的偏移量
-
-结果: 得到整个结构体的起始地址
+Subtract the offset of the member in the structure from its actual address 
+Result: Obtained the starting point of the entire structure.址
 */
 #define container_of(ptr,type,member)							\
 ({											\
@@ -56,9 +52,9 @@ enum {
  * WARNING: any const qualifier of @ptr is lost.
  */
 
-//取消定义(如果有)
+// Cancel definition (if any)
 #undef offsetof
-//定义offsetof为编译器固有的offsetof
+// Define offsetof as the compiler's inherent offsetof
 #define offsetof(TYPE, MEMBER)	__builtin_offsetof(TYPE, MEMBER)
 
 #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
@@ -169,7 +165,7 @@ static inline void * Cmemcpy(void *To, void *From, long Num)
     char *from = (char *)From;
     long remaining = Num;
     
-    // 复制8字节块（64位）
+// Copy an 8-byte block (64-bit)
     while (remaining >= 8) {
         *((long *)to) = *((long *)from);
         to += 8;
@@ -177,21 +173,21 @@ static inline void * Cmemcpy(void *To, void *From, long Num)
         remaining -= 8;
     }
     
-    // 检查是否需要复制4字节块
+// Check if a 4-byte block needs to be copied
     if (remaining & 4) {
         *((int *)to) = *((int *)from);
         to += 4;
         from += 4;
     }
     
-    // 检查是否需要复制2字节块
+// Check if a 2-byte block needs to be copied
     if (remaining & 2) {
         *((short *)to) = *((short *)from);
         to += 2;
         from += 2;
     }
     
-    // 检查是否需要复制1字节
+// Check if a 1-byte copy is required
     if (remaining & 1) {
         *to = *from;
     }
@@ -250,23 +246,23 @@ static inline int Cmemcmp(void *FirstPart, void *SecondPart, long Count)
     unsigned char *p1 = (unsigned char *)FirstPart;
     unsigned char *p2 = (unsigned char *)SecondPart;
     
-    // 逐字节比较
+// Byte-by-byte comparison
     while (Count-- > 0) {
         if (*p1 != *p2) {
-            // 返回差值（符号表示大小关系）
+            // Return the difference (with the sign indicating the magnitude relationship)
             return (*p1 > *p2) ? 1 : -1;
         }
         p1++;
         p2++;
     }
     
-    // 所有字节都相等
+    // All bytes are equal.
     return 0;
 }
 
 static inline void * memset(void *Address,unsigned char C,long Count){
     int d0,d1;
-    //将单字节值复制到64位值的每个字节中
+    // Copy the single-byte value to each byte of the 64-bit value
     unsigned long tmp=C*0x0101010101010101UL;
     __asm__ __volatile__ ("cld \n\t"
         "rep \n\t"
@@ -294,9 +290,9 @@ static inline void * Cmemset(void *Address, unsigned char C, long Count)
     unsigned char *ptr = (unsigned char *)Address;
     unsigned long pattern = C;
     
-    // 扩展单字节到8字节模式（0x0101010101010101乘法效果）
-    //这样可以用64位写入代替逐字节写入
-    //按位或运算符（|）
+// Expand from single byte to 8-byte mode (multiplication effect of 0x0101010101010101)
+// This allows 64-bit writing to replace byte-by-byte writing
+// Bitwise OR operator (|)
     /*
     0 | 0 = 0
     0 | 1 = 1
@@ -309,26 +305,26 @@ static inline void * Cmemset(void *Address, unsigned char C, long Count)
     
     long remaining = Count;
     
-    // 先按8字节块填充（64位）
+    // First, fill in in 8-byte blocks (64 bits each)
     while (remaining >= 8) {
         *((unsigned long *)ptr) = pattern;
         ptr += 8;
         remaining -= 8;
     }
     
-    // 检查是否需要填充4字节
+    // Check if 4 bytes need to be filled in
     if (remaining & 4) {
         *((unsigned int *)ptr) = (unsigned int)pattern;
         ptr += 4;
     }
     
-    // 检查是否需要填充2字节
+    // Check if 2 bytes need to be filled in
     if (remaining & 2) {
         *((unsigned short *)ptr) = (unsigned short)pattern;
         ptr += 2;
     }
     
-    // 检查是否需要填充1字节
+    // Check if a 1-byte filling is required
     if (remaining & 1) {
         *ptr = C;
     }
@@ -353,17 +349,17 @@ static inline char * Cstrcpy(char *Dest, char *Src)
     char *dest_ptr = Dest;
     char *src_ptr = Src;
     
-    // 逐字节复制，直到遇到空字符
+    // Copy byte by byte until encountering a null character.
     do {
         *dest_ptr = *src_ptr;
         dest_ptr++;
         src_ptr++;
-    } while (*(src_ptr - 1) != '\0');  // 检查刚刚复制的字符是否为结束符
+    } while (*(src_ptr - 1) != '\0');  // Check whether the characters just copied are end-of-line characters
     
     return Dest;
 }
-// lodsb作用: 从[ESI]加载一个字节到AL寄存器，并递增ESI
-// stosb 作用: 将AL寄存器的值存储到[EDI]，并递增EDI
+// lodsb function: Loads a byte from [ESI] into the AL register and increments ESI
+// stosb function: Stores the value in the AL register to [EDI] and increments EDI
 
 static inline char * strncpy(char * Dest,char * Src,long Count){
     __asm__ __volatile__( "cld \n\t"
@@ -389,13 +385,13 @@ static inline char * Cstrncpy(char *Dest, char *Src, long Count)
     char *src_ptr = Src;
     long remaining = Count;
     
-    // 复制字符直到遇到空字符或达到Count
+    //Copy characters until encountering a blank character or reaching Count
     while (remaining > 0 && *src_ptr != '\0') {
         *dest_ptr++ = *src_ptr++;
         remaining--;
     }
     
-    // 如果还有剩余空间，用空字符填充
+    // If there is still remaining space, fill it with blank characters.
     while (remaining > 0) {
         *dest_ptr++ = '\0';
         remaining--;
@@ -425,17 +421,17 @@ static inline char * Cstrcat(char *Dest, char *Src)
 {
     char *dest_ptr = Dest;
     
-    // 找到Dest字符串的结尾（空字符位置）
+    //Find the end of the "Dest" string (the position of the null character)
     while (*dest_ptr != '\0') {
         dest_ptr++;
     }
     
-    // 将Src字符串复制到Dest的结尾
+    //Copy the Src string to the end of Dest
     while (*Src != '\0') {
         *dest_ptr++ = *Src++;
     }
     
-    // 添加字符串结束符
+    // Add string terminator
     *dest_ptr = '\0';
     
     return Dest;
@@ -470,15 +466,15 @@ static inline int Cstrcmp(char *FirstPart, char *SecondPart)
     unsigned char *p1 = (unsigned char *)FirstPart;
     unsigned char *p2 = (unsigned char *)SecondPart;
     
-    // 逐字节比较，直到遇到不相等的字符或字符串结束
+    // Compare byte by byte until encountering unequal characters or the end of the string.
     while (*p1 != '\0' && *p1 == *p2) {
         p1++;
         p2++;
     }
     
-    // 返回差值（符号表示大小关系）
+    // Return the difference (with the symbol indicating the magnitude relationship)
     if (*p1 == *p2) {
-        return 0;  // 字符串完全相等
+        return 0;  // The strings are exactly equal.
     } else if (*p1 < *p2) {
         return -1; // FirstPart < SecondPart
     } else {
@@ -526,19 +522,19 @@ static inline int Cstrncmp(char *FirstPart, char *SecondPart, long Count)
     unsigned char *p2 = (unsigned char *)SecondPart;
     long remaining = Count;
     
-    // 逐字节比较，直到遇到不相等的字符、字符串结束或达到Count
+    // Compare byte by byte until encountering unequal characters, string termination, or reaching Count.
     while (remaining > 0 && *p1 != '\0' && *p1 == *p2) {
         p1++;
         p2++;
         remaining--;
     }
     
-    // 如果达到Count限制或两个字符串都结束，返回0
+    // If the Count limit is reached or both strings have ended, return 0.
     if (remaining == 0 || (*p1 == '\0' && *p2 == '\0')) {
         return 0;
     }
     
-    // 返回差值（符号表示大小关系）
+    // Return the difference (with the symbol indicating the magnitude relationship)
     if (*p1 < *p2) {
         return -1; // FirstPart < SecondPart
     } else if (*p1 > *p2) {
@@ -570,32 +566,33 @@ static inline int Cstrlen(char *String)
 {
     char *ptr = String;
     
-    // 遍历字符串直到遇到空字符
+    // Traverse the string until encountering a blank character
     while (*ptr != '\0') {
         ptr++;
     }
     
-    // 计算长度（指针差值）
+    // Calculate the length (i.e., the difference between pointers)
     return ptr - String;
 }
 
-//用于设置（置1）一个无符号长整型数中指定的位
+// Used to set (set to 1) a specified bit in an unsigned long integer number
 static inline unsigned long bit_set(unsigned long *addr,unsigned long nr){
     return *addr | (1UL << nr);
 }
-//用于获取（读取）一个无符号长整型数中指定位的值。
+// Used to obtain (read) the value of a specific bit in an unsigned long integer.
 static inline unsigned long bit_get(unsigned long *addr,unsigned long nr){
     return *addr & (1UL << nr);
 }
-//用于清除（置0）一个无符号长整型数中指定的位
+// Used to clear (set to 0) a specified bit in an unsigned long integer number
 static inline unsigned long bit_clean(unsigned long *addr,unsigned long nr){
     return *addr & (~(1UL << nr));
 }
 
 static inline unsigned char io_in8(unsigned short port){
     unsigned char ret=0;
-    //mfence内存屏障指令，确保之前的I/O操作完成后才执行后续指令
-    //inb 将指定端口的数据读入累加器的低8位（AL寄存器）,%0输出操作数占位符
+ // mfence memory barrier instruction, ensuring that the previous I/O operations are completed before executing subsequent instructions
+// inb reads the data from the specified port and stores it in the lower 8 bits of the accumulator (AL register), 
+//%0 is the placeholder for the output operand
     __asm__ __volatile__("inb %%dx,%0 \n\t"
             "mfence \n\t"
             :"=a"(ret)
@@ -658,23 +655,23 @@ static inline void io_out32(unsigned short port,unsigned int value){
 }
 
 #define port_insw(port,buffer,nr)   \
-__asm__ __volatile__("cld \n\t"        /* 清除方向标志，地址递增 */ \
-        "rep \n\t"                     /* 重复执行 */ \
-        "insw \n\t"                    /* 从端口读取字到内存 */ \
-        "mfence \n\t"                  /* 内存屏障 */ \
-        :                              /* 无输出操作数 */ \
-        :"d"(port),"D"(buffer),"c"(nr) /* 输入：端口、缓冲区、计数 */ \
-        :"memory"                      /* 破坏：内存内容 */ \
+__asm__ __volatile__("cld \n\t"        /*  Clear direction flag and increment address*/ \
+        "rep \n\t"                     /* repetitive execution */ \
+        "insw \n\t"                    /* Read bytes from the port to the memory */ \
+        "mfence \n\t"                  /* memory barrier */ \
+        :                              /* No output operand */ \
+        :"d"(port),"D"(buffer),"c"(nr) /* Input: Port, Buffer, Count */ \
+        :"memory"                      /* Damage: Memory content */ \
     )
 
 // #define port_outsw(port,buffer,nr) \
 // __asm__ __volatile__("cld \n\t"
 //         "rep \n\t"
-//         "outsw \n\t"                    /* 从端口输出字到内存 */ 
-//         "mfence \n\t"                  /* 内存屏障 */ 
-//         :                              /* 无输出操作数 */ 
-//         :"d"(port),"D"(buffer),"c"(nr) /* 输入：端口、缓冲区、计数 */ 
-//         :"memory"                      /* 破坏：内存内容 */ 
+//         "outsw \n\t"                    /* Output characters from the port to the memory */ 
+//         "mfence \n\t"                  /* memory barrier*/ 
+//         :                              /* No output operand */ 
+//         :"d"(port),"D"(buffer),"c"(nr) /* Input: Port, Buffer, Count */ 
+//         :"memory"                      /* Damage: Memory content*/ 
 //     )
 
 #define port_outsw(port,buffer,nr) \

@@ -54,8 +54,8 @@ int color_printk(unsigned int FRcolor,unsigned int BKcolor,const char *fmt,...){
 			}
 			putchar(Pos.FB_addr,Pos.XResolution,Pos.XPosition*Pos.XCharSize,Pos.YPosition*Pos.YCharSize,FRcolor,BKcolor,' ');			
 		}else if((unsigned char)*(buf+count)=='\t'){
-			//~7 的二进制是 11111000（假设8位）
-			//清除低3位（因为8=2³），实现8字节边界对齐
+// The binary representation of 7 is 11111000 (assuming 8 bits)
+// Clear the lower 3 bits (since 8 = 2³), achieving 8-byte boundary alignment
 				line =((Pos.XPosition+8)& ~(8-1))-Pos.XPosition;
 			Label_tab:
 				line--;
@@ -80,7 +80,7 @@ return i;
 void clear_screen(unsigned int FRcolor,unsigned int BKcolor) {
     int cols = Pos.XResolution / Pos.XCharSize;
     int rows = Pos.YResolution / Pos.YCharSize;
-    // 遍历所有位置输出空格
+    // Traverse all positions and output spaces
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
             putchar(Pos.FB_addr, Pos.XResolution, 
@@ -88,7 +88,7 @@ void clear_screen(unsigned int FRcolor,unsigned int BKcolor) {
                    FRcolor, BKcolor, ' ');
         }
     }
-    // 重置光标位置
+  // Reset cursor position
     Pos.XPosition = 0;
     Pos.YPosition = 0;
 }	
@@ -99,9 +99,9 @@ int skip_atoi2(const char **s){
 	int i=0;
 	while(is_digit(**s)){
 		// i=i*10+*((*s)++)-'0';
-		char current_char = **s;  // 获取当前字符
-		(*s)++;                   // 指针向后移动
-		i = i * 10 + (current_char - '0');  // 更新数值
+		char current_char = **s;  // Get the current character
+		(*s)++;                   // The pointer moves backward.
+		i = i * 10 + (current_char - '0');  // Update the values
 	}
 	return i;
 }
@@ -110,24 +110,24 @@ int skip_atoi(const char **s){
  	int i=0;
  	char current_char;
  	while(is_digit(current_char = **s)){
- 		(*s)++;                   // 指针向后移动
- 		i = i * 10 + (current_char - '0');  // 更新数值
+ 		(*s)++;                   // The pointer moves backward.
+ 		i = i * 10 + (current_char - '0');  // Update the values
  	}
  	return i;
 }
 
 // int atoi(const char *str) {
-//     int result = 0;      // 存储转换结果
-//     int sign = 1;        // 符号位，1表示正数，-1表示负数
-//     int i = 0;           // 字符串索引
+//     int result = 0;      // Store the conversion results
+//     int sign = 1;        // The sign bit is 1 for positive numbers and -1 for negative numbers.
+//     int i = 0;           // String index
     
-//     // 1. 跳过前导空白字符
+//     // 1. Skip leading whitespace characters
 //     while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || 
 //            str[i] == '\r' || str[i] == '\f' || str[i] == '\v') {
 //         i++;
 //     }
     
-//     // 2. 处理可选的正负号
+//     // 2. Handle the optional plus or minus sign
 //     if (str[i] == '-') {
 //         sign = -1;
 //         i++;
@@ -136,9 +136,9 @@ int skip_atoi(const char **s){
 //         i++;
 //     }
     
-//     // 3. 转换数字部分
+//     // 3. Convert the numerical part
 //     while (is_digit(str[i])) {
-//         // 检查是否会发生溢出
+//         // Check whether an overflow will occur
 //         if (result > INT_MAX / 10 || 
 //             (result == INT_MAX / 10 && (str[i] - '0') > INT_MAX % 10)) {
 //             return (sign == 1) ? INT_MAX : INT_MIN;
@@ -148,7 +148,7 @@ int skip_atoi(const char **s){
 //         i++;
 //     }
     
-//     // 4. 返回结果（考虑符号）
+//     // 4. Return results (including symbols)
 //     return sign * result;
 // }
 
@@ -187,7 +187,7 @@ static char *number(char *str,long num,int base,int size,int precision,int type)
 	if(num==0){
 		tmp[i++]='0';
 	}else while (num!=0){
-		// do_div(num,base) 返回num除以base的余数
+		// do_div(num, base) returns the remainder of num divided by base
 		tmp[i++]=digits[do_div2(num,base)];
 	}
 	if(i>precision){
@@ -298,10 +298,10 @@ int vsprintf(char *buf,const char *fmt,va_list args){
 			}
 		}
 		qualifier =-1;
-		//h - short类型:%hd
-		//l - long类型:%ld
-		//L - long long类型:%lld
-		//z - size_t类型
+		//h - short type:%hd
+		//l - long type:%ld
+		//L - long long type:%lld
+		//z - size_t type
 		if(*fmt =='h' || *fmt =='l' || *fmt =='L'||*fmt =='z'){
 			qualifier =*fmt;
 			fmt++;

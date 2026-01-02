@@ -68,7 +68,7 @@ __asm__("divq %%rcx \n\t" \
 __res; \
 })
 
-// 第二个宏 - 使用自动寄存器分配（修复版本）
+// The second macro - Utilizing automatic register allocation (revised version)）
 #define do_div2(n, base) ({ \
     int __res; \
     __asm__("divq %[divisor]" \

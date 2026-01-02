@@ -4,8 +4,8 @@
 #include "trap.h"
 void do_divide_error(unsigned long rsp,unsigned long error_code) {
     unsigned long *p=NULL;
-    //将栈指针寄存器RSP(异常处理模块将栈指针寄存器RSP的值作为参数传入RDI寄存器中)的值向上索引0x98个字节,以获取被中断现场的RIP寄存器的值.
-    //这是产生异常指令的地址值.
+// The value of the stack pointer register RSP (which is passed as a parameter to the RDI register by the exception handling module) is indexed upward by 0x98 bytes to obtain the value of the RIP register at the interrupted state.
+// This is the address value of the exception instruction.
     p=(unsigned long *)(rsp+0x98);
     color_printk(RED,BLACK,"do_divide_error(0):ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code,rsp,*p);
     while (1);
@@ -19,9 +19,7 @@ void do_debug(unsigned long rsp,unsigned long error_code)
 	while(1);
 }
 
-/*
 
-*/
 
 void do_nmi(unsigned long rsp,unsigned long error_code)
 {
@@ -31,9 +29,7 @@ void do_nmi(unsigned long rsp,unsigned long error_code)
 	while(1);
 }
 
-/*
 
-*/
 
 void do_int3(unsigned long rsp,unsigned long error_code)
 {
@@ -43,9 +39,7 @@ void do_int3(unsigned long rsp,unsigned long error_code)
 	while(1);
 }
 
-/*
 
-*/
 
 void do_overflow(unsigned long rsp,unsigned long error_code)
 {
@@ -55,9 +49,7 @@ void do_overflow(unsigned long rsp,unsigned long error_code)
 	while(1);
 }
 
-/*
 
-*/
 
 void do_bounds(unsigned long rsp,unsigned long error_code)
 {
@@ -67,9 +59,6 @@ void do_bounds(unsigned long rsp,unsigned long error_code)
 	while(1);
 }
 
-/*
-
-*/
 
 void do_undefined_opcode(unsigned long rsp,unsigned long error_code)
 {
@@ -79,9 +68,7 @@ void do_undefined_opcode(unsigned long rsp,unsigned long error_code)
 	while(1);
 }
 
-/*
 
-*/
 
 void do_dev_not_available(unsigned long rsp,unsigned long error_code)
 {
@@ -91,9 +78,7 @@ void do_dev_not_available(unsigned long rsp,unsigned long error_code)
 	while(1);
 }
 
-/*
 
-*/
 
 void do_double_fault(unsigned long rsp,unsigned long error_code)
 {
@@ -103,9 +88,6 @@ void do_double_fault(unsigned long rsp,unsigned long error_code)
 	while(1);
 }
 
-/*
-
-*/
 
 void do_coprocessor_segment_overrun(unsigned long rsp,unsigned long error_code)
 {
@@ -140,9 +122,7 @@ void do_invalid_TSS(unsigned long rsp,unsigned long error_code)
 	while(1);
 }
 
-/*
 
-*/
 
 void do_segment_not_present(unsigned long rsp,unsigned long error_code)
 {
@@ -169,9 +149,7 @@ void do_segment_not_present(unsigned long rsp,unsigned long error_code)
 	while(1);
 }
 
-/*
 
-*/
 
 void do_stack_segment_fault(unsigned long rsp,unsigned long error_code)
 {
@@ -198,9 +176,7 @@ void do_stack_segment_fault(unsigned long rsp,unsigned long error_code)
 	while(1);
 }
 
-/*
 
-*/
 
 void do_general_protection(unsigned long rsp,unsigned long error_code)
 {
@@ -227,9 +203,7 @@ void do_general_protection(unsigned long rsp,unsigned long error_code)
 	while(1);
 }
 
-/*
 
-*/
 
 void do_page_fault(unsigned long rsp,unsigned long error_code)
 {
@@ -277,9 +251,7 @@ void do_x87_FPU_error(unsigned long rsp,unsigned long error_code)
 	while(1);
 }
 
-/*
 
-*/
 
 void do_alignment_check(unsigned long rsp,unsigned long error_code)
 {
@@ -289,9 +261,7 @@ void do_alignment_check(unsigned long rsp,unsigned long error_code)
 	while(1);
 }
 
-/*
 
-*/
 
 void do_machine_check(unsigned long rsp,unsigned long error_code)
 {
@@ -301,9 +271,7 @@ void do_machine_check(unsigned long rsp,unsigned long error_code)
 	while(1);
 }
 
-/*
 
-*/
 
 void do_SIMD_exception(unsigned long rsp,unsigned long error_code)
 {
@@ -313,9 +281,6 @@ void do_SIMD_exception(unsigned long rsp,unsigned long error_code)
 	while(1);
 }
 
-/*
-
-*/
 
 void do_virtualization_exception(unsigned long rsp,unsigned long error_code)
 {
@@ -324,6 +289,8 @@ void do_virtualization_exception(unsigned long rsp,unsigned long error_code)
 	color_printk(RED,BLACK,"do_virtualization_exception(20),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
 	while(1);
 }
+
+
 void sys_vector_init()
 {
     set_trap_gate(0,1,divide_error);

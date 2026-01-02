@@ -5,11 +5,11 @@
 #define L1_CACHE_BYTES 32
 
 #define __cacheline_aligned __attribute__((__aligned__(L1_CACHE_BYTES)))
-//它接受一个参数 X，并直接将其展开为 X 本身。
+// It takes a parameter X and directly expands it to be X itself.
 #define SYMBOL_NAME(X) X
-//它接受一个参数 X，并将其转换成一个字符串常量。
+// It accepts a parameter X and converts it into a string constant.
 #define SYMBOL_NAME_STR(X) #X
-//它接受一个参数 X，并将其与冒号 : 连接起来，形成一个新的标记（Token）。
+// It takes a parameter X and connects it with the colon : to form a new token.
 #define SYMBOL_NAME_LABEL(X) X##:
 
 #define ENTRY(name) \

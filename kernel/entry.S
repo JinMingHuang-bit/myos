@@ -52,12 +52,12 @@ ENTRY(divide_error)
     pushq $0
     pushq %rax
     leaq do_divide_error(%rip), %rax
-    //(%rsp) is a pointer,point to 栈顶指针 RSP 寄存器所指向的内存地址中的内容
+    //(%rsp) is a pointer,point to the content of the memory address pointed to by the stack top pointer RSP register
     xchgq %rax, (%rsp)
     jmp error_code
 /*
-bp 寄存器:SP,BP一般与段寄存器SS 联用，以确定堆栈寄存器中某一单元的地址，
-SP用以指示栈顶的偏移地址，而BP可 作为堆栈区中的一个基地址，用以确定在堆栈中的操作数地址
+BP register: SP and BP are usually used in conjunction with the segment register SS to determine the address of a certain unit in the stack register.
+SP is used to indicate the offset address of the top of the stack, while BP can be used as a base address in the stack area to determine the address of the operand in the stack.
 
 */
 
@@ -85,7 +85,7 @@ error_code:
     pushq %r15
 
     /*
-    将错误码和栈指针分别存入RSI和RDX,供异常处理函数使用
+Store the error code and the stack pointer separately into RSI and RDX, for use by the exception handling function.
     */
 
     cld
@@ -99,7 +99,7 @@ error_code:
     callq *%rdx
     jmp ret_from_exception
 
-// 还原被中断程序的现场
+// Restore the state of the interrupted program
 ret_from_exception:
 ENTRY(ret_from_intr)
     jmp RESTORE_ALL
@@ -111,8 +111,8 @@ ENTRY(debug)
     xchgq   %rax,   (%rsp)
     jmp error_code
 
-//NMI不可屏蔽中断是一个特殊的中断，它不携带任何参数，也不返回任何值，
-//NMI中断的处理程序可以通过执行一条指令来结束，也可以通过执行一条指令来继续执行。
+// The non-maskable interrupt (NMI) is a special type of interrupt that does not carry any parameters and does not return any value.
+// The handler for the NMI interrupt can either terminate by executing an instruction or continue execution by executing another instruction.
 ENTRY(nmi)
     pushq %rax
     cld
@@ -139,9 +139,9 @@ ENTRY(nmi)
     pushq %r14
     pushq %r15
 
-    movq $0x10,%rdx   // # 0x10通常是内核数据段选择子
-    movq %rdx,%ds    // # 设置DS为内核数据段
-    movq %rdx,%es    //# 设置ES为内核数据段
+    movq $0x10,%rdx   // # 0x10 is usually the selector for the kernel data segment.
+    movq %rdx,%ds    // # Set DS as the kernel data segment
+    movq %rdx,%es    //# Set ES as the kernel data segment
 
     movq $0,%rdi
     movq %rsp,%rsi

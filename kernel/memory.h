@@ -60,6 +60,51 @@
 #define Virt_To_Phys(addr) ((unsigned long)(addr) - PAGE_OFFSET)
 #define Phys_To_Virt(addr) ((unsigned long*)((unsigned long)(addr) + PAGE_OFFSET))
 
+////alloc_pages zone_select
+
+//Mark the DMA (Direct Memory Access) area
+#define ZONE_DMA	(1 << 0)
+
+//Mark the ordinary memory area
+#define ZONE_NORMAL	(1 << 1)
+
+//Mark the unmapped or high-end memory regions
+#define ZONE_UNMAPED	(1 << 2)
+
+////struct page attribute (alloc_pages flags)
+
+//The page has been mapped to the page table.
+#define PG_PTable_Maped	(1 << 0)
+
+//Kernel initialization page
+#define PG_Kernel_Init	(1 << 1)
+
+
+//The page has been accessed recently.
+#define PG_Referenced	(1 << 2)
+
+//The page has been modified (dirty page)
+#define PG_Dirty	(1 << 3)
+
+//Active page (in the active LRU linked list)
+#define PG_Active	(1 << 4)
+
+//The page data is up-to-date.
+#define PG_Up_To_Date	(1 << 5)
+
+//Device memory page
+#define PG_Device	(1 << 6)
+
+//Pages used by the kernel
+#define PG_Kernel	(1 << 7)
+
+//内核共享给用户空间的页面
+#define PG_K_Share_To_U	(1 << 8)
+
+//Slab分配器使用的页面
+#define PG_Slab		(1 << 9)
+
+
 /*
 When the system starts up, the BIOS/boot program collects the memory mapping information. 
 The boot program stores the mapping table at the designated location (such as physical address 0x7e00) 
@@ -72,24 +117,36 @@ By setting the AX register to the hexadecimal value E820, it can be accessed thr
 reporting which memory address ranges are available and which are reserved for use by the BIOS.
 */
 //刷新TLB
-#define flush_tlb()		\
-do {
-	unsigned long tmpreq;								\
-	__asm__ __volatile__("movq %%cr3, %0  \n\t"			\
-	                      "movq %0, %%cr3 \n\t"			\
-	                      : "=r"(tmpreq)				\
-	                      : 							\
-	                      : "memory"
-	                     );								\
+// #define flush_tlb()		\
+// do {
+// 	unsigned long tmpreq;								\
+// 	__asm__ __volatile__ ("movq %%cr3, %0  \n\t"			\
+// 	                      "movq %0, %%cr3 \n\t"			\
+// 	                      : "=r"(tmpreq)				\
+// 	                      : 							\
+// 	                      : "memory"					\
+// 	                     );								\
+// } while (0)
+
+#define flush_tlb() \
+do { \
+    unsigned long tmpreq; \
+    __asm__ __volatile__ ( \
+        "movq %%cr3, %0\n\t" \
+        "movq %0, %%cr3" \
+        : "=r" (tmpreq) \
+        : \
+        : "memory" \
+    ); \
 } while (0)
 
 inline unsigned long *Get_gdt(){
 	unsigned long * tmp;
-	__asm__ __volatile__("movq %%cr3, %0  \n\t"			\
-	                      : "=r"(tmp)				\
-	                      : 							\
+	__asm__ __volatile__ ("movq %%cr3, %0  \n\t"			
+	                      : "=r"(tmp)				
+	                      : 							
 	                      : "memory"
-	                     );								\
+	                     );								
 	return tmp;
 }
 struct Memory_E820_Formate

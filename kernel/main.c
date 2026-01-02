@@ -18,11 +18,11 @@ void Start_Kernel(void)
     //the loader.asm now using 640×480;
     // if there is a problem,try 640*20,otherwise use 1440*20
     //(1440*900)
-    // 启用SSE异常处理
+    //Enable SSE exception handling
     unsigned long cr4;
     asm volatile("mov %%cr4, %0" : "=r"(cr4));
-    cr4 |= (1 << 9);  // 设置OSXMMEXCPT位
-    cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
+    cr4 |= (1 << 9);  // Set the OSXMMEXCPT flag
+    cr4 |= (1 << 10); // Set the OSXSAVE flag
     asm volatile("mov %0, %%cr4" : : "r"(cr4));
     
     extern char _text;
@@ -31,7 +31,7 @@ void Start_Kernel(void)
     extern char _end;
     color_printk(YELLOW,BLACK,"_text:%#018lx,_etext:%#018lx,_edata:%#018lx,_end:%#018lx\n",&_text,&_etext,&_edata,&_end);
     int *addr=(int *)0xffff800000a00000;
-    //0xffff800000a00000 是一个线性地址
+    //0xffff800000a00000 is  a linear address
     int i;
     Pos.XResolution=1440;
     Pos.YResolution=900;
@@ -57,22 +57,15 @@ void Start_Kernel(void)
     // 
     // i=1/0;
     /*
-    0xffff80000aa00000 是一个高半内核地址（canonical form）
-
-这个地址位于内核空间（0xffff800000000000 以上的区域）
-
-在启动初期，内核只映射了必要的内存区域：
-
-内核代码段、数据段
-
-帧缓冲区（0xffff800000a00000）
-
-可能的一些系统数据结构
-
-但是 0xffff80000aa00000 并没有被映射到任何物理内存
-帧缓冲区通常只映射一小段（比如 1440×900×4 ≈ 5.2MB）
-
-0xffff80000aa00000 超出了帧缓冲区的映射范围
+0xffff80000aa00000 is a high-half kernel address (in canonical form) 
+This address is located in the kernel space (the area above 0xffff80000000000) 
+At the initial stage of startup, the kernel only mapped the necessary memory areas: 
+Kernel code segment, data segment 
+Frame buffer (0xffff800000a00000) 
+Some possible system data structures 
+However, 0xffff80000aa00000 has not been mapped to any physical memory.
+Frame buffers usually only map a small section (for example, 1440×900×4 ≈ 5.2MB). 
+0xffff80000aa00000 exceeds the mapped range of the frame buffer
     */
     
     // i=*(int*)0xffff80000aa00000; 

@@ -3085,7 +3085,7 @@ buf:
 Cstrlen:
 .LFB24:
 	.file 1 "lib.h"
-	.loc 1 570 1
+	.loc 1 566 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -3098,32 +3098,32 @@ Cstrlen:
 	movabsq	$_GLOBAL_OFFSET_TABLE_-.L5, %r11	#,
 	addq	%r11, %rax	#, tmp82
 	movq	%rdi, -24(%rbp)	# String, String
-# lib.h:571:     char *ptr = String;
-	.loc 1 571 11
+# lib.h:567:     char *ptr = String;
+	.loc 1 567 11
 	movq	-24(%rbp), %rax	# String, tmp87
 	movq	%rax, -8(%rbp)	# tmp87, ptr
-# lib.h:574:     while (*ptr != '\0') {
-	.loc 1 574 11
+# lib.h:570:     while (*ptr != '\0') {
+	.loc 1 570 11
 	jmp	.L2	#
 .L3:
-# lib.h:575:         ptr++;
-	.loc 1 575 12
+# lib.h:571:         ptr++;
+	.loc 1 571 12
 	addq	$1, -8(%rbp)	#, ptr
 .L2:
-# lib.h:574:     while (*ptr != '\0') {
-	.loc 1 574 12
+# lib.h:570:     while (*ptr != '\0') {
+	.loc 1 570 12
 	movq	-8(%rbp), %rax	# ptr, tmp88
 	movzbl	(%rax), %eax	# *ptr_3, _1
-# lib.h:574:     while (*ptr != '\0') {
-	.loc 1 574 17
+# lib.h:570:     while (*ptr != '\0') {
+	.loc 1 570 17
 	testb	%al, %al	# _1
 	jne	.L3	#,
-# lib.h:579:     return ptr - String;
-	.loc 1 579 16
+# lib.h:575:     return ptr - String;
+	.loc 1 575 16
 	movq	-8(%rbp), %rax	# ptr, tmp89
 	subq	-24(%rbp), %rax	# String, _2
-# lib.h:580: }
-	.loc 1 580 1
+# lib.h:576: }
+	.loc 1 576 1
 	popq	%rbp	#
 	.cfi_def_cfa 7, 8
 	ret	
@@ -3922,24 +3922,24 @@ skip_atoi2:
 	jmp	.L37	#
 .L39:
 .LBB4:
-# printk.c:102: 		char current_char = **s;  // 获取当前字符
+# printk.c:102: 		char current_char = **s;  // Get the current character
 	.loc 2 102 24
 	movq	-24(%rbp), %rax	# s, tmp95
 	movq	(%rax), %rax	# *s_15(D), _1
-# printk.c:102: 		char current_char = **s;  // 获取当前字符
+# printk.c:102: 		char current_char = **s;  // Get the current character
 	.loc 2 102 8
 	movzbl	(%rax), %eax	# *_1, tmp96
 	movb	%al, -5(%rbp)	# tmp96, current_char
-# printk.c:103: 		(*s)++;                   // 指针向后移动
+# printk.c:103: 		(*s)++;                   // The pointer moves backward.
 	.loc 2 103 4
 	movq	-24(%rbp), %rax	# s, tmp97
 	movq	(%rax), %rax	# *s_15(D), _2
-# printk.c:103: 		(*s)++;                   // 指针向后移动
+# printk.c:103: 		(*s)++;                   // The pointer moves backward.
 	.loc 2 103 7
 	leaq	1(%rax), %rdx	#, _3
 	movq	-24(%rbp), %rax	# s, tmp98
 	movq	%rdx, (%rax)	# _3, *s_15(D)
-# printk.c:104: 		i = i * 10 + (current_char - '0');  // 更新数值
+# printk.c:104: 		i = i * 10 + (current_char - '0');  // Update the values
 	.loc 2 104 9
 	movl	-4(%rbp), %edx	# i, tmp99
 	movl	%edx, %eax	# tmp99, tmp100
@@ -3947,11 +3947,11 @@ skip_atoi2:
 	addl	%edx, %eax	# tmp99, tmp100
 	addl	%eax, %eax	# tmp101
 	movl	%eax, %edx	# tmp100, _4
-# printk.c:104: 		i = i * 10 + (current_char - '0');  // 更新数值
+# printk.c:104: 		i = i * 10 + (current_char - '0');  // Update the values
 	.loc 2 104 30
 	movsbl	-5(%rbp), %eax	# current_char, _5
 	subl	$48, %eax	#, _6
-# printk.c:104: 		i = i * 10 + (current_char - '0');  // 更新数值
+# printk.c:104: 		i = i * 10 + (current_char - '0');  // Update the values
 	.loc 2 104 5
 	addl	%edx, %eax	# _4, tmp102
 	movl	%eax, -4(%rbp)	# tmp102, i
@@ -4007,16 +4007,16 @@ skip_atoi:
 	.loc 2 112 8
 	jmp	.L43	#
 .L45:
-# printk.c:113:  		(*s)++;                   // 指针向后移动
+# printk.c:113:  		(*s)++;                   // The pointer moves backward.
 	.loc 2 113 5
 	movq	-24(%rbp), %rax	# s, tmp92
 	movq	(%rax), %rax	# *s_12(D), _1
-# printk.c:113:  		(*s)++;                   // 指针向后移动
+# printk.c:113:  		(*s)++;                   // The pointer moves backward.
 	.loc 2 113 8
 	leaq	1(%rax), %rdx	#, _2
 	movq	-24(%rbp), %rax	# s, tmp93
 	movq	%rdx, (%rax)	# _2, *s_12(D)
-# printk.c:114:  		i = i * 10 + (current_char - '0');  // 更新数值
+# printk.c:114:  		i = i * 10 + (current_char - '0');  // Update the values
 	.loc 2 114 10
 	movl	-4(%rbp), %edx	# i, tmp94
 	movl	%edx, %eax	# tmp94, tmp95
@@ -4024,11 +4024,11 @@ skip_atoi:
 	addl	%edx, %eax	# tmp94, tmp95
 	addl	%eax, %eax	# tmp96
 	movl	%eax, %edx	# tmp95, _3
-# printk.c:114:  		i = i * 10 + (current_char - '0');  // 更新数值
+# printk.c:114:  		i = i * 10 + (current_char - '0');  // Update the values
 	.loc 2 114 31
 	movsbl	-5(%rbp), %eax	# current_char, _4
 	subl	$48, %eax	#, _5
-# printk.c:114:  		i = i * 10 + (current_char - '0');  // 更新数值
+# printk.c:114:  		i = i * 10 + (current_char - '0');  // Update the values
 	.loc 2 114 6
 	addl	%edx, %eax	# _3, tmp97
 	movl	%eax, -4(%rbp)	# tmp97, i
@@ -6583,7 +6583,7 @@ vsprintf:
 	.uleb128 0x1f
 	.long	.LASF59
 	.byte	0x1
-	.value	0x239
+	.value	0x235
 	.byte	0x13
 	.long	0x143
 	.quad	.LFB24
@@ -6593,7 +6593,7 @@ vsprintf:
 	.uleb128 0x20
 	.long	.LASF53
 	.byte	0x1
-	.value	0x239
+	.value	0x235
 	.byte	0x21
 	.long	0x32f
 	.uleb128 0x2
@@ -6602,7 +6602,7 @@ vsprintf:
 	.uleb128 0xe
 	.string	"ptr"
 	.byte	0x1
-	.value	0x23b
+	.value	0x237
 	.byte	0xb
 	.long	0x32f
 	.uleb128 0x2

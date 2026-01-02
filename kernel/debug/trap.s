@@ -11,7 +11,7 @@
 set_intr_gate:
 .LFB34:
 	.file 1 "gate.h"
-	.loc 1 103 80
+	.loc 1 119 80
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -29,8 +29,8 @@ set_intr_gate:
 	movl	%ecx, %edx	# tmp91, tmp92
 	movb	%dl, -24(%rbp)	# tmp92, ist
 .LBB2:
-# gate.h:104:     _set_gate(IDT_Table+n, 0x8E, ist, addr);
-	.loc 1 104 5
+# gate.h:120:     _set_gate(IDT_Table+n, 0x8E, ist, addr);
+	.loc 1 120 5
 	movl	-20(%rbp), %edx	# n, _1
 	movq	%rdx, %rcx	# _1, _1
 	salq	$4, %rcx	#, _1
@@ -48,7 +48,7 @@ set_intr_gate:
 	movzbl	-24(%rbp), %ecx	# ist, tmp102
 	movl	%r8d, %eax	# tmp101, __d0
 #APP
-# 104 "gate.h" 1
+# 120 "gate.h" 1
 	movw %dx, %ax  
 	andq $0x7, %rcx 
 	addq $36352, %rcx   	#
@@ -68,8 +68,8 @@ set_intr_gate:
 	movq	%rax, -8(%rbp)	# __d0, __d0
 	movq	%rdx, -16(%rbp)	# __d1, __d1
 .LBE2:
-# gate.h:105: }
-	.loc 1 105 1
+# gate.h:121: }
+	.loc 1 121 1
 	nop	
 	popq	%rbp	#
 	.cfi_def_cfa 7, 8
@@ -80,7 +80,7 @@ set_intr_gate:
 	.type	set_trap_gate, @function
 set_trap_gate:
 .LFB35:
-	.loc 1 133 80
+	.loc 1 138 80
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -98,8 +98,8 @@ set_trap_gate:
 	movl	%ecx, %edx	# tmp91, tmp92
 	movb	%dl, -24(%rbp)	# tmp92, ist
 .LBB3:
-# gate.h:135:     _set_gate(IDT_Table+n, 0x8F, ist, addr);
-	.loc 1 135 5
+# gate.h:140:     _set_gate(IDT_Table+n, 0x8F, ist, addr);
+	.loc 1 140 5
 	movl	-20(%rbp), %edx	# n, _1
 	movq	%rdx, %rcx	# _1, _1
 	salq	$4, %rcx	#, _1
@@ -117,7 +117,7 @@ set_trap_gate:
 	movzbl	-24(%rbp), %ecx	# ist, tmp102
 	movl	%r8d, %eax	# tmp101, __d0
 #APP
-# 135 "gate.h" 1
+# 140 "gate.h" 1
 	movw %dx, %ax  
 	andq $0x7, %rcx 
 	addq $36608, %rcx   	#
@@ -137,8 +137,8 @@ set_trap_gate:
 	movq	%rax, -8(%rbp)	# __d0, __d0
 	movq	%rdx, -16(%rbp)	# __d1, __d1
 .LBE3:
-# gate.h:137: }
-	.loc 1 137 1
+# gate.h:142: }
+	.loc 1 142 1
 	nop	
 	popq	%rbp	#
 	.cfi_def_cfa 7, 8
@@ -149,7 +149,7 @@ set_trap_gate:
 	.type	set_system_gate, @function
 set_system_gate:
 .LFB36:
-	.loc 1 139 82
+	.loc 1 144 82
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -167,8 +167,8 @@ set_system_gate:
 	movl	%ecx, %edx	# tmp91, tmp92
 	movb	%dl, -24(%rbp)	# tmp92, ist
 .LBB4:
-# gate.h:140:     _set_gate(IDT_Table+n, 0xEF, ist, addr);
-	.loc 1 140 5
+# gate.h:145:     _set_gate(IDT_Table+n, 0xEF, ist, addr);
+	.loc 1 145 5
 	movl	-20(%rbp), %edx	# n, _1
 	movq	%rdx, %rcx	# _1, _1
 	salq	$4, %rcx	#, _1
@@ -186,7 +186,7 @@ set_system_gate:
 	movzbl	-24(%rbp), %ecx	# ist, tmp102
 	movl	%r8d, %eax	# tmp101, __d0
 #APP
-# 140 "gate.h" 1
+# 145 "gate.h" 1
 	movw %dx, %ax  
 	andq $0x7, %rcx 
 	addq $61184, %rcx   	#
@@ -206,8 +206,8 @@ set_system_gate:
 	movq	%rax, -8(%rbp)	# __d0, __d0
 	movq	%rdx, -16(%rbp)	# __d1, __d1
 .LBE4:
-# gate.h:141: }
-	.loc 1 141 1
+# gate.h:146: }
+	.loc 1 146 1
 	nop	
 	popq	%rbp	#
 	.cfi_def_cfa 7, 8
@@ -219,7 +219,7 @@ set_system_gate:
 	.type	set_tss64, @function
 set_tss64:
 .LFB38:
-	.loc 1 150 1
+	.loc 1 155 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -237,98 +237,98 @@ set_tss64:
 	movq	%rcx, -32(%rbp)	# ist1, ist1
 	movq	%r8, -40(%rbp)	# ist2, ist2
 	movq	%r9, -48(%rbp)	# ist3, ist3
-# gate.h:152: 	*(unsigned long *)(TSS64_Table+1) = rsp0;
-	.loc 1 152 3
+# gate.h:157: 	*(unsigned long *)(TSS64_Table+1) = rsp0;
+	.loc 1 157 3
 	movabsq	$TSS64_Table@GOT, %rdx	#, tmp93
 	movq	(%rax,%rdx), %rdx	#, tmp94
 	leaq	4(%rdx), %rdx	#, _1
-# gate.h:152: 	*(unsigned long *)(TSS64_Table+1) = rsp0;
-	.loc 1 152 36
+# gate.h:157: 	*(unsigned long *)(TSS64_Table+1) = rsp0;
+	.loc 1 157 36
 	movq	-8(%rbp), %rcx	# rsp0, tmp95
 	movq	%rcx, (%rdx)	# tmp95, *_1
-# gate.h:153: 	*(unsigned long *)(TSS64_Table+3) = rsp1;
-	.loc 1 153 3
+# gate.h:158: 	*(unsigned long *)(TSS64_Table+3) = rsp1;
+	.loc 1 158 3
 	movabsq	$TSS64_Table@GOT, %rdx	#, tmp96
 	movq	(%rax,%rdx), %rdx	#, tmp97
 	leaq	12(%rdx), %rdx	#, _2
-# gate.h:153: 	*(unsigned long *)(TSS64_Table+3) = rsp1;
-	.loc 1 153 36
+# gate.h:158: 	*(unsigned long *)(TSS64_Table+3) = rsp1;
+	.loc 1 158 36
 	movq	-16(%rbp), %rcx	# rsp1, tmp98
 	movq	%rcx, (%rdx)	# tmp98, *_2
-# gate.h:154: 	*(unsigned long *)(TSS64_Table+5) = rsp2;
-	.loc 1 154 3
+# gate.h:159: 	*(unsigned long *)(TSS64_Table+5) = rsp2;
+	.loc 1 159 3
 	movabsq	$TSS64_Table@GOT, %rdx	#, tmp99
 	movq	(%rax,%rdx), %rdx	#, tmp100
 	leaq	20(%rdx), %rdx	#, _3
-# gate.h:154: 	*(unsigned long *)(TSS64_Table+5) = rsp2;
-	.loc 1 154 36
+# gate.h:159: 	*(unsigned long *)(TSS64_Table+5) = rsp2;
+	.loc 1 159 36
 	movq	-24(%rbp), %rcx	# rsp2, tmp101
 	movq	%rcx, (%rdx)	# tmp101, *_3
-# gate.h:156: 	*(unsigned long *)(TSS64_Table+9) = ist1;
-	.loc 1 156 3
+# gate.h:161: 	*(unsigned long *)(TSS64_Table+9) = ist1;
+	.loc 1 161 3
 	movabsq	$TSS64_Table@GOT, %rdx	#, tmp102
 	movq	(%rax,%rdx), %rdx	#, tmp103
 	leaq	36(%rdx), %rdx	#, _4
-# gate.h:156: 	*(unsigned long *)(TSS64_Table+9) = ist1;
-	.loc 1 156 36
+# gate.h:161: 	*(unsigned long *)(TSS64_Table+9) = ist1;
+	.loc 1 161 36
 	movq	-32(%rbp), %rcx	# ist1, tmp104
 	movq	%rcx, (%rdx)	# tmp104, *_4
-# gate.h:157: 	*(unsigned long *)(TSS64_Table+11) = ist2;
-	.loc 1 157 3
+# gate.h:162: 	*(unsigned long *)(TSS64_Table+11) = ist2;
+	.loc 1 162 3
 	movabsq	$TSS64_Table@GOT, %rdx	#, tmp105
 	movq	(%rax,%rdx), %rdx	#, tmp106
 	leaq	44(%rdx), %rdx	#, _5
-# gate.h:157: 	*(unsigned long *)(TSS64_Table+11) = ist2;
-	.loc 1 157 37
+# gate.h:162: 	*(unsigned long *)(TSS64_Table+11) = ist2;
+	.loc 1 162 37
 	movq	-40(%rbp), %rcx	# ist2, tmp107
 	movq	%rcx, (%rdx)	# tmp107, *_5
-# gate.h:158: 	*(unsigned long *)(TSS64_Table+13) = ist3;
-	.loc 1 158 3
+# gate.h:163: 	*(unsigned long *)(TSS64_Table+13) = ist3;
+	.loc 1 163 3
 	movabsq	$TSS64_Table@GOT, %rdx	#, tmp108
 	movq	(%rax,%rdx), %rdx	#, tmp109
 	leaq	52(%rdx), %rdx	#, _6
-# gate.h:158: 	*(unsigned long *)(TSS64_Table+13) = ist3;
-	.loc 1 158 37
+# gate.h:163: 	*(unsigned long *)(TSS64_Table+13) = ist3;
+	.loc 1 163 37
 	movq	-48(%rbp), %rcx	# ist3, tmp110
 	movq	%rcx, (%rdx)	# tmp110, *_6
-# gate.h:159: 	*(unsigned long *)(TSS64_Table+15) = ist4;
-	.loc 1 159 3
+# gate.h:164: 	*(unsigned long *)(TSS64_Table+15) = ist4;
+	.loc 1 164 3
 	movabsq	$TSS64_Table@GOT, %rdx	#, tmp111
 	movq	(%rax,%rdx), %rdx	#, tmp112
 	leaq	60(%rdx), %rdx	#, _7
-# gate.h:159: 	*(unsigned long *)(TSS64_Table+15) = ist4;
-	.loc 1 159 37
+# gate.h:164: 	*(unsigned long *)(TSS64_Table+15) = ist4;
+	.loc 1 164 37
 	movq	16(%rbp), %rcx	# ist4, tmp113
 	movq	%rcx, (%rdx)	# tmp113, *_7
-# gate.h:160: 	*(unsigned long *)(TSS64_Table+17) = ist5;
-	.loc 1 160 3
+# gate.h:165: 	*(unsigned long *)(TSS64_Table+17) = ist5;
+	.loc 1 165 3
 	movabsq	$TSS64_Table@GOT, %rdx	#, tmp114
 	movq	(%rax,%rdx), %rdx	#, tmp115
 	leaq	68(%rdx), %rdx	#, _8
-# gate.h:160: 	*(unsigned long *)(TSS64_Table+17) = ist5;
-	.loc 1 160 37
+# gate.h:165: 	*(unsigned long *)(TSS64_Table+17) = ist5;
+	.loc 1 165 37
 	movq	24(%rbp), %rcx	# ist5, tmp116
 	movq	%rcx, (%rdx)	# tmp116, *_8
-# gate.h:161: 	*(unsigned long *)(TSS64_Table+19) = ist6;
-	.loc 1 161 3
+# gate.h:166: 	*(unsigned long *)(TSS64_Table+19) = ist6;
+	.loc 1 166 3
 	movabsq	$TSS64_Table@GOT, %rdx	#, tmp117
 	movq	(%rax,%rdx), %rdx	#, tmp118
 	leaq	76(%rdx), %rdx	#, _9
-# gate.h:161: 	*(unsigned long *)(TSS64_Table+19) = ist6;
-	.loc 1 161 37
+# gate.h:166: 	*(unsigned long *)(TSS64_Table+19) = ist6;
+	.loc 1 166 37
 	movq	32(%rbp), %rcx	# ist6, tmp119
 	movq	%rcx, (%rdx)	# tmp119, *_9
-# gate.h:162: 	*(unsigned long *)(TSS64_Table+21) = ist7;	
-	.loc 1 162 3
+# gate.h:167: 	*(unsigned long *)(TSS64_Table+21) = ist7;	
+	.loc 1 167 3
 	movabsq	$TSS64_Table@GOT, %rdx	#, tmp120
 	movq	(%rax,%rdx), %rax	#, tmp121
 	leaq	84(%rax), %rax	#, _10
-# gate.h:162: 	*(unsigned long *)(TSS64_Table+21) = ist7;	
-	.loc 1 162 37
+# gate.h:167: 	*(unsigned long *)(TSS64_Table+21) = ist7;	
+	.loc 1 167 37
 	movq	40(%rbp), %rdx	# ist7, tmp122
 	movq	%rdx, (%rax)	# tmp122, *_10
-# gate.h:163: }
-	.loc 1 163 1
+# gate.h:168: }
+	.loc 1 168 1
 	nop	
 	popq	%rbp	#
 	.cfi_def_cfa 7, 8
@@ -3547,7 +3547,7 @@ do_debug:
 	.type	do_nmi, @function
 do_nmi:
 .LFB41:
-	.loc 2 27 1
+	.loc 2 25 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -3564,18 +3564,18 @@ do_nmi:
 	addq	%r11, %r10	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:28: 	unsigned long * p = NULL;
-	.loc 2 28 18
+# trap.c:26: 	unsigned long * p = NULL;
+	.loc 2 26 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:29: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 29 28
+# trap.c:27: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 27 28
 	movq	-40(%rbp), %rax	# rsp, tmp85
 	addq	$152, %rax	#, _1
-# trap.c:29: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 29 4
+# trap.c:27: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 27 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:30: 	color_printk(RED,BLACK,"do_nmi(2),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 30 2
+# trap.c:28: 	color_printk(RED,BLACK,"do_nmi(2),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 28 2
 	movq	-24(%rbp), %rax	# p, tmp86
 	movq	(%rax), %rcx	# *p_5, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp87
@@ -3595,8 +3595,8 @@ do_nmi:
 	call	*%r11	# tmp91
 .LVL2:
 .L16:
-# trap.c:31: 	while(1);
-	.loc 2 31 7
+# trap.c:29: 	while(1);
+	.loc 2 29 7
 	nop	
 	jmp	.L16	#
 	.cfi_endproc
@@ -3611,7 +3611,7 @@ do_nmi:
 	.type	do_int3, @function
 do_int3:
 .LFB42:
-	.loc 2 39 1
+	.loc 2 35 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -3628,18 +3628,18 @@ do_int3:
 	addq	%r11, %r10	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:40: 	unsigned long * p = NULL;
-	.loc 2 40 18
+# trap.c:36: 	unsigned long * p = NULL;
+	.loc 2 36 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:41: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 41 28
+# trap.c:37: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 37 28
 	movq	-40(%rbp), %rax	# rsp, tmp85
 	addq	$152, %rax	#, _1
-# trap.c:41: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 41 4
+# trap.c:37: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 37 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:42: 	color_printk(RED,BLACK,"do_int3(3),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 42 2
+# trap.c:38: 	color_printk(RED,BLACK,"do_int3(3),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 38 2
 	movq	-24(%rbp), %rax	# p, tmp86
 	movq	(%rax), %rcx	# *p_5, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp87
@@ -3659,8 +3659,8 @@ do_int3:
 	call	*%r11	# tmp91
 .LVL3:
 .L19:
-# trap.c:43: 	while(1);
-	.loc 2 43 7
+# trap.c:39: 	while(1);
+	.loc 2 39 7
 	nop	
 	jmp	.L19	#
 	.cfi_endproc
@@ -3675,7 +3675,7 @@ do_int3:
 	.type	do_overflow, @function
 do_overflow:
 .LFB43:
-	.loc 2 51 1
+	.loc 2 45 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -3692,18 +3692,18 @@ do_overflow:
 	addq	%r11, %r10	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:52: 	unsigned long * p = NULL;
-	.loc 2 52 18
+# trap.c:46: 	unsigned long * p = NULL;
+	.loc 2 46 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:53: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 53 28
+# trap.c:47: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 47 28
 	movq	-40(%rbp), %rax	# rsp, tmp85
 	addq	$152, %rax	#, _1
-# trap.c:53: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 53 4
+# trap.c:47: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 47 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:54: 	color_printk(RED,BLACK,"do_overflow(4),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 54 2
+# trap.c:48: 	color_printk(RED,BLACK,"do_overflow(4),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 48 2
 	movq	-24(%rbp), %rax	# p, tmp86
 	movq	(%rax), %rcx	# *p_5, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp87
@@ -3723,8 +3723,8 @@ do_overflow:
 	call	*%r11	# tmp91
 .LVL4:
 .L22:
-# trap.c:55: 	while(1);
-	.loc 2 55 7
+# trap.c:49: 	while(1);
+	.loc 2 49 7
 	nop	
 	jmp	.L22	#
 	.cfi_endproc
@@ -3739,7 +3739,7 @@ do_overflow:
 	.type	do_bounds, @function
 do_bounds:
 .LFB44:
-	.loc 2 63 1
+	.loc 2 55 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -3756,18 +3756,18 @@ do_bounds:
 	addq	%r11, %r10	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:64: 	unsigned long * p = NULL;
-	.loc 2 64 18
+# trap.c:56: 	unsigned long * p = NULL;
+	.loc 2 56 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:65: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 65 28
+# trap.c:57: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 57 28
 	movq	-40(%rbp), %rax	# rsp, tmp85
 	addq	$152, %rax	#, _1
-# trap.c:65: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 65 4
+# trap.c:57: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 57 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:66: 	color_printk(RED,BLACK,"do_bounds(5),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 66 2
+# trap.c:58: 	color_printk(RED,BLACK,"do_bounds(5),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 58 2
 	movq	-24(%rbp), %rax	# p, tmp86
 	movq	(%rax), %rcx	# *p_5, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp87
@@ -3787,8 +3787,8 @@ do_bounds:
 	call	*%r11	# tmp91
 .LVL5:
 .L25:
-# trap.c:67: 	while(1);
-	.loc 2 67 7
+# trap.c:59: 	while(1);
+	.loc 2 59 7
 	nop	
 	jmp	.L25	#
 	.cfi_endproc
@@ -3803,7 +3803,7 @@ do_bounds:
 	.type	do_undefined_opcode, @function
 do_undefined_opcode:
 .LFB45:
-	.loc 2 75 1
+	.loc 2 64 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -3820,18 +3820,18 @@ do_undefined_opcode:
 	addq	%r11, %r10	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:76: 	unsigned long * p = NULL;
-	.loc 2 76 18
+# trap.c:65: 	unsigned long * p = NULL;
+	.loc 2 65 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:77: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 77 28
+# trap.c:66: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 66 28
 	movq	-40(%rbp), %rax	# rsp, tmp85
 	addq	$152, %rax	#, _1
-# trap.c:77: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 77 4
+# trap.c:66: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 66 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:78: 	color_printk(RED,BLACK,"do_undefined_opcode(6),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 78 2
+# trap.c:67: 	color_printk(RED,BLACK,"do_undefined_opcode(6),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 67 2
 	movq	-24(%rbp), %rax	# p, tmp86
 	movq	(%rax), %rcx	# *p_5, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp87
@@ -3851,8 +3851,8 @@ do_undefined_opcode:
 	call	*%r11	# tmp91
 .LVL6:
 .L28:
-# trap.c:79: 	while(1);
-	.loc 2 79 7
+# trap.c:68: 	while(1);
+	.loc 2 68 7
 	nop	
 	jmp	.L28	#
 	.cfi_endproc
@@ -3867,7 +3867,7 @@ do_undefined_opcode:
 	.type	do_dev_not_available, @function
 do_dev_not_available:
 .LFB46:
-	.loc 2 87 1
+	.loc 2 74 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -3884,18 +3884,18 @@ do_dev_not_available:
 	addq	%r11, %r10	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:88: 	unsigned long * p = NULL;
-	.loc 2 88 18
+# trap.c:75: 	unsigned long * p = NULL;
+	.loc 2 75 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:89: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 89 28
+# trap.c:76: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 76 28
 	movq	-40(%rbp), %rax	# rsp, tmp85
 	addq	$152, %rax	#, _1
-# trap.c:89: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 89 4
+# trap.c:76: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 76 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:90: 	color_printk(RED,BLACK,"do_dev_not_available(7),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 90 2
+# trap.c:77: 	color_printk(RED,BLACK,"do_dev_not_available(7),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 77 2
 	movq	-24(%rbp), %rax	# p, tmp86
 	movq	(%rax), %rcx	# *p_5, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp87
@@ -3915,8 +3915,8 @@ do_dev_not_available:
 	call	*%r11	# tmp91
 .LVL7:
 .L31:
-# trap.c:91: 	while(1);
-	.loc 2 91 7
+# trap.c:78: 	while(1);
+	.loc 2 78 7
 	nop	
 	jmp	.L31	#
 	.cfi_endproc
@@ -3931,7 +3931,7 @@ do_dev_not_available:
 	.type	do_double_fault, @function
 do_double_fault:
 .LFB47:
-	.loc 2 99 1
+	.loc 2 84 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -3948,18 +3948,18 @@ do_double_fault:
 	addq	%r11, %r10	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:100: 	unsigned long * p = NULL;
-	.loc 2 100 18
+# trap.c:85: 	unsigned long * p = NULL;
+	.loc 2 85 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:101: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 101 28
+# trap.c:86: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 86 28
 	movq	-40(%rbp), %rax	# rsp, tmp85
 	addq	$152, %rax	#, _1
-# trap.c:101: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 101 4
+# trap.c:86: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 86 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:102: 	color_printk(RED,BLACK,"do_double_fault(8),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 102 2
+# trap.c:87: 	color_printk(RED,BLACK,"do_double_fault(8),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 87 2
 	movq	-24(%rbp), %rax	# p, tmp86
 	movq	(%rax), %rcx	# *p_5, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp87
@@ -3979,8 +3979,8 @@ do_double_fault:
 	call	*%r11	# tmp91
 .LVL8:
 .L34:
-# trap.c:103: 	while(1);
-	.loc 2 103 7
+# trap.c:88: 	while(1);
+	.loc 2 88 7
 	nop	
 	jmp	.L34	#
 	.cfi_endproc
@@ -3995,7 +3995,7 @@ do_double_fault:
 	.type	do_coprocessor_segment_overrun, @function
 do_coprocessor_segment_overrun:
 .LFB48:
-	.loc 2 111 1
+	.loc 2 93 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -4012,18 +4012,18 @@ do_coprocessor_segment_overrun:
 	addq	%r11, %r10	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:112: 	unsigned long * p = NULL;
-	.loc 2 112 18
+# trap.c:94: 	unsigned long * p = NULL;
+	.loc 2 94 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:113: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 113 28
+# trap.c:95: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 95 28
 	movq	-40(%rbp), %rax	# rsp, tmp85
 	addq	$152, %rax	#, _1
-# trap.c:113: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 113 4
+# trap.c:95: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 95 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:114: 	color_printk(RED,BLACK,"do_coprocessor_segment_overrun(9),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 114 2
+# trap.c:96: 	color_printk(RED,BLACK,"do_coprocessor_segment_overrun(9),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 96 2
 	movq	-24(%rbp), %rax	# p, tmp86
 	movq	(%rax), %rcx	# *p_5, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp87
@@ -4043,8 +4043,8 @@ do_coprocessor_segment_overrun:
 	call	*%r11	# tmp91
 .LVL9:
 .L37:
-# trap.c:115: 	while(1);
-	.loc 2 115 7
+# trap.c:97: 	while(1);
+	.loc 2 97 7
 	nop	
 	jmp	.L37	#
 	.cfi_endproc
@@ -4077,7 +4077,7 @@ do_coprocessor_segment_overrun:
 	.type	do_invalid_TSS, @function
 do_invalid_TSS:
 .LFB49:
-	.loc 2 119 1
+	.loc 2 101 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -4096,18 +4096,18 @@ do_invalid_TSS:
 	addq	%r11, %rbx	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:120: 	unsigned long * p = NULL;
-	.loc 2 120 18
+# trap.c:102: 	unsigned long * p = NULL;
+	.loc 2 102 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:121: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 121 28
+# trap.c:103: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 103 28
 	movq	-40(%rbp), %rax	# rsp, tmp90
 	addq	$152, %rax	#, _1
-# trap.c:121: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 121 4
+# trap.c:103: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 103 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:122: 	color_printk(RED,BLACK,"do_invalid_TSS(10),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 122 2
+# trap.c:104: 	color_printk(RED,BLACK,"do_invalid_TSS(10),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 104 2
 	movq	-24(%rbp), %rax	# p, tmp91
 	movq	(%rax), %rcx	# *p_13, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp92
@@ -4126,16 +4126,16 @@ do_invalid_TSS:
 	addq	%rbx, %r10	# tmp82, tmp96
 	call	*%r10	# tmp96
 .LVL10:
-# trap.c:124: 	if(error_code & 0x01)
-	.loc 2 124 16
+# trap.c:106: 	if(error_code & 0x01)
+	.loc 2 106 16
 	movq	-48(%rbp), %rax	# error_code, tmp97
 	andl	$1, %eax	#, _3
-# trap.c:124: 	if(error_code & 0x01)
-	.loc 2 124 4
+# trap.c:106: 	if(error_code & 0x01)
+	.loc 2 106 4
 	testq	%rax, %rax	# _3
 	je	.L40	#,
-# trap.c:125: 		color_printk(RED,BLACK,"The exception occurred during delivery of an event external to the program,such as an interrupt or an earlier exception.\n");
-	.loc 2 125 3
+# trap.c:107: 		color_printk(RED,BLACK,"The exception occurred during delivery of an event external to the program,such as an interrupt or an earlier exception.\n");
+	.loc 2 107 3
 	movabsq	$.LC11@GOTOFF, %rax	#, tmp99
 	leaq	(%rbx,%rax), %rax	#, tmp98
 	movq	%rax, %rdx	# tmp98,
@@ -4148,16 +4148,16 @@ do_invalid_TSS:
 	call	*%rcx	# tmp100
 .LVL11:
 .L40:
-# trap.c:127: 	if(error_code & 0x02)
-	.loc 2 127 16
+# trap.c:109: 	if(error_code & 0x02)
+	.loc 2 109 16
 	movq	-48(%rbp), %rax	# error_code, tmp101
 	andl	$2, %eax	#, _4
-# trap.c:127: 	if(error_code & 0x02)
-	.loc 2 127 4
+# trap.c:109: 	if(error_code & 0x02)
+	.loc 2 109 4
 	testq	%rax, %rax	# _4
 	je	.L41	#,
-# trap.c:128: 		color_printk(RED,BLACK,"Refers to a gate descriptor in the IDT;\n");
-	.loc 2 128 3
+# trap.c:110: 		color_printk(RED,BLACK,"Refers to a gate descriptor in the IDT;\n");
+	.loc 2 110 3
 	movabsq	$.LC12@GOTOFF, %rax	#, tmp103
 	leaq	(%rbx,%rax), %rax	#, tmp102
 	movq	%rax, %rdx	# tmp102,
@@ -4171,8 +4171,8 @@ do_invalid_TSS:
 .LVL12:
 	jmp	.L42	#
 .L41:
-# trap.c:130: 		color_printk(RED,BLACK,"Refers to a descriptor in the GDT or the current LDT;\n");
-	.loc 2 130 3
+# trap.c:112: 		color_printk(RED,BLACK,"Refers to a descriptor in the GDT or the current LDT;\n");
+	.loc 2 112 3
 	movabsq	$.LC13@GOTOFF, %rax	#, tmp106
 	leaq	(%rbx,%rax), %rax	#, tmp105
 	movq	%rax, %rdx	# tmp105,
@@ -4185,24 +4185,24 @@ do_invalid_TSS:
 	call	*%rcx	# tmp107
 .LVL13:
 .L42:
-# trap.c:132: 	if((error_code & 0x02) == 0)
-	.loc 2 132 17
+# trap.c:114: 	if((error_code & 0x02) == 0)
+	.loc 2 114 17
 	movq	-48(%rbp), %rax	# error_code, tmp108
 	andl	$2, %eax	#, _5
-# trap.c:132: 	if((error_code & 0x02) == 0)
-	.loc 2 132 4
+# trap.c:114: 	if((error_code & 0x02) == 0)
+	.loc 2 114 4
 	testq	%rax, %rax	# _5
 	jne	.L43	#,
-# trap.c:133: 		if(error_code & 0x04)
-	.loc 2 133 17
+# trap.c:115: 		if(error_code & 0x04)
+	.loc 2 115 17
 	movq	-48(%rbp), %rax	# error_code, tmp109
 	andl	$4, %eax	#, _6
-# trap.c:133: 		if(error_code & 0x04)
-	.loc 2 133 5
+# trap.c:115: 		if(error_code & 0x04)
+	.loc 2 115 5
 	testq	%rax, %rax	# _6
 	je	.L44	#,
-# trap.c:134: 			color_printk(RED,BLACK,"Refers to a segment or gate descriptor in the LDT;\n");
-	.loc 2 134 4
+# trap.c:116: 			color_printk(RED,BLACK,"Refers to a segment or gate descriptor in the LDT;\n");
+	.loc 2 116 4
 	movabsq	$.LC14@GOTOFF, %rax	#, tmp111
 	leaq	(%rbx,%rax), %rax	#, tmp110
 	movq	%rax, %rdx	# tmp110,
@@ -4216,8 +4216,8 @@ do_invalid_TSS:
 .LVL14:
 	jmp	.L43	#
 .L44:
-# trap.c:136: 			color_printk(RED,BLACK,"Refers to a descriptor in the current GDT;\n");
-	.loc 2 136 4
+# trap.c:118: 			color_printk(RED,BLACK,"Refers to a descriptor in the current GDT;\n");
+	.loc 2 118 4
 	movabsq	$.LC15@GOTOFF, %rax	#, tmp114
 	leaq	(%rbx,%rax), %rax	#, tmp113
 	movq	%rax, %rdx	# tmp113,
@@ -4230,8 +4230,8 @@ do_invalid_TSS:
 	call	*%rcx	# tmp115
 .LVL15:
 .L43:
-# trap.c:138: 	color_printk(RED,BLACK,"Segment Selector Index:%#010x\n",error_code & 0xfff8);
-	.loc 2 138 2
+# trap.c:120: 	color_printk(RED,BLACK,"Segment Selector Index:%#010x\n",error_code & 0xfff8);
+	.loc 2 120 2
 	movq	-48(%rbp), %rax	# error_code, tmp116
 	andl	$65528, %eax	#, _7
 	movq	%rax, %rcx	# _7,
@@ -4247,8 +4247,8 @@ do_invalid_TSS:
 	call	*%r8	# tmp119
 .LVL16:
 .L45:
-# trap.c:140: 	while(1);
-	.loc 2 140 7
+# trap.c:122: 	while(1);
+	.loc 2 122 7
 	nop	
 	jmp	.L45	#
 	.cfi_endproc
@@ -4263,7 +4263,7 @@ do_invalid_TSS:
 	.type	do_segment_not_present, @function
 do_segment_not_present:
 .LFB50:
-	.loc 2 148 1
+	.loc 2 128 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -4282,18 +4282,18 @@ do_segment_not_present:
 	addq	%r11, %rbx	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:149: 	unsigned long * p = NULL;
-	.loc 2 149 18
+# trap.c:129: 	unsigned long * p = NULL;
+	.loc 2 129 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:150: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 150 28
+# trap.c:130: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 130 28
 	movq	-40(%rbp), %rax	# rsp, tmp90
 	addq	$152, %rax	#, _1
-# trap.c:150: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 150 4
+# trap.c:130: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 130 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:151: 	color_printk(RED,BLACK,"do_segment_not_present(11),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 151 2
+# trap.c:131: 	color_printk(RED,BLACK,"do_segment_not_present(11),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 131 2
 	movq	-24(%rbp), %rax	# p, tmp91
 	movq	(%rax), %rcx	# *p_13, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp92
@@ -4312,16 +4312,16 @@ do_segment_not_present:
 	addq	%rbx, %r10	# tmp82, tmp96
 	call	*%r10	# tmp96
 .LVL17:
-# trap.c:153: 	if(error_code & 0x01)
-	.loc 2 153 16
+# trap.c:133: 	if(error_code & 0x01)
+	.loc 2 133 16
 	movq	-48(%rbp), %rax	# error_code, tmp97
 	andl	$1, %eax	#, _3
-# trap.c:153: 	if(error_code & 0x01)
-	.loc 2 153 4
+# trap.c:133: 	if(error_code & 0x01)
+	.loc 2 133 4
 	testq	%rax, %rax	# _3
 	je	.L48	#,
-# trap.c:154: 		color_printk(RED,BLACK,"The exception occurred during delivery of an event external to the program,such as an interrupt or an earlier exception.\n");
-	.loc 2 154 3
+# trap.c:134: 		color_printk(RED,BLACK,"The exception occurred during delivery of an event external to the program,such as an interrupt or an earlier exception.\n");
+	.loc 2 134 3
 	movabsq	$.LC11@GOTOFF, %rax	#, tmp99
 	leaq	(%rbx,%rax), %rax	#, tmp98
 	movq	%rax, %rdx	# tmp98,
@@ -4334,16 +4334,16 @@ do_segment_not_present:
 	call	*%rcx	# tmp100
 .LVL18:
 .L48:
-# trap.c:156: 	if(error_code & 0x02)
-	.loc 2 156 16
+# trap.c:136: 	if(error_code & 0x02)
+	.loc 2 136 16
 	movq	-48(%rbp), %rax	# error_code, tmp101
 	andl	$2, %eax	#, _4
-# trap.c:156: 	if(error_code & 0x02)
-	.loc 2 156 4
+# trap.c:136: 	if(error_code & 0x02)
+	.loc 2 136 4
 	testq	%rax, %rax	# _4
 	je	.L49	#,
-# trap.c:157: 		color_printk(RED,BLACK,"Refers to a gate descriptor in the IDT;\n");
-	.loc 2 157 3
+# trap.c:137: 		color_printk(RED,BLACK,"Refers to a gate descriptor in the IDT;\n");
+	.loc 2 137 3
 	movabsq	$.LC12@GOTOFF, %rax	#, tmp103
 	leaq	(%rbx,%rax), %rax	#, tmp102
 	movq	%rax, %rdx	# tmp102,
@@ -4357,8 +4357,8 @@ do_segment_not_present:
 .LVL19:
 	jmp	.L50	#
 .L49:
-# trap.c:159: 		color_printk(RED,BLACK,"Refers to a descriptor in the GDT or the current LDT;\n");
-	.loc 2 159 3
+# trap.c:139: 		color_printk(RED,BLACK,"Refers to a descriptor in the GDT or the current LDT;\n");
+	.loc 2 139 3
 	movabsq	$.LC13@GOTOFF, %rax	#, tmp106
 	leaq	(%rbx,%rax), %rax	#, tmp105
 	movq	%rax, %rdx	# tmp105,
@@ -4371,24 +4371,24 @@ do_segment_not_present:
 	call	*%rcx	# tmp107
 .LVL20:
 .L50:
-# trap.c:161: 	if((error_code & 0x02) == 0)
-	.loc 2 161 17
+# trap.c:141: 	if((error_code & 0x02) == 0)
+	.loc 2 141 17
 	movq	-48(%rbp), %rax	# error_code, tmp108
 	andl	$2, %eax	#, _5
-# trap.c:161: 	if((error_code & 0x02) == 0)
-	.loc 2 161 4
+# trap.c:141: 	if((error_code & 0x02) == 0)
+	.loc 2 141 4
 	testq	%rax, %rax	# _5
 	jne	.L51	#,
-# trap.c:162: 		if(error_code & 0x04)
-	.loc 2 162 17
+# trap.c:142: 		if(error_code & 0x04)
+	.loc 2 142 17
 	movq	-48(%rbp), %rax	# error_code, tmp109
 	andl	$4, %eax	#, _6
-# trap.c:162: 		if(error_code & 0x04)
-	.loc 2 162 5
+# trap.c:142: 		if(error_code & 0x04)
+	.loc 2 142 5
 	testq	%rax, %rax	# _6
 	je	.L52	#,
-# trap.c:163: 			color_printk(RED,BLACK,"Refers to a segment or gate descriptor in the LDT;\n");
-	.loc 2 163 4
+# trap.c:143: 			color_printk(RED,BLACK,"Refers to a segment or gate descriptor in the LDT;\n");
+	.loc 2 143 4
 	movabsq	$.LC14@GOTOFF, %rax	#, tmp111
 	leaq	(%rbx,%rax), %rax	#, tmp110
 	movq	%rax, %rdx	# tmp110,
@@ -4402,8 +4402,8 @@ do_segment_not_present:
 .LVL21:
 	jmp	.L51	#
 .L52:
-# trap.c:165: 			color_printk(RED,BLACK,"Refers to a descriptor in the current GDT;\n");
-	.loc 2 165 4
+# trap.c:145: 			color_printk(RED,BLACK,"Refers to a descriptor in the current GDT;\n");
+	.loc 2 145 4
 	movabsq	$.LC15@GOTOFF, %rax	#, tmp114
 	leaq	(%rbx,%rax), %rax	#, tmp113
 	movq	%rax, %rdx	# tmp113,
@@ -4416,8 +4416,8 @@ do_segment_not_present:
 	call	*%rcx	# tmp115
 .LVL22:
 .L51:
-# trap.c:167: 	color_printk(RED,BLACK,"Segment Selector Index:%#010x\n",error_code & 0xfff8);
-	.loc 2 167 2
+# trap.c:147: 	color_printk(RED,BLACK,"Segment Selector Index:%#010x\n",error_code & 0xfff8);
+	.loc 2 147 2
 	movq	-48(%rbp), %rax	# error_code, tmp116
 	andl	$65528, %eax	#, _7
 	movq	%rax, %rcx	# _7,
@@ -4433,8 +4433,8 @@ do_segment_not_present:
 	call	*%r8	# tmp119
 .LVL23:
 .L53:
-# trap.c:169: 	while(1);
-	.loc 2 169 7
+# trap.c:149: 	while(1);
+	.loc 2 149 7
 	nop	
 	jmp	.L53	#
 	.cfi_endproc
@@ -4449,7 +4449,7 @@ do_segment_not_present:
 	.type	do_stack_segment_fault, @function
 do_stack_segment_fault:
 .LFB51:
-	.loc 2 177 1
+	.loc 2 155 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -4468,18 +4468,18 @@ do_stack_segment_fault:
 	addq	%r11, %rbx	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:178: 	unsigned long * p = NULL;
-	.loc 2 178 18
+# trap.c:156: 	unsigned long * p = NULL;
+	.loc 2 156 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:179: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 179 28
+# trap.c:157: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 157 28
 	movq	-40(%rbp), %rax	# rsp, tmp90
 	addq	$152, %rax	#, _1
-# trap.c:179: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 179 4
+# trap.c:157: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 157 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:180: 	color_printk(RED,BLACK,"do_stack_segment_fault(12),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 180 2
+# trap.c:158: 	color_printk(RED,BLACK,"do_stack_segment_fault(12),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 158 2
 	movq	-24(%rbp), %rax	# p, tmp91
 	movq	(%rax), %rcx	# *p_13, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp92
@@ -4498,16 +4498,16 @@ do_stack_segment_fault:
 	addq	%rbx, %r10	# tmp82, tmp96
 	call	*%r10	# tmp96
 .LVL24:
-# trap.c:182: 	if(error_code & 0x01)
-	.loc 2 182 16
+# trap.c:160: 	if(error_code & 0x01)
+	.loc 2 160 16
 	movq	-48(%rbp), %rax	# error_code, tmp97
 	andl	$1, %eax	#, _3
-# trap.c:182: 	if(error_code & 0x01)
-	.loc 2 182 4
+# trap.c:160: 	if(error_code & 0x01)
+	.loc 2 160 4
 	testq	%rax, %rax	# _3
 	je	.L56	#,
-# trap.c:183: 		color_printk(RED,BLACK,"The exception occurred during delivery of an event external to the program,such as an interrupt or an earlier exception.\n");
-	.loc 2 183 3
+# trap.c:161: 		color_printk(RED,BLACK,"The exception occurred during delivery of an event external to the program,such as an interrupt or an earlier exception.\n");
+	.loc 2 161 3
 	movabsq	$.LC11@GOTOFF, %rax	#, tmp99
 	leaq	(%rbx,%rax), %rax	#, tmp98
 	movq	%rax, %rdx	# tmp98,
@@ -4520,16 +4520,16 @@ do_stack_segment_fault:
 	call	*%rcx	# tmp100
 .LVL25:
 .L56:
-# trap.c:185: 	if(error_code & 0x02)
-	.loc 2 185 16
+# trap.c:163: 	if(error_code & 0x02)
+	.loc 2 163 16
 	movq	-48(%rbp), %rax	# error_code, tmp101
 	andl	$2, %eax	#, _4
-# trap.c:185: 	if(error_code & 0x02)
-	.loc 2 185 4
+# trap.c:163: 	if(error_code & 0x02)
+	.loc 2 163 4
 	testq	%rax, %rax	# _4
 	je	.L57	#,
-# trap.c:186: 		color_printk(RED,BLACK,"Refers to a gate descriptor in the IDT;\n");
-	.loc 2 186 3
+# trap.c:164: 		color_printk(RED,BLACK,"Refers to a gate descriptor in the IDT;\n");
+	.loc 2 164 3
 	movabsq	$.LC12@GOTOFF, %rax	#, tmp103
 	leaq	(%rbx,%rax), %rax	#, tmp102
 	movq	%rax, %rdx	# tmp102,
@@ -4543,8 +4543,8 @@ do_stack_segment_fault:
 .LVL26:
 	jmp	.L58	#
 .L57:
-# trap.c:188: 		color_printk(RED,BLACK,"Refers to a descriptor in the GDT or the current LDT;\n");
-	.loc 2 188 3
+# trap.c:166: 		color_printk(RED,BLACK,"Refers to a descriptor in the GDT or the current LDT;\n");
+	.loc 2 166 3
 	movabsq	$.LC13@GOTOFF, %rax	#, tmp106
 	leaq	(%rbx,%rax), %rax	#, tmp105
 	movq	%rax, %rdx	# tmp105,
@@ -4557,24 +4557,24 @@ do_stack_segment_fault:
 	call	*%rcx	# tmp107
 .LVL27:
 .L58:
-# trap.c:190: 	if((error_code & 0x02) == 0)
-	.loc 2 190 17
+# trap.c:168: 	if((error_code & 0x02) == 0)
+	.loc 2 168 17
 	movq	-48(%rbp), %rax	# error_code, tmp108
 	andl	$2, %eax	#, _5
-# trap.c:190: 	if((error_code & 0x02) == 0)
-	.loc 2 190 4
+# trap.c:168: 	if((error_code & 0x02) == 0)
+	.loc 2 168 4
 	testq	%rax, %rax	# _5
 	jne	.L59	#,
-# trap.c:191: 		if(error_code & 0x04)
-	.loc 2 191 17
+# trap.c:169: 		if(error_code & 0x04)
+	.loc 2 169 17
 	movq	-48(%rbp), %rax	# error_code, tmp109
 	andl	$4, %eax	#, _6
-# trap.c:191: 		if(error_code & 0x04)
-	.loc 2 191 5
+# trap.c:169: 		if(error_code & 0x04)
+	.loc 2 169 5
 	testq	%rax, %rax	# _6
 	je	.L60	#,
-# trap.c:192: 			color_printk(RED,BLACK,"Refers to a segment or gate descriptor in the LDT;\n");
-	.loc 2 192 4
+# trap.c:170: 			color_printk(RED,BLACK,"Refers to a segment or gate descriptor in the LDT;\n");
+	.loc 2 170 4
 	movabsq	$.LC14@GOTOFF, %rax	#, tmp111
 	leaq	(%rbx,%rax), %rax	#, tmp110
 	movq	%rax, %rdx	# tmp110,
@@ -4588,8 +4588,8 @@ do_stack_segment_fault:
 .LVL28:
 	jmp	.L59	#
 .L60:
-# trap.c:194: 			color_printk(RED,BLACK,"Refers to a descriptor in the current GDT;\n");
-	.loc 2 194 4
+# trap.c:172: 			color_printk(RED,BLACK,"Refers to a descriptor in the current GDT;\n");
+	.loc 2 172 4
 	movabsq	$.LC15@GOTOFF, %rax	#, tmp114
 	leaq	(%rbx,%rax), %rax	#, tmp113
 	movq	%rax, %rdx	# tmp113,
@@ -4602,8 +4602,8 @@ do_stack_segment_fault:
 	call	*%rcx	# tmp115
 .LVL29:
 .L59:
-# trap.c:196: 	color_printk(RED,BLACK,"Segment Selector Index:%#010x\n",error_code & 0xfff8);
-	.loc 2 196 2
+# trap.c:174: 	color_printk(RED,BLACK,"Segment Selector Index:%#010x\n",error_code & 0xfff8);
+	.loc 2 174 2
 	movq	-48(%rbp), %rax	# error_code, tmp116
 	andl	$65528, %eax	#, _7
 	movq	%rax, %rcx	# _7,
@@ -4619,8 +4619,8 @@ do_stack_segment_fault:
 	call	*%r8	# tmp119
 .LVL30:
 .L61:
-# trap.c:198: 	while(1);
-	.loc 2 198 7
+# trap.c:176: 	while(1);
+	.loc 2 176 7
 	nop	
 	jmp	.L61	#
 	.cfi_endproc
@@ -4635,7 +4635,7 @@ do_stack_segment_fault:
 	.type	do_general_protection, @function
 do_general_protection:
 .LFB52:
-	.loc 2 206 1
+	.loc 2 182 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -4654,18 +4654,18 @@ do_general_protection:
 	addq	%r11, %rbx	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:207: 	unsigned long * p = NULL;
-	.loc 2 207 18
+# trap.c:183: 	unsigned long * p = NULL;
+	.loc 2 183 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:208: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 208 28
+# trap.c:184: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 184 28
 	movq	-40(%rbp), %rax	# rsp, tmp90
 	addq	$152, %rax	#, _1
-# trap.c:208: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 208 4
+# trap.c:184: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 184 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:209: 	color_printk(RED,BLACK,"do_general_protection(13),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 209 2
+# trap.c:185: 	color_printk(RED,BLACK,"do_general_protection(13),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 185 2
 	movq	-24(%rbp), %rax	# p, tmp91
 	movq	(%rax), %rcx	# *p_13, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp92
@@ -4684,16 +4684,16 @@ do_general_protection:
 	addq	%rbx, %r10	# tmp82, tmp96
 	call	*%r10	# tmp96
 .LVL31:
-# trap.c:211: 	if(error_code & 0x01)
-	.loc 2 211 16
+# trap.c:187: 	if(error_code & 0x01)
+	.loc 2 187 16
 	movq	-48(%rbp), %rax	# error_code, tmp97
 	andl	$1, %eax	#, _3
-# trap.c:211: 	if(error_code & 0x01)
-	.loc 2 211 4
+# trap.c:187: 	if(error_code & 0x01)
+	.loc 2 187 4
 	testq	%rax, %rax	# _3
 	je	.L64	#,
-# trap.c:212: 		color_printk(RED,BLACK,"The exception occurred during delivery of an event external to the program,such as an interrupt or an earlier exception.\n");
-	.loc 2 212 3
+# trap.c:188: 		color_printk(RED,BLACK,"The exception occurred during delivery of an event external to the program,such as an interrupt or an earlier exception.\n");
+	.loc 2 188 3
 	movabsq	$.LC11@GOTOFF, %rax	#, tmp99
 	leaq	(%rbx,%rax), %rax	#, tmp98
 	movq	%rax, %rdx	# tmp98,
@@ -4706,16 +4706,16 @@ do_general_protection:
 	call	*%rcx	# tmp100
 .LVL32:
 .L64:
-# trap.c:214: 	if(error_code & 0x02)
-	.loc 2 214 16
+# trap.c:190: 	if(error_code & 0x02)
+	.loc 2 190 16
 	movq	-48(%rbp), %rax	# error_code, tmp101
 	andl	$2, %eax	#, _4
-# trap.c:214: 	if(error_code & 0x02)
-	.loc 2 214 4
+# trap.c:190: 	if(error_code & 0x02)
+	.loc 2 190 4
 	testq	%rax, %rax	# _4
 	je	.L65	#,
-# trap.c:215: 		color_printk(RED,BLACK,"Refers to a gate descriptor in the IDT;\n");
-	.loc 2 215 3
+# trap.c:191: 		color_printk(RED,BLACK,"Refers to a gate descriptor in the IDT;\n");
+	.loc 2 191 3
 	movabsq	$.LC12@GOTOFF, %rax	#, tmp103
 	leaq	(%rbx,%rax), %rax	#, tmp102
 	movq	%rax, %rdx	# tmp102,
@@ -4729,8 +4729,8 @@ do_general_protection:
 .LVL33:
 	jmp	.L66	#
 .L65:
-# trap.c:217: 		color_printk(RED,BLACK,"Refers to a descriptor in the GDT or the current LDT;\n");
-	.loc 2 217 3
+# trap.c:193: 		color_printk(RED,BLACK,"Refers to a descriptor in the GDT or the current LDT;\n");
+	.loc 2 193 3
 	movabsq	$.LC13@GOTOFF, %rax	#, tmp106
 	leaq	(%rbx,%rax), %rax	#, tmp105
 	movq	%rax, %rdx	# tmp105,
@@ -4743,24 +4743,24 @@ do_general_protection:
 	call	*%rcx	# tmp107
 .LVL34:
 .L66:
-# trap.c:219: 	if((error_code & 0x02) == 0)
-	.loc 2 219 17
+# trap.c:195: 	if((error_code & 0x02) == 0)
+	.loc 2 195 17
 	movq	-48(%rbp), %rax	# error_code, tmp108
 	andl	$2, %eax	#, _5
-# trap.c:219: 	if((error_code & 0x02) == 0)
-	.loc 2 219 4
+# trap.c:195: 	if((error_code & 0x02) == 0)
+	.loc 2 195 4
 	testq	%rax, %rax	# _5
 	jne	.L67	#,
-# trap.c:220: 		if(error_code & 0x04)
-	.loc 2 220 17
+# trap.c:196: 		if(error_code & 0x04)
+	.loc 2 196 17
 	movq	-48(%rbp), %rax	# error_code, tmp109
 	andl	$4, %eax	#, _6
-# trap.c:220: 		if(error_code & 0x04)
-	.loc 2 220 5
+# trap.c:196: 		if(error_code & 0x04)
+	.loc 2 196 5
 	testq	%rax, %rax	# _6
 	je	.L68	#,
-# trap.c:221: 			color_printk(RED,BLACK,"Refers to a segment or gate descriptor in the LDT;\n");
-	.loc 2 221 4
+# trap.c:197: 			color_printk(RED,BLACK,"Refers to a segment or gate descriptor in the LDT;\n");
+	.loc 2 197 4
 	movabsq	$.LC14@GOTOFF, %rax	#, tmp111
 	leaq	(%rbx,%rax), %rax	#, tmp110
 	movq	%rax, %rdx	# tmp110,
@@ -4774,8 +4774,8 @@ do_general_protection:
 .LVL35:
 	jmp	.L67	#
 .L68:
-# trap.c:223: 			color_printk(RED,BLACK,"Refers to a descriptor in the current GDT;\n");
-	.loc 2 223 4
+# trap.c:199: 			color_printk(RED,BLACK,"Refers to a descriptor in the current GDT;\n");
+	.loc 2 199 4
 	movabsq	$.LC15@GOTOFF, %rax	#, tmp114
 	leaq	(%rbx,%rax), %rax	#, tmp113
 	movq	%rax, %rdx	# tmp113,
@@ -4788,8 +4788,8 @@ do_general_protection:
 	call	*%rcx	# tmp115
 .LVL36:
 .L67:
-# trap.c:225: 	color_printk(RED,BLACK,"Segment Selector Index:%#010x\n",error_code & 0xfff8);
-	.loc 2 225 2
+# trap.c:201: 	color_printk(RED,BLACK,"Segment Selector Index:%#010x\n",error_code & 0xfff8);
+	.loc 2 201 2
 	movq	-48(%rbp), %rax	# error_code, tmp116
 	andl	$65528, %eax	#, _7
 	movq	%rax, %rcx	# _7,
@@ -4805,8 +4805,8 @@ do_general_protection:
 	call	*%r8	# tmp119
 .LVL37:
 .L69:
-# trap.c:227: 	while(1);
-	.loc 2 227 7
+# trap.c:203: 	while(1);
+	.loc 2 203 7
 	nop	
 	jmp	.L69	#
 	.cfi_endproc
@@ -4840,7 +4840,7 @@ do_general_protection:
 	.type	do_page_fault, @function
 do_page_fault:
 .LFB53:
-	.loc 2 235 1
+	.loc 2 209 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -4859,29 +4859,29 @@ do_page_fault:
 	addq	%r11, %rbx	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:236: 	unsigned long * p = NULL;
-	.loc 2 236 18
+# trap.c:210: 	unsigned long * p = NULL;
+	.loc 2 210 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:237: 	unsigned long cr2 = 0;
-	.loc 2 237 16
+# trap.c:211: 	unsigned long cr2 = 0;
+	.loc 2 211 16
 	movq	$0, -32(%rbp)	#, cr2
-# trap.c:240: 	__asm__	__volatile__("movq	%%cr2,	%0":"=r"(cr2)::"memory");
-	.loc 2 240 2
+# trap.c:214: 	__asm__	__volatile__("movq	%%cr2,	%0":"=r"(cr2)::"memory");
+	.loc 2 214 2
 #APP
-# 240 "trap.c" 1
+# 214 "trap.c" 1
 	movq	%cr2,	%rax	# cr2
 # 0 "" 2
 #NO_APP
 	movq	%rax, -32(%rbp)	# cr2, cr2
-# trap.c:242: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 242 28
+# trap.c:216: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 216 28
 	movq	-40(%rbp), %rax	# rsp, tmp91
 	addq	$152, %rax	#, _1
-# trap.c:242: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 242 4
+# trap.c:216: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 216 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:243: 	color_printk(RED,BLACK,"do_page_fault(14),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 243 2
+# trap.c:217: 	color_printk(RED,BLACK,"do_page_fault(14),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 217 2
 	movq	-24(%rbp), %rax	# p, tmp92
 	movq	(%rax), %rcx	# *p_19, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp93
@@ -4900,16 +4900,16 @@ do_page_fault:
 	addq	%rbx, %r10	# tmp82, tmp97
 	call	*%r10	# tmp97
 .LVL38:
-# trap.c:245: 	if(!(error_code & 0x01))
-	.loc 2 245 18
+# trap.c:219: 	if(!(error_code & 0x01))
+	.loc 2 219 18
 	movq	-48(%rbp), %rax	# error_code, tmp98
 	andl	$1, %eax	#, _3
-# trap.c:245: 	if(!(error_code & 0x01))
-	.loc 2 245 4
+# trap.c:219: 	if(!(error_code & 0x01))
+	.loc 2 219 4
 	testq	%rax, %rax	# _3
 	jne	.L72	#,
-# trap.c:246: 		color_printk(RED,BLACK,"Page Not-Present,\t");
-	.loc 2 246 3
+# trap.c:220: 		color_printk(RED,BLACK,"Page Not-Present,\t");
+	.loc 2 220 3
 	movabsq	$.LC21@GOTOFF, %rax	#, tmp100
 	leaq	(%rbx,%rax), %rax	#, tmp99
 	movq	%rax, %rdx	# tmp99,
@@ -4922,16 +4922,16 @@ do_page_fault:
 	call	*%rcx	# tmp101
 .LVL39:
 .L72:
-# trap.c:248: 	if(error_code & 0x02)
-	.loc 2 248 16
+# trap.c:222: 	if(error_code & 0x02)
+	.loc 2 222 16
 	movq	-48(%rbp), %rax	# error_code, tmp102
 	andl	$2, %eax	#, _4
-# trap.c:248: 	if(error_code & 0x02)
-	.loc 2 248 4
+# trap.c:222: 	if(error_code & 0x02)
+	.loc 2 222 4
 	testq	%rax, %rax	# _4
 	je	.L73	#,
-# trap.c:249: 		color_printk(RED,BLACK,"Write Cause Fault,\t");
-	.loc 2 249 3
+# trap.c:223: 		color_printk(RED,BLACK,"Write Cause Fault,\t");
+	.loc 2 223 3
 	movabsq	$.LC22@GOTOFF, %rax	#, tmp104
 	leaq	(%rbx,%rax), %rax	#, tmp103
 	movq	%rax, %rdx	# tmp103,
@@ -4945,8 +4945,8 @@ do_page_fault:
 .LVL40:
 	jmp	.L74	#
 .L73:
-# trap.c:251: 		color_printk(RED,BLACK,"Read Cause Fault,\t");
-	.loc 2 251 3
+# trap.c:225: 		color_printk(RED,BLACK,"Read Cause Fault,\t");
+	.loc 2 225 3
 	movabsq	$.LC23@GOTOFF, %rax	#, tmp107
 	leaq	(%rbx,%rax), %rax	#, tmp106
 	movq	%rax, %rdx	# tmp106,
@@ -4959,16 +4959,16 @@ do_page_fault:
 	call	*%rcx	# tmp108
 .LVL41:
 .L74:
-# trap.c:253: 	if(error_code & 0x04)
-	.loc 2 253 16
+# trap.c:227: 	if(error_code & 0x04)
+	.loc 2 227 16
 	movq	-48(%rbp), %rax	# error_code, tmp109
 	andl	$4, %eax	#, _5
-# trap.c:253: 	if(error_code & 0x04)
-	.loc 2 253 4
+# trap.c:227: 	if(error_code & 0x04)
+	.loc 2 227 4
 	testq	%rax, %rax	# _5
 	je	.L75	#,
-# trap.c:254: 		color_printk(RED,BLACK,"Fault in user(3)\t");
-	.loc 2 254 3
+# trap.c:228: 		color_printk(RED,BLACK,"Fault in user(3)\t");
+	.loc 2 228 3
 	movabsq	$.LC24@GOTOFF, %rax	#, tmp111
 	leaq	(%rbx,%rax), %rax	#, tmp110
 	movq	%rax, %rdx	# tmp110,
@@ -4982,8 +4982,8 @@ do_page_fault:
 .LVL42:
 	jmp	.L76	#
 .L75:
-# trap.c:256: 		color_printk(RED,BLACK,"Fault in supervisor(0,1,2)\t");
-	.loc 2 256 3
+# trap.c:230: 		color_printk(RED,BLACK,"Fault in supervisor(0,1,2)\t");
+	.loc 2 230 3
 	movabsq	$.LC25@GOTOFF, %rax	#, tmp114
 	leaq	(%rbx,%rax), %rax	#, tmp113
 	movq	%rax, %rdx	# tmp113,
@@ -4996,16 +4996,16 @@ do_page_fault:
 	call	*%rcx	# tmp115
 .LVL43:
 .L76:
-# trap.c:258: 	if(error_code & 0x08)
-	.loc 2 258 16
+# trap.c:232: 	if(error_code & 0x08)
+	.loc 2 232 16
 	movq	-48(%rbp), %rax	# error_code, tmp116
 	andl	$8, %eax	#, _6
-# trap.c:258: 	if(error_code & 0x08)
-	.loc 2 258 4
+# trap.c:232: 	if(error_code & 0x08)
+	.loc 2 232 4
 	testq	%rax, %rax	# _6
 	je	.L77	#,
-# trap.c:259: 		color_printk(RED,BLACK,",Reserved Bit Cause Fault\t");
-	.loc 2 259 3
+# trap.c:233: 		color_printk(RED,BLACK,",Reserved Bit Cause Fault\t");
+	.loc 2 233 3
 	movabsq	$.LC26@GOTOFF, %rax	#, tmp118
 	leaq	(%rbx,%rax), %rax	#, tmp117
 	movq	%rax, %rdx	# tmp117,
@@ -5018,16 +5018,16 @@ do_page_fault:
 	call	*%rcx	# tmp119
 .LVL44:
 .L77:
-# trap.c:261: 	if(error_code & 0x10)
-	.loc 2 261 16
+# trap.c:235: 	if(error_code & 0x10)
+	.loc 2 235 16
 	movq	-48(%rbp), %rax	# error_code, tmp120
 	andl	$16, %eax	#, _7
-# trap.c:261: 	if(error_code & 0x10)
-	.loc 2 261 4
+# trap.c:235: 	if(error_code & 0x10)
+	.loc 2 235 4
 	testq	%rax, %rax	# _7
 	je	.L78	#,
-# trap.c:262: 		color_printk(RED,BLACK,",Instruction fetch Cause Fault");
-	.loc 2 262 3
+# trap.c:236: 		color_printk(RED,BLACK,",Instruction fetch Cause Fault");
+	.loc 2 236 3
 	movabsq	$.LC27@GOTOFF, %rax	#, tmp122
 	leaq	(%rbx,%rax), %rax	#, tmp121
 	movq	%rax, %rdx	# tmp121,
@@ -5040,8 +5040,8 @@ do_page_fault:
 	call	*%rcx	# tmp123
 .LVL45:
 .L78:
-# trap.c:264: 	color_printk(RED,BLACK,"\n");
-	.loc 2 264 2
+# trap.c:238: 	color_printk(RED,BLACK,"\n");
+	.loc 2 238 2
 	movabsq	$.LC28@GOTOFF, %rax	#, tmp125
 	leaq	(%rbx,%rax), %rax	#, tmp124
 	movq	%rax, %rdx	# tmp124,
@@ -5053,8 +5053,8 @@ do_page_fault:
 	addq	%rbx, %rcx	# tmp82, tmp126
 	call	*%rcx	# tmp126
 .LVL46:
-# trap.c:266: 	color_printk(RED,BLACK,"CR2:%#018lx\n",cr2);
-	.loc 2 266 2
+# trap.c:240: 	color_printk(RED,BLACK,"CR2:%#018lx\n",cr2);
+	.loc 2 240 2
 	movq	-32(%rbp), %rax	# cr2, tmp127
 	movq	%rax, %rcx	# tmp127,
 	movabsq	$.LC29@GOTOFF, %rax	#, tmp129
@@ -5069,8 +5069,8 @@ do_page_fault:
 	call	*%r8	# tmp130
 .LVL47:
 .L79:
-# trap.c:268: 	while(1);
-	.loc 2 268 7
+# trap.c:242: 	while(1);
+	.loc 2 242 7
 	nop	
 	jmp	.L79	#
 	.cfi_endproc
@@ -5085,7 +5085,7 @@ do_page_fault:
 	.type	do_x87_FPU_error, @function
 do_x87_FPU_error:
 .LFB54:
-	.loc 2 273 1
+	.loc 2 247 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -5102,18 +5102,18 @@ do_x87_FPU_error:
 	addq	%r11, %r10	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:274: 	unsigned long * p = NULL;
-	.loc 2 274 18
+# trap.c:248: 	unsigned long * p = NULL;
+	.loc 2 248 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:275: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 275 28
+# trap.c:249: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 249 28
 	movq	-40(%rbp), %rax	# rsp, tmp85
 	addq	$152, %rax	#, _1
-# trap.c:275: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 275 4
+# trap.c:249: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 249 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:276: 	color_printk(RED,BLACK,"do_x87_FPU_error(16),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 276 2
+# trap.c:250: 	color_printk(RED,BLACK,"do_x87_FPU_error(16),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 250 2
 	movq	-24(%rbp), %rax	# p, tmp86
 	movq	(%rax), %rcx	# *p_5, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp87
@@ -5133,8 +5133,8 @@ do_x87_FPU_error:
 	call	*%r11	# tmp91
 .LVL48:
 .L82:
-# trap.c:277: 	while(1);
-	.loc 2 277 7
+# trap.c:251: 	while(1);
+	.loc 2 251 7
 	nop	
 	jmp	.L82	#
 	.cfi_endproc
@@ -5149,7 +5149,7 @@ do_x87_FPU_error:
 	.type	do_alignment_check, @function
 do_alignment_check:
 .LFB55:
-	.loc 2 285 1
+	.loc 2 257 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -5166,18 +5166,18 @@ do_alignment_check:
 	addq	%r11, %r10	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:286: 	unsigned long * p = NULL;
-	.loc 2 286 18
+# trap.c:258: 	unsigned long * p = NULL;
+	.loc 2 258 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:287: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 287 28
+# trap.c:259: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 259 28
 	movq	-40(%rbp), %rax	# rsp, tmp85
 	addq	$152, %rax	#, _1
-# trap.c:287: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 287 4
+# trap.c:259: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 259 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:288: 	color_printk(RED,BLACK,"do_alignment_check(17),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 288 2
+# trap.c:260: 	color_printk(RED,BLACK,"do_alignment_check(17),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 260 2
 	movq	-24(%rbp), %rax	# p, tmp86
 	movq	(%rax), %rcx	# *p_5, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp87
@@ -5197,8 +5197,8 @@ do_alignment_check:
 	call	*%r11	# tmp91
 .LVL49:
 .L85:
-# trap.c:289: 	while(1);
-	.loc 2 289 7
+# trap.c:261: 	while(1);
+	.loc 2 261 7
 	nop	
 	jmp	.L85	#
 	.cfi_endproc
@@ -5213,7 +5213,7 @@ do_alignment_check:
 	.type	do_machine_check, @function
 do_machine_check:
 .LFB56:
-	.loc 2 297 1
+	.loc 2 267 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -5230,18 +5230,18 @@ do_machine_check:
 	addq	%r11, %r10	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:298: 	unsigned long * p = NULL;
-	.loc 2 298 18
+# trap.c:268: 	unsigned long * p = NULL;
+	.loc 2 268 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:299: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 299 28
+# trap.c:269: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 269 28
 	movq	-40(%rbp), %rax	# rsp, tmp85
 	addq	$152, %rax	#, _1
-# trap.c:299: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 299 4
+# trap.c:269: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 269 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:300: 	color_printk(RED,BLACK,"do_machine_check(18),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 300 2
+# trap.c:270: 	color_printk(RED,BLACK,"do_machine_check(18),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 270 2
 	movq	-24(%rbp), %rax	# p, tmp86
 	movq	(%rax), %rcx	# *p_5, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp87
@@ -5261,8 +5261,8 @@ do_machine_check:
 	call	*%r11	# tmp91
 .LVL50:
 .L88:
-# trap.c:301: 	while(1);
-	.loc 2 301 7
+# trap.c:271: 	while(1);
+	.loc 2 271 7
 	nop	
 	jmp	.L88	#
 	.cfi_endproc
@@ -5277,7 +5277,7 @@ do_machine_check:
 	.type	do_SIMD_exception, @function
 do_SIMD_exception:
 .LFB57:
-	.loc 2 309 1
+	.loc 2 277 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -5294,18 +5294,18 @@ do_SIMD_exception:
 	addq	%r11, %r10	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:310: 	unsigned long * p = NULL;
-	.loc 2 310 18
+# trap.c:278: 	unsigned long * p = NULL;
+	.loc 2 278 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:311: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 311 28
+# trap.c:279: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 279 28
 	movq	-40(%rbp), %rax	# rsp, tmp85
 	addq	$152, %rax	#, _1
-# trap.c:311: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 311 4
+# trap.c:279: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 279 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:312: 	color_printk(RED,BLACK,"do_SIMD_exception(19),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 312 2
+# trap.c:280: 	color_printk(RED,BLACK,"do_SIMD_exception(19),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 280 2
 	movq	-24(%rbp), %rax	# p, tmp86
 	movq	(%rax), %rcx	# *p_5, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp87
@@ -5325,8 +5325,8 @@ do_SIMD_exception:
 	call	*%r11	# tmp91
 .LVL51:
 .L91:
-# trap.c:313: 	while(1);
-	.loc 2 313 7
+# trap.c:281: 	while(1);
+	.loc 2 281 7
 	nop	
 	jmp	.L91	#
 	.cfi_endproc
@@ -5341,7 +5341,7 @@ do_SIMD_exception:
 	.type	do_virtualization_exception, @function
 do_virtualization_exception:
 .LFB58:
-	.loc 2 321 1
+	.loc 2 286 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -5358,18 +5358,18 @@ do_virtualization_exception:
 	addq	%r11, %r10	#, tmp82
 	movq	%rdi, -40(%rbp)	# rsp, rsp
 	movq	%rsi, -48(%rbp)	# error_code, error_code
-# trap.c:322: 	unsigned long * p = NULL;
-	.loc 2 322 18
+# trap.c:287: 	unsigned long * p = NULL;
+	.loc 2 287 18
 	movq	$0, -24(%rbp)	#, p
-# trap.c:323: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 323 28
+# trap.c:288: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 288 28
 	movq	-40(%rbp), %rax	# rsp, tmp85
 	addq	$152, %rax	#, _1
-# trap.c:323: 	p = (unsigned long *)(rsp + 0x98);
-	.loc 2 323 4
+# trap.c:288: 	p = (unsigned long *)(rsp + 0x98);
+	.loc 2 288 4
 	movq	%rax, -24(%rbp)	# _1, p
-# trap.c:324: 	color_printk(RED,BLACK,"do_virtualization_exception(20),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
-	.loc 2 324 2
+# trap.c:289: 	color_printk(RED,BLACK,"do_virtualization_exception(20),ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code , rsp , *p);
+	.loc 2 289 2
 	movq	-24(%rbp), %rax	# p, tmp86
 	movq	(%rax), %rcx	# *p_5, _2
 	movq	-40(%rbp), %rdx	# rsp, tmp87
@@ -5389,8 +5389,8 @@ do_virtualization_exception:
 	call	*%r11	# tmp91
 .LVL52:
 .L94:
-# trap.c:325: 	while(1);
-	.loc 2 325 7
+# trap.c:290: 	while(1);
+	.loc 2 290 7
 	nop	
 	jmp	.L94	#
 	.cfi_endproc
@@ -5400,7 +5400,7 @@ do_virtualization_exception:
 	.type	sys_vector_init, @function
 sys_vector_init:
 .LFB59:
-	.loc 2 328 1
+	.loc 2 295 1
 	.cfi_startproc
 	endbr64	
 	pushq	%rbp	#
@@ -5414,8 +5414,8 @@ sys_vector_init:
 	leaq	.L97(%rip), %rbx	#, tmp82
 	movabsq	$_GLOBAL_OFFSET_TABLE_-.L97, %r11	#,
 	addq	%r11, %rbx	#, tmp82
-# trap.c:329:     set_trap_gate(0,1,divide_error);
-	.loc 2 329 5
+# trap.c:296:     set_trap_gate(0,1,divide_error);
+	.loc 2 296 5
 	movabsq	$divide_error@GOT, %rax	#, tmp84
 	movq	(%rbx,%rax), %rax	#, tmp85
 	movq	%rax, %rdx	# tmp83,
@@ -5425,8 +5425,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp86
 	call	*%rax	# tmp86
 .LVL53:
-# trap.c:330: 	set_trap_gate(1,1,debug);
-	.loc 2 330 2
+# trap.c:297: 	set_trap_gate(1,1,debug);
+	.loc 2 297 2
 	movabsq	$debug@GOT, %rax	#, tmp89
 	movq	(%rbx,%rax), %rax	#, tmp90
 	movq	%rax, %rdx	# tmp88,
@@ -5436,8 +5436,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp91
 	call	*%rax	# tmp91
 .LVL54:
-# trap.c:331: 	set_intr_gate(2,1,nmi);
-	.loc 2 331 2
+# trap.c:298: 	set_intr_gate(2,1,nmi);
+	.loc 2 298 2
 	movabsq	$nmi@GOT, %rax	#, tmp94
 	movq	(%rbx,%rax), %rax	#, tmp95
 	movq	%rax, %rdx	# tmp93,
@@ -5447,8 +5447,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp96
 	call	*%rax	# tmp96
 .LVL55:
-# trap.c:332: 	set_system_gate(3,1,int3);
-	.loc 2 332 2
+# trap.c:299: 	set_system_gate(3,1,int3);
+	.loc 2 299 2
 	movabsq	$int3@GOT, %rax	#, tmp99
 	movq	(%rbx,%rax), %rax	#, tmp100
 	movq	%rax, %rdx	# tmp98,
@@ -5458,8 +5458,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp101
 	call	*%rax	# tmp101
 .LVL56:
-# trap.c:333: 	set_system_gate(4,1,overflow);
-	.loc 2 333 2
+# trap.c:300: 	set_system_gate(4,1,overflow);
+	.loc 2 300 2
 	movabsq	$overflow@GOT, %rax	#, tmp104
 	movq	(%rbx,%rax), %rax	#, tmp105
 	movq	%rax, %rdx	# tmp103,
@@ -5469,8 +5469,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp106
 	call	*%rax	# tmp106
 .LVL57:
-# trap.c:334: 	set_system_gate(5,1,bounds);
-	.loc 2 334 2
+# trap.c:301: 	set_system_gate(5,1,bounds);
+	.loc 2 301 2
 	movabsq	$bounds@GOT, %rax	#, tmp109
 	movq	(%rbx,%rax), %rax	#, tmp110
 	movq	%rax, %rdx	# tmp108,
@@ -5480,8 +5480,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp111
 	call	*%rax	# tmp111
 .LVL58:
-# trap.c:335: 	set_trap_gate(6,1,undefined_opcode);
-	.loc 2 335 2
+# trap.c:302: 	set_trap_gate(6,1,undefined_opcode);
+	.loc 2 302 2
 	movabsq	$undefined_opcode@GOT, %rax	#, tmp114
 	movq	(%rbx,%rax), %rax	#, tmp115
 	movq	%rax, %rdx	# tmp113,
@@ -5491,8 +5491,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp116
 	call	*%rax	# tmp116
 .LVL59:
-# trap.c:336: 	set_trap_gate(7,1,dev_not_available);
-	.loc 2 336 2
+# trap.c:303: 	set_trap_gate(7,1,dev_not_available);
+	.loc 2 303 2
 	movabsq	$dev_not_available@GOT, %rax	#, tmp119
 	movq	(%rbx,%rax), %rax	#, tmp120
 	movq	%rax, %rdx	# tmp118,
@@ -5502,8 +5502,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp121
 	call	*%rax	# tmp121
 .LVL60:
-# trap.c:337: 	set_trap_gate(8,1,double_fault);
-	.loc 2 337 2
+# trap.c:304: 	set_trap_gate(8,1,double_fault);
+	.loc 2 304 2
 	movabsq	$double_fault@GOT, %rax	#, tmp124
 	movq	(%rbx,%rax), %rax	#, tmp125
 	movq	%rax, %rdx	# tmp123,
@@ -5513,8 +5513,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp126
 	call	*%rax	# tmp126
 .LVL61:
-# trap.c:338: 	set_trap_gate(9,1,coprocessor_segment_overrun);
-	.loc 2 338 2
+# trap.c:305: 	set_trap_gate(9,1,coprocessor_segment_overrun);
+	.loc 2 305 2
 	movabsq	$coprocessor_segment_overrun@GOT, %rax	#, tmp129
 	movq	(%rbx,%rax), %rax	#, tmp130
 	movq	%rax, %rdx	# tmp128,
@@ -5524,8 +5524,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp131
 	call	*%rax	# tmp131
 .LVL62:
-# trap.c:339: 	set_trap_gate(10,1,invalid_TSS);
-	.loc 2 339 2
+# trap.c:306: 	set_trap_gate(10,1,invalid_TSS);
+	.loc 2 306 2
 	movabsq	$invalid_TSS@GOT, %rax	#, tmp134
 	movq	(%rbx,%rax), %rax	#, tmp135
 	movq	%rax, %rdx	# tmp133,
@@ -5535,8 +5535,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp136
 	call	*%rax	# tmp136
 .LVL63:
-# trap.c:340: 	set_trap_gate(11,1,segment_not_present);
-	.loc 2 340 2
+# trap.c:307: 	set_trap_gate(11,1,segment_not_present);
+	.loc 2 307 2
 	movabsq	$segment_not_present@GOT, %rax	#, tmp139
 	movq	(%rbx,%rax), %rax	#, tmp140
 	movq	%rax, %rdx	# tmp138,
@@ -5546,8 +5546,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp141
 	call	*%rax	# tmp141
 .LVL64:
-# trap.c:341: 	set_trap_gate(12,1,stack_segment_fault);
-	.loc 2 341 2
+# trap.c:308: 	set_trap_gate(12,1,stack_segment_fault);
+	.loc 2 308 2
 	movabsq	$stack_segment_fault@GOT, %rax	#, tmp144
 	movq	(%rbx,%rax), %rax	#, tmp145
 	movq	%rax, %rdx	# tmp143,
@@ -5557,8 +5557,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp146
 	call	*%rax	# tmp146
 .LVL65:
-# trap.c:342: 	set_trap_gate(13,1,general_protection);
-	.loc 2 342 2
+# trap.c:309: 	set_trap_gate(13,1,general_protection);
+	.loc 2 309 2
 	movabsq	$general_protection@GOT, %rax	#, tmp149
 	movq	(%rbx,%rax), %rax	#, tmp150
 	movq	%rax, %rdx	# tmp148,
@@ -5568,8 +5568,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp151
 	call	*%rax	# tmp151
 .LVL66:
-# trap.c:343: 	set_trap_gate(14,1,page_fault);
-	.loc 2 343 2
+# trap.c:310: 	set_trap_gate(14,1,page_fault);
+	.loc 2 310 2
 	movabsq	$page_fault@GOT, %rax	#, tmp154
 	movq	(%rbx,%rax), %rax	#, tmp155
 	movq	%rax, %rdx	# tmp153,
@@ -5579,8 +5579,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp156
 	call	*%rax	# tmp156
 .LVL67:
-# trap.c:345: 	set_trap_gate(16,1,x87_FPU_error);
-	.loc 2 345 2
+# trap.c:312: 	set_trap_gate(16,1,x87_FPU_error);
+	.loc 2 312 2
 	movabsq	$x87_FPU_error@GOT, %rax	#, tmp159
 	movq	(%rbx,%rax), %rax	#, tmp160
 	movq	%rax, %rdx	# tmp158,
@@ -5590,8 +5590,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp161
 	call	*%rax	# tmp161
 .LVL68:
-# trap.c:346: 	set_trap_gate(17,1,alignment_check);
-	.loc 2 346 2
+# trap.c:313: 	set_trap_gate(17,1,alignment_check);
+	.loc 2 313 2
 	movabsq	$alignment_check@GOT, %rax	#, tmp164
 	movq	(%rbx,%rax), %rax	#, tmp165
 	movq	%rax, %rdx	# tmp163,
@@ -5601,8 +5601,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp166
 	call	*%rax	# tmp166
 .LVL69:
-# trap.c:347: 	set_trap_gate(18,1,machine_check);
-	.loc 2 347 2
+# trap.c:314: 	set_trap_gate(18,1,machine_check);
+	.loc 2 314 2
 	movabsq	$machine_check@GOT, %rax	#, tmp169
 	movq	(%rbx,%rax), %rax	#, tmp170
 	movq	%rax, %rdx	# tmp168,
@@ -5612,8 +5612,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp171
 	call	*%rax	# tmp171
 .LVL70:
-# trap.c:348: 	set_trap_gate(19,1,SIMD_exception);
-	.loc 2 348 2
+# trap.c:315: 	set_trap_gate(19,1,SIMD_exception);
+	.loc 2 315 2
 	movabsq	$SIMD_exception@GOT, %rax	#, tmp174
 	movq	(%rbx,%rax), %rax	#, tmp175
 	movq	%rax, %rdx	# tmp173,
@@ -5623,8 +5623,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp176
 	call	*%rax	# tmp176
 .LVL71:
-# trap.c:349: 	set_trap_gate(20,1,virtualization_exception);
-	.loc 2 349 2
+# trap.c:316: 	set_trap_gate(20,1,virtualization_exception);
+	.loc 2 316 2
 	movabsq	$virtualization_exception@GOT, %rax	#, tmp179
 	movq	(%rbx,%rax), %rax	#, tmp180
 	movq	%rax, %rdx	# tmp178,
@@ -5634,8 +5634,8 @@ sys_vector_init:
 	leaq	(%rbx,%rax), %rax	#, tmp181
 	call	*%rax	# tmp181
 .LVL72:
-# trap.c:352: }
-	.loc 2 352 1
+# trap.c:319: }
+	.loc 2 319 1
 	nop	
 	movq	-8(%rbp), %rbx	#,
 	leave	
@@ -5663,15 +5663,15 @@ sys_vector_init:
 	.quad	.Ltext0
 	.quad	.Letext0-.Ltext0
 	.long	.Ldebug_line0
-	.uleb128 0xf
+	.uleb128 0xb
 	.byte	0x4
 	.byte	0x7
 	.long	.LASF2
-	.uleb128 0xf
+	.uleb128 0xb
 	.byte	0x8
 	.byte	0x7
 	.long	.LASF3
-	.uleb128 0xf
+	.uleb128 0xb
 	.byte	0x1
 	.byte	0x8
 	.long	.LASF4
@@ -5692,7 +5692,7 @@ sys_vector_init:
 	.uleb128 0xa
 	.long	0x3c
 	.long	0x6b
-	.uleb128 0x10
+	.uleb128 0xc
 	.long	0x35
 	.byte	0xf
 	.byte	0
@@ -5709,7 +5709,7 @@ sys_vector_init:
 	.uleb128 0xa
 	.long	0x2e
 	.long	0x91
-	.uleb128 0x10
+	.uleb128 0xc
 	.long	0x35
 	.byte	0x19
 	.byte	0
@@ -5723,10 +5723,10 @@ sys_vector_init:
 	.uleb128 0xa
 	.long	0x3c
 	.long	0xb4
-	.uleb128 0x10
+	.uleb128 0xc
 	.long	0x35
 	.byte	0xff
-	.uleb128 0x10
+	.uleb128 0xc
 	.long	0x35
 	.byte	0xf
 	.byte	0
@@ -5815,7 +5815,7 @@ sys_vector_init:
 	.long	0x35
 	.value	0xfff
 	.byte	0
-	.uleb128 0xf
+	.uleb128 0xb
 	.byte	0x1
 	.byte	0x6
 	.long	.LASF18
@@ -5833,103 +5833,103 @@ sys_vector_init:
 	.long	.LASF19
 	.byte	0x20
 	.long	0x196
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF20
 	.byte	0x1f
 	.long	0x1a2
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF21
 	.byte	0x1e
 	.long	0x1ae
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF22
 	.byte	0x1d
 	.long	0x1ba
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF23
 	.byte	0x1c
 	.long	0x1c6
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF24
 	.byte	0x1b
 	.long	0x1d2
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF25
 	.byte	0x1a
 	.long	0x1de
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF26
 	.byte	0x19
 	.long	0x1ea
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF27
 	.byte	0x18
 	.long	0x1f6
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF28
 	.byte	0x17
 	.long	0x202
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF29
 	.byte	0x16
 	.long	0x20e
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF30
 	.byte	0x15
 	.long	0x21a
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF31
 	.byte	0x14
 	.long	0x226
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF32
 	.byte	0x13
 	.long	0x232
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF33
 	.byte	0x12
 	.long	0x23e
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF34
 	.byte	0x11
 	.long	0x24a
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF35
 	.byte	0x10
 	.long	0x256
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x20
 	.string	"nmi"
@@ -5937,19 +5937,19 @@ sys_vector_init:
 	.byte	0xf
 	.byte	0x7
 	.long	0x264
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF36
 	.byte	0xe
 	.long	0x270
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x5
 	.long	.LASF37
 	.byte	0xd
 	.long	0x27c
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x21
 	.long	.LASF76
@@ -5964,14 +5964,14 @@ sys_vector_init:
 	.long	0x2e
 	.uleb128 0x12
 	.long	0x29d
-	.uleb128 0x3
+	.uleb128 0x4
 	.byte	0
 	.uleb128 0x11
 	.long	0x170
 	.uleb128 0x22
 	.long	.LASF77
 	.byte	0x2
-	.value	0x147
+	.value	0x126
 	.byte	0x6
 	.quad	.LFB59
 	.quad	.LFE59-.LFB59
@@ -6039,33 +6039,33 @@ sys_vector_init:
 	.quad	.LVL72
 	.long	0xd52
 	.byte	0
-	.uleb128 0xb
+	.uleb128 0xd
 	.long	.LASF39
-	.value	0x140
+	.value	0x11d
 	.quad	.LFB58
 	.quad	.LFE58-.LFB58
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0x41b
-	.uleb128 0xc
+	.uleb128 0xe
 	.string	"rsp"
-	.value	0x140
+	.value	0x11d
 	.byte	0x30
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
-	.uleb128 0xd
+	.uleb128 0xf
 	.long	.LASF38
-	.value	0x140
+	.value	0x11d
 	.byte	0x42
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
-	.uleb128 0xe
+	.uleb128 0x10
 	.string	"p"
-	.value	0x142
+	.value	0x11f
 	.long	0x41b
 	.uleb128 0x2
 	.byte	0x91
@@ -6076,33 +6076,33 @@ sys_vector_init:
 	.byte	0
 	.uleb128 0x11
 	.long	0x35
-	.uleb128 0xb
+	.uleb128 0xd
 	.long	.LASF40
-	.value	0x134
+	.value	0x114
 	.quad	.LFB57
 	.quad	.LFE57-.LFB57
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0x475
-	.uleb128 0xc
+	.uleb128 0xe
 	.string	"rsp"
-	.value	0x134
+	.value	0x114
 	.byte	0x26
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
-	.uleb128 0xd
+	.uleb128 0xf
 	.long	.LASF38
-	.value	0x134
+	.value	0x114
 	.byte	0x38
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
-	.uleb128 0xe
+	.uleb128 0x10
 	.string	"p"
-	.value	0x136
+	.value	0x116
 	.long	0x41b
 	.uleb128 0x2
 	.byte	0x91
@@ -6111,33 +6111,33 @@ sys_vector_init:
 	.quad	.LVL51
 	.long	0x27c
 	.byte	0
-	.uleb128 0xb
+	.uleb128 0xd
 	.long	.LASF41
-	.value	0x128
+	.value	0x10a
 	.quad	.LFB56
 	.quad	.LFE56-.LFB56
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0x4ca
-	.uleb128 0xc
+	.uleb128 0xe
 	.string	"rsp"
-	.value	0x128
+	.value	0x10a
 	.byte	0x25
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
-	.uleb128 0xd
+	.uleb128 0xf
 	.long	.LASF38
-	.value	0x128
+	.value	0x10a
 	.byte	0x37
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
-	.uleb128 0xe
+	.uleb128 0x10
 	.string	"p"
-	.value	0x12a
+	.value	0x10c
 	.long	0x41b
 	.uleb128 0x2
 	.byte	0x91
@@ -6146,33 +6146,33 @@ sys_vector_init:
 	.quad	.LVL50
 	.long	0x27c
 	.byte	0
-	.uleb128 0xb
+	.uleb128 0xd
 	.long	.LASF42
-	.value	0x11c
+	.value	0x100
 	.quad	.LFB55
 	.quad	.LFE55-.LFB55
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0x51f
-	.uleb128 0xc
+	.uleb128 0xe
 	.string	"rsp"
-	.value	0x11c
+	.value	0x100
 	.byte	0x27
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
-	.uleb128 0xd
+	.uleb128 0xf
 	.long	.LASF38
-	.value	0x11c
+	.value	0x100
 	.byte	0x39
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
-	.uleb128 0xe
+	.uleb128 0x10
 	.string	"p"
-	.value	0x11e
+	.value	0x102
 	.long	0x41b
 	.uleb128 0x2
 	.byte	0x91
@@ -6181,33 +6181,37 @@ sys_vector_init:
 	.quad	.LVL49
 	.long	0x27c
 	.byte	0
-	.uleb128 0xb
+	.uleb128 0x6
 	.long	.LASF43
-	.value	0x110
+	.byte	0x2
+	.byte	0xf6
 	.quad	.LFB54
 	.quad	.LFE54-.LFB54
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0x574
-	.uleb128 0xc
+	.uleb128 0x3
 	.string	"rsp"
-	.value	0x110
+	.byte	0x2
+	.byte	0xf6
 	.byte	0x25
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
-	.uleb128 0xd
+	.uleb128 0x2
 	.long	.LASF38
-	.value	0x110
+	.byte	0x2
+	.byte	0xf6
 	.byte	0x37
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
-	.uleb128 0xe
+	.uleb128 0x7
 	.string	"p"
-	.value	0x112
+	.byte	0xf8
+	.byte	0x12
 	.long	0x41b
 	.uleb128 0x2
 	.byte	0x91
@@ -6219,16 +6223,16 @@ sys_vector_init:
 	.uleb128 0x6
 	.long	.LASF44
 	.byte	0x2
-	.byte	0xea
+	.byte	0xd0
 	.quad	.LFB53
 	.quad	.LFE53-.LFB53
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0x64c
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"rsp"
 	.byte	0x2
-	.byte	0xea
+	.byte	0xd0
 	.byte	0x22
 	.long	0x35
 	.uleb128 0x2
@@ -6237,7 +6241,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF38
 	.byte	0x2
-	.byte	0xea
+	.byte	0xd0
 	.byte	0x34
 	.long	0x35
 	.uleb128 0x2
@@ -6245,7 +6249,7 @@ sys_vector_init:
 	.sleb128 -64
 	.uleb128 0x7
 	.string	"p"
-	.byte	0xec
+	.byte	0xd2
 	.byte	0x12
 	.long	0x41b
 	.uleb128 0x2
@@ -6253,7 +6257,7 @@ sys_vector_init:
 	.sleb128 -40
 	.uleb128 0x7
 	.string	"cr2"
-	.byte	0xed
+	.byte	0xd3
 	.byte	0x10
 	.long	0x35
 	.uleb128 0x2
@@ -6293,16 +6297,16 @@ sys_vector_init:
 	.uleb128 0x6
 	.long	.LASF45
 	.byte	0x2
-	.byte	0xcd
+	.byte	0xb5
 	.quad	.LFB52
 	.quad	.LFE52-.LFB52
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0x6ef
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"rsp"
 	.byte	0x2
-	.byte	0xcd
+	.byte	0xb5
 	.byte	0x2a
 	.long	0x35
 	.uleb128 0x2
@@ -6311,7 +6315,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF38
 	.byte	0x2
-	.byte	0xcd
+	.byte	0xb5
 	.byte	0x3c
 	.long	0x35
 	.uleb128 0x2
@@ -6319,7 +6323,7 @@ sys_vector_init:
 	.sleb128 -64
 	.uleb128 0x7
 	.string	"p"
-	.byte	0xcf
+	.byte	0xb7
 	.byte	0x12
 	.long	0x41b
 	.uleb128 0x2
@@ -6350,16 +6354,16 @@ sys_vector_init:
 	.uleb128 0x6
 	.long	.LASF46
 	.byte	0x2
-	.byte	0xb0
+	.byte	0x9a
 	.quad	.LFB51
 	.quad	.LFE51-.LFB51
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0x792
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"rsp"
 	.byte	0x2
-	.byte	0xb0
+	.byte	0x9a
 	.byte	0x2b
 	.long	0x35
 	.uleb128 0x2
@@ -6368,7 +6372,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF38
 	.byte	0x2
-	.byte	0xb0
+	.byte	0x9a
 	.byte	0x3d
 	.long	0x35
 	.uleb128 0x2
@@ -6376,7 +6380,7 @@ sys_vector_init:
 	.sleb128 -64
 	.uleb128 0x7
 	.string	"p"
-	.byte	0xb2
+	.byte	0x9c
 	.byte	0x12
 	.long	0x41b
 	.uleb128 0x2
@@ -6407,16 +6411,16 @@ sys_vector_init:
 	.uleb128 0x6
 	.long	.LASF47
 	.byte	0x2
-	.byte	0x93
+	.byte	0x7f
 	.quad	.LFB50
 	.quad	.LFE50-.LFB50
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0x835
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"rsp"
 	.byte	0x2
-	.byte	0x93
+	.byte	0x7f
 	.byte	0x2b
 	.long	0x35
 	.uleb128 0x2
@@ -6425,7 +6429,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF38
 	.byte	0x2
-	.byte	0x93
+	.byte	0x7f
 	.byte	0x3d
 	.long	0x35
 	.uleb128 0x2
@@ -6433,7 +6437,7 @@ sys_vector_init:
 	.sleb128 -64
 	.uleb128 0x7
 	.string	"p"
-	.byte	0x95
+	.byte	0x81
 	.byte	0x12
 	.long	0x41b
 	.uleb128 0x2
@@ -6464,16 +6468,16 @@ sys_vector_init:
 	.uleb128 0x6
 	.long	.LASF48
 	.byte	0x2
-	.byte	0x76
+	.byte	0x64
 	.quad	.LFB49
 	.quad	.LFE49-.LFB49
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0x8d8
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"rsp"
 	.byte	0x2
-	.byte	0x76
+	.byte	0x64
 	.byte	0x23
 	.long	0x35
 	.uleb128 0x2
@@ -6482,7 +6486,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF38
 	.byte	0x2
-	.byte	0x76
+	.byte	0x64
 	.byte	0x35
 	.long	0x35
 	.uleb128 0x2
@@ -6490,7 +6494,7 @@ sys_vector_init:
 	.sleb128 -64
 	.uleb128 0x7
 	.string	"p"
-	.byte	0x78
+	.byte	0x66
 	.byte	0x12
 	.long	0x41b
 	.uleb128 0x2
@@ -6521,16 +6525,16 @@ sys_vector_init:
 	.uleb128 0x6
 	.long	.LASF49
 	.byte	0x2
-	.byte	0x6e
+	.byte	0x5c
 	.quad	.LFB48
 	.quad	.LFE48-.LFB48
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0x92d
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"rsp"
 	.byte	0x2
-	.byte	0x6e
+	.byte	0x5c
 	.byte	0x33
 	.long	0x35
 	.uleb128 0x2
@@ -6539,7 +6543,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF38
 	.byte	0x2
-	.byte	0x6e
+	.byte	0x5c
 	.byte	0x45
 	.long	0x35
 	.uleb128 0x2
@@ -6547,7 +6551,7 @@ sys_vector_init:
 	.sleb128 -64
 	.uleb128 0x7
 	.string	"p"
-	.byte	0x70
+	.byte	0x5e
 	.byte	0x12
 	.long	0x41b
 	.uleb128 0x2
@@ -6560,16 +6564,16 @@ sys_vector_init:
 	.uleb128 0x6
 	.long	.LASF50
 	.byte	0x2
-	.byte	0x62
+	.byte	0x53
 	.quad	.LFB47
 	.quad	.LFE47-.LFB47
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0x982
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"rsp"
 	.byte	0x2
-	.byte	0x62
+	.byte	0x53
 	.byte	0x24
 	.long	0x35
 	.uleb128 0x2
@@ -6578,7 +6582,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF38
 	.byte	0x2
-	.byte	0x62
+	.byte	0x53
 	.byte	0x36
 	.long	0x35
 	.uleb128 0x2
@@ -6586,7 +6590,7 @@ sys_vector_init:
 	.sleb128 -64
 	.uleb128 0x7
 	.string	"p"
-	.byte	0x64
+	.byte	0x55
 	.byte	0x12
 	.long	0x41b
 	.uleb128 0x2
@@ -6599,16 +6603,16 @@ sys_vector_init:
 	.uleb128 0x6
 	.long	.LASF51
 	.byte	0x2
-	.byte	0x56
+	.byte	0x49
 	.quad	.LFB46
 	.quad	.LFE46-.LFB46
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0x9d7
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"rsp"
 	.byte	0x2
-	.byte	0x56
+	.byte	0x49
 	.byte	0x29
 	.long	0x35
 	.uleb128 0x2
@@ -6617,7 +6621,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF38
 	.byte	0x2
-	.byte	0x56
+	.byte	0x49
 	.byte	0x3b
 	.long	0x35
 	.uleb128 0x2
@@ -6625,7 +6629,7 @@ sys_vector_init:
 	.sleb128 -64
 	.uleb128 0x7
 	.string	"p"
-	.byte	0x58
+	.byte	0x4b
 	.byte	0x12
 	.long	0x41b
 	.uleb128 0x2
@@ -6638,16 +6642,16 @@ sys_vector_init:
 	.uleb128 0x6
 	.long	.LASF52
 	.byte	0x2
-	.byte	0x4a
+	.byte	0x3f
 	.quad	.LFB45
 	.quad	.LFE45-.LFB45
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0xa2c
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"rsp"
 	.byte	0x2
-	.byte	0x4a
+	.byte	0x3f
 	.byte	0x28
 	.long	0x35
 	.uleb128 0x2
@@ -6656,7 +6660,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF38
 	.byte	0x2
-	.byte	0x4a
+	.byte	0x3f
 	.byte	0x3a
 	.long	0x35
 	.uleb128 0x2
@@ -6664,7 +6668,7 @@ sys_vector_init:
 	.sleb128 -64
 	.uleb128 0x7
 	.string	"p"
-	.byte	0x4c
+	.byte	0x41
 	.byte	0x12
 	.long	0x41b
 	.uleb128 0x2
@@ -6677,16 +6681,16 @@ sys_vector_init:
 	.uleb128 0x6
 	.long	.LASF53
 	.byte	0x2
-	.byte	0x3e
+	.byte	0x36
 	.quad	.LFB44
 	.quad	.LFE44-.LFB44
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0xa81
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"rsp"
 	.byte	0x2
-	.byte	0x3e
+	.byte	0x36
 	.byte	0x1e
 	.long	0x35
 	.uleb128 0x2
@@ -6695,7 +6699,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF38
 	.byte	0x2
-	.byte	0x3e
+	.byte	0x36
 	.byte	0x30
 	.long	0x35
 	.uleb128 0x2
@@ -6703,7 +6707,7 @@ sys_vector_init:
 	.sleb128 -64
 	.uleb128 0x7
 	.string	"p"
-	.byte	0x40
+	.byte	0x38
 	.byte	0x12
 	.long	0x41b
 	.uleb128 0x2
@@ -6716,16 +6720,16 @@ sys_vector_init:
 	.uleb128 0x6
 	.long	.LASF54
 	.byte	0x2
-	.byte	0x32
+	.byte	0x2c
 	.quad	.LFB43
 	.quad	.LFE43-.LFB43
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0xad6
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"rsp"
 	.byte	0x2
-	.byte	0x32
+	.byte	0x2c
 	.byte	0x20
 	.long	0x35
 	.uleb128 0x2
@@ -6734,7 +6738,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF38
 	.byte	0x2
-	.byte	0x32
+	.byte	0x2c
 	.byte	0x32
 	.long	0x35
 	.uleb128 0x2
@@ -6742,7 +6746,7 @@ sys_vector_init:
 	.sleb128 -64
 	.uleb128 0x7
 	.string	"p"
-	.byte	0x34
+	.byte	0x2e
 	.byte	0x12
 	.long	0x41b
 	.uleb128 0x2
@@ -6755,16 +6759,16 @@ sys_vector_init:
 	.uleb128 0x6
 	.long	.LASF55
 	.byte	0x2
-	.byte	0x26
+	.byte	0x22
 	.quad	.LFB42
 	.quad	.LFE42-.LFB42
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0xb2b
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"rsp"
 	.byte	0x2
-	.byte	0x26
+	.byte	0x22
 	.byte	0x1c
 	.long	0x35
 	.uleb128 0x2
@@ -6773,7 +6777,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF38
 	.byte	0x2
-	.byte	0x26
+	.byte	0x22
 	.byte	0x2e
 	.long	0x35
 	.uleb128 0x2
@@ -6781,7 +6785,7 @@ sys_vector_init:
 	.sleb128 -64
 	.uleb128 0x7
 	.string	"p"
-	.byte	0x28
+	.byte	0x24
 	.byte	0x12
 	.long	0x41b
 	.uleb128 0x2
@@ -6794,16 +6798,16 @@ sys_vector_init:
 	.uleb128 0x6
 	.long	.LASF56
 	.byte	0x2
-	.byte	0x1a
+	.byte	0x18
 	.quad	.LFB41
 	.quad	.LFE41-.LFB41
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0xb80
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"rsp"
 	.byte	0x2
-	.byte	0x1a
+	.byte	0x18
 	.byte	0x1b
 	.long	0x35
 	.uleb128 0x2
@@ -6812,7 +6816,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF38
 	.byte	0x2
-	.byte	0x1a
+	.byte	0x18
 	.byte	0x2d
 	.long	0x35
 	.uleb128 0x2
@@ -6820,7 +6824,7 @@ sys_vector_init:
 	.sleb128 -64
 	.uleb128 0x7
 	.string	"p"
-	.byte	0x1c
+	.byte	0x1a
 	.byte	0x12
 	.long	0x41b
 	.uleb128 0x2
@@ -6839,7 +6843,7 @@ sys_vector_init:
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0xbd5
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"rsp"
 	.byte	0x2
 	.byte	0xe
@@ -6878,7 +6882,7 @@ sys_vector_init:
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0xc2a
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"rsp"
 	.byte	0x2
 	.byte	0x5
@@ -6911,7 +6915,7 @@ sys_vector_init:
 	.uleb128 0x6
 	.long	.LASF59
 	.byte	0x1
-	.byte	0x94
+	.byte	0x99
 	.quad	.LFB38
 	.quad	.LFE38-.LFB38
 	.uleb128 0x1
@@ -6920,7 +6924,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF60
 	.byte	0x1
-	.byte	0x94
+	.byte	0x99
 	.byte	0x1e
 	.long	0x35
 	.uleb128 0x2
@@ -6929,7 +6933,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF61
 	.byte	0x1
-	.byte	0x94
+	.byte	0x99
 	.byte	0x31
 	.long	0x35
 	.uleb128 0x2
@@ -6938,7 +6942,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF62
 	.byte	0x1
-	.byte	0x94
+	.byte	0x99
 	.byte	0x44
 	.long	0x35
 	.uleb128 0x2
@@ -6947,7 +6951,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF63
 	.byte	0x1
-	.byte	0x94
+	.byte	0x99
 	.byte	0x57
 	.long	0x35
 	.uleb128 0x2
@@ -6956,7 +6960,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF64
 	.byte	0x1
-	.byte	0x94
+	.byte	0x99
 	.byte	0x6a
 	.long	0x35
 	.uleb128 0x2
@@ -6965,7 +6969,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF65
 	.byte	0x1
-	.byte	0x94
+	.byte	0x99
 	.byte	0x7d
 	.long	0x35
 	.uleb128 0x2
@@ -6974,7 +6978,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF66
 	.byte	0x1
-	.byte	0x95
+	.byte	0x9a
 	.byte	0xf
 	.long	0x35
 	.uleb128 0x2
@@ -6983,7 +6987,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF67
 	.byte	0x1
-	.byte	0x95
+	.byte	0x9a
 	.byte	0x22
 	.long	0x35
 	.uleb128 0x2
@@ -6992,7 +6996,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF68
 	.byte	0x1
-	.byte	0x95
+	.byte	0x9a
 	.byte	0x35
 	.long	0x35
 	.uleb128 0x2
@@ -7001,7 +7005,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF69
 	.byte	0x1
-	.byte	0x95
+	.byte	0x9a
 	.byte	0x48
 	.long	0x35
 	.uleb128 0x2
@@ -7010,25 +7014,25 @@ sys_vector_init:
 	.byte	0
 	.uleb128 0x17
 	.long	.LASF73
-	.byte	0x8b
+	.byte	0x90
 	.quad	.LFB36
 	.quad	.LFE36-.LFB36
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0xd52
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"n"
 	.byte	0x1
-	.byte	0x8b
+	.byte	0x90
 	.byte	0x31
 	.long	0x2e
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -36
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"ist"
 	.byte	0x1
-	.byte	0x8b
+	.byte	0x90
 	.byte	0x42
 	.long	0x3c
 	.uleb128 0x2
@@ -7037,7 +7041,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF70
 	.byte	0x1
-	.byte	0x8b
+	.byte	0x90
 	.byte	0x4d
 	.long	0x9c
 	.uleb128 0x2
@@ -7048,14 +7052,14 @@ sys_vector_init:
 	.quad	.LBE4-.LBB4
 	.uleb128 0x9
 	.long	.LASF71
-	.byte	0x8c
+	.byte	0x91
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.uleb128 0x9
 	.long	.LASF72
-	.byte	0x8c
+	.byte	0x91
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
@@ -7064,25 +7068,25 @@ sys_vector_init:
 	.byte	0
 	.uleb128 0x17
 	.long	.LASF74
-	.byte	0x85
+	.byte	0x8a
 	.quad	.LFB35
 	.quad	.LFE35-.LFB35
 	.uleb128 0x1
 	.byte	0x9c
 	.long	0xdc6
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"n"
 	.byte	0x1
-	.byte	0x85
+	.byte	0x8a
 	.byte	0x2f
 	.long	0x2e
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -36
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"ist"
 	.byte	0x1
-	.byte	0x85
+	.byte	0x8a
 	.byte	0x40
 	.long	0x3c
 	.uleb128 0x2
@@ -7091,7 +7095,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF70
 	.byte	0x1
-	.byte	0x85
+	.byte	0x8a
 	.byte	0x4b
 	.long	0x9c
 	.uleb128 0x2
@@ -7102,14 +7106,14 @@ sys_vector_init:
 	.quad	.LBE3-.LBB3
 	.uleb128 0x9
 	.long	.LASF71
-	.byte	0x87
+	.byte	0x8c
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.uleb128 0x9
 	.long	.LASF72
-	.byte	0x87
+	.byte	0x8c
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
@@ -7119,25 +7123,25 @@ sys_vector_init:
 	.uleb128 0x23
 	.long	.LASF78
 	.byte	0x1
-	.byte	0x67
+	.byte	0x77
 	.byte	0x14
 	.quad	.LFB34
 	.quad	.LFE34-.LFB34
 	.uleb128 0x1
 	.byte	0x9c
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"n"
 	.byte	0x1
-	.byte	0x67
+	.byte	0x77
 	.byte	0x2f
 	.long	0x2e
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -36
-	.uleb128 0x4
+	.uleb128 0x3
 	.string	"ist"
 	.byte	0x1
-	.byte	0x67
+	.byte	0x77
 	.byte	0x40
 	.long	0x3c
 	.uleb128 0x2
@@ -7146,7 +7150,7 @@ sys_vector_init:
 	.uleb128 0x2
 	.long	.LASF70
 	.byte	0x1
-	.byte	0x67
+	.byte	0x77
 	.byte	0x4b
 	.long	0x9c
 	.uleb128 0x2
@@ -7157,14 +7161,14 @@ sys_vector_init:
 	.quad	.LBE2-.LBB2
 	.uleb128 0x9
 	.long	.LASF71
-	.byte	0x68
+	.byte	0x78
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.uleb128 0x9
 	.long	.LASF72
-	.byte	0x68
+	.byte	0x78
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
@@ -7201,11 +7205,6 @@ sys_vector_init:
 	.byte	0
 	.byte	0
 	.uleb128 0x3
-	.uleb128 0x18
-	.byte	0
-	.byte	0
-	.byte	0
-	.uleb128 0x4
 	.uleb128 0x5
 	.byte	0
 	.uleb128 0x3
@@ -7220,6 +7219,11 @@ sys_vector_init:
 	.uleb128 0x13
 	.uleb128 0x2
 	.uleb128 0x18
+	.byte	0
+	.byte	0
+	.uleb128 0x4
+	.uleb128 0x18
+	.byte	0
 	.byte	0
 	.byte	0
 	.uleb128 0x5
@@ -7336,6 +7340,26 @@ sys_vector_init:
 	.byte	0
 	.byte	0
 	.uleb128 0xb
+	.uleb128 0x24
+	.byte	0
+	.uleb128 0xb
+	.uleb128 0xb
+	.uleb128 0x3e
+	.uleb128 0xb
+	.uleb128 0x3
+	.uleb128 0xe
+	.byte	0
+	.byte	0
+	.uleb128 0xc
+	.uleb128 0x21
+	.byte	0
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x2f
+	.uleb128 0xb
+	.byte	0
+	.byte	0
+	.uleb128 0xd
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -7364,7 +7388,7 @@ sys_vector_init:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0xc
+	.uleb128 0xe
 	.uleb128 0x5
 	.byte	0
 	.uleb128 0x3
@@ -7382,7 +7406,7 @@ sys_vector_init:
 	.uleb128 0x18
 	.byte	0
 	.byte	0
-	.uleb128 0xd
+	.uleb128 0xf
 	.uleb128 0x5
 	.byte	0
 	.uleb128 0x3
@@ -7400,7 +7424,7 @@ sys_vector_init:
 	.uleb128 0x18
 	.byte	0
 	.byte	0
-	.uleb128 0xe
+	.uleb128 0x10
 	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
@@ -7417,26 +7441,6 @@ sys_vector_init:
 	.uleb128 0x13
 	.uleb128 0x2
 	.uleb128 0x18
-	.byte	0
-	.byte	0
-	.uleb128 0xf
-	.uleb128 0x24
-	.byte	0
-	.uleb128 0xb
-	.uleb128 0xb
-	.uleb128 0x3e
-	.uleb128 0xb
-	.uleb128 0x3
-	.uleb128 0xe
-	.byte	0
-	.byte	0
-	.uleb128 0x10
-	.uleb128 0x21
-	.byte	0
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x2f
-	.uleb128 0xb
 	.byte	0
 	.byte	0
 	.uleb128 0x11
