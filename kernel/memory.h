@@ -1,59 +1,64 @@
 #ifndef _MEMORY_H_
 #define _MEMORY_H_
-//页表项个数,在64位模式下每个页表项占用8个字节,所以一个页表最多可以容纳512个页表项
+//The number of page table entries. 
+//In 64-bit mode, each page table entry occupies 8 bytes, so a page table can accommodate up to 512 page table entries at most.
 #define PTRS_PER_PAGE 512
 /*
-这个宏定义了内核空间的起始虚拟地址。在x86_64架构中，通常将高地址空间分配给内核。
-0xffff800000000000 是一个典型的直接映射区域的起始地址，用于将物理内存直接映射到内核虚拟地址空间
+This macro defines the starting virtual address of the kernel space. On the x86_64 architecture, the high address space is typically allocated to the kernel. 0xffff800000000000 is a typical starting address of a direct mapping region, 
+used to directly map physical memory to the kernel virtual address space.
 */
 #define PAGE_OFFSET ((unsigned long)0xffff800000000000)
 /* 
-地址翻译流程：
-1. CR3寄存器 → PML4物理基址
-2. PML4索引 → 在PML4中找到PDPT的物理地址
-3. PDPT索引 → 在PDPT中找到PD的物理地址  
-4. PD索引 → 在PD中找到PT的物理地址
-5. PT索引 → 在PT中找到物理页框地址
-6. 偏移量 → 物理地址中的具体位置
+Address translation process:
+1. CR3 register → Physical base address of PML4
+2. PML4 index → Find the physical address of PDPT in PML4
+3. PDPT index → Find the physical address of PD in PDPT
+4. PD index → Find the physical address of PT in PD
+5. PT index → Find the physical page frame address in PT
+6. Offset → Specific location in the physical address
 
-在x86_64架构中，标准的48位虚拟地址布局如下：
+In the x86_64 architecture, the standard 48-bit virtual address layout is as follows:
 
 47               39 38               30 29               21 20               12 11        0
 ┌────────────────┬────────────────┬────────────────┬────────────────┬─────────────────┐
-│    PML4索引    │    PDPT索引     │     PD索引     │     PT索引     │     偏移量      │
+│PML4 indexes    │PDPT indexes    │PD   indexes    │     PT   indexs|     offset      │
 │    (9 bits)    │    (9 bits)    │    (9 bits)    │    (9 bits)    │    (12 bits)    │
 └────────────────┴────────────────┴────────────────┴────────────────┴─────────────────┘
        ↑                 ↑                 ↑                 ↑                ↑
       47-39            38-30             29-21             20-12            11-0
 
-	因此,为了从64位虚拟地址中提取出最高9位（PML4索引），需要右移39位来去掉所有低级别的索引和偏移量。
-	下面的代码类似
+	Therefore, in order to extract the top 9 bits (the PML4 index) from the 64-bit virtual address, it is necessary to shift right by 39 bits to remove all the lower-level indices and offsets.
+The following code is similar
 */
 #define PAGE_GDT_SHIFT 39
 #define PAGE_1G_SHIFT 30
 #define PAGE_2M_SHIFT 21
-//2的12次方 4096,即4k,这些是每种页表项代表的物理页容量
+// 2 raised to the power of 12 equals 4096, which is 4k. 
+//These are the physical page capacities represented by each page table entry.
 #define PAGE_4K_SHIFT 12
-//1UL：无符号长整型常量1（64位）
+//1UL：Unsigned long integer constant 1 (64 bits)
 //2,097,152,即2M
 #define PAGE_2M_SIZE (1UL << PAGE_2M_SHIFT)
 //1UL << 12 = 4,096 = 4KB。
 #define PAGE_4K_SIZE (1UL << PAGE_4K_SHIFT)
-//这个掩码与任何地址进行“与”操作，都会将地址的低21位清零，从而得到该地址所在的2MB页的起始地址（2MB对齐）。
+/*
+This mask, when performing a "AND" operation with any address, will clear the lower 21 bits of the address, 
+thereby obtaining the starting address of the 2MB page where the address is located (2MB alignment).
+*/
 #define PAGE_2M_MASK (~(PAGE_2M_SIZE - 1))
 #define PAGE_4K_MASK (~(PAGE_4K_SIZE - 1))
 /* 
-设 a = q·s + r，其中 0 ≤ r < s（r 是余数）
-情况 1: r = 0（已对齐）
+set a = q·s + r，among 0 ≤ r < s（r is the remainder）
+situation 1: r = 0（Alignment completed）
 (a + s - 1) & ~(s-1) 
 = (q·s + s - 1) & ~(s-1)
 = ((q+1)·s - 1) & ~(s-1)
-= q·s   // 因为(q+1)·s-1的低位都是1，与~（s-1）与后保留高位
-情况 2: r > 0（未对齐）
+= q·s   // 因为(q+1)·s-1的低位都是1，与~（s-1）与后保留高位 :Because the lower bits of (q + 1)·s - 1 are all 1, and the higher bits are retained after and with~ (s - 1)
+situation 2: r > 0（not alignment）
 (a + s - 1) & ~(s-1)
 = (q·s + r + s - 1) & ~(s-1)
 = ((q+1)·s + (r-1)) & ~(s-1)
-= (q+1)·s  // 因为r-1 < s-1，清除低位后得到(q+1)·s
+= (q+1)·s  // Because r - 1 < s - 1, after clearing the lower bits, we obtain (q + 1)·s
 */
 #define PAGE_2M_ALIGN(addr) (((unsigned long)(addr) + PAGE_2M_SIZE - 1) & PAGE_2M_MASK)
 #define PAGE_4K_ALIGN(addr) (((unsigned long)(addr) + PAGE_4K_SIZE - 1) & PAGE_4K_MASK)
@@ -98,10 +103,10 @@
 //Pages used by the kernel
 #define PG_Kernel	(1 << 7)
 
-//内核共享给用户空间的页面
+//Pages shared by the kernel to the user space
 #define PG_K_Share_To_U	(1 << 8)
 
-//Slab分配器使用的页面
+//The pages used by the slab allocator
 #define PG_Slab		(1 << 9)
 
 
@@ -158,13 +163,13 @@ struct Memory_E820_Formate
 	unsigned int type;
 };
 
-// 使用 packed：禁止填充
+// Use "packed": Prohibit filling
 struct E820
 {
-    unsigned long address;  // 内存区域的起始地址
-    unsigned long length;   // 内存区域的长度
-    unsigned int type;     // 内存区域的类型
-}__attribute__((packed));   // 强制为12字节，无填充
+    unsigned long address;  // The starting address of the memory area
+    unsigned long length;   // The length of the memory area
+    unsigned int type;     //Type of memory area
+}__attribute__((packed));   // Must be 12 bytes in length, without padding.
 
 
 
@@ -173,50 +178,50 @@ struct Global_Memory_Descriptor
 	struct E820 e820[32];
 	unsigned long e820_length;
 /*
-bits_map指向的内存：
-[ 32位 ][ 32位 ][ 32位 ]...
-每个bit代表一个物理页：
-  0 = 空闲页面
-  1 = 已分配页面
+The memory pointed to by bits_map:
+[ 32-bit ][ 32-bit ][ 32-bit ]...
+Each bit represents a physical page:
+0 = Free page
+1 = Allocated page
   
-示例：管理4GB内存（1048576个4KB页）
+Management of 4GB memory (1,048,576 4KB pages)
 bits_length = 1048576
-bits_size = 1048576/8 = 131072字节 = 128KB
+bits_size = 1048576/8 = 131072 b = 128KB
  */
 	unsigned long * bits_map;
 	unsigned long bits_size;
 	unsigned long bits_length;
 /*
-pages_struct指向：
+pages_struct point to：
 ┌─────────┬─────────┬─────────┬───
-│ Page 0  │ Page 1  │ Page 2  │ ... (每个对应一个物理页)
+│ Page 0  │ Page 1  │ Page 2  │ ... (Each corresponds to one physical page.)
 └─────────┴─────────┴─────────┴───
-pages_length = 物理页面总数
+pages_length = Total number of physical pagesTotal number of physical pages
 pages_size = pages_length * sizeof(struct Page)
 */
 	struct Page * pages_struct;
 	unsigned long pages_size;
 	unsigned long pages_length;	
 /*
-Zone数组组织内存区域：
+Zone Array-organized memory area：
 ┌──────────┬──────────┬──────────┐
 │ DMA Zone │ Normal   │ HighMem  │
 └──────────┴──────────┴──────────┘
-每个Zone管理一段连续的物理页
+Each Zone manages a contiguous block of physical pages.
 */
 	struct Zone * zones_struct;
 	unsigned long zones_size;
 	unsigned long zones_length;
 /*
-物理内存布局：
+Physical memory layout:
 0x100000 ┌──────────────┐ ← start_code
-         │ 内核代码段    │
+         │ Kernel code segment    │
 0x200000 ├──────────────┤ ← end_code
-         │ 内核数据段    │
+         │ Kernel data segment   │
 0x300000 ├──────────────┤ ← end_data
-         │ 未初始化数据 │
+         │ Uninitialized data│
 0x320000 ├──────────────┤ ← end_brk (当前堆顶)
-         │ 空闲内存     │
+         │ Free memory    │
          └──────────────┘
  */
 	unsigned long start_code;
@@ -229,38 +234,37 @@ Zone数组组织内存区域：
 };
 /**
  * @struct Page
- * @brief 表示物理页帧的结构体
+ * @brief The structure representing the physical page frame
  * 
  * @var Page::zone_struct 
- * 指向所属内存分区的指针
+ * Pointer to the corresponding memory partition
  * @var Page::PHY_address 
- * 物理地址（以字节为单位）
+ * Physical address (in bytes)
  * @var Page::attribute 
- * 页属性标志位（如可写、缓存等）
+ * Page attribute flags (such as writable, cached, etc.)
  * @var Page::reference_count 
- * 页引用计数（用于共享内存管理）
+ * Page reference count (used for shared memory management)
  * @var Page::age 
- * 页年龄（用于页面置换算法）
+ * Page reference count (used for shared memory management)
  */
 
 /**
  * @struct Zone
- * @brief 表示内存分区的结构体
+ * @brief Represents the structure for memory partitioning
  */
 struct Page {
-    struct Zone *zone_struct;      // 指向所属内存区域的指针
-    unsigned long PHY_address;     // 页面的物理地址
-    unsigned long attribute;       // 页面属性（只读、可执行等）
-    unsigned long reference_count; // 引用计数（用于共享内存、COW等）
-    unsigned long age;             // 页面年龄（用于页面置换算法如LRU）
+    struct Zone *zone_struct;      // Pointer to the corresponding memory area
+    unsigned long PHY_address;     // The physical address of the page
+    unsigned long attribute;       // Page properties (such as read-only, executable, etc.)
+    unsigned long reference_count; // Reference counting (used for shared memory, COW, etc.)
+    unsigned long age;             // Page age (used for page replacement algorithms such as LRU)
 };
 
-/**
- * @struct Zone
- * @brief 内存区域描述结构体，用于管理物理内存页
+/*** * @struct Zone
+ * @brief Memory area description structure, used for managing physical memory pages
  * 
  * @var Zone::pages_group 
- * 指向该区域页描述符数组的指针
+ * Pointer to the array of page descriptors for this area
  * @var Zone::pages_length 
  * 该区域包含的物理页总数
  * @var Zone::zone_start_address 
