@@ -7,6 +7,8 @@ int ZONE_DMA_INDEX=0;
 int ZONE_NORMAL_INDEX=0;
 int ZONE_UNMAPED_INDEX;
 
+
+
 void init_memory(){
 	int i,j;
 	
@@ -16,7 +18,7 @@ void init_memory(){
 	p=(struct E820 *)0xffff800000007e00;
 	for (int i = 0; i < 32; i++)
 	{
-		//以0x开头的16进制形式输出，总宽度为18个字符，左补零，长整型（unsigned long）
+		//Output in hexadecimal format starting with 0x, with a total width of 18 characters, left-padded with zeros, long integer（unsigned long）
 		color_printk(ORANGE,BLACK,"address:%#018lx\tLength:%#018lx\tType:%#010x\n",p->address,p->length,p->type);
 		unsigned long tmp =0;
 		if(p->type==1){
@@ -33,7 +35,7 @@ void init_memory(){
 	}
 	color_printk(ORANGE,BLACK,"OS Can Used Total RAM:%#018lx\n",TotalMem);
 	TotalMem=0;
-	//计算2M对齐的内存大小,可能需要用<
+	//Calculate the memory size for 2M alignment, and this might require using <
 	for(i=0;i<=memory_management_struct.e820_length;i++){
 		unsigned long start,end;
 		if(memory_management_struct.e820[i].type!=1){
@@ -51,11 +53,11 @@ void init_memory(){
 	color_printk(ORANGE,BLACK,"Now OS Can Used Total 2M PAGEs:%#010x=%010d\n",TotalMem,TotalMem);
 
 	//bits map contruction init
-	//将位图放在内核数据段的末尾，并进行 4KB 页对齐。
+	//Place the bitmap at the end of the kernel data segment and align it to a 4KB boundary.。
 	/*
 	(addr + 4096 - 1) & ~0xfff
 	↓
-	向上对齐到最近的 4KB 边界 
+	Align upwards to the nearest 4KB boundary
 	*/
 	memory_management_struct.bits_map=(unsigned long *)((memory_management_struct.end_brk+PAGE_4K_SIZE-1)&PAGE_4K_MASK);
 	//记录位图管理的页数
@@ -245,26 +247,68 @@ for(i=0;i<memory_management_struct.zones_size;i++){
 		ZONE_UNMAPED_INDEX=i;
 	}
 	}
+	//Reserve some space to prevent unauthorized access:+ sizeof(long) * 32.
+	/*
+	Align downward to the "long" boundary & (~(sizeof(long) - 1))
+	Make sure the address is a multiple of sizeof(long) 64-bit system: 8-byte alignment
+	 */
 	memory_management_struct.end_of_struct=(unsigned long)((unsigned long)memory_management_struct.zones_struct+memory_management_struct.zones_length+sizeof(long)*32)&(~(sizeof(long)-1));
 	/*
-	// 假设64位系统（8字节对齐）
-内存布局：
+	// Assume a 64-bit system (with 8-byte alignment)
+Memory layoutMemory layout：
 
-0x1000000000 ┌────────────────────┐ ← 物理内存开始（虚拟地址）
-             │    内核代码和数据   │
+0x1000000000 ┌────────────────────┐ ← Physical memory start (virtual address)
+             │Kernel code and data│
              ├────────────────────┤
-             │    位图(bits_map)  │
+             │    bits_map        │
 0x1000100000 ├────────────────────┤ ← bits_map
-             │    Page结构体数组   │
+             │Page Struct array   │
 0x1000180000 ├────────────────────┤ ← pages_struct
-             │    Zone结构体数组   │
+             │Zone Struct array   │
 0x10001A0000 ├────────────────────┤ ← zones_struct
-             │    预留空间         │ ← +32*8=256字节
-0x10001A0100 ├────────────────────┤ ← end_of_struct (对齐后)
-             │    可用内存区域     │ ← 从这里开始分配物理内存
+             │  Reserved space    │ ← +32*8=256字节
+0x10001A0100 ├────────────────────┤ ← end_of_struct (After alignment)
+             │Available memory area│ ← From here, physical memory allocation begins.
              └────────────────────┘
 	 */
 	color_printk(ORANGE,BLACK,"start_code:%#018lx,end_code:%#018lx,end_data:%#018lx,end_brk:%#018lx,end_of_struct:%#018lx\n",memory_management_struct.start_code,memory_management_struct.end_code,memory_management_struct.end_data,memory_management_struct.end_brk,memory_management_struct.end_of_struct);
-	i=Virt_To_Phys(memory_management_struct.end_of_struct)>>PAGE_2M_SHIFT;
+	i=Virt_To_Phy(memory_management_struct.end_of_struct)>>PAGE_2M_SHIFT;
+	for(j=0;j<=i;j++){
+		page_init(memory_management_struct.pages_struct+j,PG_PTable_Maped|PG_Kernel_Init|PG_Active|PG_Kernel);
 
+	}
+	unsigned long Global_CR3=Get_gdt();
+	color_printk(INDIGO,BLACK,"Global_CR3\t:%#018lx\n",Global_CR3);
+	color_printk(INDIGO,BLACK,"*Global_CR3\t:%#018lx\n",*Phy_To_Virt(Global_CR3));
+	color_printk(INDIGO,BLACK,"**Global_CR3\t:%#018lx\n",*Phy_To_Virt(*Phy_To_Virt(Global_CR3)&(~0xff))&(~0xff));
+	for(i=0;i<10;i++){
+		*(Phy_To_Virt(Global_CR3)+i)=0UL;
+	}
+	flush_tlb();
+}
+
+
+
+unsigned long page_init(struct Page * page,unsigned long flags){
+	if(!page->attribute){
+		*(memory_management_struct.bits_map+((page->PHY_address>>PAGE_2M_SHIFT)>>6)) |= 1UL << (page->PHY_address>>PAGE_2M_SHIFT)%64;
+		page->attribute = flags;
+		page->reference_count++;
+		page->zone_struct->page_using_count++;
+		page->zone_struct->page_free_count--;
+		page->zone_struct->total_pages_link++;
+	}else if((page ->attribute & PG_Referenced)||(page->attribute & PG_K_Share_To_U)||(flags & PG_Referenced)||(flags & PG_K_Share_To_U)){
+		//The "||" is a logical OR operator. As long as one of the two operands is true, the result of the entire expression is true.
+		/*The symbol "|" is called "bitwise OR". It has two operands (both of which must be integers), 
+		and its function is to perform an "OR" operation on the corresponding binary digits of the two numbers. 
+		The operation rule is: if one is true, the result is true.
+		*/
+		page->attribute |= flags;
+		page->reference_count++;
+		page->zone_struct->total_pages_link++;
+	}else{
+		*(memory_management_struct.bits_map+((page->PHY_address>>PAGE_2M_SHIFT)>>6)) |= 1UL << (page->PHY_address>>PAGE_2M_SHIFT)%64;
+		page->attribute |= flags;
+	}
+	return 0;
 }
