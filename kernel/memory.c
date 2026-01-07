@@ -59,81 +59,88 @@ void init_memory(){
 	↓
 	Align upwards to the nearest 4KB boundary
 	*/
+
 	memory_management_struct.bits_map=(unsigned long *)((memory_management_struct.end_brk+PAGE_4K_SIZE-1)&PAGE_4K_MASK);
-	//记录位图管理的页数
-	/*总字节数 ÷ 2MB = 页数
-		↓
-		TotalMem >> 21（PAGE_2M_SHIFT = 21） */
+	//The number of pages for bitmap management
+	//Total number of bytes ÷ 2MB = Number of pages
+	//
+	//	TotalMem >> 21(PAGE_2M_SHIFT = 21） 
+
+
 	memory_management_struct.bits_size=TotalMem>>PAGE_2M_SHIFT;	
+	
 	/*
-步骤 1：页数
+step 1: 2MB pages
 (TotalMem >> PAGE_2M_SHIFT)
 ↓
-需要管理的 2MB 页数
-步骤 2：位 → 字节向上取整
+The 2MB pages that need to be managed
 
-(页数 + 7) / 8
+Step 2: Round up from bits to bytes
+(pages + 7) / 8
 ↓
-每个字节存储 8 个页的状态
-+7 是为了向上取整
-步骤 3：字节 → long 对齐
+Each byte stores the status of 8 pages.
++7 is for rounding up to the nearest whole number.
+
+Step 3: Byte → Long Alignment
 
 & (~(sizeof(long) - 1))
 ↓
-~7 = 0xffff...fff8（假设 64 位 long）
+~7 = 0xffff...fff8（assume 64 bits long）
 & 0xffff...fff8
 ↓
-向下对齐到 8 字节边界（sizeof(long) = 8）
-完整示例：
+Align to the 8-byte boundary (sizeof(long) = 8)
+Complete example:
 
-总内存 4GB = 2048 页
+total memory 4GB = 2048 pages
 ↓
-(2048 + 7) / 8 = 256 字节
+(2048 + 7) / 8 = 256 bytes
 ↓
-256 & ~7 = 256（已对齐）
-为什么对齐到 sizeof(long)？
-位图操作通常是按 unsigned long 为单位（64 位一次处理 64 个页）
-对齐后可以避免非对齐访问导致的性能损失
+256 & ~7 = 256（Alignment completed）
+Why align to sizeof(long)?
+Bitmap operations are usually performed in units of unsigned long (processing 64 pages at a time for 64 bits each)
+Alignment can avoid performance losses caused by non-aligned accesses
 	 */
+
 	memory_management_struct.bits_length=(((unsigned long)(TotalMem>>PAGE_2M_SHIFT)+sizeof(long)*8-1)/8)&(~(sizeof(long)-1));
 	Cmemset(memory_management_struct.bits_map,0xff,memory_management_struct.bits_length);
-/*内存布局示意
+
+/*Memory layout illustration
 ┌─────────────────────────────────────┐
-│  内核代码段 (_text → _etext)        │
+│Kernel code segment (_text → _etext) │
 ├─────────────────────────────────────┤
-│  内核数据段 (_edata → _end)         │
+│kernel data segement (_edata → _end) │
 ├─────────────────────────────────────┤
-│  bits_map [页对齐]                  │
-│  ┌──┬──┬──┬──┬──┬──┬──┬──┐        │
-│  │1 │0 │1 │...│0 │1 │0 │1 │        │
+│  bits_map [page alignment]          │
+│  ┌──┬──┬──┬──┬──┬──┬──┬──┐          │
+│  │1 │0 │1 │..│0 │1 │0 │1 │        │
 │  └──┴──┴──┴──┴──┴──┴──┴──┘        │
 │   ↕ ↕ ↕                ↕ ↕        │
-│   已占 可用 ... ...    可用 已占    │
+│occupy available ... available occupy│
 └─────────────────────────────────────┘
 */
 
-//操作系统使用2MB大页,而不是通常的4kb,可减少TLB缺失：相同TLB条目覆盖更大内存
+//The operating system uses 2MB pages instead of the usual 4kb pages, which can reduce TLB misses: the same TLB entries can cover a larger amount of memory.
 memory_management_struct.pages_struct=(struct Page *)(((unsigned long)memory_management_struct.bits_map+memory_management_struct.bits_length+PAGE_4K_SIZE-1)&PAGE_4K_MASK);
 memory_management_struct.pages_size=TotalMem>>PAGE_2M_SHIFT;
 /*
-// 示例（64位系统）：
+// example (64-bit system)：
 // sizeof(long) = 8, sizeof(long)-1 = 7, ~(sizeof(long)-1) = ~7 = 0xFFFFFFF8
-// 对齐掩码：0xFFFFFFF8，即末3位清零，实现8字节对齐
+// Alignment mask: 0xFFFFFFF8, which means the last 3 bits are cleared, achieving 8-byte alignment.
  */
 memory_management_struct.pages_length=((TotalMem>>PAGE_2M_SHIFT)*sizeof(struct Page)+sizeof(long)-1)&(~(sizeof(long)-1));
-// Page数组清零初始化
+// Zero out and initialize the Page array
 Cmemset(memory_management_struct.pages_struct,0x00,memory_management_struct.pages_length);
 
 memory_management_struct.zones_struct=(struct Zone*)(((unsigned long)memory_management_struct.pages_struct+memory_management_struct.pages_length+PAGE_4K_SIZE-1)&PAGE_4K_MASK);
 /*
-0x12346000 ┌────────────────────┐ ← bits_map（位图开始）
-           │    位图区域         │
+0x12346000 ┌────────────────────┐ ← bits_map（bits map start）
+           │    bits map area   │
            │    (128KB)         │
-0x12366000 ├────────────────────┤ ← pages_struct（Page数组开始）
-           │    Page结构体数组   │
+0x12366000 ├────────────────────┤ ← pages_struct（Page array start）
+           │Page struct array   │
            │    (80KB)          │
-0x1237A000 ├────────────────────┤ ← zones_struct（Zone数组开始）
-           │    Zone结构体数组   │
+0x1237A000 ├────────────────────┤ ← zones_struct（Zone array start）
+           │  zone struct array │
            │                    │
            └────────────────────┘
  */
@@ -175,55 +182,52 @@ for(i=0;i<=memory_management_struct.e820_length;i++){
 		p->reference_count=0;
 		p->age=0;
 
-/*
-		步骤1：计算页面编号（Page Number）
+/*Step 1: Calculate the page number(page_number)
 c
 unsigned long page_number = p->PHY_address >> PAGE_2M_SHIFT;
-物理地址右移21位（因为2MB = 2^21字节）
+The physical address is shifted 21 bits to the right (since 2MB = 2^21 bytes)
 
-得到页面在全局中的索引号
-步骤2：计算位图数组索引（word_index）
+Obtain the index number of the page in the global context
+Step 2: Calculate the bitmap array index (word_index)
 c
-unsigned long word_index = page_number >> 6;  // 等价于 page_number / 64
-每个 unsigned long 有64位（64位系统）
-
-一个 unsigned long 可以管理64个页面
-步骤3：计算位偏移（bit_offset）
+unsigned long word_index = page_number >> 6;  // Equivalent to page_number / 64
+Each unsigned long has 64 bits (for 64-bit systems)
+An unsigned long can manage 64 pages.
+Step 3: Calculate bit offset（bit_offset）
 c
 unsigned long bit_offset = page_number % 64;
-页面在位图 unsigned long 中的具体位置
-
-示例
+The specific location of the page in the bitmap unsigned long data structure
+example
 
 text
 page_number = 129
-bit_offset = 129 % 64 = 1 (第1位，从0开始计数)
+bit_offset = 129 % 64 = 1 (First place, counting from 0)
 
-步骤4：构造位掩码并应用异或操作
+Step 4: Construct the bit mask and perform the XOR operation
 c
-1UL << bit_offset  // 创建一个掩码，只有bit_offset位为1
-^=                 // 异或操作，翻转特定位
-完整计算过程：
+1UL << bit_offset  // Create a mask where only the bit at the position of bit_offset is set to 1.
+^=                 // Exclusive OR operation, flipping the designated bit position
+Complete calculation process:
 
 text
-假设：
-bits_map地址 = 0x12346000
+assume：
+bits_map address = 0x12346000
 page_number = 129
 
-计算：
+caculate ：
 1. word_index = 129 >> 6 = 2
-2. 位图位置 = bits_map + 2 = 0x12346000 + 2*8 = 0x12346010
+2. Bitmap position = bits_map + 2 = 0x12346000 + 2*8 = 0x12346010
 3. bit_offset = 129 % 64 = 1
-4. 掩码 = 1UL << 1 = 0x2 (二进制 10)
-5. 异或操作：bits_map[2] ^= 0x2
+4. mask = 1UL << 1 = 0x2 (二进制 10)
+5. Exclusive OR operation：bits_map[2] ^= 0x2
 
-4. 为什么使用异或操作（^=）？
-背景：
+4. Why use the exclusive OR operation ( ^= )? Background:
 
-位图初始化为全1（0xFF）：所有页面标记为"已占用"
-
-可用页面需要标记为"空闲"（0）
+The bitmap is initialized with all values set to 0xFF (full 1s): All pages are marked as "occupied" 
+The available pages need to be marked as "idle" (0).
 		 */		
+
+
 		*(memory_management_struct.bits_map+((p->PHY_address>>PAGE_2M_SHIFT)>>6))^=1UL <<(p->PHY_address>>PAGE_2M_SHIFT)%64;
 	}
 }

@@ -47,67 +47,104 @@ thereby obtaining the starting address of the 2MB page where the address is loca
 */
 #define PAGE_2M_MASK (~(PAGE_2M_SIZE - 1))
 #define PAGE_4K_MASK (~(PAGE_4K_SIZE - 1))
+
 /* 
 set a = q·s + r，among 0 ≤ r < s（r is the remainder）
+
+s (Page Size): Page Size
+s = PAGE_2M_SIZE or s = PAGE_4K_SIZE 
+This is the reference unit we need to align with. 
+For example: PAGE_4K_SIZE = 4096 (bytes) 
+q (Quotient): Quotient
+q = floor(a / s), which is the integer quotient obtained by dividing the address a by the page size. 
+Indicates the total number of complete pages that were already included before address a. 
+r (Remainder): Remainder
+r = a % s, which means the remainder obtained when the address a is divided by the page size. 
+Indicates the offset of address a beyond the last complete page
+ 
 situation 1: r = 0（Alignment completed）
 (a + s - 1) & ~(s-1) 
 = (q·s + s - 1) & ~(s-1)
 = ((q+1)·s - 1) & ~(s-1)
-= q·s   // 因为(q+1)·s-1的低位都是1，与~（s-1）与后保留高位 :Because the lower bits of (q + 1)·s - 1 are all 1, and the higher bits are retained after and with~ (s - 1)
+= q·s   
+Because the lower log₂(s) bits of (q + 1)·s - 1 are all 1 (for example, when 4KB alignment is used, the lower 12 bits are all 1),
+after performing an AND operation with ~(s - 1) (a mask with the lower log₂(s) bits being 0), 
+these lower bits are cleared, and the result becomes q·s
+
+ "Low log₂(s) bits" meaning:
+In binary representation, the "low log₂(s) bits" refer to the lowest log₂(s) bits of a binary number. 
+Taking 4KB alignment as an example (s = 4096 = 2¹²):
+s-1 = 4095 = binary : 00000000000000000000111111111111
+                                          ↑low 12 bits↑
+In the binary representation of 4095, the lower 12 bits are all 1. 
+So, "low log₂(4096) = 12 bits" means that these are the lowest 12 binary digits of this number.
 situation 2: r > 0（not alignment）
 (a + s - 1) & ~(s-1)
 = (q·s + r + s - 1) & ~(s-1)
 = ((q+1)·s + (r-1)) & ~(s-1)
-= (q+1)·s  // Because r - 1 < s - 1, after clearing the lower bits, we obtain (q + 1)·s
+= (q+1)·s  
+// Because r - 1 < s - 1, after clearing the lower bits, we obtain (q + 1)·s
 */
 #define PAGE_2M_ALIGN(addr) (((unsigned long)(addr) + PAGE_2M_SIZE - 1) & PAGE_2M_MASK)
 #define PAGE_4K_ALIGN(addr) (((unsigned long)(addr) + PAGE_4K_SIZE - 1) & PAGE_4K_MASK)
-#define Virt_To_Phys(addr) ((unsigned long)(addr) - PAGE_OFFSET)
-#define Phys_To_Virt(addr) ((unsigned long*)((unsigned long)(addr) + PAGE_OFFSET))
-
+#define Virt_To_Phy(addr) ((unsigned long)(addr) - PAGE_OFFSET)
+#define Phy_To_Virt(addr) ((unsigned long*)((unsigned long)(addr) + PAGE_OFFSET))
+/*
+Address space diagram (aligned at 4KB):
+0x0000 ┌─────────────┐ ← Page border (q·s)
+       │  page 0     │
+0x1000 ├─────────────┤ ← Next page border ((q+1)·s)
+       │  page 1     │
+0x2000 ├─────────────┤
+       │  page 2     │
+       └─────────────┘
+if the address a=0x1234：
+a = 0x1234（Inside page 0, but not on the boundary.）
+after alignment = 0x2000（Next page boundary）
+*/
 ////alloc_pages zone_select
 
 //Mark the DMA (Direct Memory Access) area
-#define ZONE_DMA	(1 << 0)
+#define ZONE_DMA	(1 << 0) //1
 
 //Mark the ordinary memory area
-#define ZONE_NORMAL	(1 << 1)
+#define ZONE_NORMAL	(1 << 1) //2
 
 //Mark the unmapped or high-end memory regions
-#define ZONE_UNMAPED	(1 << 2)
+#define ZONE_UNMAPED	(1 << 2) // 4
 
 ////struct page attribute (alloc_pages flags)
 
 //The page has been mapped to the page table.
-#define PG_PTable_Maped	(1 << 0)
+#define PG_PTable_Maped	(1 << 0) //1
 
 //Kernel initialization page
-#define PG_Kernel_Init	(1 << 1)
+#define PG_Kernel_Init	(1 << 1) //2
 
 
 //The page has been accessed recently.
-#define PG_Referenced	(1 << 2)
+#define PG_Referenced	(1 << 2)  //4
 
 //The page has been modified (dirty page)
-#define PG_Dirty	(1 << 3)
+#define PG_Dirty	(1 << 3)  //8
 
 //Active page (in the active LRU linked list)
-#define PG_Active	(1 << 4)
+#define PG_Active	(1 << 4)  //16
 
 //The page data is up-to-date.
-#define PG_Up_To_Date	(1 << 5)
+#define PG_Up_To_Date	(1 << 5) //32
 
 //Device memory page
-#define PG_Device	(1 << 6)
+#define PG_Device	(1 << 6) //64
 
 //Pages used by the kernel
-#define PG_Kernel	(1 << 7)
+#define PG_Kernel	(1 << 7) //128
 
 //Pages shared by the kernel to the user space
-#define PG_K_Share_To_U	(1 << 8)
+#define PG_K_Share_To_U	(1 << 8)  //256
 
 //The pages used by the slab allocator
-#define PG_Slab		(1 << 9)
+#define PG_Slab		(1 << 9)  //512
 
 
 /*
@@ -121,7 +158,7 @@ E820 is a convenient tool for BIOS of X86-based computer systems to map memory t
 By setting the AX register to the hexadecimal value E820, it can be accessed through the INT15H call, 
 reporting which memory address ranges are available and which are reserved for use by the BIOS.
 */
-//刷新TLB
+//refresh TLB
 // #define flush_tlb()		\
 // do {
 // 	unsigned long tmpreq;								\
@@ -145,7 +182,7 @@ do { \
     ); \
 } while (0)
 
-inline unsigned long *Get_gdt(){
+static unsigned long *Get_gdt(){
 	unsigned long * tmp;
 	__asm__ __volatile__ ("movq %%cr3, %0  \n\t"			
 	                      : "=r"(tmp)				
@@ -220,14 +257,14 @@ Physical memory layout:
          │ Kernel data segment   │
 0x300000 ├──────────────┤ ← end_data
          │ Uninitialized data│
-0x320000 ├──────────────┤ ← end_brk (当前堆顶)
+0x320000 ├──────────────┤ ← end_brk (The current top of the heap)
          │ Free memory    │
          └──────────────┘
  */
 	unsigned long start_code;
 	unsigned long end_code;
 	unsigned long end_data;
-	unsigned long end_brk;//内核堆结束地址（brk是堆的末尾）。
+	unsigned long end_brk;//End address of the kernel heap (where brk points to is the end of the heap).
 
 	unsigned long end_of_struct;
 
@@ -266,23 +303,23 @@ struct Page {
  * @var Zone::pages_group 
  * Pointer to the array of page descriptors for this area
  * @var Zone::pages_length 
- * 该区域包含的物理页总数
+ * The total number of physical pages contained in this area
  * @var Zone::zone_start_address 
- * 内存区域的起始物理地址
+ * The starting physical address of the memory area
  * @var Zone::zone_end_address 
- * 内存区域的结束物理地址
+ * The end physical address of the memory area
  * @var Zone::zone_length 
- * 内存区域的总长度（字节数）
+ * The total length (in bytes) of the memory area
  * @var Zone::attribute 
- * 区域属性标志位
+ * Regional attribute flag
  * @var Zone::GMD_struct 
- * 指向全局内存描述符的指针
+ * Pointer to the global memory descriptor
  * @var Zone::page_using_count 
- * 已使用的物理页计数
+ * The count of used physical pages
  * @var Zone::page_free_count 
- * 空闲的物理页计数
+ * Count of idle physical pages
  * @var Zone::total_pages_link 
- * 本区域物理页被引用次数
+ * The number of times this regional physical page has been cited
  */
 struct Zone{
 	struct Page * pages_group;
@@ -301,6 +338,7 @@ struct Zone{
 
 struct Global_Memory_Descriptor memory_management_struct;
 
+unsigned long page_init(struct Page * page,unsigned long flags);
 void init_memory();
 
 #endif
