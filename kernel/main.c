@@ -5,13 +5,20 @@ the entire 64-bit address space (0 to 2^64 - 1).
 
 The kernel is typically mapped to the Higher Half.
 */ 
-
 //jmp    ffff800000100094 <Start_kernel+0x1c>
 #include "lib.h"
 #include "printk.h"
 #include "gate.h"
 #include "trap.h"
 #include "memory.h"
+
+
+extern char _text;
+extern char _etext;
+extern char _edata;
+extern char _end;
+
+struct Global_Memory_Descriptor memory_management_struct = {{0},0};
 void Start_Kernel(void)
 {
 
@@ -40,38 +47,12 @@ void Start_Kernel(void)
     set_tss64(0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,
 0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00);
     sys_vector_init();
-    struct  Global_Memory_Descriptor memory_management_struct={{0},0};
-    // for(i=0;i<Pos.XResolution*20;i++){
-    //     *((char*)addr+0)=(char)0x00;
-    //     *((char*)addr+1)=(char)0x00;
-    //     *((char*)addr+2)=(char)0xff;
-    //     *((char*)addr+3)=(char)0x00;
-    //     addr=addr+1;
+    // struct  Global_Memory_Descriptor memory_management_struct={{0},0};
 
-    // }
-    // for(i=0;i<Pos.XResolution*20;i++){
-    //     *((char*)addr+0)=(char)0x00;
-    //     *((char*)addr+1)=(char)0xff;
-    //     *((char*)addr+2)=(char)0x00;
-    //     *((char*)addr+3)=(char)0x00;
-    //     addr=addr+1;
-
-    // }
-    // for(i=0;i<Pos.XResolution*20;i++){
-    //     *((char*)addr+0)=(char)0xff;
-    //     *((char*)addr+1)=(char)0x00;
-    //     *((char*)addr+2)=(char)0x00;
-    //     *((char*)addr+3)=(char)0x00;
-    //     addr=addr+1;
-    // }
-    // for(i=0;i<Pos.XResolution*20;i++){
-    //     *((char*)addr+0)=(char)0xff;
-    //     *((char*)addr+1)=(char)0xff;
-    //     *((char*)addr+2)=(char)0xff;
-    //     *((char*)addr+3)=(char)0x00;
-    //     addr=addr+1;
-
-    // }
+    memory_management_struct.start_code = (unsigned long)& _text;
+	memory_management_struct.end_code   = (unsigned long)& _etext;
+	memory_management_struct.end_data   = (unsigned long)& _edata;
+	memory_management_struct.end_brk    = (unsigned long)& _end;
     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
     color_printk(YELLOW,BLACK,"hello,User\n");
     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
