@@ -4180,7 +4180,7 @@ ffff800000107808:	73 15                	jae    ffff80000010781f <init_memory+0x3
 ffff80000010780a:	48 8b 45 b8          	mov    -0x48(%rbp),%rax
 ffff80000010780e:	48 2b 45 c0          	sub    -0x40(%rbp),%rax
 ffff800000107812:	48 c1 e8 15          	shr    $0x15,%rax
-ffff800000107816:	48 89 45 e0          	mov    %rax,-0x20(%rbp)
+ffff800000107816:	48 01 45 e0          	add    %rax,-0x20(%rbp)
 ffff80000010781a:	eb 04                	jmp    ffff800000107820 <init_memory+0x34d>
 ffff80000010781c:	90                   	nop
 ffff80000010781d:	eb 01                	jmp    ffff800000107820 <init_memory+0x34d>

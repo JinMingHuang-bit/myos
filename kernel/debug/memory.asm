@@ -226,7 +226,7 @@ Disassembly of section .text:
  337:	48 8b 45 b8          	mov    -0x48(%rbp),%rax
  33b:	48 2b 45 c0          	sub    -0x40(%rbp),%rax
  33f:	48 c1 e8 15          	shr    $0x15,%rax
- 343:	48 89 45 e0          	mov    %rax,-0x20(%rbp)
+ 343:	48 01 45 e0          	add    %rax,-0x20(%rbp)
  347:	eb 04                	jmp    34d <init_memory+0x34d>
  349:	90                   	nop
  34a:	eb 01                	jmp    34d <init_memory+0x34d>

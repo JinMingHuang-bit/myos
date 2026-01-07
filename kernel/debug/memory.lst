@@ -3615,11 +3615,11 @@ GAS LISTING memory.s 			page 1
  3132              	# memory.c:35: 	color_printk(BLUE,BLACK,"Display physics address Map,Type(1:RAM,2:ROM or Reserved,3
   35:memory.c      **** 	color_printk(BLUE,BLACK,"Display physics address Map,Type(1:RAM,2:ROM or Reserved,3:ACPI Reclaim M
  3133              		.loc 1 35 2
- 3134 0033 48B80000 		movabsq	$.LC0@GOTOFF, %rax	#, tmp107
+ 3134 0033 48B80000 		movabsq	$.LC0@GOTOFF, %rax	#, tmp108
  3134      00000000 
  3134      0000
- 3135 003d 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp106
- 3136 0041 4889C2   		movq	%rax, %rdx	# tmp106,
+ 3135 003d 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp107
+ 3136 0041 4889C2   		movq	%rax, %rdx	# tmp107,
  3137 0044 BE000000 		movl	$0, %esi	#,
  3137      00
  3138 0049 BFFF0000 		movl	$255, %edi	#,
@@ -3627,11 +3627,11 @@ GAS LISTING memory.s 			page 1
  3139 004e 4989DF   		movq	%rbx, %r15	# tmp82,
  3140 0051 B8000000 		movl	$0, %eax	#,
  3140      00
- 3141 0056 48B90000 		movabsq	$color_printk@PLTOFF, %rcx	#, tmp108
+ 3141 0056 48B90000 		movabsq	$color_printk@PLTOFF, %rcx	#, tmp109
  3141      00000000 
  3141      0000
- 3142 0060 4801D9   		addq	%rbx, %rcx	# tmp82, tmp108
- 3143 0063 FFD1     		call	*%rcx	# tmp108
+ 3142 0060 4801D9   		addq	%rbx, %rcx	# tmp82, tmp109
+ 3143 0063 FFD1     		call	*%rcx	# tmp109
  3144              	.LVL0:
  3145              	# memory.c:36: 	p=(struct E820 *)0xffff800000007e00;
   36:memory.c      **** 	p=(struct E820 *)0xffff800000007e00;
@@ -3657,23 +3657,23 @@ GAS LISTING memory.s 			page 1
   39:memory.c      **** 		//以0x开头的16进制形式输出，总宽度为18个字符，左补零，长整型（unsigned
   40:memory.c      **** 		color_printk(ORANGE,BLACK,"address:%#018lx\tLength:%#018lx\tType:%#010x\n",p->address,p->length,p
  3159              		.loc 1 40 3
- 3160 007f 488B45D8 		movq	-40(%rbp), %rax	# p, tmp109
+ 3160 007f 488B45D8 		movq	-40(%rbp), %rax	# p, tmp110
 GAS LISTING memory.s 			page 62
 
 
- 3161 0083 8B4810   		movl	16(%rax), %ecx	# p_30->type, _1
- 3162 0086 488B45D8 		movq	-40(%rbp), %rax	# p, tmp110
- 3163 008a 488B5008 		movq	8(%rax), %rdx	# p_30->length, _2
- 3164 008e 488B45D8 		movq	-40(%rbp), %rax	# p, tmp111
- 3165 0092 488B00   		movq	(%rax), %rax	# p_30->address, _3
+ 3161 0083 8B4810   		movl	16(%rax), %ecx	# p_31->type, _1
+ 3162 0086 488B45D8 		movq	-40(%rbp), %rax	# p, tmp111
+ 3163 008a 488B5008 		movq	8(%rax), %rdx	# p_31->length, _2
+ 3164 008e 488B45D8 		movq	-40(%rbp), %rax	# p, tmp112
+ 3165 0092 488B00   		movq	(%rax), %rax	# p_31->address, _3
  3166 0095 4189C9   		movl	%ecx, %r9d	# _1,
  3167 0098 4989D0   		movq	%rdx, %r8	# _2,
  3168 009b 4889C1   		movq	%rax, %rcx	# _3,
- 3169 009e 48B80000 		movabsq	$.LC1@GOTOFF, %rax	#, tmp113
+ 3169 009e 48B80000 		movabsq	$.LC1@GOTOFF, %rax	#, tmp114
  3169      00000000 
  3169      0000
- 3170 00a8 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp112
- 3171 00ac 4889C2   		movq	%rax, %rdx	# tmp112,
+ 3170 00a8 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp113
+ 3171 00ac 4889C2   		movq	%rax, %rdx	# tmp113,
  3172 00af BE000000 		movl	$0, %esi	#,
  3172      00
  3173 00b4 BF0080FF 		movl	$16744448, %edi	#,
@@ -3681,11 +3681,11 @@ GAS LISTING memory.s 			page 1
  3174 00b9 4989DF   		movq	%rbx, %r15	# tmp82,
  3175 00bc B8000000 		movl	$0, %eax	#,
  3175      00
- 3176 00c1 49BA0000 		movabsq	$color_printk@PLTOFF, %r10	#, tmp114
+ 3176 00c1 49BA0000 		movabsq	$color_printk@PLTOFF, %r10	#, tmp115
  3176      00000000 
  3176      0000
- 3177 00cb 4901DA   		addq	%rbx, %r10	# tmp82, tmp114
- 3178 00ce 41FFD2   		call	*%r10	# tmp114
+ 3177 00cb 4901DA   		addq	%rbx, %r10	# tmp82, tmp115
+ 3178 00ce 41FFD2   		call	*%r10	# tmp115
  3179              	.LVL1:
  3180              	# memory.c:41: 		unsigned long tmp =0;
   41:memory.c      **** 		unsigned long tmp =0;
@@ -3695,8 +3695,8 @@ GAS LISTING memory.s 			page 1
  3183              	# memory.c:42: 		if(p->type==1){
   42:memory.c      **** 		if(p->type==1){
  3184              		.loc 1 42 7
- 3185 00d9 488B45D8 		movq	-40(%rbp), %rax	# p, tmp115
- 3186 00dd 8B4010   		movl	16(%rax), %eax	# p_30->type, _4
+ 3185 00d9 488B45D8 		movq	-40(%rbp), %rax	# p, tmp116
+ 3186 00dd 8B4010   		movl	16(%rax), %eax	# p_31->type, _4
  3187              	# memory.c:42: 		if(p->type==1){
  3188              		.loc 1 42 5
  3189 00e0 83F801   		cmpl	$1, %eax	#, _4
@@ -3704,8 +3704,8 @@ GAS LISTING memory.s 			page 1
  3191              	# memory.c:43: 			TotalMem +=p->length;
   43:memory.c      **** 			TotalMem +=p->length;
  3192              		.loc 1 43 16
- 3193 00e5 488B45D8 		movq	-40(%rbp), %rax	# p, tmp116
- 3194 00e9 488B4008 		movq	8(%rax), %rax	# p_30->length, _5
+ 3193 00e5 488B45D8 		movq	-40(%rbp), %rax	# p, tmp117
+ 3194 00e9 488B4008 		movq	8(%rax), %rax	# p_31->length, _5
  3195              	# memory.c:43: 			TotalMem +=p->length;
  3196              		.loc 1 43 13
  3197 00ed 480145E0 		addq	%rax, -32(%rbp)	# _5, TotalMem
@@ -3714,105 +3714,105 @@ GAS LISTING memory.s 			page 1
   44:memory.c      **** 		}
   45:memory.c      **** 		memory_management_struct.e820[i].address+=p->address;
  3200              		.loc 1 45 35
- 3201 00f1 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp117
+ 3201 00f1 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp118
  3201      00000000 
  3201      0000
- 3202 00fb 8B45D4   		movl	-44(%rbp), %eax	# i, tmp119
+ 3202 00fb 8B45D4   		movl	-44(%rbp), %eax	# i, tmp120
 GAS LISTING memory.s 			page 63
 
 
- 3203 00fe 4863D0   		movslq	%eax, %rdx	# tmp119, tmp118
- 3204 0101 4801D9   		addq	%rbx, %rcx	# tmp82, tmp120
- 3205 0104 4889D0   		movq	%rdx, %rax	# tmp118, tmp122
- 3206 0107 48C1E002 		salq	$2, %rax	#, tmp122
- 3207 010b 4801D0   		addq	%rdx, %rax	# tmp118, tmp122
- 3208 010e 48C1E002 		salq	$2, %rax	#, tmp123
- 3209 0112 4801C8   		addq	%rcx, %rax	# tmp120, tmp124
- 3210 0115 488B10   		movq	(%rax), %rdx	# memory_management_struct.e820[i_31].address, _6
+ 3203 00fe 4863D0   		movslq	%eax, %rdx	# tmp120, tmp119
+ 3204 0101 4801D9   		addq	%rbx, %rcx	# tmp82, tmp121
+ 3205 0104 4889D0   		movq	%rdx, %rax	# tmp119, tmp123
+ 3206 0107 48C1E002 		salq	$2, %rax	#, tmp123
+ 3207 010b 4801D0   		addq	%rdx, %rax	# tmp119, tmp123
+ 3208 010e 48C1E002 		salq	$2, %rax	#, tmp124
+ 3209 0112 4801C8   		addq	%rcx, %rax	# tmp121, tmp125
+ 3210 0115 488B10   		movq	(%rax), %rdx	# memory_management_struct.e820[i_32].address, _6
  3211              	# memory.c:45: 		memory_management_struct.e820[i].address+=p->address;
  3212              		.loc 1 45 46
- 3213 0118 488B45D8 		movq	-40(%rbp), %rax	# p, tmp125
- 3214 011c 488B00   		movq	(%rax), %rax	# p_30->address, _7
+ 3213 0118 488B45D8 		movq	-40(%rbp), %rax	# p, tmp126
+ 3214 011c 488B00   		movq	(%rax), %rax	# p_31->address, _7
  3215              	# memory.c:45: 		memory_management_struct.e820[i].address+=p->address;
  3216              		.loc 1 45 43
  3217 011f 488D0C02 		leaq	(%rdx,%rax), %rcx	#, _8
- 3218 0123 48BE0000 		movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp126
+ 3218 0123 48BE0000 		movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp127
  3218      00000000 
  3218      0000
- 3219 012d 8B45D4   		movl	-44(%rbp), %eax	# i, tmp128
- 3220 0130 4863D0   		movslq	%eax, %rdx	# tmp128, tmp127
- 3221 0133 4801DE   		addq	%rbx, %rsi	# tmp82, tmp129
- 3222 0136 4889D0   		movq	%rdx, %rax	# tmp127, tmp131
- 3223 0139 48C1E002 		salq	$2, %rax	#, tmp131
- 3224 013d 4801D0   		addq	%rdx, %rax	# tmp127, tmp131
- 3225 0140 48C1E002 		salq	$2, %rax	#, tmp132
- 3226 0144 4801F0   		addq	%rsi, %rax	# tmp129, tmp133
- 3227 0147 488908   		movq	%rcx, (%rax)	# _8, memory_management_struct.e820[i_31].address
+ 3219 012d 8B45D4   		movl	-44(%rbp), %eax	# i, tmp129
+ 3220 0130 4863D0   		movslq	%eax, %rdx	# tmp129, tmp128
+ 3221 0133 4801DE   		addq	%rbx, %rsi	# tmp82, tmp130
+ 3222 0136 4889D0   		movq	%rdx, %rax	# tmp128, tmp132
+ 3223 0139 48C1E002 		salq	$2, %rax	#, tmp132
+ 3224 013d 4801D0   		addq	%rdx, %rax	# tmp128, tmp132
+ 3225 0140 48C1E002 		salq	$2, %rax	#, tmp133
+ 3226 0144 4801F0   		addq	%rsi, %rax	# tmp130, tmp134
+ 3227 0147 488908   		movq	%rcx, (%rax)	# _8, memory_management_struct.e820[i_32].address
  3228              	# memory.c:46: 		memory_management_struct.e820[i].length+=p->length;
   46:memory.c      **** 		memory_management_struct.e820[i].length+=p->length;
  3229              		.loc 1 46 35
- 3230 014a 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp134
+ 3230 014a 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp135
  3230      00000000 
  3230      0000
- 3231 0154 8B45D4   		movl	-44(%rbp), %eax	# i, tmp136
- 3232 0157 4863D0   		movslq	%eax, %rdx	# tmp136, tmp135
- 3233 015a 4889D0   		movq	%rdx, %rax	# tmp135, tmp137
- 3234 015d 48C1E002 		salq	$2, %rax	#, tmp137
- 3235 0161 4801D0   		addq	%rdx, %rax	# tmp135, tmp137
- 3236 0164 48C1E002 		salq	$2, %rax	#, tmp138
- 3237 0168 4801D8   		addq	%rbx, %rax	# tmp82, tmp139
- 3238 016b 4801C8   		addq	%rcx, %rax	# tmp134, tmp140
- 3239 016e 4883C008 		addq	$8, %rax	#, tmp141
- 3240 0172 488B10   		movq	(%rax), %rdx	# memory_management_struct.e820[i_31].length, _9
+ 3231 0154 8B45D4   		movl	-44(%rbp), %eax	# i, tmp137
+ 3232 0157 4863D0   		movslq	%eax, %rdx	# tmp137, tmp136
+ 3233 015a 4889D0   		movq	%rdx, %rax	# tmp136, tmp138
+ 3234 015d 48C1E002 		salq	$2, %rax	#, tmp138
+ 3235 0161 4801D0   		addq	%rdx, %rax	# tmp136, tmp138
+ 3236 0164 48C1E002 		salq	$2, %rax	#, tmp139
+ 3237 0168 4801D8   		addq	%rbx, %rax	# tmp82, tmp140
+ 3238 016b 4801C8   		addq	%rcx, %rax	# tmp135, tmp141
+ 3239 016e 4883C008 		addq	$8, %rax	#, tmp142
+ 3240 0172 488B10   		movq	(%rax), %rdx	# memory_management_struct.e820[i_32].length, _9
  3241              	# memory.c:46: 		memory_management_struct.e820[i].length+=p->length;
  3242              		.loc 1 46 45
- 3243 0175 488B45D8 		movq	-40(%rbp), %rax	# p, tmp142
- 3244 0179 488B4008 		movq	8(%rax), %rax	# p_30->length, _10
+ 3243 0175 488B45D8 		movq	-40(%rbp), %rax	# p, tmp143
+ 3244 0179 488B4008 		movq	8(%rax), %rax	# p_31->length, _10
  3245              	# memory.c:46: 		memory_management_struct.e820[i].length+=p->length;
  3246              		.loc 1 46 42
  3247 017d 488D0C02 		leaq	(%rdx,%rax), %rcx	#, _11
- 3248 0181 48BE0000 		movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp143
+ 3248 0181 48BE0000 		movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp144
  3248      00000000 
  3248      0000
- 3249 018b 8B45D4   		movl	-44(%rbp), %eax	# i, tmp145
- 3250 018e 4863D0   		movslq	%eax, %rdx	# tmp145, tmp144
- 3251 0191 4889D0   		movq	%rdx, %rax	# tmp144, tmp146
- 3252 0194 48C1E002 		salq	$2, %rax	#, tmp146
+ 3249 018b 8B45D4   		movl	-44(%rbp), %eax	# i, tmp146
+ 3250 018e 4863D0   		movslq	%eax, %rdx	# tmp146, tmp145
+ 3251 0191 4889D0   		movq	%rdx, %rax	# tmp145, tmp147
+ 3252 0194 48C1E002 		salq	$2, %rax	#, tmp147
 GAS LISTING memory.s 			page 64
 
 
- 3253 0198 4801D0   		addq	%rdx, %rax	# tmp144, tmp146
- 3254 019b 48C1E002 		salq	$2, %rax	#, tmp147
- 3255 019f 4801D8   		addq	%rbx, %rax	# tmp82, tmp148
- 3256 01a2 4801F0   		addq	%rsi, %rax	# tmp143, tmp149
- 3257 01a5 4883C008 		addq	$8, %rax	#, tmp150
- 3258 01a9 488908   		movq	%rcx, (%rax)	# _11, memory_management_struct.e820[i_31].length
+ 3253 0198 4801D0   		addq	%rdx, %rax	# tmp145, tmp147
+ 3254 019b 48C1E002 		salq	$2, %rax	#, tmp148
+ 3255 019f 4801D8   		addq	%rbx, %rax	# tmp82, tmp149
+ 3256 01a2 4801F0   		addq	%rsi, %rax	# tmp144, tmp150
+ 3257 01a5 4883C008 		addq	$8, %rax	#, tmp151
+ 3258 01a9 488908   		movq	%rcx, (%rax)	# _11, memory_management_struct.e820[i_32].length
  3259              	# memory.c:47: 		memory_management_struct.e820[i].type=p->type;
   47:memory.c      **** 		memory_management_struct.e820[i].type=p->type;
  3260              		.loc 1 47 42
- 3261 01ac 488B45D8 		movq	-40(%rbp), %rax	# p, tmp151
- 3262 01b0 8B4810   		movl	16(%rax), %ecx	# p_30->type, _12
+ 3261 01ac 488B45D8 		movq	-40(%rbp), %rax	# p, tmp152
+ 3262 01b0 8B4810   		movl	16(%rax), %ecx	# p_31->type, _12
  3263              	# memory.c:47: 		memory_management_struct.e820[i].type=p->type;
  3264              		.loc 1 47 40
- 3265 01b3 48BE0000 		movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp152
+ 3265 01b3 48BE0000 		movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp153
  3265      00000000 
  3265      0000
- 3266 01bd 8B45D4   		movl	-44(%rbp), %eax	# i, tmp154
- 3267 01c0 4863D0   		movslq	%eax, %rdx	# tmp154, tmp153
- 3268 01c3 4801DE   		addq	%rbx, %rsi	# tmp82, tmp155
- 3269 01c6 4889D0   		movq	%rdx, %rax	# tmp153, tmp156
- 3270 01c9 48C1E002 		salq	$2, %rax	#, tmp156
- 3271 01cd 4801D0   		addq	%rdx, %rax	# tmp153, tmp156
- 3272 01d0 48C1E002 		salq	$2, %rax	#, tmp157
- 3273 01d4 4801F0   		addq	%rsi, %rax	# tmp155, tmp158
- 3274 01d7 4883C010 		addq	$16, %rax	#, tmp159
- 3275 01db 8908     		movl	%ecx, (%rax)	# _12, memory_management_struct.e820[i_31].type
+ 3266 01bd 8B45D4   		movl	-44(%rbp), %eax	# i, tmp155
+ 3267 01c0 4863D0   		movslq	%eax, %rdx	# tmp155, tmp154
+ 3268 01c3 4801DE   		addq	%rbx, %rsi	# tmp82, tmp156
+ 3269 01c6 4889D0   		movq	%rdx, %rax	# tmp154, tmp157
+ 3270 01c9 48C1E002 		salq	$2, %rax	#, tmp157
+ 3271 01cd 4801D0   		addq	%rdx, %rax	# tmp154, tmp157
+ 3272 01d0 48C1E002 		salq	$2, %rax	#, tmp158
+ 3273 01d4 4801F0   		addq	%rsi, %rax	# tmp156, tmp159
+ 3274 01d7 4883C010 		addq	$16, %rax	#, tmp160
+ 3275 01db 8908     		movl	%ecx, (%rax)	# _12, memory_management_struct.e820[i_32].type
  3276              	# memory.c:48: 		memory_management_struct.e820_length =i;
   48:memory.c      **** 		memory_management_struct.e820_length =i;
  3277              		.loc 1 48 40
- 3278 01dd 8B45D4   		movl	-44(%rbp), %eax	# i, tmp160
+ 3278 01dd 8B45D4   		movl	-44(%rbp), %eax	# i, tmp161
  3279 01e0 4898     		cltq
- 3280 01e2 48BA0000 		movabsq	$memory_management_struct@GOTOFF, %rdx	#, tmp161
+ 3280 01e2 48BA0000 		movabsq	$memory_management_struct@GOTOFF, %rdx	#, tmp162
  3280      00000000 
  3280      0000
  3281 01ec 48898413 		movq	%rax, 640(%rbx,%rdx)	# _13, memory_management_struct.e820_length
@@ -3825,8 +3825,8 @@ GAS LISTING memory.s 			page 1
  3285              	# memory.c:50: 		if(p->type >4){
   50:memory.c      **** 		if(p->type >4){
  3286              		.loc 1 50 7
- 3287 01f9 488B45D8 		movq	-40(%rbp), %rax	# p, tmp162
- 3288 01fd 8B4010   		movl	16(%rax), %eax	# p_47->type, _14
+ 3287 01f9 488B45D8 		movq	-40(%rbp), %rax	# p, tmp163
+ 3288 01fd 8B4010   		movl	16(%rax), %eax	# p_48->type, _14
  3289              	# memory.c:50: 		if(p->type >4){
  3290              		.loc 1 50 5
  3291 0200 83F804   		cmpl	$4, %eax	#, _14
@@ -3861,13 +3861,13 @@ GAS LISTING memory.s 			page 1
   53:memory.c      **** 	}
   54:memory.c      **** 	color_printk(ORANGE,BLACK,"OS Can Used Total RAM:%#018lx\n",TotalMem);
  3312              		.loc 1 54 2
- 3313 0216 488B45E0 		movq	-32(%rbp), %rax	# TotalMem, tmp163
- 3314 021a 4889C1   		movq	%rax, %rcx	# tmp163,
- 3315 021d 48B80000 		movabsq	$.LC2@GOTOFF, %rax	#, tmp165
+ 3313 0216 488B45E0 		movq	-32(%rbp), %rax	# TotalMem, tmp164
+ 3314 021a 4889C1   		movq	%rax, %rcx	# tmp164,
+ 3315 021d 48B80000 		movabsq	$.LC2@GOTOFF, %rax	#, tmp166
  3315      00000000 
  3315      0000
- 3316 0227 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp164
- 3317 022b 4889C2   		movq	%rax, %rdx	# tmp164,
+ 3316 0227 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp165
+ 3317 022b 4889C2   		movq	%rax, %rdx	# tmp165,
  3318 022e BE000000 		movl	$0, %esi	#,
  3318      00
  3319 0233 BF0080FF 		movl	$16744448, %edi	#,
@@ -3875,11 +3875,11 @@ GAS LISTING memory.s 			page 1
  3320 0238 4989DF   		movq	%rbx, %r15	# tmp82,
  3321 023b B8000000 		movl	$0, %eax	#,
  3321      00
- 3322 0240 49B80000 		movabsq	$color_printk@PLTOFF, %r8	#, tmp166
+ 3322 0240 49B80000 		movabsq	$color_printk@PLTOFF, %r8	#, tmp167
  3322      00000000 
  3322      0000
- 3323 024a 4901D8   		addq	%rbx, %r8	# tmp82, tmp166
- 3324 024d 41FFD0   		call	*%r8	# tmp166
+ 3323 024a 4901D8   		addq	%rbx, %r8	# tmp82, tmp167
+ 3324 024d 41FFD0   		call	*%r8	# tmp167
  3325              	.LVL2:
  3326              	# memory.c:55: 	TotalMem=0;
   55:memory.c      **** 	TotalMem=0;
@@ -3904,19 +3904,19 @@ GAS LISTING memory.s 			page 1
   57:memory.c      **** 		unsigned long start,end;
   58:memory.c      **** 		if(memory_management_struct.e820[i].type!=1){
  3338              		.loc 1 58 38
- 3339 0264 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp167
+ 3339 0264 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp168
  3339      00000000 
  3339      0000
- 3340 026e 8B45EC   		movl	-20(%rbp), %eax	# i, tmp169
- 3341 0271 4863D0   		movslq	%eax, %rdx	# tmp169, tmp168
- 3342 0274 4801D9   		addq	%rbx, %rcx	# tmp82, tmp170
- 3343 0277 4889D0   		movq	%rdx, %rax	# tmp168, tmp171
- 3344 027a 48C1E002 		salq	$2, %rax	#, tmp171
- 3345 027e 4801D0   		addq	%rdx, %rax	# tmp168, tmp171
- 3346 0281 48C1E002 		salq	$2, %rax	#, tmp172
- 3347 0285 4801C8   		addq	%rcx, %rax	# tmp170, tmp173
- 3348 0288 4883C010 		addq	$16, %rax	#, tmp174
- 3349 028c 8B00     		movl	(%rax), %eax	# memory_management_struct.e820[i_24].type, _15
+ 3340 026e 8B45EC   		movl	-20(%rbp), %eax	# i, tmp170
+ 3341 0271 4863D0   		movslq	%eax, %rdx	# tmp170, tmp169
+ 3342 0274 4801D9   		addq	%rbx, %rcx	# tmp82, tmp171
+ 3343 0277 4889D0   		movq	%rdx, %rax	# tmp169, tmp172
+ 3344 027a 48C1E002 		salq	$2, %rax	#, tmp172
+ 3345 027e 4801D0   		addq	%rdx, %rax	# tmp169, tmp172
+ 3346 0281 48C1E002 		salq	$2, %rax	#, tmp173
+ 3347 0285 4801C8   		addq	%rcx, %rax	# tmp171, tmp174
+ 3348 0288 4883C010 		addq	$16, %rax	#, tmp175
+ 3349 028c 8B00     		movl	(%rax), %eax	# memory_management_struct.e820[i_25].type, _15
  3350              	# memory.c:58: 		if(memory_management_struct.e820[i].type!=1){
  3351              		.loc 1 58 5
  3352 028e 83F801   		cmpl	$1, %eax	#, _15
@@ -3927,1077 +3927,1079 @@ GAS LISTING memory.s 			page 1
   60:memory.c      **** 		}
   61:memory.c      **** 		start=PAGE_2M_ALIGN(memory_management_struct.e820[i].address);
  3355              		.loc 1 61 9
- 3356 0297 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp175
+ 3356 0297 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp176
  3356      00000000 
  3356      0000
- 3357 02a1 8B45EC   		movl	-20(%rbp), %eax	# i, tmp177
- 3358 02a4 4863D0   		movslq	%eax, %rdx	# tmp177, tmp176
- 3359 02a7 4801D9   		addq	%rbx, %rcx	# tmp82, tmp178
- 3360 02aa 4889D0   		movq	%rdx, %rax	# tmp176, tmp180
- 3361 02ad 48C1E002 		salq	$2, %rax	#, tmp180
- 3362 02b1 4801D0   		addq	%rdx, %rax	# tmp176, tmp180
- 3363 02b4 48C1E002 		salq	$2, %rax	#, tmp181
- 3364 02b8 4801C8   		addq	%rcx, %rax	# tmp178, tmp182
- 3365 02bb 488B00   		movq	(%rax), %rax	# memory_management_struct.e820[i_24].address, _16
+ 3357 02a1 8B45EC   		movl	-20(%rbp), %eax	# i, tmp178
+ 3358 02a4 4863D0   		movslq	%eax, %rdx	# tmp178, tmp177
+ 3359 02a7 4801D9   		addq	%rbx, %rcx	# tmp82, tmp179
+ 3360 02aa 4889D0   		movq	%rdx, %rax	# tmp177, tmp181
+ 3361 02ad 48C1E002 		salq	$2, %rax	#, tmp181
+ 3362 02b1 4801D0   		addq	%rdx, %rax	# tmp177, tmp181
+ 3363 02b4 48C1E002 		salq	$2, %rax	#, tmp182
+ 3364 02b8 4801C8   		addq	%rcx, %rax	# tmp179, tmp183
+ 3365 02bb 488B00   		movq	(%rax), %rax	# memory_management_struct.e820[i_25].address, _16
  3366 02be 4805FFFF 		addq	$2097151, %rax	#, _17
  3366      1F00
  3367              	# memory.c:61: 		start=PAGE_2M_ALIGN(memory_management_struct.e820[i].address);
  3368              		.loc 1 61 8
- 3369 02c4 48250000 		andq	$-2097152, %rax	#, tmp183
+ 3369 02c4 48250000 		andq	$-2097152, %rax	#, tmp184
  3369      E0FF
- 3370 02ca 488945C0 		movq	%rax, -64(%rbp)	# tmp183, start
+ 3370 02ca 488945C0 		movq	%rax, -64(%rbp)	# tmp184, start
  3371              	# memory.c:62: 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].le
   62:memory.c      **** 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].length)>>PAGE_2M_
  3372              		.loc 1 62 41
- 3373 02ce 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp184
+ 3373 02ce 48B90000 		movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp185
  3373      00000000 
  3373      0000
- 3374 02d8 8B45EC   		movl	-20(%rbp), %eax	# i, tmp186
- 3375 02db 4863D0   		movslq	%eax, %rdx	# tmp186, tmp185
- 3376 02de 4801D9   		addq	%rbx, %rcx	# tmp82, tmp187
- 3377 02e1 4889D0   		movq	%rdx, %rax	# tmp185, tmp189
- 3378 02e4 48C1E002 		salq	$2, %rax	#, tmp189
- 3379 02e8 4801D0   		addq	%rdx, %rax	# tmp185, tmp189
+ 3374 02d8 8B45EC   		movl	-20(%rbp), %eax	# i, tmp187
+ 3375 02db 4863D0   		movslq	%eax, %rdx	# tmp187, tmp186
+ 3376 02de 4801D9   		addq	%rbx, %rcx	# tmp82, tmp188
+ 3377 02e1 4889D0   		movq	%rdx, %rax	# tmp186, tmp190
+ 3378 02e4 48C1E002 		salq	$2, %rax	#, tmp190
+ 3379 02e8 4801D0   		addq	%rdx, %rax	# tmp186, tmp190
 GAS LISTING memory.s 			page 67
 
 
- 3380 02eb 48C1E002 		salq	$2, %rax	#, tmp190
- 3381 02ef 4801C8   		addq	%rcx, %rax	# tmp187, tmp191
- 3382 02f2 488B08   		movq	(%rax), %rcx	# memory_management_struct.e820[i_24].address, _18
+ 3380 02eb 48C1E002 		salq	$2, %rax	#, tmp191
+ 3381 02ef 4801C8   		addq	%rcx, %rax	# tmp188, tmp192
+ 3382 02f2 488B08   		movq	(%rax), %rcx	# memory_management_struct.e820[i_25].address, _18
  3383              	# memory.c:62: 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].le
  3384              		.loc 1 62 82
- 3385 02f5 48BE0000 		movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp192
+ 3385 02f5 48BE0000 		movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp193
  3385      00000000 
  3385      0000
- 3386 02ff 8B45EC   		movl	-20(%rbp), %eax	# i, tmp194
- 3387 0302 4863D0   		movslq	%eax, %rdx	# tmp194, tmp193
- 3388 0305 4889D0   		movq	%rdx, %rax	# tmp193, tmp195
- 3389 0308 48C1E002 		salq	$2, %rax	#, tmp195
- 3390 030c 4801D0   		addq	%rdx, %rax	# tmp193, tmp195
- 3391 030f 48C1E002 		salq	$2, %rax	#, tmp196
- 3392 0313 4801D8   		addq	%rbx, %rax	# tmp82, tmp197
- 3393 0316 4801F0   		addq	%rsi, %rax	# tmp192, tmp198
- 3394 0319 4883C008 		addq	$8, %rax	#, tmp199
- 3395 031d 488B00   		movq	(%rax), %rax	# memory_management_struct.e820[i_24].length, _19
+ 3386 02ff 8B45EC   		movl	-20(%rbp), %eax	# i, tmp195
+ 3387 0302 4863D0   		movslq	%eax, %rdx	# tmp195, tmp194
+ 3388 0305 4889D0   		movq	%rdx, %rax	# tmp194, tmp196
+ 3389 0308 48C1E002 		salq	$2, %rax	#, tmp196
+ 3390 030c 4801D0   		addq	%rdx, %rax	# tmp194, tmp196
+ 3391 030f 48C1E002 		salq	$2, %rax	#, tmp197
+ 3392 0313 4801D8   		addq	%rbx, %rax	# tmp82, tmp198
+ 3393 0316 4801F0   		addq	%rsi, %rax	# tmp193, tmp199
+ 3394 0319 4883C008 		addq	$8, %rax	#, tmp200
+ 3395 031d 488B00   		movq	(%rax), %rax	# memory_management_struct.e820[i_25].length, _19
  3396              	# memory.c:62: 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].le
  3397              		.loc 1 62 49
  3398 0320 4801C8   		addq	%rcx, %rax	# _18, _20
  3399              	# memory.c:62: 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].le
  3400              		.loc 1 62 6
- 3401 0323 48250000 		andq	$-2097152, %rax	#, tmp200
+ 3401 0323 48250000 		andq	$-2097152, %rax	#, tmp201
  3401      E0FF
- 3402 0329 488945B8 		movq	%rax, -72(%rbp)	# tmp200, end
+ 3402 0329 488945B8 		movq	%rax, -72(%rbp)	# tmp201, end
  3403              	# memory.c:63: 		if(end<=start){
   63:memory.c      **** 		if(end<=start){
  3404              		.loc 1 63 5
- 3405 032d 488B45B8 		movq	-72(%rbp), %rax	# end, tmp201
- 3406 0331 483945C0 		cmpq	%rax, -64(%rbp)	# tmp201, start
+ 3405 032d 488B45B8 		movq	-72(%rbp), %rax	# end, tmp202
+ 3406 0331 483945C0 		cmpq	%rax, -64(%rbp)	# tmp202, start
  3407 0335 7315     		jnb	.L14	#,
- 3408              	# memory.c:66: 		TotalMem=(end-start)>>PAGE_2M_SHIFT;
+ 3408              	# memory.c:66: 		TotalMem+=(end-start)>>PAGE_2M_SHIFT;
   64:memory.c      **** 			continue;
   65:memory.c      **** 		}
-  66:memory.c      **** 		TotalMem=(end-start)>>PAGE_2M_SHIFT;
- 3409              		.loc 1 66 16
- 3410 0337 488B45B8 		movq	-72(%rbp), %rax	# end, tmp202
+  66:memory.c      **** 		TotalMem+=(end-start)>>PAGE_2M_SHIFT;
+ 3409              		.loc 1 66 17
+ 3410 0337 488B45B8 		movq	-72(%rbp), %rax	# end, tmp203
  3411 033b 482B45C0 		subq	-64(%rbp), %rax	# start, _21
- 3412              	# memory.c:66: 		TotalMem=(end-start)>>PAGE_2M_SHIFT;
- 3413              		.loc 1 66 11
- 3414 033f 48C1E815 		shrq	$21, %rax	#, tmp203
- 3415 0343 488945E0 		movq	%rax, -32(%rbp)	# tmp203, TotalMem
- 3416 0347 EB04     		jmp	.L9	#
- 3417              	.L13:
- 3418              	# memory.c:59: 			continue;
+ 3412              	# memory.c:66: 		TotalMem+=(end-start)>>PAGE_2M_SHIFT;
+ 3413              		.loc 1 66 24
+ 3414 033f 48C1E815 		shrq	$21, %rax	#, _22
+ 3415              	# memory.c:66: 		TotalMem+=(end-start)>>PAGE_2M_SHIFT;
+ 3416              		.loc 1 66 11
+ 3417 0343 480145E0 		addq	%rax, -32(%rbp)	# _22, TotalMem
+ 3418 0347 EB04     		jmp	.L9	#
+ 3419              	.L13:
+ 3420              	# memory.c:59: 			continue;
   59:memory.c      **** 		}
- 3419              		.loc 1 59 4
- 3420 0349 90       		nop	
- 3421 034a EB01     		jmp	.L9	#
- 3422              	.L14:
- 3423              	# memory.c:64: 			continue;
+ 3421              		.loc 1 59 4
+ 3422 0349 90       		nop	
+ 3423 034a EB01     		jmp	.L9	#
+ 3424              	.L14:
+ 3425              	# memory.c:64: 			continue;
   64:memory.c      **** 			continue;
- 3424              		.loc 1 64 4
- 3425 034c 90       		nop	
- 3426              	.L9:
- 3427              	.LBE5:
+ 3426              		.loc 1 64 4
+ 3427 034c 90       		nop	
 GAS LISTING memory.s 			page 68
 
 
- 3428              	# memory.c:56: 	for(i=0;i<=memory_management_struct.e820_length;i++){
+ 3428              	.L9:
+ 3429              	.LBE5:
+ 3430              	# memory.c:56: 	for(i=0;i<=memory_management_struct.e820_length;i++){
   56:memory.c      **** 		unsigned long start,end;
- 3429              		.loc 1 56 51 discriminator 2
- 3430 034d 8345EC01 		addl	$1, -20(%rbp)	#, i
- 3431              	.L7:
- 3432              	# memory.c:56: 	for(i=0;i<=memory_management_struct.e820_length;i++){
+ 3431              		.loc 1 56 51 discriminator 2
+ 3432 034d 8345EC01 		addl	$1, -20(%rbp)	#, i
+ 3433              	.L7:
+ 3434              	# memory.c:56: 	for(i=0;i<=memory_management_struct.e820_length;i++){
   56:memory.c      **** 		unsigned long start,end;
- 3433              		.loc 1 56 11 discriminator 1
- 3434 0351 8B45EC   		movl	-20(%rbp), %eax	# i, tmp204
- 3435 0354 4898     		cltq
- 3436              	# memory.c:56: 	for(i=0;i<=memory_management_struct.e820_length;i++){
+ 3435              		.loc 1 56 11 discriminator 1
+ 3436 0351 8B45EC   		movl	-20(%rbp), %eax	# i, tmp204
+ 3437 0354 4898     		cltq
+ 3438              	# memory.c:56: 	for(i=0;i<=memory_management_struct.e820_length;i++){
   56:memory.c      **** 		unsigned long start,end;
- 3437              		.loc 1 56 37 discriminator 1
- 3438 0356 48BA0000 		movabsq	$memory_management_struct@GOTOFF, %rdx	#, tmp205
- 3438      00000000 
- 3438      0000
- 3439 0360 488B9413 		movq	640(%rbx,%rdx), %rdx	# memory_management_struct.e820_length, _23
- 3439      80020000 
- 3440              	# memory.c:56: 	for(i=0;i<=memory_management_struct.e820_length;i++){
+ 3439              		.loc 1 56 37 discriminator 1
+ 3440 0356 48BA0000 		movabsq	$memory_management_struct@GOTOFF, %rdx	#, tmp205
+ 3440      00000000 
+ 3440      0000
+ 3441 0360 488B9413 		movq	640(%rbx,%rdx), %rdx	# memory_management_struct.e820_length, _24
+ 3441      80020000 
+ 3442              	# memory.c:56: 	for(i=0;i<=memory_management_struct.e820_length;i++){
   56:memory.c      **** 		unsigned long start,end;
- 3441              		.loc 1 56 11 discriminator 1
- 3442 0368 4839C2   		cmpq	%rax, %rdx	# _22, _23
- 3443 036b 0F83F3FE 		jnb	.L11	#,
- 3443      FFFF
- 3444              	# memory.c:68: 	color_printk(ORANGE,BLACK,"OS Can Used Total 2M PAGEs:%#010x=%010d\n",TotalMem,Tota
+ 3443              		.loc 1 56 11 discriminator 1
+ 3444 0368 4839C2   		cmpq	%rax, %rdx	# _23, _24
+ 3445 036b 0F83F3FE 		jnb	.L11	#,
+ 3445      FFFF
+ 3446              	# memory.c:68: 	color_printk(ORANGE,BLACK,"OS Can Used Total 2M PAGEs:%#010x=%010d\n",TotalMem,Tota
   67:memory.c      **** 	}
   68:memory.c      **** 	color_printk(ORANGE,BLACK,"OS Can Used Total 2M PAGEs:%#010x=%010d\n",TotalMem,TotalMem);
- 3445              		.loc 1 68 2
- 3446 0371 488B55E0 		movq	-32(%rbp), %rdx	# TotalMem, tmp206
- 3447 0375 488B45E0 		movq	-32(%rbp), %rax	# TotalMem, tmp207
- 3448 0379 4989D0   		movq	%rdx, %r8	# tmp206,
- 3449 037c 4889C1   		movq	%rax, %rcx	# tmp207,
- 3450 037f 48B80000 		movabsq	$.LC3@GOTOFF, %rax	#, tmp209
- 3450      00000000 
- 3450      0000
- 3451 0389 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp208
- 3452 038d 4889C2   		movq	%rax, %rdx	# tmp208,
- 3453 0390 BE000000 		movl	$0, %esi	#,
- 3453      00
- 3454 0395 BF0080FF 		movl	$16744448, %edi	#,
- 3454      00
- 3455 039a 4989DF   		movq	%rbx, %r15	# tmp82,
- 3456 039d B8000000 		movl	$0, %eax	#,
+ 3447              		.loc 1 68 2
+ 3448 0371 488B55E0 		movq	-32(%rbp), %rdx	# TotalMem, tmp206
+ 3449 0375 488B45E0 		movq	-32(%rbp), %rax	# TotalMem, tmp207
+ 3450 0379 4989D0   		movq	%rdx, %r8	# tmp206,
+ 3451 037c 4889C1   		movq	%rax, %rcx	# tmp207,
+ 3452 037f 48B80000 		movabsq	$.LC3@GOTOFF, %rax	#, tmp209
+ 3452      00000000 
+ 3452      0000
+ 3453 0389 488D0403 		leaq	(%rbx,%rax), %rax	#, tmp208
+ 3454 038d 4889C2   		movq	%rax, %rdx	# tmp208,
+ 3455 0390 BE000000 		movl	$0, %esi	#,
+ 3455      00
+ 3456 0395 BF0080FF 		movl	$16744448, %edi	#,
  3456      00
- 3457 03a2 49B90000 		movabsq	$color_printk@PLTOFF, %r9	#, tmp210
- 3457      00000000 
- 3457      0000
- 3458 03ac 4901D9   		addq	%rbx, %r9	# tmp82, tmp210
- 3459 03af 41FFD1   		call	*%r9	# tmp210
- 3460              	.LVL3:
- 3461              	# memory.c:69: }
+ 3457 039a 4989DF   		movq	%rbx, %r15	# tmp82,
+ 3458 039d B8000000 		movl	$0, %eax	#,
+ 3458      00
+ 3459 03a2 49B90000 		movabsq	$color_printk@PLTOFF, %r9	#, tmp210
+ 3459      00000000 
+ 3459      0000
+ 3460 03ac 4901D9   		addq	%rbx, %r9	# tmp82, tmp210
+ 3461 03af 41FFD1   		call	*%r9	# tmp210
+ 3462              	.LVL3:
+ 3463              	# memory.c:69: }
   69:memory.c      **** }
- 3462              		.loc 1 69 1
- 3463 03b2 90       		nop	
- 3464 03b3 4883C440 		addq	$64, %rsp	#,
- 3465 03b7 5B       		popq	%rbx	#
- 3466 03b8 415F     		popq	%r15	#
+ 3464              		.loc 1 69 1
+ 3465 03b2 90       		nop	
+ 3466 03b3 4883C440 		addq	$64, %rsp	#,
 GAS LISTING memory.s 			page 69
 
 
- 3467 03ba 5D       		popq	%rbp	#
- 3468              		.cfi_def_cfa 7, 8
- 3469 03bb C3       		ret	
- 3470              		.cfi_endproc
- 3471              	.LFE34:
- 3472              		.size	init_memory, .-init_memory
- 3473              	.Letext0:
- 3474              		.file 2 "memory.h"
- 3475              		.file 3 "font.h"
- 3476              		.file 4 "printk.h"
- 3477              		.section	.debug_info,"",@progbits
- 3478              	.Ldebug_info0:
- 3479 0000 D1020000 		.long	0x2d1
- 3480 0004 0500     		.value	0x5
- 3481 0006 01       		.byte	0x1
- 3482 0007 08       		.byte	0x8
- 3483 0008 00000000 		.long	.Ldebug_abbrev0
- 3484 000c 0E       		.uleb128 0xe
- 3485 000d 00000000 		.long	.LASF26
- 3486 0011 1D       		.byte	0x1d
- 3487 0012 00000000 		.long	.LASF0
- 3488 0016 00000000 		.long	.LASF1
- 3489 001a 00000000 		.quad	.Ltext0
- 3489      00000000 
- 3490 0022 BC030000 		.quad	.Letext0-.Ltext0
- 3490      00000000 
- 3491 002a 00000000 		.long	.Ldebug_line0
- 3492 002e 03       		.uleb128 0x3
- 3493 002f 04       		.byte	0x4
- 3494 0030 07       		.byte	0x7
- 3495 0031 00000000 		.long	.LASF5
- 3496 0035 09       		.uleb128 0x9
- 3497 0036 00000000 		.long	.LASF7
- 3498 003a 14       		.byte	0x14
- 3499 003b 02       		.byte	0x2
- 3500 003c 56       		.byte	0x56
- 3501 003d 69000000 		.long	0x69
- 3502 0041 01       		.uleb128 0x1
- 3503 0042 00000000 		.long	.LASF2
- 3504 0046 02       		.byte	0x2
- 3505 0047 58       		.byte	0x58
- 3506 0048 13       		.byte	0x13
- 3507 0049 69000000 		.long	0x69
- 3508 004d 00       		.byte	0
- 3509 004e 01       		.uleb128 0x1
- 3510 004f 00000000 		.long	.LASF3
- 3511 0053 02       		.byte	0x2
- 3512 0054 59       		.byte	0x59
- 3513 0055 13       		.byte	0x13
- 3514 0056 69000000 		.long	0x69
- 3515 005a 08       		.byte	0x8
- 3516 005b 01       		.uleb128 0x1
- 3517 005c 00000000 		.long	.LASF4
- 3518 0060 02       		.byte	0x2
- 3519 0061 5A       		.byte	0x5a
- 3520 0062 12       		.byte	0x12
- 3521 0063 2E000000 		.long	0x2e
+ 3467 03b7 5B       		popq	%rbx	#
+ 3468 03b8 415F     		popq	%r15	#
+ 3469 03ba 5D       		popq	%rbp	#
+ 3470              		.cfi_def_cfa 7, 8
+ 3471 03bb C3       		ret	
+ 3472              		.cfi_endproc
+ 3473              	.LFE34:
+ 3474              		.size	init_memory, .-init_memory
+ 3475              	.Letext0:
+ 3476              		.file 2 "memory.h"
+ 3477              		.file 3 "font.h"
+ 3478              		.file 4 "printk.h"
+ 3479              		.section	.debug_info,"",@progbits
+ 3480              	.Ldebug_info0:
+ 3481 0000 D1020000 		.long	0x2d1
+ 3482 0004 0500     		.value	0x5
+ 3483 0006 01       		.byte	0x1
+ 3484 0007 08       		.byte	0x8
+ 3485 0008 00000000 		.long	.Ldebug_abbrev0
+ 3486 000c 0E       		.uleb128 0xe
+ 3487 000d 00000000 		.long	.LASF26
+ 3488 0011 1D       		.byte	0x1d
+ 3489 0012 00000000 		.long	.LASF0
+ 3490 0016 00000000 		.long	.LASF1
+ 3491 001a 00000000 		.quad	.Ltext0
+ 3491      00000000 
+ 3492 0022 BC030000 		.quad	.Letext0-.Ltext0
+ 3492      00000000 
+ 3493 002a 00000000 		.long	.Ldebug_line0
+ 3494 002e 03       		.uleb128 0x3
+ 3495 002f 04       		.byte	0x4
+ 3496 0030 07       		.byte	0x7
+ 3497 0031 00000000 		.long	.LASF5
+ 3498 0035 09       		.uleb128 0x9
+ 3499 0036 00000000 		.long	.LASF7
+ 3500 003a 14       		.byte	0x14
+ 3501 003b 02       		.byte	0x2
+ 3502 003c 56       		.byte	0x56
+ 3503 003d 69000000 		.long	0x69
+ 3504 0041 01       		.uleb128 0x1
+ 3505 0042 00000000 		.long	.LASF2
+ 3506 0046 02       		.byte	0x2
+ 3507 0047 58       		.byte	0x58
+ 3508 0048 13       		.byte	0x13
+ 3509 0049 69000000 		.long	0x69
+ 3510 004d 00       		.byte	0
+ 3511 004e 01       		.uleb128 0x1
+ 3512 004f 00000000 		.long	.LASF3
+ 3513 0053 02       		.byte	0x2
+ 3514 0054 59       		.byte	0x59
+ 3515 0055 13       		.byte	0x13
+ 3516 0056 69000000 		.long	0x69
+ 3517 005a 08       		.byte	0x8
+ 3518 005b 01       		.uleb128 0x1
+ 3519 005c 00000000 		.long	.LASF4
+ 3520 0060 02       		.byte	0x2
+ 3521 0061 5A       		.byte	0x5a
 GAS LISTING memory.s 			page 70
 
 
- 3522 0067 10       		.byte	0x10
- 3523 0068 00       		.byte	0
- 3524 0069 03       		.uleb128 0x3
- 3525 006a 08       		.byte	0x8
- 3526 006b 07       		.byte	0x7
- 3527 006c 00000000 		.long	.LASF6
- 3528 0070 0F       		.uleb128 0xf
- 3529 0071 00000000 		.long	.LASF8
- 3530 0075 8802     		.value	0x288
- 3531 0077 02       		.byte	0x2
- 3532 0078 5D       		.byte	0x5d
- 3533 0079 08       		.byte	0x8
- 3534 007a 9A000000 		.long	0x9a
- 3535 007e 01       		.uleb128 0x1
- 3536 007f 00000000 		.long	.LASF9
- 3537 0083 02       		.byte	0x2
- 3538 0084 5F       		.byte	0x5f
- 3539 0085 0E       		.byte	0xe
- 3540 0086 9A000000 		.long	0x9a
- 3541 008a 00       		.byte	0
- 3542 008b 10       		.uleb128 0x10
- 3543 008c 00000000 		.long	.LASF10
- 3544 0090 02       		.byte	0x2
- 3545 0091 60       		.byte	0x60
- 3546 0092 10       		.byte	0x10
- 3547 0093 69000000 		.long	0x69
- 3548 0097 8002     		.value	0x280
- 3549 0099 00       		.byte	0
- 3550 009a 05       		.uleb128 0x5
- 3551 009b 35000000 		.long	0x35
- 3552 009f AA000000 		.long	0xaa
- 3553 00a3 06       		.uleb128 0x6
- 3554 00a4 69000000 		.long	0x69
- 3555 00a8 1F       		.byte	0x1f
- 3556 00a9 00       		.byte	0
- 3557 00aa 0A       		.uleb128 0xa
- 3558 00ab 00000000 		.long	.LASF12
- 3559 00af 02       		.byte	0x2
- 3560 00b0 63       		.byte	0x63
- 3561 00b1 21       		.byte	0x21
- 3562 00b2 70000000 		.long	0x70
- 3563 00b6 09       		.uleb128 0x9
- 3564 00b7 03       		.byte	0x3
- 3565 00b8 00000000 		.quad	memory_management_struct
- 3565      00000000 
- 3566 00c0 05       		.uleb128 0x5
- 3567 00c1 D6000000 		.long	0xd6
- 3568 00c5 D6000000 		.long	0xd6
- 3569 00c9 06       		.uleb128 0x6
- 3570 00ca 69000000 		.long	0x69
- 3571 00ce FF       		.byte	0xff
- 3572 00cf 06       		.uleb128 0x6
- 3573 00d0 69000000 		.long	0x69
- 3574 00d4 0F       		.byte	0xf
- 3575 00d5 00       		.byte	0
- 3576 00d6 03       		.uleb128 0x3
- 3577 00d7 01       		.byte	0x1
+ 3522 0062 12       		.byte	0x12
+ 3523 0063 2E000000 		.long	0x2e
+ 3524 0067 10       		.byte	0x10
+ 3525 0068 00       		.byte	0
+ 3526 0069 03       		.uleb128 0x3
+ 3527 006a 08       		.byte	0x8
+ 3528 006b 07       		.byte	0x7
+ 3529 006c 00000000 		.long	.LASF6
+ 3530 0070 0F       		.uleb128 0xf
+ 3531 0071 00000000 		.long	.LASF8
+ 3532 0075 8802     		.value	0x288
+ 3533 0077 02       		.byte	0x2
+ 3534 0078 5D       		.byte	0x5d
+ 3535 0079 08       		.byte	0x8
+ 3536 007a 9A000000 		.long	0x9a
+ 3537 007e 01       		.uleb128 0x1
+ 3538 007f 00000000 		.long	.LASF9
+ 3539 0083 02       		.byte	0x2
+ 3540 0084 5F       		.byte	0x5f
+ 3541 0085 0E       		.byte	0xe
+ 3542 0086 9A000000 		.long	0x9a
+ 3543 008a 00       		.byte	0
+ 3544 008b 10       		.uleb128 0x10
+ 3545 008c 00000000 		.long	.LASF10
+ 3546 0090 02       		.byte	0x2
+ 3547 0091 60       		.byte	0x60
+ 3548 0092 10       		.byte	0x10
+ 3549 0093 69000000 		.long	0x69
+ 3550 0097 8002     		.value	0x280
+ 3551 0099 00       		.byte	0
+ 3552 009a 05       		.uleb128 0x5
+ 3553 009b 35000000 		.long	0x35
+ 3554 009f AA000000 		.long	0xaa
+ 3555 00a3 06       		.uleb128 0x6
+ 3556 00a4 69000000 		.long	0x69
+ 3557 00a8 1F       		.byte	0x1f
+ 3558 00a9 00       		.byte	0
+ 3559 00aa 0A       		.uleb128 0xa
+ 3560 00ab 00000000 		.long	.LASF12
+ 3561 00af 02       		.byte	0x2
+ 3562 00b0 63       		.byte	0x63
+ 3563 00b1 21       		.byte	0x21
+ 3564 00b2 70000000 		.long	0x70
+ 3565 00b6 09       		.uleb128 0x9
+ 3566 00b7 03       		.byte	0x3
+ 3567 00b8 00000000 		.quad	memory_management_struct
+ 3567      00000000 
+ 3568 00c0 05       		.uleb128 0x5
+ 3569 00c1 D6000000 		.long	0xd6
+ 3570 00c5 D6000000 		.long	0xd6
+ 3571 00c9 06       		.uleb128 0x6
+ 3572 00ca 69000000 		.long	0x69
+ 3573 00ce FF       		.byte	0xff
+ 3574 00cf 06       		.uleb128 0x6
+ 3575 00d0 69000000 		.long	0x69
+ 3576 00d4 0F       		.byte	0xf
+ 3577 00d5 00       		.byte	0
 GAS LISTING memory.s 			page 71
 
 
- 3578 00d8 08       		.byte	0x8
- 3579 00d9 00000000 		.long	.LASF11
- 3580 00dd 0A       		.uleb128 0xa
- 3581 00de 00000000 		.long	.LASF13
- 3582 00e2 03       		.byte	0x3
- 3583 00e3 06       		.byte	0x6
- 3584 00e4 0F       		.byte	0xf
- 3585 00e5 C0000000 		.long	0xc0
- 3586 00e9 09       		.uleb128 0x9
- 3587 00ea 03       		.byte	0x3
- 3588 00eb 00000000 		.quad	font_ascii
- 3588      00000000 
- 3589 00f3 09       		.uleb128 0x9
- 3590 00f4 00000000 		.long	.LASF14
- 3591 00f8 28       		.byte	0x28
- 3592 00f9 04       		.byte	0x4
- 3593 00fa 20       		.byte	0x20
- 3594 00fb 68010000 		.long	0x168
- 3595 00ff 01       		.uleb128 0x1
- 3596 0100 00000000 		.long	.LASF15
- 3597 0104 04       		.byte	0x4
- 3598 0105 22       		.byte	0x22
- 3599 0106 09       		.byte	0x9
- 3600 0107 68010000 		.long	0x168
- 3601 010b 00       		.byte	0
- 3602 010c 01       		.uleb128 0x1
- 3603 010d 00000000 		.long	.LASF16
- 3604 0111 04       		.byte	0x4
- 3605 0112 23       		.byte	0x23
- 3606 0113 09       		.byte	0x9
- 3607 0114 68010000 		.long	0x168
- 3608 0118 04       		.byte	0x4
- 3609 0119 01       		.uleb128 0x1
- 3610 011a 00000000 		.long	.LASF17
- 3611 011e 04       		.byte	0x4
- 3612 011f 24       		.byte	0x24
- 3613 0120 09       		.byte	0x9
- 3614 0121 68010000 		.long	0x168
- 3615 0125 08       		.byte	0x8
- 3616 0126 01       		.uleb128 0x1
- 3617 0127 00000000 		.long	.LASF18
- 3618 012b 04       		.byte	0x4
- 3619 012c 25       		.byte	0x25
- 3620 012d 09       		.byte	0x9
- 3621 012e 68010000 		.long	0x168
- 3622 0132 0C       		.byte	0xc
- 3623 0133 01       		.uleb128 0x1
- 3624 0134 00000000 		.long	.LASF19
- 3625 0138 04       		.byte	0x4
- 3626 0139 26       		.byte	0x26
- 3627 013a 09       		.byte	0x9
- 3628 013b 68010000 		.long	0x168
- 3629 013f 10       		.byte	0x10
- 3630 0140 01       		.uleb128 0x1
- 3631 0141 00000000 		.long	.LASF20
- 3632 0145 04       		.byte	0x4
- 3633 0146 27       		.byte	0x27
+ 3578 00d6 03       		.uleb128 0x3
+ 3579 00d7 01       		.byte	0x1
+ 3580 00d8 08       		.byte	0x8
+ 3581 00d9 00000000 		.long	.LASF11
+ 3582 00dd 0A       		.uleb128 0xa
+ 3583 00de 00000000 		.long	.LASF13
+ 3584 00e2 03       		.byte	0x3
+ 3585 00e3 06       		.byte	0x6
+ 3586 00e4 0F       		.byte	0xf
+ 3587 00e5 C0000000 		.long	0xc0
+ 3588 00e9 09       		.uleb128 0x9
+ 3589 00ea 03       		.byte	0x3
+ 3590 00eb 00000000 		.quad	font_ascii
+ 3590      00000000 
+ 3591 00f3 09       		.uleb128 0x9
+ 3592 00f4 00000000 		.long	.LASF14
+ 3593 00f8 28       		.byte	0x28
+ 3594 00f9 04       		.byte	0x4
+ 3595 00fa 20       		.byte	0x20
+ 3596 00fb 68010000 		.long	0x168
+ 3597 00ff 01       		.uleb128 0x1
+ 3598 0100 00000000 		.long	.LASF15
+ 3599 0104 04       		.byte	0x4
+ 3600 0105 22       		.byte	0x22
+ 3601 0106 09       		.byte	0x9
+ 3602 0107 68010000 		.long	0x168
+ 3603 010b 00       		.byte	0
+ 3604 010c 01       		.uleb128 0x1
+ 3605 010d 00000000 		.long	.LASF16
+ 3606 0111 04       		.byte	0x4
+ 3607 0112 23       		.byte	0x23
+ 3608 0113 09       		.byte	0x9
+ 3609 0114 68010000 		.long	0x168
+ 3610 0118 04       		.byte	0x4
+ 3611 0119 01       		.uleb128 0x1
+ 3612 011a 00000000 		.long	.LASF17
+ 3613 011e 04       		.byte	0x4
+ 3614 011f 24       		.byte	0x24
+ 3615 0120 09       		.byte	0x9
+ 3616 0121 68010000 		.long	0x168
+ 3617 0125 08       		.byte	0x8
+ 3618 0126 01       		.uleb128 0x1
+ 3619 0127 00000000 		.long	.LASF18
+ 3620 012b 04       		.byte	0x4
+ 3621 012c 25       		.byte	0x25
+ 3622 012d 09       		.byte	0x9
+ 3623 012e 68010000 		.long	0x168
+ 3624 0132 0C       		.byte	0xc
+ 3625 0133 01       		.uleb128 0x1
+ 3626 0134 00000000 		.long	.LASF19
+ 3627 0138 04       		.byte	0x4
+ 3628 0139 26       		.byte	0x26
+ 3629 013a 09       		.byte	0x9
+ 3630 013b 68010000 		.long	0x168
+ 3631 013f 10       		.byte	0x10
+ 3632 0140 01       		.uleb128 0x1
+ 3633 0141 00000000 		.long	.LASF20
 GAS LISTING memory.s 			page 72
 
 
- 3634 0147 09       		.byte	0x9
- 3635 0148 68010000 		.long	0x168
- 3636 014c 14       		.byte	0x14
- 3637 014d 01       		.uleb128 0x1
- 3638 014e 00000000 		.long	.LASF21
- 3639 0152 04       		.byte	0x4
- 3640 0153 28       		.byte	0x28
- 3641 0154 14       		.byte	0x14
- 3642 0155 6F010000 		.long	0x16f
- 3643 0159 18       		.byte	0x18
- 3644 015a 01       		.uleb128 0x1
- 3645 015b 00000000 		.long	.LASF22
- 3646 015f 04       		.byte	0x4
- 3647 0160 29       		.byte	0x29
- 3648 0161 13       		.byte	0x13
- 3649 0162 69000000 		.long	0x69
- 3650 0166 20       		.byte	0x20
- 3651 0167 00       		.byte	0
- 3652 0168 11       		.uleb128 0x11
- 3653 0169 04       		.byte	0x4
- 3654 016a 05       		.byte	0x5
- 3655 016b 696E7400 		.string	"int"
- 3656 016f 07       		.uleb128 0x7
- 3657 0170 2E000000 		.long	0x2e
- 3658 0174 0B       		.uleb128 0xb
- 3659 0175 506F7300 		.string	"Pos"
- 3660 0179 2A       		.byte	0x2a
- 3661 017a 02       		.byte	0x2
- 3662 017b F3000000 		.long	0xf3
- 3663 017f 09       		.uleb128 0x9
- 3664 0180 03       		.byte	0x3
- 3665 0181 00000000 		.quad	Pos
- 3665      00000000 
- 3666 0189 05       		.uleb128 0x5
- 3667 018a 9A010000 		.long	0x19a
- 3668 018e 9A010000 		.long	0x19a
- 3669 0192 12       		.uleb128 0x12
- 3670 0193 69000000 		.long	0x69
- 3671 0197 FF0F     		.value	0xfff
- 3672 0199 00       		.byte	0
- 3673 019a 03       		.uleb128 0x3
- 3674 019b 01       		.byte	0x1
- 3675 019c 06       		.byte	0x6
- 3676 019d 00000000 		.long	.LASF23
- 3677 01a1 13       		.uleb128 0x13
- 3678 01a2 9A010000 		.long	0x19a
- 3679 01a6 0B       		.uleb128 0xb
- 3680 01a7 62756600 		.string	"buf"
- 3681 01ab 2E       		.byte	0x2e
- 3682 01ac 06       		.byte	0x6
- 3683 01ad 89010000 		.long	0x189
- 3684 01b1 09       		.uleb128 0x9
- 3685 01b2 03       		.byte	0x3
- 3686 01b3 00000000 		.quad	buf
- 3686      00000000 
- 3687 01bb 14       		.uleb128 0x14
- 3688 01bc 00000000 		.long	.LASF27
+ 3634 0145 04       		.byte	0x4
+ 3635 0146 27       		.byte	0x27
+ 3636 0147 09       		.byte	0x9
+ 3637 0148 68010000 		.long	0x168
+ 3638 014c 14       		.byte	0x14
+ 3639 014d 01       		.uleb128 0x1
+ 3640 014e 00000000 		.long	.LASF21
+ 3641 0152 04       		.byte	0x4
+ 3642 0153 28       		.byte	0x28
+ 3643 0154 14       		.byte	0x14
+ 3644 0155 6F010000 		.long	0x16f
+ 3645 0159 18       		.byte	0x18
+ 3646 015a 01       		.uleb128 0x1
+ 3647 015b 00000000 		.long	.LASF22
+ 3648 015f 04       		.byte	0x4
+ 3649 0160 29       		.byte	0x29
+ 3650 0161 13       		.byte	0x13
+ 3651 0162 69000000 		.long	0x69
+ 3652 0166 20       		.byte	0x20
+ 3653 0167 00       		.byte	0
+ 3654 0168 11       		.uleb128 0x11
+ 3655 0169 04       		.byte	0x4
+ 3656 016a 05       		.byte	0x5
+ 3657 016b 696E7400 		.string	"int"
+ 3658 016f 07       		.uleb128 0x7
+ 3659 0170 2E000000 		.long	0x2e
+ 3660 0174 0B       		.uleb128 0xb
+ 3661 0175 506F7300 		.string	"Pos"
+ 3662 0179 2A       		.byte	0x2a
+ 3663 017a 02       		.byte	0x2
+ 3664 017b F3000000 		.long	0xf3
+ 3665 017f 09       		.uleb128 0x9
+ 3666 0180 03       		.byte	0x3
+ 3667 0181 00000000 		.quad	Pos
+ 3667      00000000 
+ 3668 0189 05       		.uleb128 0x5
+ 3669 018a 9A010000 		.long	0x19a
+ 3670 018e 9A010000 		.long	0x19a
+ 3671 0192 12       		.uleb128 0x12
+ 3672 0193 69000000 		.long	0x69
+ 3673 0197 FF0F     		.value	0xfff
+ 3674 0199 00       		.byte	0
+ 3675 019a 03       		.uleb128 0x3
+ 3676 019b 01       		.byte	0x1
+ 3677 019c 06       		.byte	0x6
+ 3678 019d 00000000 		.long	.LASF23
+ 3679 01a1 13       		.uleb128 0x13
+ 3680 01a2 9A010000 		.long	0x19a
+ 3681 01a6 0B       		.uleb128 0xb
+ 3682 01a7 62756600 		.string	"buf"
+ 3683 01ab 2E       		.byte	0x2e
+ 3684 01ac 06       		.byte	0x6
+ 3685 01ad 89010000 		.long	0x189
+ 3686 01b1 09       		.uleb128 0x9
+ 3687 01b2 03       		.byte	0x3
+ 3688 01b3 00000000 		.quad	buf
+ 3688      00000000 
 GAS LISTING memory.s 			page 73
 
 
- 3689 01c0 04       		.byte	0x4
- 3690 01c1 3B       		.byte	0x3b
- 3691 01c2 05       		.byte	0x5
- 3692 01c3 68010000 		.long	0x168
- 3693 01c7 DC010000 		.long	0x1dc
- 3694 01cb 08       		.uleb128 0x8
- 3695 01cc 2E000000 		.long	0x2e
- 3696 01d0 08       		.uleb128 0x8
- 3697 01d1 2E000000 		.long	0x2e
- 3698 01d5 08       		.uleb128 0x8
- 3699 01d6 DC010000 		.long	0x1dc
- 3700 01da 15       		.uleb128 0x15
- 3701 01db 00       		.byte	0
- 3702 01dc 07       		.uleb128 0x7
- 3703 01dd A1010000 		.long	0x1a1
- 3704 01e1 16       		.uleb128 0x16
- 3705 01e2 00000000 		.long	.LASF28
- 3706 01e6 01       		.byte	0x1
- 3707 01e7 1E       		.byte	0x1e
- 3708 01e8 06       		.byte	0x6
- 3709 01e9 00000000 		.quad	.LFB34
- 3709      00000000 
- 3710 01f1 BC030000 		.quad	.LFE34-.LFB34
- 3710      00000000 
- 3711 01f9 01       		.uleb128 0x1
- 3712 01fa 9C       		.byte	0x9c
- 3713 01fb CF020000 		.long	0x2cf
- 3714 01ff 02       		.uleb128 0x2
- 3715 0200 6900     		.string	"i"
- 3716 0202 1F       		.byte	0x1f
- 3717 0203 06       		.byte	0x6
- 3718 0204 68010000 		.long	0x168
- 3719 0208 02       		.uleb128 0x2
- 3720 0209 91       		.byte	0x91
- 3721 020a 5C       		.sleb128 -36
- 3722 020b 17       		.uleb128 0x17
- 3723 020c 6A00     		.string	"j"
- 3724 020e 01       		.byte	0x1
- 3725 020f 1F       		.byte	0x1f
- 3726 0210 08       		.byte	0x8
- 3727 0211 68010000 		.long	0x168
- 3728 0215 0C       		.uleb128 0xc
- 3729 0216 00000000 		.long	.LASF24
- 3730 021a 21       		.byte	0x21
- 3731 021b 10       		.byte	0x10
- 3732 021c 69000000 		.long	0x69
- 3733 0220 02       		.uleb128 0x2
- 3734 0221 91       		.byte	0x91
- 3735 0222 50       		.sleb128 -48
- 3736 0223 02       		.uleb128 0x2
- 3737 0224 7000     		.string	"p"
- 3738 0226 22       		.byte	0x22
- 3739 0227 0F       		.byte	0xf
- 3740 0228 CF020000 		.long	0x2cf
- 3741 022c 02       		.uleb128 0x2
- 3742 022d 91       		.byte	0x91
- 3743 022e 48       		.sleb128 -56
+ 3689 01bb 14       		.uleb128 0x14
+ 3690 01bc 00000000 		.long	.LASF27
+ 3691 01c0 04       		.byte	0x4
+ 3692 01c1 3B       		.byte	0x3b
+ 3693 01c2 05       		.byte	0x5
+ 3694 01c3 68010000 		.long	0x168
+ 3695 01c7 DC010000 		.long	0x1dc
+ 3696 01cb 08       		.uleb128 0x8
+ 3697 01cc 2E000000 		.long	0x2e
+ 3698 01d0 08       		.uleb128 0x8
+ 3699 01d1 2E000000 		.long	0x2e
+ 3700 01d5 08       		.uleb128 0x8
+ 3701 01d6 DC010000 		.long	0x1dc
+ 3702 01da 15       		.uleb128 0x15
+ 3703 01db 00       		.byte	0
+ 3704 01dc 07       		.uleb128 0x7
+ 3705 01dd A1010000 		.long	0x1a1
+ 3706 01e1 16       		.uleb128 0x16
+ 3707 01e2 00000000 		.long	.LASF28
+ 3708 01e6 01       		.byte	0x1
+ 3709 01e7 1E       		.byte	0x1e
+ 3710 01e8 06       		.byte	0x6
+ 3711 01e9 00000000 		.quad	.LFB34
+ 3711      00000000 
+ 3712 01f1 BC030000 		.quad	.LFE34-.LFB34
+ 3712      00000000 
+ 3713 01f9 01       		.uleb128 0x1
+ 3714 01fa 9C       		.byte	0x9c
+ 3715 01fb CF020000 		.long	0x2cf
+ 3716 01ff 02       		.uleb128 0x2
+ 3717 0200 6900     		.string	"i"
+ 3718 0202 1F       		.byte	0x1f
+ 3719 0203 06       		.byte	0x6
+ 3720 0204 68010000 		.long	0x168
+ 3721 0208 02       		.uleb128 0x2
+ 3722 0209 91       		.byte	0x91
+ 3723 020a 5C       		.sleb128 -36
+ 3724 020b 17       		.uleb128 0x17
+ 3725 020c 6A00     		.string	"j"
+ 3726 020e 01       		.byte	0x1
+ 3727 020f 1F       		.byte	0x1f
+ 3728 0210 08       		.byte	0x8
+ 3729 0211 68010000 		.long	0x168
+ 3730 0215 0C       		.uleb128 0xc
+ 3731 0216 00000000 		.long	.LASF24
+ 3732 021a 21       		.byte	0x21
+ 3733 021b 10       		.byte	0x10
+ 3734 021c 69000000 		.long	0x69
+ 3735 0220 02       		.uleb128 0x2
+ 3736 0221 91       		.byte	0x91
+ 3737 0222 50       		.sleb128 -48
+ 3738 0223 02       		.uleb128 0x2
+ 3739 0224 7000     		.string	"p"
+ 3740 0226 22       		.byte	0x22
+ 3741 0227 0F       		.byte	0xf
+ 3742 0228 CF020000 		.long	0x2cf
+ 3743 022c 02       		.uleb128 0x2
 GAS LISTING memory.s 			page 74
 
 
- 3744 022f 0D       		.uleb128 0xd
- 3745 0230 00000000 		.quad	.LBB2
- 3745      00000000 
- 3746 0238 A3010000 		.quad	.LBE2-.LBB2
- 3746      00000000 
- 3747 0240 73020000 		.long	0x273
- 3748 0244 02       		.uleb128 0x2
- 3749 0245 6900     		.string	"i"
- 3750 0247 25       		.byte	0x25
- 3751 0248 0B       		.byte	0xb
- 3752 0249 68010000 		.long	0x168
- 3753 024d 02       		.uleb128 0x2
- 3754 024e 91       		.byte	0x91
- 3755 024f 44       		.sleb128 -60
- 3756 0250 18       		.uleb128 0x18
- 3757 0251 00000000 		.long	.LLRL0
- 3758 0255 02       		.uleb128 0x2
- 3759 0256 746D7000 		.string	"tmp"
- 3760 025a 29       		.byte	0x29
- 3761 025b 11       		.byte	0x11
- 3762 025c 69000000 		.long	0x69
- 3763 0260 03       		.uleb128 0x3
- 3764 0261 91       		.byte	0x91
- 3765 0262 B87F     		.sleb128 -72
- 3766 0264 04       		.uleb128 0x4
- 3767 0265 00000000 		.quad	.LVL1
- 3767      00000000 
- 3768 026d BB010000 		.long	0x1bb
- 3769 0271 00       		.byte	0
- 3770 0272 00       		.byte	0
- 3771 0273 0D       		.uleb128 0xd
- 3772 0274 00000000 		.quad	.LBB5
- 3772      00000000 
- 3773 027c E9000000 		.quad	.LBE5-.LBB5
- 3773      00000000 
- 3774 0284 A7020000 		.long	0x2a7
- 3775 0288 0C       		.uleb128 0xc
- 3776 0289 00000000 		.long	.LASF25
- 3777 028d 39       		.byte	0x39
- 3778 028e 11       		.byte	0x11
- 3779 028f 69000000 		.long	0x69
- 3780 0293 03       		.uleb128 0x3
- 3781 0294 91       		.byte	0x91
- 3782 0295 B07F     		.sleb128 -80
- 3783 0297 02       		.uleb128 0x2
- 3784 0298 656E6400 		.string	"end"
- 3785 029c 39       		.byte	0x39
- 3786 029d 17       		.byte	0x17
- 3787 029e 69000000 		.long	0x69
- 3788 02a2 03       		.uleb128 0x3
- 3789 02a3 91       		.byte	0x91
- 3790 02a4 A87F     		.sleb128 -88
- 3791 02a6 00       		.byte	0
- 3792 02a7 04       		.uleb128 0x4
- 3793 02a8 00000000 		.quad	.LVL0
- 3793      00000000 
- 3794 02b0 BB010000 		.long	0x1bb
+ 3744 022d 91       		.byte	0x91
+ 3745 022e 48       		.sleb128 -56
+ 3746 022f 0D       		.uleb128 0xd
+ 3747 0230 00000000 		.quad	.LBB2
+ 3747      00000000 
+ 3748 0238 A3010000 		.quad	.LBE2-.LBB2
+ 3748      00000000 
+ 3749 0240 73020000 		.long	0x273
+ 3750 0244 02       		.uleb128 0x2
+ 3751 0245 6900     		.string	"i"
+ 3752 0247 25       		.byte	0x25
+ 3753 0248 0B       		.byte	0xb
+ 3754 0249 68010000 		.long	0x168
+ 3755 024d 02       		.uleb128 0x2
+ 3756 024e 91       		.byte	0x91
+ 3757 024f 44       		.sleb128 -60
+ 3758 0250 18       		.uleb128 0x18
+ 3759 0251 00000000 		.long	.LLRL0
+ 3760 0255 02       		.uleb128 0x2
+ 3761 0256 746D7000 		.string	"tmp"
+ 3762 025a 29       		.byte	0x29
+ 3763 025b 11       		.byte	0x11
+ 3764 025c 69000000 		.long	0x69
+ 3765 0260 03       		.uleb128 0x3
+ 3766 0261 91       		.byte	0x91
+ 3767 0262 B87F     		.sleb128 -72
+ 3768 0264 04       		.uleb128 0x4
+ 3769 0265 00000000 		.quad	.LVL1
+ 3769      00000000 
+ 3770 026d BB010000 		.long	0x1bb
+ 3771 0271 00       		.byte	0
+ 3772 0272 00       		.byte	0
+ 3773 0273 0D       		.uleb128 0xd
+ 3774 0274 00000000 		.quad	.LBB5
+ 3774      00000000 
+ 3775 027c E9000000 		.quad	.LBE5-.LBB5
+ 3775      00000000 
+ 3776 0284 A7020000 		.long	0x2a7
+ 3777 0288 0C       		.uleb128 0xc
+ 3778 0289 00000000 		.long	.LASF25
+ 3779 028d 39       		.byte	0x39
+ 3780 028e 11       		.byte	0x11
+ 3781 028f 69000000 		.long	0x69
+ 3782 0293 03       		.uleb128 0x3
+ 3783 0294 91       		.byte	0x91
+ 3784 0295 B07F     		.sleb128 -80
+ 3785 0297 02       		.uleb128 0x2
+ 3786 0298 656E6400 		.string	"end"
+ 3787 029c 39       		.byte	0x39
+ 3788 029d 17       		.byte	0x17
+ 3789 029e 69000000 		.long	0x69
+ 3790 02a2 03       		.uleb128 0x3
+ 3791 02a3 91       		.byte	0x91
+ 3792 02a4 A87F     		.sleb128 -88
+ 3793 02a6 00       		.byte	0
+ 3794 02a7 04       		.uleb128 0x4
+ 3795 02a8 00000000 		.quad	.LVL0
 GAS LISTING memory.s 			page 75
 
 
- 3795 02b4 04       		.uleb128 0x4
- 3796 02b5 00000000 		.quad	.LVL2
- 3796      00000000 
- 3797 02bd BB010000 		.long	0x1bb
- 3798 02c1 04       		.uleb128 0x4
- 3799 02c2 00000000 		.quad	.LVL3
- 3799      00000000 
- 3800 02ca BB010000 		.long	0x1bb
- 3801 02ce 00       		.byte	0
- 3802 02cf 07       		.uleb128 0x7
- 3803 02d0 35000000 		.long	0x35
- 3804 02d4 00       		.byte	0
- 3805              		.section	.debug_abbrev,"",@progbits
- 3806              	.Ldebug_abbrev0:
- 3807 0000 01       		.uleb128 0x1
- 3808 0001 0D       		.uleb128 0xd
- 3809 0002 00       		.byte	0
- 3810 0003 03       		.uleb128 0x3
- 3811 0004 0E       		.uleb128 0xe
- 3812 0005 3A       		.uleb128 0x3a
- 3813 0006 0B       		.uleb128 0xb
- 3814 0007 3B       		.uleb128 0x3b
- 3815 0008 0B       		.uleb128 0xb
- 3816 0009 39       		.uleb128 0x39
- 3817 000a 0B       		.uleb128 0xb
- 3818 000b 49       		.uleb128 0x49
- 3819 000c 13       		.uleb128 0x13
- 3820 000d 38       		.uleb128 0x38
- 3821 000e 0B       		.uleb128 0xb
- 3822 000f 00       		.byte	0
- 3823 0010 00       		.byte	0
- 3824 0011 02       		.uleb128 0x2
- 3825 0012 34       		.uleb128 0x34
- 3826 0013 00       		.byte	0
- 3827 0014 03       		.uleb128 0x3
- 3828 0015 08       		.uleb128 0x8
- 3829 0016 3A       		.uleb128 0x3a
- 3830 0017 21       		.uleb128 0x21
- 3831 0018 01       		.sleb128 1
- 3832 0019 3B       		.uleb128 0x3b
- 3833 001a 0B       		.uleb128 0xb
- 3834 001b 39       		.uleb128 0x39
- 3835 001c 0B       		.uleb128 0xb
- 3836 001d 49       		.uleb128 0x49
- 3837 001e 13       		.uleb128 0x13
- 3838 001f 02       		.uleb128 0x2
- 3839 0020 18       		.uleb128 0x18
- 3840 0021 00       		.byte	0
- 3841 0022 00       		.byte	0
- 3842 0023 03       		.uleb128 0x3
- 3843 0024 24       		.uleb128 0x24
- 3844 0025 00       		.byte	0
- 3845 0026 0B       		.uleb128 0xb
- 3846 0027 0B       		.uleb128 0xb
- 3847 0028 3E       		.uleb128 0x3e
- 3848 0029 0B       		.uleb128 0xb
- 3849 002a 03       		.uleb128 0x3
+ 3795      00000000 
+ 3796 02b0 BB010000 		.long	0x1bb
+ 3797 02b4 04       		.uleb128 0x4
+ 3798 02b5 00000000 		.quad	.LVL2
+ 3798      00000000 
+ 3799 02bd BB010000 		.long	0x1bb
+ 3800 02c1 04       		.uleb128 0x4
+ 3801 02c2 00000000 		.quad	.LVL3
+ 3801      00000000 
+ 3802 02ca BB010000 		.long	0x1bb
+ 3803 02ce 00       		.byte	0
+ 3804 02cf 07       		.uleb128 0x7
+ 3805 02d0 35000000 		.long	0x35
+ 3806 02d4 00       		.byte	0
+ 3807              		.section	.debug_abbrev,"",@progbits
+ 3808              	.Ldebug_abbrev0:
+ 3809 0000 01       		.uleb128 0x1
+ 3810 0001 0D       		.uleb128 0xd
+ 3811 0002 00       		.byte	0
+ 3812 0003 03       		.uleb128 0x3
+ 3813 0004 0E       		.uleb128 0xe
+ 3814 0005 3A       		.uleb128 0x3a
+ 3815 0006 0B       		.uleb128 0xb
+ 3816 0007 3B       		.uleb128 0x3b
+ 3817 0008 0B       		.uleb128 0xb
+ 3818 0009 39       		.uleb128 0x39
+ 3819 000a 0B       		.uleb128 0xb
+ 3820 000b 49       		.uleb128 0x49
+ 3821 000c 13       		.uleb128 0x13
+ 3822 000d 38       		.uleb128 0x38
+ 3823 000e 0B       		.uleb128 0xb
+ 3824 000f 00       		.byte	0
+ 3825 0010 00       		.byte	0
+ 3826 0011 02       		.uleb128 0x2
+ 3827 0012 34       		.uleb128 0x34
+ 3828 0013 00       		.byte	0
+ 3829 0014 03       		.uleb128 0x3
+ 3830 0015 08       		.uleb128 0x8
+ 3831 0016 3A       		.uleb128 0x3a
+ 3832 0017 21       		.uleb128 0x21
+ 3833 0018 01       		.sleb128 1
+ 3834 0019 3B       		.uleb128 0x3b
+ 3835 001a 0B       		.uleb128 0xb
+ 3836 001b 39       		.uleb128 0x39
+ 3837 001c 0B       		.uleb128 0xb
+ 3838 001d 49       		.uleb128 0x49
+ 3839 001e 13       		.uleb128 0x13
+ 3840 001f 02       		.uleb128 0x2
+ 3841 0020 18       		.uleb128 0x18
+ 3842 0021 00       		.byte	0
+ 3843 0022 00       		.byte	0
+ 3844 0023 03       		.uleb128 0x3
+ 3845 0024 24       		.uleb128 0x24
+ 3846 0025 00       		.byte	0
+ 3847 0026 0B       		.uleb128 0xb
+ 3848 0027 0B       		.uleb128 0xb
+ 3849 0028 3E       		.uleb128 0x3e
 GAS LISTING memory.s 			page 76
 
 
- 3850 002b 0E       		.uleb128 0xe
- 3851 002c 00       		.byte	0
- 3852 002d 00       		.byte	0
- 3853 002e 04       		.uleb128 0x4
- 3854 002f 48       		.uleb128 0x48
- 3855 0030 00       		.byte	0
- 3856 0031 7D       		.uleb128 0x7d
- 3857 0032 01       		.uleb128 0x1
- 3858 0033 7F       		.uleb128 0x7f
- 3859 0034 13       		.uleb128 0x13
- 3860 0035 00       		.byte	0
- 3861 0036 00       		.byte	0
- 3862 0037 05       		.uleb128 0x5
- 3863 0038 01       		.uleb128 0x1
- 3864 0039 01       		.byte	0x1
- 3865 003a 49       		.uleb128 0x49
- 3866 003b 13       		.uleb128 0x13
- 3867 003c 01       		.uleb128 0x1
- 3868 003d 13       		.uleb128 0x13
- 3869 003e 00       		.byte	0
- 3870 003f 00       		.byte	0
- 3871 0040 06       		.uleb128 0x6
- 3872 0041 21       		.uleb128 0x21
- 3873 0042 00       		.byte	0
- 3874 0043 49       		.uleb128 0x49
- 3875 0044 13       		.uleb128 0x13
- 3876 0045 2F       		.uleb128 0x2f
- 3877 0046 0B       		.uleb128 0xb
- 3878 0047 00       		.byte	0
- 3879 0048 00       		.byte	0
- 3880 0049 07       		.uleb128 0x7
- 3881 004a 0F       		.uleb128 0xf
- 3882 004b 00       		.byte	0
- 3883 004c 0B       		.uleb128 0xb
- 3884 004d 21       		.uleb128 0x21
- 3885 004e 08       		.sleb128 8
- 3886 004f 49       		.uleb128 0x49
- 3887 0050 13       		.uleb128 0x13
- 3888 0051 00       		.byte	0
- 3889 0052 00       		.byte	0
- 3890 0053 08       		.uleb128 0x8
- 3891 0054 05       		.uleb128 0x5
- 3892 0055 00       		.byte	0
- 3893 0056 49       		.uleb128 0x49
- 3894 0057 13       		.uleb128 0x13
- 3895 0058 00       		.byte	0
- 3896 0059 00       		.byte	0
- 3897 005a 09       		.uleb128 0x9
- 3898 005b 13       		.uleb128 0x13
- 3899 005c 01       		.byte	0x1
- 3900 005d 03       		.uleb128 0x3
- 3901 005e 0E       		.uleb128 0xe
- 3902 005f 0B       		.uleb128 0xb
- 3903 0060 0B       		.uleb128 0xb
- 3904 0061 3A       		.uleb128 0x3a
- 3905 0062 0B       		.uleb128 0xb
- 3906 0063 3B       		.uleb128 0x3b
+ 3850 0029 0B       		.uleb128 0xb
+ 3851 002a 03       		.uleb128 0x3
+ 3852 002b 0E       		.uleb128 0xe
+ 3853 002c 00       		.byte	0
+ 3854 002d 00       		.byte	0
+ 3855 002e 04       		.uleb128 0x4
+ 3856 002f 48       		.uleb128 0x48
+ 3857 0030 00       		.byte	0
+ 3858 0031 7D       		.uleb128 0x7d
+ 3859 0032 01       		.uleb128 0x1
+ 3860 0033 7F       		.uleb128 0x7f
+ 3861 0034 13       		.uleb128 0x13
+ 3862 0035 00       		.byte	0
+ 3863 0036 00       		.byte	0
+ 3864 0037 05       		.uleb128 0x5
+ 3865 0038 01       		.uleb128 0x1
+ 3866 0039 01       		.byte	0x1
+ 3867 003a 49       		.uleb128 0x49
+ 3868 003b 13       		.uleb128 0x13
+ 3869 003c 01       		.uleb128 0x1
+ 3870 003d 13       		.uleb128 0x13
+ 3871 003e 00       		.byte	0
+ 3872 003f 00       		.byte	0
+ 3873 0040 06       		.uleb128 0x6
+ 3874 0041 21       		.uleb128 0x21
+ 3875 0042 00       		.byte	0
+ 3876 0043 49       		.uleb128 0x49
+ 3877 0044 13       		.uleb128 0x13
+ 3878 0045 2F       		.uleb128 0x2f
+ 3879 0046 0B       		.uleb128 0xb
+ 3880 0047 00       		.byte	0
+ 3881 0048 00       		.byte	0
+ 3882 0049 07       		.uleb128 0x7
+ 3883 004a 0F       		.uleb128 0xf
+ 3884 004b 00       		.byte	0
+ 3885 004c 0B       		.uleb128 0xb
+ 3886 004d 21       		.uleb128 0x21
+ 3887 004e 08       		.sleb128 8
+ 3888 004f 49       		.uleb128 0x49
+ 3889 0050 13       		.uleb128 0x13
+ 3890 0051 00       		.byte	0
+ 3891 0052 00       		.byte	0
+ 3892 0053 08       		.uleb128 0x8
+ 3893 0054 05       		.uleb128 0x5
+ 3894 0055 00       		.byte	0
+ 3895 0056 49       		.uleb128 0x49
+ 3896 0057 13       		.uleb128 0x13
+ 3897 0058 00       		.byte	0
+ 3898 0059 00       		.byte	0
+ 3899 005a 09       		.uleb128 0x9
+ 3900 005b 13       		.uleb128 0x13
+ 3901 005c 01       		.byte	0x1
+ 3902 005d 03       		.uleb128 0x3
+ 3903 005e 0E       		.uleb128 0xe
+ 3904 005f 0B       		.uleb128 0xb
+ 3905 0060 0B       		.uleb128 0xb
+ 3906 0061 3A       		.uleb128 0x3a
 GAS LISTING memory.s 			page 77
 
 
- 3907 0064 0B       		.uleb128 0xb
- 3908 0065 39       		.uleb128 0x39
- 3909 0066 21       		.uleb128 0x21
- 3910 0067 08       		.sleb128 8
- 3911 0068 01       		.uleb128 0x1
- 3912 0069 13       		.uleb128 0x13
- 3913 006a 00       		.byte	0
- 3914 006b 00       		.byte	0
- 3915 006c 0A       		.uleb128 0xa
- 3916 006d 34       		.uleb128 0x34
- 3917 006e 00       		.byte	0
- 3918 006f 03       		.uleb128 0x3
- 3919 0070 0E       		.uleb128 0xe
- 3920 0071 3A       		.uleb128 0x3a
- 3921 0072 0B       		.uleb128 0xb
- 3922 0073 3B       		.uleb128 0x3b
- 3923 0074 0B       		.uleb128 0xb
- 3924 0075 39       		.uleb128 0x39
- 3925 0076 0B       		.uleb128 0xb
- 3926 0077 49       		.uleb128 0x49
- 3927 0078 13       		.uleb128 0x13
- 3928 0079 3F       		.uleb128 0x3f
- 3929 007a 19       		.uleb128 0x19
- 3930 007b 02       		.uleb128 0x2
- 3931 007c 18       		.uleb128 0x18
- 3932 007d 00       		.byte	0
- 3933 007e 00       		.byte	0
- 3934 007f 0B       		.uleb128 0xb
- 3935 0080 34       		.uleb128 0x34
- 3936 0081 00       		.byte	0
- 3937 0082 03       		.uleb128 0x3
- 3938 0083 08       		.uleb128 0x8
- 3939 0084 3A       		.uleb128 0x3a
- 3940 0085 21       		.uleb128 0x21
- 3941 0086 04       		.sleb128 4
- 3942 0087 3B       		.uleb128 0x3b
- 3943 0088 0B       		.uleb128 0xb
- 3944 0089 39       		.uleb128 0x39
- 3945 008a 0B       		.uleb128 0xb
- 3946 008b 49       		.uleb128 0x49
- 3947 008c 13       		.uleb128 0x13
- 3948 008d 3F       		.uleb128 0x3f
- 3949 008e 19       		.uleb128 0x19
- 3950 008f 02       		.uleb128 0x2
- 3951 0090 18       		.uleb128 0x18
- 3952 0091 00       		.byte	0
- 3953 0092 00       		.byte	0
- 3954 0093 0C       		.uleb128 0xc
- 3955 0094 34       		.uleb128 0x34
- 3956 0095 00       		.byte	0
- 3957 0096 03       		.uleb128 0x3
- 3958 0097 0E       		.uleb128 0xe
- 3959 0098 3A       		.uleb128 0x3a
- 3960 0099 21       		.uleb128 0x21
- 3961 009a 01       		.sleb128 1
- 3962 009b 3B       		.uleb128 0x3b
- 3963 009c 0B       		.uleb128 0xb
+ 3907 0062 0B       		.uleb128 0xb
+ 3908 0063 3B       		.uleb128 0x3b
+ 3909 0064 0B       		.uleb128 0xb
+ 3910 0065 39       		.uleb128 0x39
+ 3911 0066 21       		.uleb128 0x21
+ 3912 0067 08       		.sleb128 8
+ 3913 0068 01       		.uleb128 0x1
+ 3914 0069 13       		.uleb128 0x13
+ 3915 006a 00       		.byte	0
+ 3916 006b 00       		.byte	0
+ 3917 006c 0A       		.uleb128 0xa
+ 3918 006d 34       		.uleb128 0x34
+ 3919 006e 00       		.byte	0
+ 3920 006f 03       		.uleb128 0x3
+ 3921 0070 0E       		.uleb128 0xe
+ 3922 0071 3A       		.uleb128 0x3a
+ 3923 0072 0B       		.uleb128 0xb
+ 3924 0073 3B       		.uleb128 0x3b
+ 3925 0074 0B       		.uleb128 0xb
+ 3926 0075 39       		.uleb128 0x39
+ 3927 0076 0B       		.uleb128 0xb
+ 3928 0077 49       		.uleb128 0x49
+ 3929 0078 13       		.uleb128 0x13
+ 3930 0079 3F       		.uleb128 0x3f
+ 3931 007a 19       		.uleb128 0x19
+ 3932 007b 02       		.uleb128 0x2
+ 3933 007c 18       		.uleb128 0x18
+ 3934 007d 00       		.byte	0
+ 3935 007e 00       		.byte	0
+ 3936 007f 0B       		.uleb128 0xb
+ 3937 0080 34       		.uleb128 0x34
+ 3938 0081 00       		.byte	0
+ 3939 0082 03       		.uleb128 0x3
+ 3940 0083 08       		.uleb128 0x8
+ 3941 0084 3A       		.uleb128 0x3a
+ 3942 0085 21       		.uleb128 0x21
+ 3943 0086 04       		.sleb128 4
+ 3944 0087 3B       		.uleb128 0x3b
+ 3945 0088 0B       		.uleb128 0xb
+ 3946 0089 39       		.uleb128 0x39
+ 3947 008a 0B       		.uleb128 0xb
+ 3948 008b 49       		.uleb128 0x49
+ 3949 008c 13       		.uleb128 0x13
+ 3950 008d 3F       		.uleb128 0x3f
+ 3951 008e 19       		.uleb128 0x19
+ 3952 008f 02       		.uleb128 0x2
+ 3953 0090 18       		.uleb128 0x18
+ 3954 0091 00       		.byte	0
+ 3955 0092 00       		.byte	0
+ 3956 0093 0C       		.uleb128 0xc
+ 3957 0094 34       		.uleb128 0x34
+ 3958 0095 00       		.byte	0
+ 3959 0096 03       		.uleb128 0x3
+ 3960 0097 0E       		.uleb128 0xe
+ 3961 0098 3A       		.uleb128 0x3a
+ 3962 0099 21       		.uleb128 0x21
+ 3963 009a 01       		.sleb128 1
 GAS LISTING memory.s 			page 78
 
 
- 3964 009d 39       		.uleb128 0x39
- 3965 009e 0B       		.uleb128 0xb
- 3966 009f 49       		.uleb128 0x49
- 3967 00a0 13       		.uleb128 0x13
- 3968 00a1 02       		.uleb128 0x2
- 3969 00a2 18       		.uleb128 0x18
- 3970 00a3 00       		.byte	0
- 3971 00a4 00       		.byte	0
- 3972 00a5 0D       		.uleb128 0xd
- 3973 00a6 0B       		.uleb128 0xb
- 3974 00a7 01       		.byte	0x1
- 3975 00a8 11       		.uleb128 0x11
- 3976 00a9 01       		.uleb128 0x1
- 3977 00aa 12       		.uleb128 0x12
- 3978 00ab 07       		.uleb128 0x7
- 3979 00ac 01       		.uleb128 0x1
- 3980 00ad 13       		.uleb128 0x13
- 3981 00ae 00       		.byte	0
- 3982 00af 00       		.byte	0
- 3983 00b0 0E       		.uleb128 0xe
- 3984 00b1 11       		.uleb128 0x11
- 3985 00b2 01       		.byte	0x1
- 3986 00b3 25       		.uleb128 0x25
- 3987 00b4 0E       		.uleb128 0xe
- 3988 00b5 13       		.uleb128 0x13
- 3989 00b6 0B       		.uleb128 0xb
- 3990 00b7 03       		.uleb128 0x3
- 3991 00b8 1F       		.uleb128 0x1f
- 3992 00b9 1B       		.uleb128 0x1b
- 3993 00ba 1F       		.uleb128 0x1f
- 3994 00bb 11       		.uleb128 0x11
- 3995 00bc 01       		.uleb128 0x1
- 3996 00bd 12       		.uleb128 0x12
- 3997 00be 07       		.uleb128 0x7
- 3998 00bf 10       		.uleb128 0x10
- 3999 00c0 17       		.uleb128 0x17
- 4000 00c1 00       		.byte	0
- 4001 00c2 00       		.byte	0
- 4002 00c3 0F       		.uleb128 0xf
- 4003 00c4 13       		.uleb128 0x13
- 4004 00c5 01       		.byte	0x1
- 4005 00c6 03       		.uleb128 0x3
- 4006 00c7 0E       		.uleb128 0xe
- 4007 00c8 0B       		.uleb128 0xb
- 4008 00c9 05       		.uleb128 0x5
- 4009 00ca 3A       		.uleb128 0x3a
- 4010 00cb 0B       		.uleb128 0xb
- 4011 00cc 3B       		.uleb128 0x3b
- 4012 00cd 0B       		.uleb128 0xb
- 4013 00ce 39       		.uleb128 0x39
- 4014 00cf 0B       		.uleb128 0xb
- 4015 00d0 01       		.uleb128 0x1
- 4016 00d1 13       		.uleb128 0x13
- 4017 00d2 00       		.byte	0
- 4018 00d3 00       		.byte	0
- 4019 00d4 10       		.uleb128 0x10
- 4020 00d5 0D       		.uleb128 0xd
+ 3964 009b 3B       		.uleb128 0x3b
+ 3965 009c 0B       		.uleb128 0xb
+ 3966 009d 39       		.uleb128 0x39
+ 3967 009e 0B       		.uleb128 0xb
+ 3968 009f 49       		.uleb128 0x49
+ 3969 00a0 13       		.uleb128 0x13
+ 3970 00a1 02       		.uleb128 0x2
+ 3971 00a2 18       		.uleb128 0x18
+ 3972 00a3 00       		.byte	0
+ 3973 00a4 00       		.byte	0
+ 3974 00a5 0D       		.uleb128 0xd
+ 3975 00a6 0B       		.uleb128 0xb
+ 3976 00a7 01       		.byte	0x1
+ 3977 00a8 11       		.uleb128 0x11
+ 3978 00a9 01       		.uleb128 0x1
+ 3979 00aa 12       		.uleb128 0x12
+ 3980 00ab 07       		.uleb128 0x7
+ 3981 00ac 01       		.uleb128 0x1
+ 3982 00ad 13       		.uleb128 0x13
+ 3983 00ae 00       		.byte	0
+ 3984 00af 00       		.byte	0
+ 3985 00b0 0E       		.uleb128 0xe
+ 3986 00b1 11       		.uleb128 0x11
+ 3987 00b2 01       		.byte	0x1
+ 3988 00b3 25       		.uleb128 0x25
+ 3989 00b4 0E       		.uleb128 0xe
+ 3990 00b5 13       		.uleb128 0x13
+ 3991 00b6 0B       		.uleb128 0xb
+ 3992 00b7 03       		.uleb128 0x3
+ 3993 00b8 1F       		.uleb128 0x1f
+ 3994 00b9 1B       		.uleb128 0x1b
+ 3995 00ba 1F       		.uleb128 0x1f
+ 3996 00bb 11       		.uleb128 0x11
+ 3997 00bc 01       		.uleb128 0x1
+ 3998 00bd 12       		.uleb128 0x12
+ 3999 00be 07       		.uleb128 0x7
+ 4000 00bf 10       		.uleb128 0x10
+ 4001 00c0 17       		.uleb128 0x17
+ 4002 00c1 00       		.byte	0
+ 4003 00c2 00       		.byte	0
+ 4004 00c3 0F       		.uleb128 0xf
+ 4005 00c4 13       		.uleb128 0x13
+ 4006 00c5 01       		.byte	0x1
+ 4007 00c6 03       		.uleb128 0x3
+ 4008 00c7 0E       		.uleb128 0xe
+ 4009 00c8 0B       		.uleb128 0xb
+ 4010 00c9 05       		.uleb128 0x5
+ 4011 00ca 3A       		.uleb128 0x3a
+ 4012 00cb 0B       		.uleb128 0xb
+ 4013 00cc 3B       		.uleb128 0x3b
+ 4014 00cd 0B       		.uleb128 0xb
+ 4015 00ce 39       		.uleb128 0x39
+ 4016 00cf 0B       		.uleb128 0xb
+ 4017 00d0 01       		.uleb128 0x1
+ 4018 00d1 13       		.uleb128 0x13
+ 4019 00d2 00       		.byte	0
+ 4020 00d3 00       		.byte	0
 GAS LISTING memory.s 			page 79
 
 
- 4021 00d6 00       		.byte	0
- 4022 00d7 03       		.uleb128 0x3
- 4023 00d8 0E       		.uleb128 0xe
- 4024 00d9 3A       		.uleb128 0x3a
- 4025 00da 0B       		.uleb128 0xb
- 4026 00db 3B       		.uleb128 0x3b
- 4027 00dc 0B       		.uleb128 0xb
- 4028 00dd 39       		.uleb128 0x39
- 4029 00de 0B       		.uleb128 0xb
- 4030 00df 49       		.uleb128 0x49
- 4031 00e0 13       		.uleb128 0x13
- 4032 00e1 38       		.uleb128 0x38
- 4033 00e2 05       		.uleb128 0x5
- 4034 00e3 00       		.byte	0
- 4035 00e4 00       		.byte	0
- 4036 00e5 11       		.uleb128 0x11
- 4037 00e6 24       		.uleb128 0x24
- 4038 00e7 00       		.byte	0
- 4039 00e8 0B       		.uleb128 0xb
- 4040 00e9 0B       		.uleb128 0xb
- 4041 00ea 3E       		.uleb128 0x3e
- 4042 00eb 0B       		.uleb128 0xb
- 4043 00ec 03       		.uleb128 0x3
- 4044 00ed 08       		.uleb128 0x8
- 4045 00ee 00       		.byte	0
- 4046 00ef 00       		.byte	0
- 4047 00f0 12       		.uleb128 0x12
- 4048 00f1 21       		.uleb128 0x21
- 4049 00f2 00       		.byte	0
- 4050 00f3 49       		.uleb128 0x49
- 4051 00f4 13       		.uleb128 0x13
- 4052 00f5 2F       		.uleb128 0x2f
- 4053 00f6 05       		.uleb128 0x5
- 4054 00f7 00       		.byte	0
- 4055 00f8 00       		.byte	0
- 4056 00f9 13       		.uleb128 0x13
- 4057 00fa 26       		.uleb128 0x26
- 4058 00fb 00       		.byte	0
- 4059 00fc 49       		.uleb128 0x49
- 4060 00fd 13       		.uleb128 0x13
- 4061 00fe 00       		.byte	0
- 4062 00ff 00       		.byte	0
- 4063 0100 14       		.uleb128 0x14
- 4064 0101 2E       		.uleb128 0x2e
- 4065 0102 01       		.byte	0x1
- 4066 0103 3F       		.uleb128 0x3f
- 4067 0104 19       		.uleb128 0x19
- 4068 0105 03       		.uleb128 0x3
- 4069 0106 0E       		.uleb128 0xe
- 4070 0107 3A       		.uleb128 0x3a
- 4071 0108 0B       		.uleb128 0xb
- 4072 0109 3B       		.uleb128 0x3b
- 4073 010a 0B       		.uleb128 0xb
- 4074 010b 39       		.uleb128 0x39
- 4075 010c 0B       		.uleb128 0xb
- 4076 010d 27       		.uleb128 0x27
- 4077 010e 19       		.uleb128 0x19
+ 4021 00d4 10       		.uleb128 0x10
+ 4022 00d5 0D       		.uleb128 0xd
+ 4023 00d6 00       		.byte	0
+ 4024 00d7 03       		.uleb128 0x3
+ 4025 00d8 0E       		.uleb128 0xe
+ 4026 00d9 3A       		.uleb128 0x3a
+ 4027 00da 0B       		.uleb128 0xb
+ 4028 00db 3B       		.uleb128 0x3b
+ 4029 00dc 0B       		.uleb128 0xb
+ 4030 00dd 39       		.uleb128 0x39
+ 4031 00de 0B       		.uleb128 0xb
+ 4032 00df 49       		.uleb128 0x49
+ 4033 00e0 13       		.uleb128 0x13
+ 4034 00e1 38       		.uleb128 0x38
+ 4035 00e2 05       		.uleb128 0x5
+ 4036 00e3 00       		.byte	0
+ 4037 00e4 00       		.byte	0
+ 4038 00e5 11       		.uleb128 0x11
+ 4039 00e6 24       		.uleb128 0x24
+ 4040 00e7 00       		.byte	0
+ 4041 00e8 0B       		.uleb128 0xb
+ 4042 00e9 0B       		.uleb128 0xb
+ 4043 00ea 3E       		.uleb128 0x3e
+ 4044 00eb 0B       		.uleb128 0xb
+ 4045 00ec 03       		.uleb128 0x3
+ 4046 00ed 08       		.uleb128 0x8
+ 4047 00ee 00       		.byte	0
+ 4048 00ef 00       		.byte	0
+ 4049 00f0 12       		.uleb128 0x12
+ 4050 00f1 21       		.uleb128 0x21
+ 4051 00f2 00       		.byte	0
+ 4052 00f3 49       		.uleb128 0x49
+ 4053 00f4 13       		.uleb128 0x13
+ 4054 00f5 2F       		.uleb128 0x2f
+ 4055 00f6 05       		.uleb128 0x5
+ 4056 00f7 00       		.byte	0
+ 4057 00f8 00       		.byte	0
+ 4058 00f9 13       		.uleb128 0x13
+ 4059 00fa 26       		.uleb128 0x26
+ 4060 00fb 00       		.byte	0
+ 4061 00fc 49       		.uleb128 0x49
+ 4062 00fd 13       		.uleb128 0x13
+ 4063 00fe 00       		.byte	0
+ 4064 00ff 00       		.byte	0
+ 4065 0100 14       		.uleb128 0x14
+ 4066 0101 2E       		.uleb128 0x2e
+ 4067 0102 01       		.byte	0x1
+ 4068 0103 3F       		.uleb128 0x3f
+ 4069 0104 19       		.uleb128 0x19
+ 4070 0105 03       		.uleb128 0x3
+ 4071 0106 0E       		.uleb128 0xe
+ 4072 0107 3A       		.uleb128 0x3a
+ 4073 0108 0B       		.uleb128 0xb
+ 4074 0109 3B       		.uleb128 0x3b
+ 4075 010a 0B       		.uleb128 0xb
+ 4076 010b 39       		.uleb128 0x39
+ 4077 010c 0B       		.uleb128 0xb
 GAS LISTING memory.s 			page 80
 
 
- 4078 010f 49       		.uleb128 0x49
- 4079 0110 13       		.uleb128 0x13
- 4080 0111 3C       		.uleb128 0x3c
- 4081 0112 19       		.uleb128 0x19
- 4082 0113 01       		.uleb128 0x1
- 4083 0114 13       		.uleb128 0x13
- 4084 0115 00       		.byte	0
- 4085 0116 00       		.byte	0
- 4086 0117 15       		.uleb128 0x15
- 4087 0118 18       		.uleb128 0x18
- 4088 0119 00       		.byte	0
- 4089 011a 00       		.byte	0
- 4090 011b 00       		.byte	0
- 4091 011c 16       		.uleb128 0x16
- 4092 011d 2E       		.uleb128 0x2e
- 4093 011e 01       		.byte	0x1
- 4094 011f 3F       		.uleb128 0x3f
- 4095 0120 19       		.uleb128 0x19
- 4096 0121 03       		.uleb128 0x3
- 4097 0122 0E       		.uleb128 0xe
- 4098 0123 3A       		.uleb128 0x3a
- 4099 0124 0B       		.uleb128 0xb
- 4100 0125 3B       		.uleb128 0x3b
- 4101 0126 0B       		.uleb128 0xb
- 4102 0127 39       		.uleb128 0x39
- 4103 0128 0B       		.uleb128 0xb
- 4104 0129 11       		.uleb128 0x11
- 4105 012a 01       		.uleb128 0x1
- 4106 012b 12       		.uleb128 0x12
- 4107 012c 07       		.uleb128 0x7
- 4108 012d 40       		.uleb128 0x40
- 4109 012e 18       		.uleb128 0x18
- 4110 012f 7A       		.uleb128 0x7a
- 4111 0130 19       		.uleb128 0x19
- 4112 0131 01       		.uleb128 0x1
- 4113 0132 13       		.uleb128 0x13
- 4114 0133 00       		.byte	0
- 4115 0134 00       		.byte	0
- 4116 0135 17       		.uleb128 0x17
- 4117 0136 34       		.uleb128 0x34
- 4118 0137 00       		.byte	0
- 4119 0138 03       		.uleb128 0x3
- 4120 0139 08       		.uleb128 0x8
- 4121 013a 3A       		.uleb128 0x3a
- 4122 013b 0B       		.uleb128 0xb
- 4123 013c 3B       		.uleb128 0x3b
- 4124 013d 0B       		.uleb128 0xb
- 4125 013e 39       		.uleb128 0x39
- 4126 013f 0B       		.uleb128 0xb
- 4127 0140 49       		.uleb128 0x49
- 4128 0141 13       		.uleb128 0x13
- 4129 0142 00       		.byte	0
- 4130 0143 00       		.byte	0
- 4131 0144 18       		.uleb128 0x18
- 4132 0145 0B       		.uleb128 0xb
- 4133 0146 01       		.byte	0x1
- 4134 0147 55       		.uleb128 0x55
+ 4078 010d 27       		.uleb128 0x27
+ 4079 010e 19       		.uleb128 0x19
+ 4080 010f 49       		.uleb128 0x49
+ 4081 0110 13       		.uleb128 0x13
+ 4082 0111 3C       		.uleb128 0x3c
+ 4083 0112 19       		.uleb128 0x19
+ 4084 0113 01       		.uleb128 0x1
+ 4085 0114 13       		.uleb128 0x13
+ 4086 0115 00       		.byte	0
+ 4087 0116 00       		.byte	0
+ 4088 0117 15       		.uleb128 0x15
+ 4089 0118 18       		.uleb128 0x18
+ 4090 0119 00       		.byte	0
+ 4091 011a 00       		.byte	0
+ 4092 011b 00       		.byte	0
+ 4093 011c 16       		.uleb128 0x16
+ 4094 011d 2E       		.uleb128 0x2e
+ 4095 011e 01       		.byte	0x1
+ 4096 011f 3F       		.uleb128 0x3f
+ 4097 0120 19       		.uleb128 0x19
+ 4098 0121 03       		.uleb128 0x3
+ 4099 0122 0E       		.uleb128 0xe
+ 4100 0123 3A       		.uleb128 0x3a
+ 4101 0124 0B       		.uleb128 0xb
+ 4102 0125 3B       		.uleb128 0x3b
+ 4103 0126 0B       		.uleb128 0xb
+ 4104 0127 39       		.uleb128 0x39
+ 4105 0128 0B       		.uleb128 0xb
+ 4106 0129 11       		.uleb128 0x11
+ 4107 012a 01       		.uleb128 0x1
+ 4108 012b 12       		.uleb128 0x12
+ 4109 012c 07       		.uleb128 0x7
+ 4110 012d 40       		.uleb128 0x40
+ 4111 012e 18       		.uleb128 0x18
+ 4112 012f 7A       		.uleb128 0x7a
+ 4113 0130 19       		.uleb128 0x19
+ 4114 0131 01       		.uleb128 0x1
+ 4115 0132 13       		.uleb128 0x13
+ 4116 0133 00       		.byte	0
+ 4117 0134 00       		.byte	0
+ 4118 0135 17       		.uleb128 0x17
+ 4119 0136 34       		.uleb128 0x34
+ 4120 0137 00       		.byte	0
+ 4121 0138 03       		.uleb128 0x3
+ 4122 0139 08       		.uleb128 0x8
+ 4123 013a 3A       		.uleb128 0x3a
+ 4124 013b 0B       		.uleb128 0xb
+ 4125 013c 3B       		.uleb128 0x3b
+ 4126 013d 0B       		.uleb128 0xb
+ 4127 013e 39       		.uleb128 0x39
+ 4128 013f 0B       		.uleb128 0xb
+ 4129 0140 49       		.uleb128 0x49
+ 4130 0141 13       		.uleb128 0x13
+ 4131 0142 00       		.byte	0
+ 4132 0143 00       		.byte	0
+ 4133 0144 18       		.uleb128 0x18
+ 4134 0145 0B       		.uleb128 0xb
 GAS LISTING memory.s 			page 81
 
 
- 4135 0148 17       		.uleb128 0x17
- 4136 0149 00       		.byte	0
- 4137 014a 00       		.byte	0
- 4138 014b 00       		.byte	0
- 4139              		.section	.debug_aranges,"",@progbits
- 4140 0000 2C000000 		.long	0x2c
- 4141 0004 0200     		.value	0x2
- 4142 0006 00000000 		.long	.Ldebug_info0
- 4143 000a 08       		.byte	0x8
- 4144 000b 00       		.byte	0
- 4145 000c 0000     		.value	0
- 4146 000e 0000     		.value	0
- 4147 0010 00000000 		.quad	.Ltext0
- 4147      00000000 
- 4148 0018 BC030000 		.quad	.Letext0-.Ltext0
- 4148      00000000 
- 4149 0020 00000000 		.quad	0
+ 4135 0146 01       		.byte	0x1
+ 4136 0147 55       		.uleb128 0x55
+ 4137 0148 17       		.uleb128 0x17
+ 4138 0149 00       		.byte	0
+ 4139 014a 00       		.byte	0
+ 4140 014b 00       		.byte	0
+ 4141              		.section	.debug_aranges,"",@progbits
+ 4142 0000 2C000000 		.long	0x2c
+ 4143 0004 0200     		.value	0x2
+ 4144 0006 00000000 		.long	.Ldebug_info0
+ 4145 000a 08       		.byte	0x8
+ 4146 000b 00       		.byte	0
+ 4147 000c 0000     		.value	0
+ 4148 000e 0000     		.value	0
+ 4149 0010 00000000 		.quad	.Ltext0
  4149      00000000 
- 4150 0028 00000000 		.quad	0
+ 4150 0018 BC030000 		.quad	.Letext0-.Ltext0
  4150      00000000 
- 4151              		.section	.debug_rnglists,"",@progbits
- 4152              	.Ldebug_ranges0:
- 4153 0000 12000000 		.long	.Ldebug_ranges3-.Ldebug_ranges2
- 4154              	.Ldebug_ranges2:
- 4155 0004 0500     		.value	0x5
- 4156 0006 08       		.byte	0x8
- 4157 0007 00       		.byte	0
- 4158 0008 00000000 		.long	0
- 4159              	.LLRL0:
- 4160 000c 04       		.byte	0x4
- 4161 000d 7F       		.uleb128 .LBB3-.Ltext0
- 4162 000e 8504     		.uleb128 .LBE3-.Ltext0
- 4163 0010 04       		.byte	0x4
- 4164 0011 9504     		.uleb128 .LBB4-.Ltext0
- 4165 0013 9604     		.uleb128 .LBE4-.Ltext0
- 4166 0015 00       		.byte	0
- 4167              	.Ldebug_ranges3:
- 4168              		.section	.debug_line,"",@progbits
- 4169              	.Ldebug_line0:
- 4170 0000 26010000 		.section	.debug_str,"MS",@progbits,1
- 4170      05000800 
- 4170      39000000 
- 4170      010101FB 
- 4170      0E0D0001 
- 4171              	.LASF15:
- 4172 0000 58526573 		.string	"XResolution"
- 4172      6F6C7574 
- 4172      696F6E00 
- 4173              	.LASF26:
- 4174 000c 474E5520 		.string	"GNU C17 13.3.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stac
- 4174      43313720 
- 4174      31332E33 
- 4174      2E30202D 
- 4174      6D636D6F 
- 4175              	.LASF19:
- 4176 00b7 58436861 		.string	"XCharSize"
- 4176      7253697A 
+ 4151 0020 00000000 		.quad	0
+ 4151      00000000 
+ 4152 0028 00000000 		.quad	0
+ 4152      00000000 
+ 4153              		.section	.debug_rnglists,"",@progbits
+ 4154              	.Ldebug_ranges0:
+ 4155 0000 12000000 		.long	.Ldebug_ranges3-.Ldebug_ranges2
+ 4156              	.Ldebug_ranges2:
+ 4157 0004 0500     		.value	0x5
+ 4158 0006 08       		.byte	0x8
+ 4159 0007 00       		.byte	0
+ 4160 0008 00000000 		.long	0
+ 4161              	.LLRL0:
+ 4162 000c 04       		.byte	0x4
+ 4163 000d 7F       		.uleb128 .LBB3-.Ltext0
+ 4164 000e 8504     		.uleb128 .LBE3-.Ltext0
+ 4165 0010 04       		.byte	0x4
+ 4166 0011 9504     		.uleb128 .LBB4-.Ltext0
+ 4167 0013 9604     		.uleb128 .LBE4-.Ltext0
+ 4168 0015 00       		.byte	0
+ 4169              	.Ldebug_ranges3:
+ 4170              		.section	.debug_line,"",@progbits
+ 4171              	.Ldebug_line0:
+ 4172 0000 29010000 		.section	.debug_str,"MS",@progbits,1
+ 4172      05000800 
+ 4172      39000000 
+ 4172      010101FB 
+ 4172      0E0D0001 
+ 4173              	.LASF15:
+ 4174 0000 58526573 		.string	"XResolution"
+ 4174      6F6C7574 
+ 4174      696F6E00 
+ 4175              	.LASF26:
+ 4176 000c 474E5520 		.string	"GNU C17 13.3.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stac
+ 4176      43313720 
+ 4176      31332E33 
+ 4176      2E30202D 
+ 4176      6D636D6F 
+ 4177              	.LASF19:
 GAS LISTING memory.s 			page 82
 
 
- 4176      6500
- 4177              	.LASF9:
- 4178 00c1 65383230 		.string	"e820"
- 4178      00
- 4179              	.LASF25:
- 4180 00c6 73746172 		.string	"start"
- 4180      7400
- 4181              	.LASF7:
- 4182 00cc 45383230 		.string	"E820"
- 4182      00
- 4183              	.LASF10:
- 4184 00d1 65383230 		.string	"e820_length"
- 4184      5F6C656E 
- 4184      67746800 
- 4185              	.LASF11:
- 4186 00dd 756E7369 		.string	"unsigned char"
- 4186      676E6564 
- 4186      20636861 
- 4186      7200
- 4187              	.LASF13:
- 4188 00eb 666F6E74 		.string	"font_ascii"
- 4188      5F617363 
- 4188      696900
- 4189              	.LASF6:
- 4190 00f6 6C6F6E67 		.string	"long unsigned int"
- 4190      20756E73 
- 4190      69676E65 
- 4190      6420696E 
- 4190      7400
- 4191              	.LASF21:
- 4192 0108 46425F61 		.string	"FB_addr"
- 4192      64647200 
- 4193              	.LASF20:
- 4194 0110 59436861 		.string	"YCharSize"
- 4194      7253697A 
- 4194      6500
- 4195              	.LASF24:
- 4196 011a 546F7461 		.string	"TotalMem"
- 4196      6C4D656D 
- 4196      00
- 4197              	.LASF14:
- 4198 0123 706F7369 		.string	"position"
- 4198      74696F6E 
+ 4178 00b7 58436861 		.string	"XCharSize"
+ 4178      7253697A 
+ 4178      6500
+ 4179              	.LASF9:
+ 4180 00c1 65383230 		.string	"e820"
+ 4180      00
+ 4181              	.LASF25:
+ 4182 00c6 73746172 		.string	"start"
+ 4182      7400
+ 4183              	.LASF7:
+ 4184 00cc 45383230 		.string	"E820"
+ 4184      00
+ 4185              	.LASF10:
+ 4186 00d1 65383230 		.string	"e820_length"
+ 4186      5F6C656E 
+ 4186      67746800 
+ 4187              	.LASF11:
+ 4188 00dd 756E7369 		.string	"unsigned char"
+ 4188      676E6564 
+ 4188      20636861 
+ 4188      7200
+ 4189              	.LASF13:
+ 4190 00eb 666F6E74 		.string	"font_ascii"
+ 4190      5F617363 
+ 4190      696900
+ 4191              	.LASF6:
+ 4192 00f6 6C6F6E67 		.string	"long unsigned int"
+ 4192      20756E73 
+ 4192      69676E65 
+ 4192      6420696E 
+ 4192      7400
+ 4193              	.LASF21:
+ 4194 0108 46425F61 		.string	"FB_addr"
+ 4194      64647200 
+ 4195              	.LASF20:
+ 4196 0110 59436861 		.string	"YCharSize"
+ 4196      7253697A 
+ 4196      6500
+ 4197              	.LASF24:
+ 4198 011a 546F7461 		.string	"TotalMem"
+ 4198      6C4D656D 
  4198      00
- 4199              	.LASF5:
- 4200 012c 756E7369 		.string	"unsigned int"
- 4200      676E6564 
- 4200      20696E74 
+ 4199              	.LASF14:
+ 4200 0123 706F7369 		.string	"position"
+ 4200      74696F6E 
  4200      00
- 4201              	.LASF27:
- 4202 0139 636F6C6F 		.string	"color_printk"
- 4202      725F7072 
- 4202      696E746B 
+ 4201              	.LASF5:
+ 4202 012c 756E7369 		.string	"unsigned int"
+ 4202      676E6564 
+ 4202      20696E74 
  4202      00
- 4203              	.LASF2:
- 4204 0146 61646472 		.string	"address"
- 4204      65737300 
+ 4203              	.LASF27:
+ 4204 0139 636F6C6F 		.string	"color_printk"
+ 4204      725F7072 
+ 4204      696E746B 
+ 4204      00
+ 4205              	.LASF2:
 GAS LISTING memory.s 			page 83
 
 
- 4205              	.LASF23:
- 4206 014e 63686172 		.string	"char"
- 4206      00
- 4207              	.LASF28:
- 4208 0153 696E6974 		.string	"init_memory"
- 4208      5F6D656D 
- 4208      6F727900 
- 4209              	.LASF22:
- 4210 015f 46425F6C 		.string	"FB_length"
- 4210      656E6774 
- 4210      6800
- 4211              	.LASF18:
- 4212 0169 59506F73 		.string	"YPosition"
- 4212      6974696F 
- 4212      6E00
- 4213              	.LASF17:
- 4214 0173 58506F73 		.string	"XPosition"
+ 4206 0146 61646472 		.string	"address"
+ 4206      65737300 
+ 4207              	.LASF23:
+ 4208 014e 63686172 		.string	"char"
+ 4208      00
+ 4209              	.LASF28:
+ 4210 0153 696E6974 		.string	"init_memory"
+ 4210      5F6D656D 
+ 4210      6F727900 
+ 4211              	.LASF22:
+ 4212 015f 46425F6C 		.string	"FB_length"
+ 4212      656E6774 
+ 4212      6800
+ 4213              	.LASF18:
+ 4214 0169 59506F73 		.string	"YPosition"
  4214      6974696F 
  4214      6E00
- 4215              	.LASF16:
- 4216 017d 59526573 		.string	"YResolution"
- 4216      6F6C7574 
- 4216      696F6E00 
- 4217              	.LASF12:
- 4218 0189 6D656D6F 		.string	"memory_management_struct"
- 4218      72795F6D 
- 4218      616E6167 
- 4218      656D656E 
- 4218      745F7374 
- 4219              	.LASF4:
- 4220 01a2 74797065 		.string	"type"
- 4220      00
- 4221              	.LASF8:
- 4222 01a7 476C6F62 		.string	"Global_Memory_Descriptor"
- 4222      616C5F4D 
- 4222      656D6F72 
- 4222      795F4465 
- 4222      73637269 
- 4223              	.LASF3:
- 4224 01c0 6C656E67 		.string	"length"
- 4224      746800
- 4225              		.section	.debug_line_str,"MS",@progbits,1
- 4226              	.LASF1:
- 4227 0000 2F686F6D 		.string	"/home/student/myos/kernel"
- 4227      652F7374 
- 4227      7564656E 
- 4227      742F6D79 
- 4227      6F732F6B 
- 4228              	.LASF0:
- 4229 001a 6D656D6F 		.string	"memory.c"
- 4229      72792E63 
- 4229      00
- 4230              		.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
- 4231 0023 2F686F6D 		.section	.note.GNU-stack,"",@progbits
- 4231      652F7374 
- 4231      7564656E 
- 4231      742F6D79 
+ 4215              	.LASF17:
+ 4216 0173 58506F73 		.string	"XPosition"
+ 4216      6974696F 
+ 4216      6E00
+ 4217              	.LASF16:
+ 4218 017d 59526573 		.string	"YResolution"
+ 4218      6F6C7574 
+ 4218      696F6E00 
+ 4219              	.LASF12:
+ 4220 0189 6D656D6F 		.string	"memory_management_struct"
+ 4220      72795F6D 
+ 4220      616E6167 
+ 4220      656D656E 
+ 4220      745F7374 
+ 4221              	.LASF4:
+ 4222 01a2 74797065 		.string	"type"
+ 4222      00
+ 4223              	.LASF8:
+ 4224 01a7 476C6F62 		.string	"Global_Memory_Descriptor"
+ 4224      616C5F4D 
+ 4224      656D6F72 
+ 4224      795F4465 
+ 4224      73637269 
+ 4225              	.LASF3:
+ 4226 01c0 6C656E67 		.string	"length"
+ 4226      746800
+ 4227              		.section	.debug_line_str,"MS",@progbits,1
+ 4228              	.LASF1:
+ 4229 0000 2F686F6D 		.string	"/home/student/myos/kernel"
+ 4229      652F7374 
+ 4229      7564656E 
+ 4229      742F6D79 
+ 4229      6F732F6B 
+ 4230              	.LASF0:
+ 4231 001a 6D656D6F 		.string	"memory.c"
+ 4231      72792E63 
+ 4231      00
+ 4232              		.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
+ 4233 0023 2F686F6D 		.section	.note.GNU-stack,"",@progbits
+ 4233      652F7374 
 GAS LISTING memory.s 			page 84
 
 
- 4231      6F732F6B 
- 4232              		.section	.note.gnu.property,"a"
- 4233              		.align 8
- 4234 0000 04000000 		.long	1f - 0f
- 4235 0004 10000000 		.long	4f - 1f
- 4236 0008 05000000 		.long	5
- 4237              	0:
- 4238 000c 474E5500 		.string	"GNU"
- 4239              	1:
- 4240              		.align 8
- 4241 0010 020000C0 		.long	0xc0000002
- 4242 0014 04000000 		.long	3f - 2f
- 4243              	2:
- 4244 0018 03000000 		.long	0x3
- 4245              	3:
- 4246 001c 00000000 		.align 8
- 4247              	4:
+ 4233      7564656E 
+ 4233      742F6D79 
+ 4233      6F732F6B 
+ 4234              		.section	.note.gnu.property,"a"
+ 4235              		.align 8
+ 4236 0000 04000000 		.long	1f - 0f
+ 4237 0004 10000000 		.long	4f - 1f
+ 4238 0008 05000000 		.long	5
+ 4239              	0:
+ 4240 000c 474E5500 		.string	"GNU"
+ 4241              	1:
+ 4242              		.align 8
+ 4243 0010 020000C0 		.long	0xc0000002
+ 4244 0014 04000000 		.long	3f - 2f
+ 4245              	2:
+ 4246 0018 03000000 		.long	0x3
+ 4247              	3:
+ 4248 001c 00000000 		.align 8
+ 4249              	4:
 GAS LISTING memory.s 			page 85
 
 
