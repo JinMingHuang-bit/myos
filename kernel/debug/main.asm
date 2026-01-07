@@ -82,177 +82,191 @@ Disassembly of section .text:
  12f:	5d                   	pop    %rbp
  130:	c3                   	ret
 
-0000000000000131 <Start_Kernel>:
+0000000000000131 <Get_gdt>:
  131:	f3 0f 1e fa          	endbr64
  135:	55                   	push   %rbp
  136:	48 89 e5             	mov    %rsp,%rbp
- 139:	41 57                	push   %r15
- 13b:	53                   	push   %rbx
- 13c:	48 81 ec a0 02 00 00 	sub    $0x2a0,%rsp
- 143:	48 8d 1d f9 ff ff ff 	lea    -0x7(%rip),%rbx        # 143 <Start_Kernel+0x12>
- 14a:	49 bb 00 00 00 00 00 	movabs $0x0,%r11
- 151:	00 00 00 
- 154:	4c 01 db             	add    %r11,%rbx
- 157:	0f 20 e0             	mov    %cr4,%rax
- 15a:	48 89 45 e8          	mov    %rax,-0x18(%rbp)
- 15e:	48 81 4d e8 00 02 00 	orq    $0x200,-0x18(%rbp)
- 165:	00 
- 166:	48 81 4d e8 00 04 00 	orq    $0x400,-0x18(%rbp)
- 16d:	00 
- 16e:	48 8b 45 e8          	mov    -0x18(%rbp),%rax
- 172:	0f 22 e0             	mov    %rax,%cr4
- 175:	48 be 00 00 a0 00 00 	movabs $0xffff800000a00000,%rsi
- 17c:	80 ff ff 
- 17f:	48 89 75 e0          	mov    %rsi,-0x20(%rbp)
- 183:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
- 18a:	00 00 00 
- 18d:	c7 04 03 a0 05 00 00 	movl   $0x5a0,(%rbx,%rax,1)
- 194:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
- 19b:	00 00 00 
- 19e:	c7 44 03 04 84 03 00 	movl   $0x384,0x4(%rbx,%rax,1)
- 1a5:	00 
- 1a6:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
- 1ad:	00 00 00 
- 1b0:	c7 44 03 08 00 00 00 	movl   $0x0,0x8(%rbx,%rax,1)
- 1b7:	00 
- 1b8:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
- 1bf:	00 00 00 
- 1c2:	c7 44 03 0c 00 00 00 	movl   $0x0,0xc(%rbx,%rax,1)
- 1c9:	00 
- 1ca:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
- 1d1:	00 00 00 
- 1d4:	c7 44 03 10 08 00 00 	movl   $0x8,0x10(%rbx,%rax,1)
- 1db:	00 
- 1dc:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
- 1e3:	00 00 00 
- 1e6:	c7 44 03 14 10 00 00 	movl   $0x10,0x14(%rbx,%rax,1)
- 1ed:	00 
- 1ee:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
- 1f5:	00 00 00 
- 1f8:	48 89 74 03 18       	mov    %rsi,0x18(%rbx,%rax,1)
- 1fd:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
- 204:	00 00 00 
- 207:	8b 14 03             	mov    (%rbx,%rax,1),%edx
- 20a:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
- 211:	00 00 00 
- 214:	8b 44 03 04          	mov    0x4(%rbx,%rax,1),%eax
- 218:	0f af c2             	imul   %edx,%eax
- 21b:	c1 e0 02             	shl    $0x2,%eax
- 21e:	48 98                	cltq
- 220:	48 ba 00 00 00 00 00 	movabs $0x0,%rdx
- 227:	00 00 00 
- 22a:	48 89 44 13 20       	mov    %rax,0x20(%rbx,%rdx,1)
- 22f:	b8 40 00 00 00       	mov    $0x40,%eax
- 234:	0f 00 d8             	ltr    %eax
- 237:	68 00 7c 00 00       	push   $0x7c00
- 23c:	c7 44 24 04 00 80 ff 	movl   $0xffff8000,0x4(%rsp)
- 243:	ff 
- 244:	68 00 7c 00 00       	push   $0x7c00
- 249:	c7 44 24 04 00 80 ff 	movl   $0xffff8000,0x4(%rsp)
- 250:	ff 
- 251:	68 00 7c 00 00       	push   $0x7c00
- 256:	c7 44 24 04 00 80 ff 	movl   $0xffff8000,0x4(%rsp)
- 25d:	ff 
- 25e:	68 00 7c 00 00       	push   $0x7c00
- 263:	c7 44 24 04 00 80 ff 	movl   $0xffff8000,0x4(%rsp)
- 26a:	ff 
- 26b:	49 b9 00 7c 00 00 00 	movabs $0xffff800000007c00,%r9
- 272:	80 ff ff 
- 275:	49 b8 00 7c 00 00 00 	movabs $0xffff800000007c00,%r8
- 27c:	80 ff ff 
- 27f:	48 b8 00 7c 00 00 00 	movabs $0xffff800000007c00,%rax
- 286:	80 ff ff 
- 289:	48 89 c1             	mov    %rax,%rcx
- 28c:	48 b8 00 7c 00 00 00 	movabs $0xffff800000007c00,%rax
- 293:	80 ff ff 
- 296:	48 89 c2             	mov    %rax,%rdx
- 299:	48 b8 00 7c 00 00 00 	movabs $0xffff800000007c00,%rax
- 2a0:	80 ff ff 
- 2a3:	48 89 c6             	mov    %rax,%rsi
- 2a6:	48 b8 00 7c 00 00 00 	movabs $0xffff800000007c00,%rax
- 2ad:	80 ff ff 
- 2b0:	48 89 c7             	mov    %rax,%rdi
- 2b3:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
- 2ba:	00 00 00 
- 2bd:	48 8d 04 03          	lea    (%rbx,%rax,1),%rax
- 2c1:	ff d0                	call   *%rax
- 2c3:	48 83 c4 20          	add    $0x20,%rsp
- 2c7:	49 89 df             	mov    %rbx,%r15
- 2ca:	b8 00 00 00 00       	mov    $0x0,%eax
- 2cf:	48 ba 00 00 00 00 00 	movabs $0x0,%rdx
- 2d6:	00 00 00 
- 2d9:	48 01 da             	add    %rbx,%rdx
- 2dc:	ff d2                	call   *%rdx
- 2de:	48 8d 95 50 fd ff ff 	lea    -0x2b0(%rbp),%rdx
- 2e5:	b8 00 00 00 00       	mov    $0x0,%eax
- 2ea:	b9 51 00 00 00       	mov    $0x51,%ecx
- 2ef:	48 89 d7             	mov    %rdx,%rdi
- 2f2:	f3 48 ab             	rep stos %rax,%es:(%rdi)
- 2f5:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
- 2fc:	00 00 00 
- 2ff:	48 8d 04 03          	lea    (%rbx,%rax,1),%rax
- 303:	48 89 c2             	mov    %rax,%rdx
- 306:	be 00 00 00 00       	mov    $0x0,%esi
- 30b:	bf 00 ff ff 00       	mov    $0xffff00,%edi
- 310:	49 89 df             	mov    %rbx,%r15
- 313:	b8 00 00 00 00       	mov    $0x0,%eax
- 318:	48 b9 00 00 00 00 00 	movabs $0x0,%rcx
- 31f:	00 00 00 
- 322:	48 01 d9             	add    %rbx,%rcx
- 325:	ff d1                	call   *%rcx
- 327:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
- 32e:	00 00 00 
- 331:	48 8d 04 03          	lea    (%rbx,%rax,1),%rax
- 335:	48 89 c2             	mov    %rax,%rdx
- 338:	be 00 00 00 00       	mov    $0x0,%esi
- 33d:	bf 00 ff ff 00       	mov    $0xffff00,%edi
- 342:	49 89 df             	mov    %rbx,%r15
- 345:	b8 00 00 00 00       	mov    $0x0,%eax
- 34a:	48 b9 00 00 00 00 00 	movabs $0x0,%rcx
- 351:	00 00 00 
- 354:	48 01 d9             	add    %rbx,%rcx
- 357:	ff d1                	call   *%rcx
- 359:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
- 360:	00 00 00 
- 363:	48 8d 04 03          	lea    (%rbx,%rax,1),%rax
- 367:	48 89 c2             	mov    %rax,%rdx
- 36a:	be 00 00 00 00       	mov    $0x0,%esi
- 36f:	bf 00 ff ff 00       	mov    $0xffff00,%edi
- 374:	49 89 df             	mov    %rbx,%r15
- 377:	b8 00 00 00 00       	mov    $0x0,%eax
- 37c:	48 b9 00 00 00 00 00 	movabs $0x0,%rcx
- 383:	00 00 00 
- 386:	48 01 d9             	add    %rbx,%rcx
- 389:	ff d1                	call   *%rcx
- 38b:	49 89 df             	mov    %rbx,%r15
- 38e:	b8 00 00 00 00       	mov    $0x0,%eax
- 393:	48 ba 00 00 00 00 00 	movabs $0x0,%rdx
- 39a:	00 00 00 
- 39d:	48 01 da             	add    %rbx,%rdx
- 3a0:	ff d2                	call   *%rdx
- 3a2:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
- 3a9:	00 00 00 
- 3ac:	48 8d 04 03          	lea    (%rbx,%rax,1),%rax
- 3b0:	48 89 c2             	mov    %rax,%rdx
- 3b3:	be 00 00 00 00       	mov    $0x0,%esi
- 3b8:	bf 00 ff ff 00       	mov    $0xffff00,%edi
- 3bd:	49 89 df             	mov    %rbx,%r15
- 3c0:	b8 00 00 00 00       	mov    $0x0,%eax
- 3c5:	48 b9 00 00 00 00 00 	movabs $0x0,%rcx
- 3cc:	00 00 00 
- 3cf:	48 01 d9             	add    %rbx,%rcx
- 3d2:	ff d1                	call   *%rcx
- 3d4:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
- 3db:	00 00 00 
- 3de:	48 8d 04 03          	lea    (%rbx,%rax,1),%rax
- 3e2:	48 89 c2             	mov    %rax,%rdx
- 3e5:	be 00 00 00 00       	mov    $0x0,%esi
- 3ea:	bf 00 ff ff 00       	mov    $0xffff00,%edi
- 3ef:	49 89 df             	mov    %rbx,%r15
- 3f2:	b8 00 00 00 00       	mov    $0x0,%eax
- 3f7:	48 b9 00 00 00 00 00 	movabs $0x0,%rcx
- 3fe:	00 00 00 
- 401:	48 01 d9             	add    %rbx,%rcx
- 404:	ff d1                	call   *%rcx
- 406:	90                   	nop
- 407:	eb fd                	jmp    406 <Start_Kernel+0x2d5>
+ 139:	48 8d 05 f9 ff ff ff 	lea    -0x7(%rip),%rax        # 139 <Get_gdt+0x8>
+ 140:	49 bb 00 00 00 00 00 	movabs $0x0,%r11
+ 147:	00 00 00 
+ 14a:	4c 01 d8             	add    %r11,%rax
+ 14d:	0f 20 d8             	mov    %cr3,%rax
+ 150:	48 89 45 f8          	mov    %rax,-0x8(%rbp)
+ 154:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
+ 158:	5d                   	pop    %rbp
+ 159:	c3                   	ret
+
+000000000000015a <Start_Kernel>:
+ 15a:	f3 0f 1e fa          	endbr64
+ 15e:	55                   	push   %rbp
+ 15f:	48 89 e5             	mov    %rsp,%rbp
+ 162:	41 57                	push   %r15
+ 164:	53                   	push   %rbx
+ 165:	48 81 ec 10 03 00 00 	sub    $0x310,%rsp
+ 16c:	48 8d 1d f9 ff ff ff 	lea    -0x7(%rip),%rbx        # 16c <Start_Kernel+0x12>
+ 173:	49 bb 00 00 00 00 00 	movabs $0x0,%r11
+ 17a:	00 00 00 
+ 17d:	4c 01 db             	add    %r11,%rbx
+ 180:	0f 20 e0             	mov    %cr4,%rax
+ 183:	48 89 45 e8          	mov    %rax,-0x18(%rbp)
+ 187:	48 81 4d e8 00 02 00 	orq    $0x200,-0x18(%rbp)
+ 18e:	00 
+ 18f:	48 81 4d e8 00 04 00 	orq    $0x400,-0x18(%rbp)
+ 196:	00 
+ 197:	48 8b 45 e8          	mov    -0x18(%rbp),%rax
+ 19b:	0f 22 e0             	mov    %rax,%cr4
+ 19e:	48 be 00 00 a0 00 00 	movabs $0xffff800000a00000,%rsi
+ 1a5:	80 ff ff 
+ 1a8:	48 89 75 e0          	mov    %rsi,-0x20(%rbp)
+ 1ac:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
+ 1b3:	00 00 00 
+ 1b6:	c7 04 03 a0 05 00 00 	movl   $0x5a0,(%rbx,%rax,1)
+ 1bd:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
+ 1c4:	00 00 00 
+ 1c7:	c7 44 03 04 84 03 00 	movl   $0x384,0x4(%rbx,%rax,1)
+ 1ce:	00 
+ 1cf:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
+ 1d6:	00 00 00 
+ 1d9:	c7 44 03 08 00 00 00 	movl   $0x0,0x8(%rbx,%rax,1)
+ 1e0:	00 
+ 1e1:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
+ 1e8:	00 00 00 
+ 1eb:	c7 44 03 0c 00 00 00 	movl   $0x0,0xc(%rbx,%rax,1)
+ 1f2:	00 
+ 1f3:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
+ 1fa:	00 00 00 
+ 1fd:	c7 44 03 10 08 00 00 	movl   $0x8,0x10(%rbx,%rax,1)
+ 204:	00 
+ 205:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
+ 20c:	00 00 00 
+ 20f:	c7 44 03 14 10 00 00 	movl   $0x10,0x14(%rbx,%rax,1)
+ 216:	00 
+ 217:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
+ 21e:	00 00 00 
+ 221:	48 89 74 03 18       	mov    %rsi,0x18(%rbx,%rax,1)
+ 226:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
+ 22d:	00 00 00 
+ 230:	8b 14 03             	mov    (%rbx,%rax,1),%edx
+ 233:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
+ 23a:	00 00 00 
+ 23d:	8b 44 03 04          	mov    0x4(%rbx,%rax,1),%eax
+ 241:	0f af c2             	imul   %edx,%eax
+ 244:	c1 e0 02             	shl    $0x2,%eax
+ 247:	48 98                	cltq
+ 249:	48 ba 00 00 00 00 00 	movabs $0x0,%rdx
+ 250:	00 00 00 
+ 253:	48 89 44 13 20       	mov    %rax,0x20(%rbx,%rdx,1)
+ 258:	b8 40 00 00 00       	mov    $0x40,%eax
+ 25d:	0f 00 d8             	ltr    %eax
+ 260:	68 00 7c 00 00       	push   $0x7c00
+ 265:	c7 44 24 04 00 80 ff 	movl   $0xffff8000,0x4(%rsp)
+ 26c:	ff 
+ 26d:	68 00 7c 00 00       	push   $0x7c00
+ 272:	c7 44 24 04 00 80 ff 	movl   $0xffff8000,0x4(%rsp)
+ 279:	ff 
+ 27a:	68 00 7c 00 00       	push   $0x7c00
+ 27f:	c7 44 24 04 00 80 ff 	movl   $0xffff8000,0x4(%rsp)
+ 286:	ff 
+ 287:	68 00 7c 00 00       	push   $0x7c00
+ 28c:	c7 44 24 04 00 80 ff 	movl   $0xffff8000,0x4(%rsp)
+ 293:	ff 
+ 294:	49 b9 00 7c 00 00 00 	movabs $0xffff800000007c00,%r9
+ 29b:	80 ff ff 
+ 29e:	49 b8 00 7c 00 00 00 	movabs $0xffff800000007c00,%r8
+ 2a5:	80 ff ff 
+ 2a8:	48 b8 00 7c 00 00 00 	movabs $0xffff800000007c00,%rax
+ 2af:	80 ff ff 
+ 2b2:	48 89 c1             	mov    %rax,%rcx
+ 2b5:	48 b8 00 7c 00 00 00 	movabs $0xffff800000007c00,%rax
+ 2bc:	80 ff ff 
+ 2bf:	48 89 c2             	mov    %rax,%rdx
+ 2c2:	48 b8 00 7c 00 00 00 	movabs $0xffff800000007c00,%rax
+ 2c9:	80 ff ff 
+ 2cc:	48 89 c6             	mov    %rax,%rsi
+ 2cf:	48 b8 00 7c 00 00 00 	movabs $0xffff800000007c00,%rax
+ 2d6:	80 ff ff 
+ 2d9:	48 89 c7             	mov    %rax,%rdi
+ 2dc:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
+ 2e3:	00 00 00 
+ 2e6:	48 8d 04 03          	lea    (%rbx,%rax,1),%rax
+ 2ea:	ff d0                	call   *%rax
+ 2ec:	48 83 c4 20          	add    $0x20,%rsp
+ 2f0:	49 89 df             	mov    %rbx,%r15
+ 2f3:	b8 00 00 00 00       	mov    $0x0,%eax
+ 2f8:	48 ba 00 00 00 00 00 	movabs $0x0,%rdx
+ 2ff:	00 00 00 
+ 302:	48 01 da             	add    %rbx,%rdx
+ 305:	ff d2                	call   *%rdx
+ 307:	48 8d 95 e0 fc ff ff 	lea    -0x320(%rbp),%rdx
+ 30e:	b8 00 00 00 00       	mov    $0x0,%eax
+ 313:	b9 5f 00 00 00       	mov    $0x5f,%ecx
+ 318:	48 89 d7             	mov    %rdx,%rdi
+ 31b:	f3 48 ab             	rep stos %rax,%es:(%rdi)
+ 31e:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
+ 325:	00 00 00 
+ 328:	48 8d 04 03          	lea    (%rbx,%rax,1),%rax
+ 32c:	48 89 c2             	mov    %rax,%rdx
+ 32f:	be 00 00 00 00       	mov    $0x0,%esi
+ 334:	bf 00 ff ff 00       	mov    $0xffff00,%edi
+ 339:	49 89 df             	mov    %rbx,%r15
+ 33c:	b8 00 00 00 00       	mov    $0x0,%eax
+ 341:	48 b9 00 00 00 00 00 	movabs $0x0,%rcx
+ 348:	00 00 00 
+ 34b:	48 01 d9             	add    %rbx,%rcx
+ 34e:	ff d1                	call   *%rcx
+ 350:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
+ 357:	00 00 00 
+ 35a:	48 8d 04 03          	lea    (%rbx,%rax,1),%rax
+ 35e:	48 89 c2             	mov    %rax,%rdx
+ 361:	be 00 00 00 00       	mov    $0x0,%esi
+ 366:	bf 00 ff ff 00       	mov    $0xffff00,%edi
+ 36b:	49 89 df             	mov    %rbx,%r15
+ 36e:	b8 00 00 00 00       	mov    $0x0,%eax
+ 373:	48 b9 00 00 00 00 00 	movabs $0x0,%rcx
+ 37a:	00 00 00 
+ 37d:	48 01 d9             	add    %rbx,%rcx
+ 380:	ff d1                	call   *%rcx
+ 382:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
+ 389:	00 00 00 
+ 38c:	48 8d 04 03          	lea    (%rbx,%rax,1),%rax
+ 390:	48 89 c2             	mov    %rax,%rdx
+ 393:	be 00 00 00 00       	mov    $0x0,%esi
+ 398:	bf 00 ff ff 00       	mov    $0xffff00,%edi
+ 39d:	49 89 df             	mov    %rbx,%r15
+ 3a0:	b8 00 00 00 00       	mov    $0x0,%eax
+ 3a5:	48 b9 00 00 00 00 00 	movabs $0x0,%rcx
+ 3ac:	00 00 00 
+ 3af:	48 01 d9             	add    %rbx,%rcx
+ 3b2:	ff d1                	call   *%rcx
+ 3b4:	49 89 df             	mov    %rbx,%r15
+ 3b7:	b8 00 00 00 00       	mov    $0x0,%eax
+ 3bc:	48 ba 00 00 00 00 00 	movabs $0x0,%rdx
+ 3c3:	00 00 00 
+ 3c6:	48 01 da             	add    %rbx,%rdx
+ 3c9:	ff d2                	call   *%rdx
+ 3cb:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
+ 3d2:	00 00 00 
+ 3d5:	48 8d 04 03          	lea    (%rbx,%rax,1),%rax
+ 3d9:	48 89 c2             	mov    %rax,%rdx
+ 3dc:	be 00 00 00 00       	mov    $0x0,%esi
+ 3e1:	bf 00 ff ff 00       	mov    $0xffff00,%edi
+ 3e6:	49 89 df             	mov    %rbx,%r15
+ 3e9:	b8 00 00 00 00       	mov    $0x0,%eax
+ 3ee:	48 b9 00 00 00 00 00 	movabs $0x0,%rcx
+ 3f5:	00 00 00 
+ 3f8:	48 01 d9             	add    %rbx,%rcx
+ 3fb:	ff d1                	call   *%rcx
+ 3fd:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
+ 404:	00 00 00 
+ 407:	48 8d 04 03          	lea    (%rbx,%rax,1),%rax
+ 40b:	48 89 c2             	mov    %rax,%rdx
+ 40e:	be 00 00 00 00       	mov    $0x0,%esi
+ 413:	bf 00 ff ff 00       	mov    $0xffff00,%edi
+ 418:	49 89 df             	mov    %rbx,%r15
+ 41b:	b8 00 00 00 00       	mov    $0x0,%eax
+ 420:	48 b9 00 00 00 00 00 	movabs $0x0,%rcx
+ 427:	00 00 00 
+ 42a:	48 01 d9             	add    %rbx,%rcx
+ 42d:	ff d1                	call   *%rcx
+ 42f:	90                   	nop
+ 430:	eb fd                	jmp    42f <Start_Kernel+0x2d5>
