@@ -2,7 +2,46 @@
 #ifndef _LIB_H_
 #define _LIB_H_
 
-#define NULL 0
+#ifndef _PTRDIFF_T
+#define _PTRDIFF_T
+typedef long ptrdiff_t;
+#endif
+
+#ifndef _SIZE_T
+#define _SIZE_T
+typedef unsigned long size_t;
+#endif
+// #define NULL 0
+#undef NULL
+#define NULL ((void *)0)
+
+#define offsetof(TYPE,MEMBER)(((size_t)&(TYPE*)0)->MEMBER)
+//linux version
+
+#define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
+#define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+#define typeof_member(T, m)	typeof(((T*)0)->m)
+
+#define container_of_linux(ptr, type, member) ({				\
+	void *__mptr = (void *)(ptr);					\
+	static_assert(__same_type(*(ptr), ((type *)0)->member) ||	\
+		      __same_type(*(ptr), void),			\
+		      "pointer type mismatch in container_of_linux()");	\
+	((type *)(__mptr - offsetof(type, member))); })
+
+/**
+ * container_of_const - cast a member of a structure out to the containing
+ *			structure and preserve the const-ness of the pointer
+ * @ptr:		the pointer to the member
+ * @type:		the type of the container struct this is embedded in.
+ * @member:		the name of the member within the struct.
+ */
+#define container_of_const(ptr, type, member)				\
+	_Generic(ptr,							\
+		const typeof(*(ptr)) *: ((const type *)container_of_linux(ptr, type, member)),\
+		default: ((type *)container_of_linux(ptr, type, member))	\
+	)
+
 /*&(((type *)0)->member)
 将地址0强制转换为type*类型
 
