@@ -52,6 +52,10 @@ void init_memory(){
 		}
 	}
 	color_printk(ORANGE,BLACK,"OS Can Used Total RAM:%#018lx\n",TotalMem);
+	color_printk(ORANGE,BLACK,"OS Can Used Total RAM:%d\n",TotalMem);
+	int TotalMB;
+	TotalMB=TotalMem>>20;
+	color_printk(ORANGE,BLACK,"OS Can Used Total MB:%d\n",TotalMB);
 	TotalMem=0;
 	for(i=0;i<=memory_management_struct.e820_length;i++){
 		unsigned long start,end;
@@ -100,8 +104,8 @@ void init_memory(){
 │occupy available ... available occupy│
 └─────────────────────────────────────┘
 */
-
 //The operating system uses 2MB pages instead of the usual 4kb pages, which can reduce TLB misses: the same TLB entries can cover a larger amount of memory.
+//pages construct start
 memory_management_struct.pages_struct=(struct Page *)(((unsigned long)memory_management_struct.bits_map+memory_management_struct.bits_length+PAGE_4K_SIZE-1)&PAGE_4K_MASK);
 memory_management_struct.pages_size=TotalMem>>PAGE_2M_SHIFT;
 /*
@@ -136,11 +140,14 @@ for(i=0;i<=memory_management_struct.e820_length;i++){
 	z->zone_start_address=start;
 	z->zone_end_address=end;
 	z->zone_length=end-start;
+
 	z->page_using_count=0;
 	z->page_free_count=(end-start)>>PAGE_2M_SHIFT;
+
 	z->total_pages_link=0;
 	z->attribute=0;
 	z->GMD_struct=&memory_management_struct;
+
 	z->pages_length=(end-start)>>PAGE_2M_SHIFT;
 	z->pages_group=(struct Page*)(memory_management_struct.pages_struct+(start >>PAGE_2M_SHIFT));
 
@@ -161,11 +168,16 @@ memory_management_struct.pages_struct->PHY_address=0UL;
 memory_management_struct.pages_struct->attribute=0;
 memory_management_struct.pages_struct->reference_count=0;
 memory_management_struct.pages_struct->age=0;
+
 memory_management_struct.zones_length=(memory_management_struct.zones_size*sizeof(struct Zone)+sizeof(long)-1)&(~(sizeof(long)-1));
 
 color_printk(ORANGE,BLACK,"bits_map:%#018lx,bits_size:%#018lx,bits_length:%#018lx\n",memory_management_struct.bits_map,memory_management_struct.bits_size,memory_management_struct.bits_length);
 color_printk(ORANGE,BLACK,"pages_struct:%#018lx,pages_size:%#018lx,pages_length:%#018lx\n",memory_management_struct.pages_struct,memory_management_struct.pages_size,memory_management_struct.pages_length);
 color_printk(ORANGE,BLACK,"zones_struct:%#018lx,zones_size:%#018lx,zones_length:%#018lx\n",memory_management_struct.zones_struct,memory_management_struct.zones_size,memory_management_struct.zones_length);
+
+
+ZONE_DMA_INDEX = 0;	//need rewrite in the future
+ZONE_NORMAL_INDEX = 0;	//need rewrite in the future
 
 for(i=0;i<memory_management_struct.zones_size;i++){
 	struct Zone *z=memory_management_struct.zones_struct+i;
@@ -180,15 +192,16 @@ for(i=0;i<memory_management_struct.zones_size;i++){
 	Align downward to the "long" boundary & (~(sizeof(long) - 1))
 	Make sure the address is a multiple of sizeof(long) 64-bit system: 8-byte alignment
 	 */
-	memory_management_struct.end_of_struct=(unsigned long)((unsigned long)memory_management_struct.zones_struct+memory_management_struct.zones_length+sizeof(long)*32)&(~(sizeof(long)-1));
-	color_printk(ORANGE,BLACK,"start_code:%#018lx,end_code:%#018lx,end_data:%#018lx,end_brk:%#018lx,end_of_struct:%#018lx\n",memory_management_struct.start_code,memory_management_struct.end_code,memory_management_struct.end_data,memory_management_struct.end_brk,memory_management_struct.end_of_struct);
-	i=Virt_To_Phy(memory_management_struct.end_of_struct)>>PAGE_2M_SHIFT;
-	for(j=0;j<=i;j++){
-		page_init(memory_management_struct.pages_struct+j,PG_PTable_Maped|PG_Kernel_Init|PG_Active|PG_Kernel);
-	}
+memory_management_struct.end_of_struct=(unsigned long)((unsigned long)memory_management_struct.zones_struct+memory_management_struct.zones_length+sizeof(long)*32)&(~(sizeof(long)-1));
+color_printk(ORANGE,BLACK,"start_code:%#018lx,end_code:%#018lx,end_data:%#018lx,end_brk:%#018lx,end_of_struct:%#018lx\n",memory_management_struct.start_code,memory_management_struct.end_code,memory_management_struct.end_data,memory_management_struct.end_brk,memory_management_struct.end_of_struct);
+i=Virt_To_Phy(memory_management_struct.end_of_struct)>>PAGE_2M_SHIFT;
+for(j=0;j<=i;j++){
+	page_init(memory_management_struct.pages_struct+j,PG_PTable_Maped|PG_Kernel_Init|PG_Active|PG_Kernel);
+}
+	Global_CR3 = Get_gdt();
 	color_printk(INDIGO,BLACK,"Global_CR3\t:%#018lx\n",Global_CR3);
 	color_printk(INDIGO,BLACK,"*Global_CR3\t:%#018lx\n",*Phy_To_Virt(Global_CR3));
-	// color_printk(INDIGO,BLACK,"**Global_CR3\t:%#018lx\n",*Phy_To_Virt(*Phy_To_Virt(Global_CR3)&(~0xff))&(~0xff));
+	color_printk(INDIGO,BLACK,"**Global_CR3\t:%#018lx\n",*Phy_To_Virt(*Phy_To_Virt(Global_CR3)&(~0xff))&(~0xff));
 	for(i=0;i<10;i++){
 		*(Phy_To_Virt(Global_CR3)+i)=0UL;
 	}

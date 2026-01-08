@@ -32,7 +32,7 @@ void Start_Kernel(void)
     cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
     asm volatile("mov %0, %%cr4" : : "r"(cr4));
     
-    int *addr=(int *)0xffff800000a00000;
+    // int *addr=(int *)0xffff800000a00000;
     int i;
     Pos.XResolution=1440;
     Pos.YResolution=900;
