@@ -9,6 +9,7 @@ void putchar(unsigned int *fb,int Xsize,int x,int y,unsigned int FRcolor,unsigne
 	unsigned int *addr = NULL;
 	unsigned char *fontp = NULL;
 	int testval=0;
+	 //获取字符点阵数据
 	fontp=font_ascii[font];
 	for(i=0;i<16;i++){
 	//Shift the mask one position to the right. After the first cycle, it becomes 0x80, then 0x40, 0x20, ... until 0x01.
@@ -52,6 +53,7 @@ int color_printk(unsigned int FRcolor,unsigned int BKcolor,const char *fmt,...){
 					Pos.YPosition=(Pos.YResolution/ Pos.YCharSize-1)*Pos.YCharSize;
 			}
 			}
+			//
 			putchar(Pos.FB_addr,Pos.XResolution,Pos.XPosition*Pos.XCharSize,Pos.YPosition*Pos.YCharSize,FRcolor,BKcolor,' ');			
 		}else if((unsigned char)*(buf+count)=='\t'){
 			//~7 的二进制是 11111000（假设8位）
