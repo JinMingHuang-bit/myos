@@ -40,6 +40,7 @@ void Start_Kernel(void)
     Pos.YPosition=0;
     Pos.XCharSize=8;
     Pos.YCharSize=16;
+    //帧缓存的物理基地址
     Pos.FB_addr=(int *)0xffff800000a00000;
     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
     load_TR(8);
