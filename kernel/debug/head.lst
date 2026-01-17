@@ -296,7 +296,7 @@ GAS LISTING head.s 			page 1
  224      00000000 
  225              	
  226              	.org	0x3000
- 227              	
+ 227              	//0x83 = 1(P) + 0(R/W) + 0(U/S) + 1(PWT) + 0(PCD) + 1(A) + 0(D) + 1(PS) + 0(G)
  228              	__PDE:
 GAS LISTING head.s 			page 6
 

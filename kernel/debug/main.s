@@ -6,7 +6,7 @@
 # options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection
 	.text
 .Ltext0:
-	.file 0 "/home/student/myos/kernel" "main.c"
+	.file 0 "/workspace/myos/kernel" "main.c"
 	.globl	font_ascii
 	.data
 	.align 32
@@ -3282,9 +3282,18 @@ memory_management_struct:
 	.string	"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n"
 	.align 8
 .LC3:
-	.string	"I am the royal daughter who has broken the law!\n"
+	.string	"memory_management_struct.bitsmap:%#018lx\n"
 	.align 8
 .LC4:
+	.string	"memory_management_struct.bitsmap+1:%#018lx\n"
+	.align 8
+.LC5:
+	.string	"page%d\tattribute:%#018lx\taddress:%#018lx\t"
+	.align 8
+.LC6:
+	.string	"I am the royal daughter who has broken the law!\n"
+	.align 8
+.LC7:
 	.string	"Hmm,there is still a problem here?"
 	.text
 	.globl	Start_Kernel
@@ -3302,12 +3311,12 @@ Start_Kernel:
 	.cfi_def_cfa_register 6
 	pushq	%r15	#
 	pushq	%rbx	#
-	subq	$16, %rsp	#,
+	subq	$32, %rsp	#,
 	.cfi_offset 15, -24
 	.cfi_offset 3, -32
-.L8:
-	leaq	.L8(%rip), %rbx	#, tmp82
-	movabsq	$_GLOBAL_OFFSET_TABLE_-.L8, %r11	#,
+.L10:
+	leaq	.L10(%rip), %rbx	#, tmp82
+	movabsq	$_GLOBAL_OFFSET_TABLE_-.L10, %r11	#,
 	addq	%r11, %rbx	#, tmp82
 # main.c:30:     asm volatile("mov %%cr4, %0" : "=r"(cr4));
 	.loc 3 30 5
@@ -3316,78 +3325,78 @@ Start_Kernel:
 	mov %cr4, %rax	# cr4
 # 0 "" 2
 #NO_APP
-	movq	%rax, -24(%rbp)	# cr4, cr4
+	movq	%rax, -32(%rbp)	# cr4, cr4
 # main.c:31:     cr4 |= (1 << 9);  // 设置OSXMMEXCPT位
 	.loc 3 31 9
-	orq	$512, -24(%rbp)	#, cr4
+	orq	$512, -32(%rbp)	#, cr4
 # main.c:32:     cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
 	.loc 3 32 9
-	orq	$1024, -24(%rbp)	#, cr4
+	orq	$1024, -32(%rbp)	#, cr4
 # main.c:33:     asm volatile("mov %0, %%cr4" : : "r"(cr4));
 	.loc 3 33 5
-	movq	-24(%rbp), %rax	# cr4, tmp93
+	movq	-32(%rbp), %rax	# cr4, tmp121
 #APP
 # 33 "main.c" 1
-	mov %rax, %cr4	# tmp93
+	mov %rax, %cr4	# tmp121
 # 0 "" 2
 # main.c:37:     Pos.XResolution=1440;
 	.loc 3 37 20
 #NO_APP
-	movabsq	$Pos@GOTOFF, %rax	#, tmp94
+	movabsq	$Pos@GOTOFF, %rax	#, tmp122
 	movl	$1440, (%rbx,%rax)	#, Pos.XResolution
 # main.c:38:     Pos.YResolution=900;
 	.loc 3 38 20
-	movabsq	$Pos@GOTOFF, %rax	#, tmp95
+	movabsq	$Pos@GOTOFF, %rax	#, tmp123
 	movl	$900, 4(%rbx,%rax)	#, Pos.YResolution
 # main.c:39:     Pos.XPosition=0;
 	.loc 3 39 18
-	movabsq	$Pos@GOTOFF, %rax	#, tmp96
+	movabsq	$Pos@GOTOFF, %rax	#, tmp124
 	movl	$0, 8(%rbx,%rax)	#, Pos.XPosition
 # main.c:40:     Pos.YPosition=0;
 	.loc 3 40 18
-	movabsq	$Pos@GOTOFF, %rax	#, tmp97
+	movabsq	$Pos@GOTOFF, %rax	#, tmp125
 	movl	$0, 12(%rbx,%rax)	#, Pos.YPosition
 # main.c:41:     Pos.XCharSize=8;
 	.loc 3 41 18
-	movabsq	$Pos@GOTOFF, %rax	#, tmp98
+	movabsq	$Pos@GOTOFF, %rax	#, tmp126
 	movl	$8, 16(%rbx,%rax)	#, Pos.XCharSize
 # main.c:42:     Pos.YCharSize=16;
 	.loc 3 42 18
-	movabsq	$Pos@GOTOFF, %rax	#, tmp99
+	movabsq	$Pos@GOTOFF, %rax	#, tmp127
 	movl	$16, 20(%rbx,%rax)	#, Pos.YCharSize
-# main.c:43:     Pos.FB_addr=(int *)0xffff800000a00000;
-	.loc 3 43 16
-	movabsq	$Pos@GOTOFF, %rax	#, tmp100
-	movabsq	$-140737477869568, %rsi	#, tmp141
-	movq	%rsi, 24(%rbx,%rax)	# tmp141, Pos.FB_addr
-# main.c:44:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
-	.loc 3 44 23
-	movabsq	$Pos@GOTOFF, %rax	#, tmp101
+# main.c:44:     Pos.FB_addr=(int *)0xffff800000a00000;
+	.loc 3 44 16
+	movabsq	$Pos@GOTOFF, %rax	#, tmp128
+	movabsq	$-140737477869568, %rsi	#, tmp210
+	movq	%rsi, 24(%rbx,%rax)	# tmp210, Pos.FB_addr
+# main.c:45:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+	.loc 3 45 23
+	movabsq	$Pos@GOTOFF, %rax	#, tmp129
 	movl	(%rbx,%rax), %edx	# Pos.XResolution, _1
-# main.c:44:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
-	.loc 3 44 39
-	movabsq	$Pos@GOTOFF, %rax	#, tmp102
+# main.c:45:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+	.loc 3 45 39
+	movabsq	$Pos@GOTOFF, %rax	#, tmp130
 	movl	4(%rbx,%rax), %eax	# Pos.YResolution, _2
-# main.c:44:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
-	.loc 3 44 35
+# main.c:45:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+	.loc 3 45 35
 	imull	%edx, %eax	# _1, _3
-# main.c:44:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
-	.loc 3 44 51
+# main.c:45:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+	.loc 3 45 51
 	sall	$2, %eax	#, _4
 	cltq
-# main.c:44:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
-	.loc 3 44 18
-	movabsq	$Pos@GOTOFF, %rdx	#, tmp103
+# main.c:45:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+	.loc 3 45 18
+	movabsq	$Pos@GOTOFF, %rdx	#, tmp131
 	movq	%rax, 32(%rbx,%rdx)	# _5, Pos.FB_length
-# main.c:45:     load_TR(8);
-	.loc 3 45 5
-	movl	$64, %eax	#, tmp104
+# main.c:46:     load_TR(8);
+	.loc 3 46 5
+	movl	$64, %eax	#, tmp132
 #APP
-# 45 "main.c" 1
+# 46 "main.c" 1
 	ltr %ax	
 # 0 "" 2
-# main.c:47:     set_tss64(0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,
-	.loc 3 47 5
+# main.c:48:     set_tss64(0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,
+	.loc 3 48 5
 #NO_APP
 	pushq	$31744	#
 	movl	$-32768, 4(%rsp)	#,
@@ -3399,141 +3408,347 @@ Start_Kernel:
 	movl	$-32768, 4(%rsp)	#,
 	movabsq	$-140737488323584, %r9	#,
 	movabsq	$-140737488323584, %r8	#,
-	movabsq	$-140737488323584, %rax	#, tmp105
-	movq	%rax, %rcx	# tmp105,
-	movabsq	$-140737488323584, %rax	#, tmp106
-	movq	%rax, %rdx	# tmp106,
-	movabsq	$-140737488323584, %rax	#, tmp107
-	movq	%rax, %rsi	# tmp107,
-	movabsq	$-140737488323584, %rax	#, tmp108
-	movq	%rax, %rdi	# tmp108,
-	movabsq	$set_tss64@GOTOFF, %rax	#, tmp110
-	leaq	(%rbx,%rax), %rax	#, tmp109
-	call	*%rax	# tmp109
+	movabsq	$-140737488323584, %rax	#, tmp133
+	movq	%rax, %rcx	# tmp133,
+	movabsq	$-140737488323584, %rax	#, tmp134
+	movq	%rax, %rdx	# tmp134,
+	movabsq	$-140737488323584, %rax	#, tmp135
+	movq	%rax, %rsi	# tmp135,
+	movabsq	$-140737488323584, %rax	#, tmp136
+	movq	%rax, %rdi	# tmp136,
+	movabsq	$set_tss64@GOTOFF, %rax	#, tmp138
+	leaq	(%rbx,%rax), %rax	#, tmp137
+	call	*%rax	# tmp137
 .LVL0:
 	addq	$32, %rsp	#,
-# main.c:49:     sys_vector_init();
-	.loc 3 49 5
+# main.c:50:     sys_vector_init();
+	.loc 3 50 5
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$sys_vector_init@PLTOFF, %rdx	#, tmp111
-	addq	%rbx, %rdx	# tmp82, tmp111
-	call	*%rdx	# tmp111
+	movabsq	$sys_vector_init@PLTOFF, %rdx	#, tmp139
+	addq	%rbx, %rdx	# tmp82, tmp139
+	call	*%rdx	# tmp139
 .LVL1:
-# main.c:52:     memory_management_struct.start_code = (unsigned long)& _text;
-	.loc 3 52 43
-	movabsq	$_text@GOT, %rax	#, tmp112
-	movq	(%rbx,%rax), %rax	#, tmp113
-	movq	%rax, %rdx	# tmp113, _text.0_6
-# main.c:52:     memory_management_struct.start_code = (unsigned long)& _text;
-	.loc 3 52 41
-	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp114
+# main.c:53:     memory_management_struct.start_code = (unsigned long)& _text;
+	.loc 3 53 43
+	movabsq	$_text@GOT, %rax	#, tmp140
+	movq	(%rbx,%rax), %rax	#, tmp141
+	movq	%rax, %rdx	# tmp141, _text.0_6
+# main.c:53:     memory_management_struct.start_code = (unsigned long)& _text;
+	.loc 3 53 41
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp142
 	movq	%rdx, 720(%rbx,%rax)	# _text.0_6, memory_management_struct.start_code
-# main.c:53: 	memory_management_struct.end_code   = (unsigned long)& _etext;
-	.loc 3 53 40
-	movabsq	$_etext@GOT, %rax	#, tmp115
-	movq	(%rbx,%rax), %rax	#, tmp116
-	movq	%rax, %rdx	# tmp116, _etext.1_7
-# main.c:53: 	memory_management_struct.end_code   = (unsigned long)& _etext;
-	.loc 3 53 38
-	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp117
-	movq	%rdx, 728(%rbx,%rax)	# _etext.1_7, memory_management_struct.end_code
-# main.c:54: 	memory_management_struct.end_data   = (unsigned long)& _edata;
+# main.c:54: 	memory_management_struct.end_code   = (unsigned long)& _etext;
 	.loc 3 54 40
-	movabsq	$_edata@GOT, %rax	#, tmp118
-	movq	(%rbx,%rax), %rax	#, tmp119
-	movq	%rax, %rdx	# tmp119, _edata.2_8
-# main.c:54: 	memory_management_struct.end_data   = (unsigned long)& _edata;
+	movabsq	$_etext@GOT, %rax	#, tmp143
+	movq	(%rbx,%rax), %rax	#, tmp144
+	movq	%rax, %rdx	# tmp144, _etext.1_7
+# main.c:54: 	memory_management_struct.end_code   = (unsigned long)& _etext;
 	.loc 3 54 38
-	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp120
-	movq	%rdx, 736(%rbx,%rax)	# _edata.2_8, memory_management_struct.end_data
-# main.c:55: 	memory_management_struct.end_brk    = (unsigned long)& _end;
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp145
+	movq	%rdx, 728(%rbx,%rax)	# _etext.1_7, memory_management_struct.end_code
+# main.c:55: 	memory_management_struct.end_data   = (unsigned long)& _edata;
 	.loc 3 55 40
-	movabsq	$_end@GOT, %rax	#, tmp121
-	movq	(%rbx,%rax), %rax	#, tmp122
-	movq	%rax, %rdx	# tmp122, _end.3_9
-# main.c:55: 	memory_management_struct.end_brk    = (unsigned long)& _end;
+	movabsq	$_edata@GOT, %rax	#, tmp146
+	movq	(%rbx,%rax), %rax	#, tmp147
+	movq	%rax, %rdx	# tmp147, _edata.2_8
+# main.c:55: 	memory_management_struct.end_data   = (unsigned long)& _edata;
 	.loc 3 55 38
-	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp123
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp148
+	movq	%rdx, 736(%rbx,%rax)	# _edata.2_8, memory_management_struct.end_data
+# main.c:56: 	memory_management_struct.end_brk    = (unsigned long)& _end;
+	.loc 3 56 40
+	movabsq	$_end@GOT, %rax	#, tmp149
+	movq	(%rbx,%rax), %rax	#, tmp150
+	movq	%rax, %rdx	# tmp150, _end.3_9
+# main.c:56: 	memory_management_struct.end_brk    = (unsigned long)& _end;
+	.loc 3 56 38
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp151
 	movq	%rdx, 744(%rbx,%rax)	# _end.3_9, memory_management_struct.end_brk
-# main.c:56:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
-	.loc 3 56 5
-	movabsq	$.LC0@GOTOFF, %rax	#, tmp125
-	leaq	(%rbx,%rax), %rax	#, tmp124
-	movq	%rax, %rdx	# tmp124,
-	movl	$0, %esi	#,
-	movl	$16776960, %edi	#,
-	movq	%rbx, %r15	# tmp82,
-	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp126
-	addq	%rbx, %rcx	# tmp82, tmp126
-	call	*%rcx	# tmp126
-.LVL2:
-# main.c:57:     color_printk(YELLOW,BLACK,"hello,User\n");
+# main.c:57:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
 	.loc 3 57 5
-	movabsq	$.LC1@GOTOFF, %rax	#, tmp128
-	leaq	(%rbx,%rax), %rax	#, tmp127
-	movq	%rax, %rdx	# tmp127,
+	movabsq	$.LC0@GOTOFF, %rax	#, tmp153
+	leaq	(%rbx,%rax), %rax	#, tmp152
+	movq	%rax, %rdx	# tmp152,
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp129
-	addq	%rbx, %rcx	# tmp82, tmp129
-	call	*%rcx	# tmp129
-.LVL3:
-# main.c:58:     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp154
+	addq	%rbx, %rcx	# tmp82, tmp154
+	call	*%rcx	# tmp154
+.LVL2:
+# main.c:58:     color_printk(YELLOW,BLACK,"hello,User\n");
 	.loc 3 58 5
-	movabsq	$.LC2@GOTOFF, %rax	#, tmp131
-	leaq	(%rbx,%rax), %rax	#, tmp130
-	movq	%rax, %rdx	# tmp130,
+	movabsq	$.LC1@GOTOFF, %rax	#, tmp156
+	leaq	(%rbx,%rax), %rax	#, tmp155
+	movq	%rax, %rdx	# tmp155,
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp132
-	addq	%rbx, %rcx	# tmp82, tmp132
-	call	*%rcx	# tmp132
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp157
+	addq	%rbx, %rcx	# tmp82, tmp157
+	call	*%rcx	# tmp157
+.LVL3:
+# main.c:59:     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
+	.loc 3 59 5
+	movabsq	$.LC2@GOTOFF, %rax	#, tmp159
+	leaq	(%rbx,%rax), %rax	#, tmp158
+	movq	%rax, %rdx	# tmp158,
+	movl	$0, %esi	#,
+	movl	$16776960, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp160
+	addq	%rbx, %rcx	# tmp82, tmp160
+	call	*%rcx	# tmp160
 .LVL4:
-# main.c:80:     init_memory();
-	.loc 3 80 5
-	movq	%rbx, %r15	# tmp82,
-	movl	$0, %eax	#,
-	movabsq	$init_memory@PLTOFF, %rdx	#, tmp133
-	addq	%rbx, %rdx	# tmp82, tmp133
-	call	*%rdx	# tmp133
-.LVL5:
-# main.c:81:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
+# main.c:81:     init_memory();
 	.loc 3 81 5
-	movabsq	$.LC3@GOTOFF, %rax	#, tmp135
-	leaq	(%rbx,%rax), %rax	#, tmp134
-	movq	%rax, %rdx	# tmp134,
-	movl	$0, %esi	#,
-	movl	$16776960, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp136
-	addq	%rbx, %rcx	# tmp82, tmp136
-	call	*%rcx	# tmp136
-.LVL6:
-# main.c:83:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
+	movabsq	$init_memory@PLTOFF, %rdx	#, tmp161
+	addq	%rbx, %rdx	# tmp82, tmp161
+	call	*%rdx	# tmp161
+.LVL5:
+# main.c:82:     struct Page *page=NULL;
+	.loc 3 82 18
+	movq	$0, -40(%rbp)	#, page
+# main.c:83:     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
+	.loc 3 83 99
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp162
+	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _10
+# main.c:83:     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
 	.loc 3 83 5
-	movabsq	$.LC4@GOTOFF, %rax	#, tmp138
-	leaq	(%rbx,%rax), %rax	#, tmp137
-	movq	%rax, %rdx	# tmp137,
+	movq	(%rax), %rax	# *_10, _11
+	movq	%rax, %rcx	# _11,
+	movabsq	$.LC3@GOTOFF, %rax	#, tmp164
+	leaq	(%rbx,%rax), %rax	#, tmp163
+	movq	%rax, %rdx	# tmp163,
+	movl	$0, %esi	#,
+	movl	$16711680, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %r8	#, tmp165
+	addq	%rbx, %r8	# tmp82, tmp165
+	call	*%r8	# tmp165
+.LVL6:
+# main.c:84:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
+	.loc 3 84 102
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp166
+	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _12
+# main.c:84:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
+	.loc 3 84 111
+	addq	$8, %rax	#, _13
+# main.c:84:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
+	.loc 3 84 5
+	movq	(%rax), %rax	# *_13, _14
+	movq	%rax, %rcx	# _14,
+	movabsq	$.LC4@GOTOFF, %rax	#, tmp168
+	leaq	(%rbx,%rax), %rax	#, tmp167
+	movq	%rax, %rdx	# tmp167,
+	movl	$0, %esi	#,
+	movl	$16711680, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %r8	#, tmp169
+	addq	%rbx, %r8	# tmp82, tmp169
+	call	*%r8	# tmp169
+.LVL7:
+# main.c:85:     page=alloc_page(ZONE_NORMAL,64,PG_PTable_Maped |PG_Active|PG_Kernel);
+	.loc 3 85 10
+	movl	$145, %edx	#,
+	movl	$64, %esi	#,
+	movl	$2, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$alloc_page@PLTOFF, %rcx	#, tmp170
+	addq	%rbx, %rcx	# tmp82, tmp170
+	call	*%rcx	# tmp170
+.LVL8:
+# main.c:85:     page=alloc_page(ZONE_NORMAL,64,PG_PTable_Maped |PG_Active|PG_Kernel);
+	.loc 3 85 10 is_stmt 0 discriminator 1
+	cltq
+# main.c:85:     page=alloc_page(ZONE_NORMAL,64,PG_PTable_Maped |PG_Active|PG_Kernel);
+	.loc 3 85 9 is_stmt 1 discriminator 1
+	movq	%rax, -40(%rbp)	# _16, page
+# main.c:86:     for(i=0;i<16;i++){
+	.loc 3 86 10
+	movl	$0, -20(%rbp)	#, i
+# main.c:86:     for(i=0;i<16;i++){
+	.loc 3 86 5
+	jmp	.L7	#
+.L8:
+# main.c:87:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+	.loc 3 87 109
+	movl	-20(%rbp), %eax	# i, tmp171
+	movslq	%eax, %rdx	# tmp171, _17
+	movq	%rdx, %rax	# _17, tmp172
+	salq	$2, %rax	#, tmp172
+	addq	%rdx, %rax	# _17, tmp172
+	salq	$3, %rax	#, tmp173
+	movq	%rax, %rdx	# tmp172, _18
+	movq	-40(%rbp), %rax	# page, tmp174
+	addq	%rdx, %rax	# _18, _19
+# main.c:87:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+	.loc 3 87 9
+	movq	8(%rax), %rcx	# _19->PHY_address, _20
+# main.c:87:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+	.loc 3 87 89
+	movl	-20(%rbp), %eax	# i, tmp175
+	movslq	%eax, %rdx	# tmp175, _21
+	movq	%rdx, %rax	# _21, tmp176
+	salq	$2, %rax	#, tmp176
+	addq	%rdx, %rax	# _21, tmp176
+	salq	$3, %rax	#, tmp177
+	movq	%rax, %rdx	# tmp176, _22
+	movq	-40(%rbp), %rax	# page, tmp178
+	addq	%rdx, %rax	# _22, _23
+# main.c:87:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+	.loc 3 87 9
+	movq	16(%rax), %rdx	# _23->attribute, _24
+	movl	-20(%rbp), %eax	# i, tmp179
+	movq	%rcx, %r9	# _20,
+	movq	%rdx, %r8	# _24,
+	movl	%eax, %ecx	# tmp179,
+	movabsq	$.LC5@GOTOFF, %rax	#, tmp181
+	leaq	(%rbx,%rax), %rax	#, tmp180
+	movq	%rax, %rdx	# tmp180,
+	movl	$0, %esi	#,
+	movl	$65535, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %r10	#, tmp182
+	addq	%rbx, %r10	# tmp82, tmp182
+	call	*%r10	# tmp182
+.LVL9:
+# main.c:88:         i++;
+	.loc 3 88 10
+	addl	$1, -20(%rbp)	#, i
+# main.c:89:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+	.loc 3 89 109
+	movl	-20(%rbp), %eax	# i, tmp183
+	movslq	%eax, %rdx	# tmp183, _25
+	movq	%rdx, %rax	# _25, tmp184
+	salq	$2, %rax	#, tmp184
+	addq	%rdx, %rax	# _25, tmp184
+	salq	$3, %rax	#, tmp185
+	movq	%rax, %rdx	# tmp184, _26
+	movq	-40(%rbp), %rax	# page, tmp186
+	addq	%rdx, %rax	# _26, _27
+# main.c:89:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+	.loc 3 89 9
+	movq	8(%rax), %rcx	# _27->PHY_address, _28
+# main.c:89:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+	.loc 3 89 89
+	movl	-20(%rbp), %eax	# i, tmp187
+	movslq	%eax, %rdx	# tmp187, _29
+	movq	%rdx, %rax	# _29, tmp188
+	salq	$2, %rax	#, tmp188
+	addq	%rdx, %rax	# _29, tmp188
+	salq	$3, %rax	#, tmp189
+	movq	%rax, %rdx	# tmp188, _30
+	movq	-40(%rbp), %rax	# page, tmp190
+	addq	%rdx, %rax	# _30, _31
+# main.c:89:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+	.loc 3 89 9
+	movq	16(%rax), %rdx	# _31->attribute, _32
+	movl	-20(%rbp), %eax	# i, tmp191
+	movq	%rcx, %r9	# _28,
+	movq	%rdx, %r8	# _32,
+	movl	%eax, %ecx	# tmp191,
+	movabsq	$.LC5@GOTOFF, %rax	#, tmp193
+	leaq	(%rbx,%rax), %rax	#, tmp192
+	movq	%rax, %rdx	# tmp192,
+	movl	$0, %esi	#,
+	movl	$65535, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %r10	#, tmp194
+	addq	%rbx, %r10	# tmp82, tmp194
+	call	*%r10	# tmp194
+.LVL10:
+# main.c:86:     for(i=0;i<16;i++){
+	.loc 3 86 19 discriminator 3
+	addl	$1, -20(%rbp)	#, i
+.L7:
+# main.c:86:     for(i=0;i<16;i++){
+	.loc 3 86 14 discriminator 1
+	cmpl	$15, -20(%rbp)	#, i
+	jle	.L8	#,
+# main.c:91:     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
+	.loc 3 91 99
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp195
+	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _33
+# main.c:91:     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
+	.loc 3 91 5
+	movq	(%rax), %rax	# *_33, _34
+	movq	%rax, %rcx	# _34,
+	movabsq	$.LC3@GOTOFF, %rax	#, tmp197
+	leaq	(%rbx,%rax), %rax	#, tmp196
+	movq	%rax, %rdx	# tmp196,
+	movl	$0, %esi	#,
+	movl	$16711680, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %r8	#, tmp198
+	addq	%rbx, %r8	# tmp82, tmp198
+	call	*%r8	# tmp198
+.LVL11:
+# main.c:92:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
+	.loc 3 92 102
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp199
+	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _35
+# main.c:92:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
+	.loc 3 92 111
+	addq	$8, %rax	#, _36
+# main.c:92:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
+	.loc 3 92 5
+	movq	(%rax), %rax	# *_36, _37
+	movq	%rax, %rcx	# _37,
+	movabsq	$.LC4@GOTOFF, %rax	#, tmp201
+	leaq	(%rbx,%rax), %rax	#, tmp200
+	movq	%rax, %rdx	# tmp200,
+	movl	$0, %esi	#,
+	movl	$16711680, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %r8	#, tmp202
+	addq	%rbx, %r8	# tmp82, tmp202
+	call	*%r8	# tmp202
+.LVL12:
+# main.c:93:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
+	.loc 3 93 5
+	movabsq	$.LC6@GOTOFF, %rax	#, tmp204
+	leaq	(%rbx,%rax), %rax	#, tmp203
+	movq	%rax, %rdx	# tmp203,
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp139
-	addq	%rbx, %rcx	# tmp82, tmp139
-	call	*%rcx	# tmp139
-.LVL7:
-.L7:
-# main.c:84:     while (1)
-	.loc 3 84 11
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp205
+	addq	%rbx, %rcx	# tmp82, tmp205
+	call	*%rcx	# tmp205
+.LVL13:
+# main.c:95:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
+	.loc 3 95 5
+	movabsq	$.LC7@GOTOFF, %rax	#, tmp207
+	leaq	(%rbx,%rax), %rax	#, tmp206
+	movq	%rax, %rdx	# tmp206,
+	movl	$0, %esi	#,
+	movl	$16776960, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp208
+	addq	%rbx, %rcx	# tmp82, tmp208
+	call	*%rcx	# tmp208
+.LVL14:
+.L9:
+# main.c:96:     while (1)
+	.loc 3 96 11
 	nop	
-	jmp	.L7	#
+	jmp	.L9	#
 	.cfi_endproc
 .LFE40:
 	.size	Start_Kernel, .-Start_Kernel
@@ -3543,13 +3758,13 @@ Start_Kernel:
 	.file 6 "trap.h"
 	.section	.debug_info,"",@progbits
 .Ldebug_info0:
-	.long	0x5c2
+	.long	0x64f
 	.value	0x5
 	.byte	0x1
 	.byte	0x8
 	.long	.Ldebug_abbrev0
-	.uleb128 0x11
-	.long	.LASF74
+	.uleb128 0x12
+	.long	.LASF76
 	.byte	0x1d
 	.long	.LASF0
 	.long	.LASF1
@@ -3568,13 +3783,13 @@ Start_Kernel:
 	.byte	0x4
 	.byte	0x7
 	.long	.LASF4
-	.uleb128 0x9
-	.long	0x59
-	.long	0x59
 	.uleb128 0xa
+	.long	0x59
+	.long	0x59
+	.uleb128 0xb
 	.long	0x35
 	.byte	0xff
-	.uleb128 0xa
+	.uleb128 0xb
 	.long	0x35
 	.byte	0xf
 	.byte	0
@@ -3591,7 +3806,7 @@ Start_Kernel:
 	.uleb128 0x9
 	.byte	0x3
 	.quad	font_ascii
-	.uleb128 0xb
+	.uleb128 0xc
 	.long	.LASF20
 	.byte	0x28
 	.byte	0x4
@@ -3654,13 +3869,13 @@ Start_Kernel:
 	.long	0x35
 	.byte	0x20
 	.byte	0
-	.uleb128 0x12
+	.uleb128 0x13
 	.byte	0x4
 	.byte	0x5
 	.string	"int"
 	.uleb128 0x6
 	.long	0x3c
-	.uleb128 0xe
+	.uleb128 0xf
 	.string	"Pos"
 	.byte	0x2a
 	.byte	0x2
@@ -3668,10 +3883,10 @@ Start_Kernel:
 	.uleb128 0x9
 	.byte	0x3
 	.quad	Pos
-	.uleb128 0x9
+	.uleb128 0xa
 	.long	0x11d
 	.long	0x11d
-	.uleb128 0x13
+	.uleb128 0x14
 	.long	0x35
 	.value	0xfff
 	.byte	0
@@ -3679,9 +3894,9 @@ Start_Kernel:
 	.byte	0x1
 	.byte	0x6
 	.long	.LASF15
-	.uleb128 0x14
+	.uleb128 0x15
 	.long	0x11d
-	.uleb128 0xe
+	.uleb128 0xf
 	.string	"buf"
 	.byte	0x2e
 	.byte	0x6
@@ -3689,10 +3904,10 @@ Start_Kernel:
 	.uleb128 0x9
 	.byte	0x3
 	.quad	buf
-	.uleb128 0x9
+	.uleb128 0xa
 	.long	0x3c
 	.long	0x14e
-	.uleb128 0xa
+	.uleb128 0xb
 	.long	0x35
 	.byte	0x19
 	.byte	0
@@ -3729,7 +3944,7 @@ Start_Kernel:
 	.uleb128 0x9
 	.byte	0x3
 	.quad	ZONE_UNMAPED_INDEX
-	.uleb128 0xb
+	.uleb128 0xc
 	.long	.LASF21
 	.byte	0x14
 	.byte	0x2
@@ -3757,7 +3972,7 @@ Start_Kernel:
 	.long	0x3c
 	.byte	0x10
 	.byte	0
-	.uleb128 0x15
+	.uleb128 0x16
 	.long	.LASF25
 	.value	0x2f8
 	.byte	0x2
@@ -3862,16 +4077,16 @@ Start_Kernel:
 	.long	0x35
 	.value	0x2f0
 	.byte	0
-	.uleb128 0x9
+	.uleb128 0xa
 	.long	0x19c
 	.long	0x2bf
-	.uleb128 0xa
+	.uleb128 0xb
 	.long	0x35
 	.byte	0x1f
 	.byte	0
 	.uleb128 0x6
 	.long	0x35
-	.uleb128 0xb
+	.uleb128 0xc
 	.long	.LASF42
 	.byte	0x28
 	.byte	0x2
@@ -3905,7 +4120,7 @@ Start_Kernel:
 	.byte	0x13
 	.long	0x35
 	.byte	0x18
-	.uleb128 0x16
+	.uleb128 0x17
 	.string	"age"
 	.byte	0x2
 	.byte	0xe5
@@ -3915,7 +4130,7 @@ Start_Kernel:
 	.byte	0
 	.uleb128 0x6
 	.long	0x2c4
-	.uleb128 0xb
+	.uleb128 0xc
 	.long	.LASF47
 	.byte	0x50
 	.byte	0x2
@@ -4038,39 +4253,46 @@ Start_Kernel:
 	.byte	0x13
 	.byte	0xd
 	.long	0x11d
-	.uleb128 0xf
+	.uleb128 0x10
+	.long	.LASF65
+	.byte	0x55
+	.long	0xeb
+	.long	0x41c
+	.uleb128 0x9
+	.byte	0
+	.uleb128 0x11
 	.long	.LASF62
 	.byte	0x2
 	.byte	0xfc
-	.long	0x419
-	.uleb128 0xc
+	.long	0x429
+	.uleb128 0x9
 	.byte	0
-	.uleb128 0x17
-	.long	.LASF75
+	.uleb128 0x18
+	.long	.LASF77
 	.byte	0x4
 	.byte	0x3b
 	.byte	0x5
 	.long	0xeb
-	.long	0x43a
+	.long	0x44a
 	.uleb128 0xd
 	.long	0x3c
 	.uleb128 0xd
 	.long	0x3c
 	.uleb128 0xd
-	.long	0x43a
-	.uleb128 0xc
+	.long	0x44a
+	.uleb128 0x9
 	.byte	0
 	.uleb128 0x6
 	.long	0x124
-	.uleb128 0xf
+	.uleb128 0x11
 	.long	.LASF63
 	.byte	0x6
 	.byte	0x28
-	.long	0x44c
-	.uleb128 0xc
+	.long	0x45c
+	.uleb128 0x9
 	.byte	0
-	.uleb128 0x18
-	.long	.LASF76
+	.uleb128 0x19
+	.long	.LASF78
 	.byte	0x3
 	.byte	0x16
 	.byte	0x6
@@ -4078,8 +4300,8 @@ Start_Kernel:
 	.quad	.LFE40-.LFB40
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x4ec
-	.uleb128 0x10
+	.long	0x579
+	.uleb128 0xe
 	.string	"cr4"
 	.byte	0x3
 	.byte	0x1d
@@ -4087,40 +4309,80 @@ Start_Kernel:
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
-	.sleb128 -40
-	.uleb128 0x19
+	.sleb128 -48
+	.uleb128 0xe
 	.string	"i"
 	.byte	0x3
 	.byte	0x24
 	.byte	0x9
 	.long	0xeb
-	.uleb128 0x4
-	.quad	.LVL0
-	.long	0x51e
-	.uleb128 0x4
-	.quad	.LVL1
-	.long	0x43f
-	.uleb128 0x4
-	.quad	.LVL2
-	.long	0x419
-	.uleb128 0x4
-	.quad	.LVL3
-	.long	0x419
-	.uleb128 0x4
-	.quad	.LVL4
-	.long	0x419
-	.uleb128 0x4
-	.quad	.LVL5
-	.long	0x40c
-	.uleb128 0x4
-	.quad	.LVL6
-	.long	0x419
-	.uleb128 0x4
-	.quad	.LVL7
-	.long	0x419
-	.byte	0
+	.uleb128 0x2
+	.byte	0x91
+	.sleb128 -36
 	.uleb128 0x1a
-	.long	.LASF77
+	.long	.LASF64
+	.byte	0x3
+	.byte	0x52
+	.byte	0x12
+	.long	0x312
+	.uleb128 0x2
+	.byte	0x91
+	.sleb128 -56
+	.uleb128 0x10
+	.long	.LASF65
+	.byte	0x55
+	.long	0xeb
+	.long	0x4b5
+	.uleb128 0x9
+	.byte	0
+	.uleb128 0x3
+	.quad	.LVL0
+	.long	0x5ab
+	.uleb128 0x3
+	.quad	.LVL1
+	.long	0x44f
+	.uleb128 0x3
+	.quad	.LVL2
+	.long	0x429
+	.uleb128 0x3
+	.quad	.LVL3
+	.long	0x429
+	.uleb128 0x3
+	.quad	.LVL4
+	.long	0x429
+	.uleb128 0x3
+	.quad	.LVL5
+	.long	0x41c
+	.uleb128 0x3
+	.quad	.LVL6
+	.long	0x429
+	.uleb128 0x3
+	.quad	.LVL7
+	.long	0x429
+	.uleb128 0x3
+	.quad	.LVL8
+	.long	0x40c
+	.uleb128 0x3
+	.quad	.LVL9
+	.long	0x429
+	.uleb128 0x3
+	.quad	.LVL10
+	.long	0x429
+	.uleb128 0x3
+	.quad	.LVL11
+	.long	0x429
+	.uleb128 0x3
+	.quad	.LVL12
+	.long	0x429
+	.uleb128 0x3
+	.quad	.LVL13
+	.long	0x429
+	.uleb128 0x3
+	.quad	.LVL14
+	.long	0x429
+	.byte	0
+	.uleb128 0x1b
+	.long	.LASF79
 	.byte	0x2
 	.byte	0x88
 	.byte	0x17
@@ -4129,8 +4391,8 @@ Start_Kernel:
 	.quad	.LFE39-.LFB39
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x51e
-	.uleb128 0x10
+	.long	0x5ab
+	.uleb128 0xe
 	.string	"tmp"
 	.byte	0x2
 	.byte	0x89
@@ -4140,8 +4402,8 @@ Start_Kernel:
 	.byte	0x91
 	.sleb128 -24
 	.byte	0
-	.uleb128 0x1b
-	.long	.LASF78
+	.uleb128 0x1c
+	.long	.LASF80
 	.byte	0x1
 	.byte	0x94
 	.byte	0x6
@@ -4149,80 +4411,80 @@ Start_Kernel:
 	.quad	.LFE38-.LFB38
 	.uleb128 0x1
 	.byte	0x9c
-	.uleb128 0x3
-	.long	.LASF64
+	.uleb128 0x4
+	.long	.LASF66
 	.byte	0x94
 	.byte	0x1e
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
-	.uleb128 0x3
-	.long	.LASF65
+	.uleb128 0x4
+	.long	.LASF67
 	.byte	0x94
 	.byte	0x31
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -32
-	.uleb128 0x3
-	.long	.LASF66
+	.uleb128 0x4
+	.long	.LASF68
 	.byte	0x94
 	.byte	0x44
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
-	.uleb128 0x3
-	.long	.LASF67
+	.uleb128 0x4
+	.long	.LASF69
 	.byte	0x94
 	.byte	0x57
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -48
-	.uleb128 0x3
-	.long	.LASF68
+	.uleb128 0x4
+	.long	.LASF70
 	.byte	0x94
 	.byte	0x6a
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
-	.uleb128 0x3
-	.long	.LASF69
+	.uleb128 0x4
+	.long	.LASF71
 	.byte	0x94
 	.byte	0x7d
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
-	.uleb128 0x3
-	.long	.LASF70
+	.uleb128 0x4
+	.long	.LASF72
 	.byte	0x95
 	.byte	0xf
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 0
-	.uleb128 0x3
-	.long	.LASF71
+	.uleb128 0x4
+	.long	.LASF73
 	.byte	0x95
 	.byte	0x22
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 8
-	.uleb128 0x3
-	.long	.LASF72
+	.uleb128 0x4
+	.long	.LASF74
 	.byte	0x95
 	.byte	0x35
 	.long	0x35
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 16
-	.uleb128 0x3
-	.long	.LASF73
+	.uleb128 0x4
+	.long	.LASF75
 	.byte	0x95
 	.byte	0x48
 	.long	0x35
@@ -4269,6 +4531,15 @@ Start_Kernel:
 	.byte	0
 	.byte	0
 	.uleb128 0x3
+	.uleb128 0x48
+	.byte	0
+	.uleb128 0x7d
+	.uleb128 0x1
+	.uleb128 0x7f
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x4
 	.uleb128 0x5
 	.byte	0
 	.uleb128 0x3
@@ -4284,15 +4555,6 @@ Start_Kernel:
 	.uleb128 0x13
 	.uleb128 0x2
 	.uleb128 0x18
-	.byte	0
-	.byte	0
-	.uleb128 0x4
-	.uleb128 0x48
-	.byte	0
-	.uleb128 0x7d
-	.uleb128 0x1
-	.uleb128 0x7f
-	.uleb128 0x13
 	.byte	0
 	.byte	0
 	.uleb128 0x5
@@ -4355,6 +4617,11 @@ Start_Kernel:
 	.byte	0
 	.byte	0
 	.uleb128 0x9
+	.uleb128 0x18
+	.byte	0
+	.byte	0
+	.byte	0
+	.uleb128 0xa
 	.uleb128 0x1
 	.byte	0x1
 	.uleb128 0x49
@@ -4363,7 +4630,7 @@ Start_Kernel:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0xa
+	.uleb128 0xb
 	.uleb128 0x21
 	.byte	0
 	.uleb128 0x49
@@ -4372,7 +4639,7 @@ Start_Kernel:
 	.uleb128 0xb
 	.byte	0
 	.byte	0
-	.uleb128 0xb
+	.uleb128 0xc
 	.uleb128 0x13
 	.byte	0x1
 	.uleb128 0x3
@@ -4390,11 +4657,6 @@ Start_Kernel:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0xc
-	.uleb128 0x18
-	.byte	0
-	.byte	0
-	.byte	0
 	.uleb128 0xd
 	.uleb128 0x5
 	.byte	0
@@ -4403,6 +4665,23 @@ Start_Kernel:
 	.byte	0
 	.byte	0
 	.uleb128 0xe
+	.uleb128 0x34
+	.byte	0
+	.uleb128 0x3
+	.uleb128 0x8
+	.uleb128 0x3a
+	.uleb128 0xb
+	.uleb128 0x3b
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0xb
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x2
+	.uleb128 0x18
+	.byte	0
+	.byte	0
+	.uleb128 0xf
 	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
@@ -4422,7 +4701,30 @@ Start_Kernel:
 	.uleb128 0x18
 	.byte	0
 	.byte	0
-	.uleb128 0xf
+	.uleb128 0x10
+	.uleb128 0x2e
+	.byte	0x1
+	.uleb128 0x3f
+	.uleb128 0x19
+	.uleb128 0x3
+	.uleb128 0xe
+	.uleb128 0x3a
+	.uleb128 0x21
+	.sleb128 3
+	.uleb128 0x3b
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0x21
+	.sleb128 10
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x3c
+	.uleb128 0x19
+	.uleb128 0x1
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x11
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -4442,24 +4744,7 @@ Start_Kernel:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x10
-	.uleb128 0x34
-	.byte	0
-	.uleb128 0x3
-	.uleb128 0x8
-	.uleb128 0x3a
-	.uleb128 0xb
-	.uleb128 0x3b
-	.uleb128 0xb
-	.uleb128 0x39
-	.uleb128 0xb
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x2
-	.uleb128 0x18
-	.byte	0
-	.byte	0
-	.uleb128 0x11
+	.uleb128 0x12
 	.uleb128 0x11
 	.byte	0x1
 	.uleb128 0x25
@@ -4478,7 +4763,7 @@ Start_Kernel:
 	.uleb128 0x17
 	.byte	0
 	.byte	0
-	.uleb128 0x12
+	.uleb128 0x13
 	.uleb128 0x24
 	.byte	0
 	.uleb128 0xb
@@ -4489,7 +4774,7 @@ Start_Kernel:
 	.uleb128 0x8
 	.byte	0
 	.byte	0
-	.uleb128 0x13
+	.uleb128 0x14
 	.uleb128 0x21
 	.byte	0
 	.uleb128 0x49
@@ -4498,14 +4783,14 @@ Start_Kernel:
 	.uleb128 0x5
 	.byte	0
 	.byte	0
-	.uleb128 0x14
+	.uleb128 0x15
 	.uleb128 0x26
 	.byte	0
 	.uleb128 0x49
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x15
+	.uleb128 0x16
 	.uleb128 0x13
 	.byte	0x1
 	.uleb128 0x3
@@ -4522,7 +4807,7 @@ Start_Kernel:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x16
+	.uleb128 0x17
 	.uleb128 0xd
 	.byte	0
 	.uleb128 0x3
@@ -4539,7 +4824,7 @@ Start_Kernel:
 	.uleb128 0xb
 	.byte	0
 	.byte	0
-	.uleb128 0x17
+	.uleb128 0x18
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -4562,7 +4847,7 @@ Start_Kernel:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x18
+	.uleb128 0x19
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -4589,11 +4874,11 @@ Start_Kernel:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x19
+	.uleb128 0x1a
 	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
-	.uleb128 0x8
+	.uleb128 0xe
 	.uleb128 0x3a
 	.uleb128 0xb
 	.uleb128 0x3b
@@ -4602,9 +4887,11 @@ Start_Kernel:
 	.uleb128 0xb
 	.uleb128 0x49
 	.uleb128 0x13
+	.uleb128 0x2
+	.uleb128 0x18
 	.byte	0
 	.byte	0
-	.uleb128 0x1a
+	.uleb128 0x1b
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3
@@ -4629,7 +4916,7 @@ Start_Kernel:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x1b
+	.uleb128 0x1c
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -4686,13 +4973,15 @@ Start_Kernel:
 	.string	"Page"
 .LASF14:
 	.string	"font_ascii"
-.LASF75:
+.LASF77:
 	.string	"color_printk"
 .LASF56:
 	.string	"Global_CR3"
+.LASF71:
+	.string	"ist3"
 .LASF60:
 	.string	"_edata"
-.LASF72:
+.LASF74:
 	.string	"ist6"
 .LASF45:
 	.string	"attribute"
@@ -4736,15 +5025,15 @@ Start_Kernel:
 	.string	"length"
 .LASF17:
 	.string	"ZONE_DMA_INDEX"
-.LASF76:
+.LASF78:
 	.string	"Start_Kernel"
 .LASF5:
 	.string	"unsigned char"
 .LASF13:
 	.string	"FB_length"
-.LASF65:
+.LASF67:
 	.string	"rsp1"
-.LASF66:
+.LASF68:
 	.string	"rsp2"
 .LASF22:
 	.string	"address"
@@ -4768,7 +5057,7 @@ Start_Kernel:
 	.string	"YResolution"
 .LASF15:
 	.string	"char"
-.LASF74:
+.LASF76:
 	.string	"GNU C17 13.3.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
 .LASF54:
 	.string	"page_free_count"
@@ -4778,15 +5067,15 @@ Start_Kernel:
 	.string	"PHY_address"
 .LASF6:
 	.string	"XResolution"
-.LASF67:
+.LASF69:
 	.string	"ist1"
-.LASF68:
+.LASF70:
 	.string	"ist2"
 .LASF39:
 	.string	"end_data"
-.LASF70:
+.LASF72:
 	.string	"ist4"
-.LASF71:
+.LASF73:
 	.string	"ist5"
 .LASF3:
 	.string	"long unsigned int"
@@ -4800,9 +5089,11 @@ Start_Kernel:
 	.string	"zone_length"
 .LASF29:
 	.string	"bits_size"
-.LASF78:
+.LASF80:
 	.string	"set_tss64"
-.LASF77:
+.LASF65:
+	.string	"alloc_page"
+.LASF79:
 	.string	"Get_gdt"
 .LASF36:
 	.string	"zones_length"
@@ -4810,25 +5101,25 @@ Start_Kernel:
 	.string	"e820"
 .LASF20:
 	.string	"position"
-.LASF64:
+.LASF66:
 	.string	"rsp0"
 .LASF47:
 	.string	"Zone"
-.LASF69:
-	.string	"ist3"
+.LASF64:
+	.string	"page"
 .LASF43:
 	.string	"zone_struct"
 .LASF33:
 	.string	"pages_length"
 .LASF59:
 	.string	"_etext"
-.LASF73:
+.LASF75:
 	.string	"ist7"
 	.section	.debug_line_str,"MS",@progbits,1
+.LASF1:
+	.string	"/workspace/myos/kernel"
 .LASF0:
 	.string	"main.c"
-.LASF1:
-	.string	"/home/student/myos/kernel"
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"

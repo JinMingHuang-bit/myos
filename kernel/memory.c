@@ -209,3 +209,80 @@ for(j=0;j<=i;j++){
 	flush_tlb();
 
 }
+
+/*	
+	number:number<=64
+	zone_select:zone select from dma,mapped in pagetable,unmapped in pagetable
+	page_flags:struct Page flages.
+
+	**for using in bochs simulator,since bochs can only use 2G memory,so there is only one Available physical memory segments
+	so ZONE_DMA_INDEX,ZONE_NORMAL_INDEX,ZONE_UNMAPED_INDEX are all the same zone**.(it need to change in the future version)
+*/
+
+struct Page *alloc_page(int zone_select,int number,unsigned long page_flags){
+	int i;
+	unsigned long page=0;
+	int zone_start=0;
+	int zone_end=0;
+	switch(zone_select){
+		case ZONE_DMA:
+			zone_start=0;
+			zone_end=ZONE_DMA_INDEX;
+			break;
+		case ZONE_NORMAL:
+			zone_start=ZONE_DMA_INDEX;
+			zone_end=ZONE_NORMAL_INDEX;
+			break;
+		case ZONE_UNMAPED:
+			zone_start=ZONE_UNMAPED_INDEX;
+			zone_end=memory_management_struct.zones_size-1;
+			break;
+		default:
+			color_printk(RED,BLACK,"Error:zone_select error!\n");
+			return NULL;
+			break;
+	}
+for(i=zone_start;i<=zone_end;i++){
+	struct Zone *z;
+	unsigned long j;
+	unsigned long start,end,length;
+	unsigned long tmp;
+	if((memory_management_struct.zones_struct+i)->page_free_count<number){
+		continue;
+	}
+	z = memory_management_struct.zones_struct + i;
+	start = z->zone_start_address >>PAGE_2M_SHIFT;
+	end = z->zone_end_address >> PAGE_2M_SHIFT;
+	length = z->zone_length>>PAGE_2M_SHIFT;
+	tmp=64-start%64;
+	//将索引变量j调整到对齐处
+	for(j=start;j<=end;j+= j%64 ? tmp : 64){
+		unsigned long *p=memory_management_struct.bits_map+(j>>6);
+		unsigned long shift=j%64;
+		unsigned long k;
+		for(k=shift;k<64-shift;k++){
+			//Determine whether the bit segment of length number starting from the kth bit in the consecutive memory starting from p is all zeros. 
+		    /*
+			The entire expression can be decomposed into：
+              A = (*p >> k) | (*(p+1) << (64-k)) - Extract the segments across the border
+              B = (number == 64 ? 0xffffffffffffffffUL : ((1UL << number) - 1)) - Generate mask  **
+            When the value of number is 64, shifting it 64 bits will result in undefined behavior 
+			(since 1UL is 64 bits and shifting 64 bits will move all the bits out), so special handling is required.
+			**
+			C = A & B - Use mask to filter the bit segments
+              if (!C) - Check whether the filtered segments are all zeros.
+			*/  
+			  if(!(((*p>>k)|(*(p+1)<<(64-k)))&(number == 64 ? 0xffffffffffffffffUL : ((1UL << number) - 1)))){
+		      	unsigned long l;
+				page=j+k-1;
+				for(l=0;l<number;l++){
+					struct Page *x=memory_management_struct.pages_struct+page+l;
+					page_init(x,page_flags);
+				}
+				return (struct Page*)(memory_management_struct.pages_struct+page);
+		      }
+		}
+	}
+}
+return NULL;
+}
