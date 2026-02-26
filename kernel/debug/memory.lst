@@ -9,7 +9,7 @@ GAS LISTING memory.s 			page 1
    6              	# options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-prote
    7              		.text
    8              	.Ltext0:
-   9              		.file 0 "/workspace/myos/kernel" "memory.c"
+   9              		.file 0 "/home/student/myos/kernel" "memory.c"
   10              		.type	Cmemset, @function
   11              	Cmemset:
   12              	.LFB12:
@@ -9513,21 +9513,21 @@ GAS LISTING memory.s 			page 1
  7152      727400
  7153              		.section	.debug_line_str,"MS",@progbits,1
  7154              	.LASF1:
- 7155 0000 2F776F72 		.string	"/workspace/myos/kernel"
- 7155      6B737061 
- 7155      63652F6D 
- 7155      796F732F 
- 7155      6B65726E 
+ 7155 0000 2F686F6D 		.string	"/home/student/myos/kernel"
+ 7155      652F7374 
+ 7155      7564656E 
+ 7155      742F6D79 
+ 7155      6F732F6B 
  7156              	.LASF0:
- 7157 0017 6D656D6F 		.string	"memory.c"
+ 7157 001a 6D656D6F 		.string	"memory.c"
  7157      72792E63 
  7157      00
  7158              		.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
- 7159 0020 2F776F72 		.section	.note.GNU-stack,"",@progbits
- 7159      6B737061 
- 7159      63652F6D 
- 7159      796F732F 
- 7159      6B65726E 
+ 7159 0023 2F686F6D 		.section	.note.GNU-stack,"",@progbits
+ 7159      652F7374 
+ 7159      7564656E 
+ 7159      742F6D79 
+ 7159      6F732F6B 
  7160              		.section	.note.gnu.property,"a"
  7161              		.align 8
  7162 0000 04000000 		.long	1f - 0f

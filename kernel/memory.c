@@ -277,6 +277,7 @@ for(i=zone_start;i<=zone_end;i++){
 				page=j+k-1;
 				for(l=0;l<number;l++){
 					struct Page *x=memory_management_struct.pages_struct+page+l;
+					//error here
 					page_init(x,page_flags);
 				}
 				return (struct Page*)(memory_management_struct.pages_struct+page);

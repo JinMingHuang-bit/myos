@@ -9,7 +9,7 @@ GAS LISTING printk.s 			page 1
    6              	# options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-prote
    7              		.text
    8              	.Ltext0:
-   9              		.file 0 "/workspace/myos/kernel" "printk.c"
+   9              		.file 0 "/home/student/myos/kernel" "printk.c"
   10              		.globl	font_ascii
   11              		.data
   12              		.align 32
@@ -9591,25 +9591,25 @@ GAS LISTING printk.s 			page 1
  7237      696E7466 
  7237      00
  7238              		.section	.debug_line_str,"MS",@progbits,1
- 7239              	.LASF1:
- 7240 0000 2F776F72 		.string	"/workspace/myos/kernel"
- 7240      6B737061 
- 7240      63652F6D 
- 7240      796F732F 
- 7240      6B65726E 
- 7241              	.LASF0:
+ 7239              	.LASF0:
+ 7240 0000 7072696E 		.string	"printk.c"
+ 7240      746B2E63 
+ 7240      00
+ 7241              	.LASF1:
+ 7242 0009 2F686F6D 		.string	"/home/student/myos/kernel"
+ 7242      652F7374 
 GAS LISTING printk.s 			page 161
 
 
- 7242 0017 7072696E 		.string	"printk.c"
- 7242      746B2E63 
- 7242      00
+ 7242      7564656E 
+ 7242      742F6D79 
+ 7242      6F732F6B 
  7243              		.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
- 7244 0020 2F776F72 		.section	.note.GNU-stack,"",@progbits
- 7244      6B737061 
- 7244      63652F6D 
- 7244      796F732F 
- 7244      6B65726E 
+ 7244 0023 2F686F6D 		.section	.note.GNU-stack,"",@progbits
+ 7244      652F7374 
+ 7244      7564656E 
+ 7244      742F6D79 
+ 7244      6F732F6B 
  7245              		.section	.note.gnu.property,"a"
  7246              		.align 8
  7247 0000 04000000 		.long	1f - 0f

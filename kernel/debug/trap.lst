@@ -9,7 +9,7 @@ GAS LISTING trap.s 			page 1
    6              	# options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-prote
    7              		.text
    8              	.Ltext0:
-   9              		.file 0 "/workspace/myos/kernel" "trap.c"
+   9              		.file 0 "/home/student/myos/kernel" "trap.c"
   10              		.type	set_intr_gate, @function
   11              	set_intr_gate:
   12              	.LFB34:
@@ -10316,24 +10316,24 @@ GAS LISTING trap.s 			page 1
  7912      6174696F 
  7912      6E5F6578 
  7913              		.section	.debug_line_str,"MS",@progbits,1
- 7914              	.LASF1:
- 7915 0000 2F776F72 		.string	"/workspace/myos/kernel"
+ 7914              	.LASF0:
+ 7915 0000 74726170 		.string	"trap.c"
 GAS LISTING trap.s 			page 173
 
 
- 7915      6B737061 
- 7915      63652F6D 
- 7915      796F732F 
- 7915      6B65726E 
- 7916              	.LASF0:
- 7917 0017 74726170 		.string	"trap.c"
- 7917      2E6300
+ 7915      2E6300
+ 7916              	.LASF1:
+ 7917 0007 2F686F6D 		.string	"/home/student/myos/kernel"
+ 7917      652F7374 
+ 7917      7564656E 
+ 7917      742F6D79 
+ 7917      6F732F6B 
  7918              		.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
- 7919 001e 2F776F72 		.section	.note.GNU-stack,"",@progbits
- 7919      6B737061 
- 7919      63652F6D 
- 7919      796F732F 
- 7919      6B65726E 
+ 7919 0021 2F686F6D 		.section	.note.GNU-stack,"",@progbits
+ 7919      652F7374 
+ 7919      7564656E 
+ 7919      742F6D79 
+ 7919      6F732F6B 
  7920              		.section	.note.gnu.property,"a"
  7921              		.align 8
  7922 0000 04000000 		.long	1f - 0f

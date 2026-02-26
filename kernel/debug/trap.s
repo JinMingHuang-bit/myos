@@ -6,7 +6,7 @@
 # options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection
 	.text
 .Ltext0:
-	.file 0 "/workspace/myos/kernel" "trap.c"
+	.file 0 "/home/student/myos/kernel" "trap.c"
 	.type	set_intr_gate, @function
 set_intr_gate:
 .LFB34:
@@ -7911,10 +7911,10 @@ sys_vector_init:
 .LASF40:
 	.string	"do_virtualization_exception"
 	.section	.debug_line_str,"MS",@progbits,1
-.LASF1:
-	.string	"/workspace/myos/kernel"
 .LASF0:
 	.string	"trap.c"
+.LASF1:
+	.string	"/home/student/myos/kernel"
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"

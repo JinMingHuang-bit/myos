@@ -6,7 +6,7 @@
 # options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection
 	.text
 .Ltext0:
-	.file 0 "/workspace/myos/kernel" "memory.c"
+	.file 0 "/home/student/myos/kernel" "memory.c"
 	.type	Cmemset, @function
 Cmemset:
 .LFB12:
@@ -7152,7 +7152,7 @@ alloc_page:
 	.string	"zone_start"
 	.section	.debug_line_str,"MS",@progbits,1
 .LASF1:
-	.string	"/workspace/myos/kernel"
+	.string	"/home/student/myos/kernel"
 .LASF0:
 	.string	"memory.c"
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
