@@ -248,7 +248,7 @@ unsigned long * Global_CR3 = NULL;
 
 unsigned long page_init(struct Page * page,unsigned long flags);
 struct Global_Memory_Descriptor memory_management_struct;
-
+struct Page *alloc_page(int zone_select,int number,unsigned long page_flags);
 void init_memory();
 
 #endif

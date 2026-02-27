@@ -3334,48 +3334,48 @@ Start_Kernel:
 	orq	$1024, -32(%rbp)	#, cr4
 # main.c:33:     asm volatile("mov %0, %%cr4" : : "r"(cr4));
 	.loc 3 33 5
-	movq	-32(%rbp), %rax	# cr4, tmp121
+	movq	-32(%rbp), %rax	# cr4, tmp119
 #APP
 # 33 "main.c" 1
-	mov %rax, %cr4	# tmp121
+	mov %rax, %cr4	# tmp119
 # 0 "" 2
 # main.c:37:     Pos.XResolution=1440;
 	.loc 3 37 20
 #NO_APP
-	movabsq	$Pos@GOTOFF, %rax	#, tmp122
+	movabsq	$Pos@GOTOFF, %rax	#, tmp120
 	movl	$1440, (%rbx,%rax)	#, Pos.XResolution
 # main.c:38:     Pos.YResolution=900;
 	.loc 3 38 20
-	movabsq	$Pos@GOTOFF, %rax	#, tmp123
+	movabsq	$Pos@GOTOFF, %rax	#, tmp121
 	movl	$900, 4(%rbx,%rax)	#, Pos.YResolution
 # main.c:39:     Pos.XPosition=0;
 	.loc 3 39 18
-	movabsq	$Pos@GOTOFF, %rax	#, tmp124
+	movabsq	$Pos@GOTOFF, %rax	#, tmp122
 	movl	$0, 8(%rbx,%rax)	#, Pos.XPosition
 # main.c:40:     Pos.YPosition=0;
 	.loc 3 40 18
-	movabsq	$Pos@GOTOFF, %rax	#, tmp125
+	movabsq	$Pos@GOTOFF, %rax	#, tmp123
 	movl	$0, 12(%rbx,%rax)	#, Pos.YPosition
 # main.c:41:     Pos.XCharSize=8;
 	.loc 3 41 18
-	movabsq	$Pos@GOTOFF, %rax	#, tmp126
+	movabsq	$Pos@GOTOFF, %rax	#, tmp124
 	movl	$8, 16(%rbx,%rax)	#, Pos.XCharSize
 # main.c:42:     Pos.YCharSize=16;
 	.loc 3 42 18
-	movabsq	$Pos@GOTOFF, %rax	#, tmp127
+	movabsq	$Pos@GOTOFF, %rax	#, tmp125
 	movl	$16, 20(%rbx,%rax)	#, Pos.YCharSize
 # main.c:44:     Pos.FB_addr=(int *)0xffff800000a00000;
 	.loc 3 44 16
-	movabsq	$Pos@GOTOFF, %rax	#, tmp128
-	movabsq	$-140737477869568, %rsi	#, tmp210
-	movq	%rsi, 24(%rbx,%rax)	# tmp210, Pos.FB_addr
+	movabsq	$Pos@GOTOFF, %rax	#, tmp126
+	movabsq	$-140737477869568, %rsi	#, tmp209
+	movq	%rsi, 24(%rbx,%rax)	# tmp209, Pos.FB_addr
 # main.c:45:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
 	.loc 3 45 23
-	movabsq	$Pos@GOTOFF, %rax	#, tmp129
+	movabsq	$Pos@GOTOFF, %rax	#, tmp127
 	movl	(%rbx,%rax), %edx	# Pos.XResolution, _1
 # main.c:45:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
 	.loc 3 45 39
-	movabsq	$Pos@GOTOFF, %rax	#, tmp130
+	movabsq	$Pos@GOTOFF, %rax	#, tmp128
 	movl	4(%rbx,%rax), %eax	# Pos.YResolution, _2
 # main.c:45:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
 	.loc 3 45 35
@@ -3386,11 +3386,11 @@ Start_Kernel:
 	cltq
 # main.c:45:     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
 	.loc 3 45 18
-	movabsq	$Pos@GOTOFF, %rdx	#, tmp131
+	movabsq	$Pos@GOTOFF, %rdx	#, tmp129
 	movq	%rax, 32(%rbx,%rdx)	# _5, Pos.FB_length
 # main.c:46:     load_TR(8);
 	.loc 3 46 5
-	movl	$64, %eax	#, tmp132
+	movl	$64, %eax	#, tmp130
 #APP
 # 46 "main.c" 1
 	ltr %ax	
@@ -3408,135 +3408,135 @@ Start_Kernel:
 	movl	$-32768, 4(%rsp)	#,
 	movabsq	$-140737488323584, %r9	#,
 	movabsq	$-140737488323584, %r8	#,
+	movabsq	$-140737488323584, %rax	#, tmp131
+	movq	%rax, %rcx	# tmp131,
+	movabsq	$-140737488323584, %rax	#, tmp132
+	movq	%rax, %rdx	# tmp132,
 	movabsq	$-140737488323584, %rax	#, tmp133
-	movq	%rax, %rcx	# tmp133,
+	movq	%rax, %rsi	# tmp133,
 	movabsq	$-140737488323584, %rax	#, tmp134
-	movq	%rax, %rdx	# tmp134,
-	movabsq	$-140737488323584, %rax	#, tmp135
-	movq	%rax, %rsi	# tmp135,
-	movabsq	$-140737488323584, %rax	#, tmp136
-	movq	%rax, %rdi	# tmp136,
-	movabsq	$set_tss64@GOTOFF, %rax	#, tmp138
-	leaq	(%rbx,%rax), %rax	#, tmp137
-	call	*%rax	# tmp137
+	movq	%rax, %rdi	# tmp134,
+	movabsq	$set_tss64@GOTOFF, %rax	#, tmp136
+	leaq	(%rbx,%rax), %rax	#, tmp135
+	call	*%rax	# tmp135
 .LVL0:
 	addq	$32, %rsp	#,
 # main.c:50:     sys_vector_init();
 	.loc 3 50 5
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$sys_vector_init@PLTOFF, %rdx	#, tmp139
-	addq	%rbx, %rdx	# tmp82, tmp139
-	call	*%rdx	# tmp139
+	movabsq	$sys_vector_init@PLTOFF, %rdx	#, tmp137
+	addq	%rbx, %rdx	# tmp82, tmp137
+	call	*%rdx	# tmp137
 .LVL1:
 # main.c:53:     memory_management_struct.start_code = (unsigned long)& _text;
 	.loc 3 53 43
-	movabsq	$_text@GOT, %rax	#, tmp140
-	movq	(%rbx,%rax), %rax	#, tmp141
-	movq	%rax, %rdx	# tmp141, _text.0_6
+	movabsq	$_text@GOT, %rax	#, tmp138
+	movq	(%rbx,%rax), %rax	#, tmp139
+	movq	%rax, %rdx	# tmp139, _text.0_6
 # main.c:53:     memory_management_struct.start_code = (unsigned long)& _text;
 	.loc 3 53 41
-	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp142
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp140
 	movq	%rdx, 720(%rbx,%rax)	# _text.0_6, memory_management_struct.start_code
 # main.c:54: 	memory_management_struct.end_code   = (unsigned long)& _etext;
 	.loc 3 54 40
-	movabsq	$_etext@GOT, %rax	#, tmp143
-	movq	(%rbx,%rax), %rax	#, tmp144
-	movq	%rax, %rdx	# tmp144, _etext.1_7
+	movabsq	$_etext@GOT, %rax	#, tmp141
+	movq	(%rbx,%rax), %rax	#, tmp142
+	movq	%rax, %rdx	# tmp142, _etext.1_7
 # main.c:54: 	memory_management_struct.end_code   = (unsigned long)& _etext;
 	.loc 3 54 38
-	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp145
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp143
 	movq	%rdx, 728(%rbx,%rax)	# _etext.1_7, memory_management_struct.end_code
 # main.c:55: 	memory_management_struct.end_data   = (unsigned long)& _edata;
 	.loc 3 55 40
-	movabsq	$_edata@GOT, %rax	#, tmp146
-	movq	(%rbx,%rax), %rax	#, tmp147
-	movq	%rax, %rdx	# tmp147, _edata.2_8
+	movabsq	$_edata@GOT, %rax	#, tmp144
+	movq	(%rbx,%rax), %rax	#, tmp145
+	movq	%rax, %rdx	# tmp145, _edata.2_8
 # main.c:55: 	memory_management_struct.end_data   = (unsigned long)& _edata;
 	.loc 3 55 38
-	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp148
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp146
 	movq	%rdx, 736(%rbx,%rax)	# _edata.2_8, memory_management_struct.end_data
 # main.c:56: 	memory_management_struct.end_brk    = (unsigned long)& _end;
 	.loc 3 56 40
-	movabsq	$_end@GOT, %rax	#, tmp149
-	movq	(%rbx,%rax), %rax	#, tmp150
-	movq	%rax, %rdx	# tmp150, _end.3_9
+	movabsq	$_end@GOT, %rax	#, tmp147
+	movq	(%rbx,%rax), %rax	#, tmp148
+	movq	%rax, %rdx	# tmp148, _end.3_9
 # main.c:56: 	memory_management_struct.end_brk    = (unsigned long)& _end;
 	.loc 3 56 38
-	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp151
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp149
 	movq	%rdx, 744(%rbx,%rax)	# _end.3_9, memory_management_struct.end_brk
 # main.c:57:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
 	.loc 3 57 5
-	movabsq	$.LC0@GOTOFF, %rax	#, tmp153
-	leaq	(%rbx,%rax), %rax	#, tmp152
-	movq	%rax, %rdx	# tmp152,
+	movabsq	$.LC0@GOTOFF, %rax	#, tmp151
+	leaq	(%rbx,%rax), %rax	#, tmp150
+	movq	%rax, %rdx	# tmp150,
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp154
-	addq	%rbx, %rcx	# tmp82, tmp154
-	call	*%rcx	# tmp154
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp152
+	addq	%rbx, %rcx	# tmp82, tmp152
+	call	*%rcx	# tmp152
 .LVL2:
 # main.c:58:     color_printk(YELLOW,BLACK,"hello,User\n");
 	.loc 3 58 5
-	movabsq	$.LC1@GOTOFF, %rax	#, tmp156
-	leaq	(%rbx,%rax), %rax	#, tmp155
-	movq	%rax, %rdx	# tmp155,
+	movabsq	$.LC1@GOTOFF, %rax	#, tmp154
+	leaq	(%rbx,%rax), %rax	#, tmp153
+	movq	%rax, %rdx	# tmp153,
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp157
-	addq	%rbx, %rcx	# tmp82, tmp157
-	call	*%rcx	# tmp157
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp155
+	addq	%rbx, %rcx	# tmp82, tmp155
+	call	*%rcx	# tmp155
 .LVL3:
 # main.c:59:     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
 	.loc 3 59 5
-	movabsq	$.LC2@GOTOFF, %rax	#, tmp159
-	leaq	(%rbx,%rax), %rax	#, tmp158
-	movq	%rax, %rdx	# tmp158,
+	movabsq	$.LC2@GOTOFF, %rax	#, tmp157
+	leaq	(%rbx,%rax), %rax	#, tmp156
+	movq	%rax, %rdx	# tmp156,
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp160
-	addq	%rbx, %rcx	# tmp82, tmp160
-	call	*%rcx	# tmp160
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp158
+	addq	%rbx, %rcx	# tmp82, tmp158
+	call	*%rcx	# tmp158
 .LVL4:
 # main.c:81:     init_memory();
 	.loc 3 81 5
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$init_memory@PLTOFF, %rdx	#, tmp161
-	addq	%rbx, %rdx	# tmp82, tmp161
-	call	*%rdx	# tmp161
+	movabsq	$init_memory@PLTOFF, %rdx	#, tmp159
+	addq	%rbx, %rdx	# tmp82, tmp159
+	call	*%rdx	# tmp159
 .LVL5:
 # main.c:82:     struct Page *page=NULL;
 	.loc 3 82 18
 	movq	$0, -40(%rbp)	#, page
 # main.c:83:     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
 	.loc 3 83 99
-	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp162
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp160
 	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _10
 # main.c:83:     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
 	.loc 3 83 5
 	movq	(%rax), %rax	# *_10, _11
 	movq	%rax, %rcx	# _11,
-	movabsq	$.LC3@GOTOFF, %rax	#, tmp164
-	leaq	(%rbx,%rax), %rax	#, tmp163
-	movq	%rax, %rdx	# tmp163,
+	movabsq	$.LC3@GOTOFF, %rax	#, tmp162
+	leaq	(%rbx,%rax), %rax	#, tmp161
+	movq	%rax, %rdx	# tmp161,
 	movl	$0, %esi	#,
 	movl	$16711680, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %r8	#, tmp165
-	addq	%rbx, %r8	# tmp82, tmp165
-	call	*%r8	# tmp165
+	movabsq	$color_printk@PLTOFF, %r8	#, tmp163
+	addq	%rbx, %r8	# tmp82, tmp163
+	call	*%r8	# tmp163
 .LVL6:
 # main.c:84:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
 	.loc 3 84 102
-	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp166
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp164
 	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _12
 # main.c:84:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
 	.loc 3 84 111
@@ -3545,16 +3545,16 @@ Start_Kernel:
 	.loc 3 84 5
 	movq	(%rax), %rax	# *_13, _14
 	movq	%rax, %rcx	# _14,
-	movabsq	$.LC4@GOTOFF, %rax	#, tmp168
-	leaq	(%rbx,%rax), %rax	#, tmp167
-	movq	%rax, %rdx	# tmp167,
+	movabsq	$.LC4@GOTOFF, %rax	#, tmp166
+	leaq	(%rbx,%rax), %rax	#, tmp165
+	movq	%rax, %rdx	# tmp165,
 	movl	$0, %esi	#,
 	movl	$16711680, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %r8	#, tmp169
-	addq	%rbx, %r8	# tmp82, tmp169
-	call	*%r8	# tmp169
+	movabsq	$color_printk@PLTOFF, %r8	#, tmp167
+	addq	%rbx, %r8	# tmp82, tmp167
+	call	*%r8	# tmp167
 .LVL7:
 # main.c:85:     page=alloc_page(ZONE_NORMAL,64,PG_PTable_Maped |PG_Active|PG_Kernel);
 	.loc 3 85 10
@@ -3562,15 +3562,11 @@ Start_Kernel:
 	movl	$64, %esi	#,
 	movl	$2, %edi	#,
 	movq	%rbx, %r15	# tmp82,
-	movl	$0, %eax	#,
-	movabsq	$alloc_page@PLTOFF, %rcx	#, tmp170
-	addq	%rbx, %rcx	# tmp82, tmp170
-	call	*%rcx	# tmp170
+	movabsq	$alloc_page@PLTOFF, %rax	#, tmp168
+	addq	%rbx, %rax	# tmp82, tmp168
+	call	*%rax	# tmp168
 .LVL8:
-	cltq
-# main.c:85:     page=alloc_page(ZONE_NORMAL,64,PG_PTable_Maped |PG_Active|PG_Kernel);
-	.loc 3 85 9
-	movq	%rax, -40(%rbp)	# _16, page
+	movq	%rax, -40(%rbp)	# tmp169, page
 # main.c:86:     for(i=0;i<16;i++){
 	.loc 3 86 10
 	movl	$0, -20(%rbp)	#, i
@@ -3580,92 +3576,92 @@ Start_Kernel:
 .L8:
 # main.c:87:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
 	.loc 3 87 109 discriminator 3
-	movl	-20(%rbp), %eax	# i, tmp171
-	movslq	%eax, %rdx	# tmp171, _17
-	movq	%rdx, %rax	# _17, tmp172
-	salq	$2, %rax	#, tmp172
-	addq	%rdx, %rax	# _17, tmp172
-	salq	$3, %rax	#, tmp173
-	movq	%rax, %rdx	# tmp172, _18
-	movq	-40(%rbp), %rax	# page, tmp174
-	addq	%rdx, %rax	# _18, _19
+	movl	-20(%rbp), %eax	# i, tmp170
+	movslq	%eax, %rdx	# tmp170, _15
+	movq	%rdx, %rax	# _15, tmp171
+	salq	$2, %rax	#, tmp171
+	addq	%rdx, %rax	# _15, tmp171
+	salq	$3, %rax	#, tmp172
+	movq	%rax, %rdx	# tmp171, _16
+	movq	-40(%rbp), %rax	# page, tmp173
+	addq	%rdx, %rax	# _16, _17
 # main.c:87:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
 	.loc 3 87 9 discriminator 3
-	movq	8(%rax), %rcx	# _19->PHY_address, _20
+	movq	8(%rax), %rcx	# _17->PHY_address, _18
 # main.c:87:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
 	.loc 3 87 89 discriminator 3
-	movl	-20(%rbp), %eax	# i, tmp175
-	movslq	%eax, %rdx	# tmp175, _21
-	movq	%rdx, %rax	# _21, tmp176
-	salq	$2, %rax	#, tmp176
-	addq	%rdx, %rax	# _21, tmp176
-	salq	$3, %rax	#, tmp177
-	movq	%rax, %rdx	# tmp176, _22
-	movq	-40(%rbp), %rax	# page, tmp178
-	addq	%rdx, %rax	# _22, _23
+	movl	-20(%rbp), %eax	# i, tmp174
+	movslq	%eax, %rdx	# tmp174, _19
+	movq	%rdx, %rax	# _19, tmp175
+	salq	$2, %rax	#, tmp175
+	addq	%rdx, %rax	# _19, tmp175
+	salq	$3, %rax	#, tmp176
+	movq	%rax, %rdx	# tmp175, _20
+	movq	-40(%rbp), %rax	# page, tmp177
+	addq	%rdx, %rax	# _20, _21
 # main.c:87:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
 	.loc 3 87 9 discriminator 3
-	movq	16(%rax), %rdx	# _23->attribute, _24
-	movl	-20(%rbp), %eax	# i, tmp179
-	movq	%rcx, %r9	# _20,
-	movq	%rdx, %r8	# _24,
-	movl	%eax, %ecx	# tmp179,
-	movabsq	$.LC5@GOTOFF, %rax	#, tmp181
-	leaq	(%rbx,%rax), %rax	#, tmp180
-	movq	%rax, %rdx	# tmp180,
+	movq	16(%rax), %rdx	# _21->attribute, _22
+	movl	-20(%rbp), %eax	# i, tmp178
+	movq	%rcx, %r9	# _18,
+	movq	%rdx, %r8	# _22,
+	movl	%eax, %ecx	# tmp178,
+	movabsq	$.LC5@GOTOFF, %rax	#, tmp180
+	leaq	(%rbx,%rax), %rax	#, tmp179
+	movq	%rax, %rdx	# tmp179,
 	movl	$0, %esi	#,
 	movl	$65535, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %r10	#, tmp182
-	addq	%rbx, %r10	# tmp82, tmp182
-	call	*%r10	# tmp182
+	movabsq	$color_printk@PLTOFF, %r10	#, tmp181
+	addq	%rbx, %r10	# tmp82, tmp181
+	call	*%r10	# tmp181
 .LVL9:
 # main.c:88:         i++;
 	.loc 3 88 10 discriminator 3
 	addl	$1, -20(%rbp)	#, i
 # main.c:89:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
 	.loc 3 89 109 discriminator 3
-	movl	-20(%rbp), %eax	# i, tmp183
-	movslq	%eax, %rdx	# tmp183, _25
-	movq	%rdx, %rax	# _25, tmp184
-	salq	$2, %rax	#, tmp184
-	addq	%rdx, %rax	# _25, tmp184
-	salq	$3, %rax	#, tmp185
-	movq	%rax, %rdx	# tmp184, _26
-	movq	-40(%rbp), %rax	# page, tmp186
-	addq	%rdx, %rax	# _26, _27
+	movl	-20(%rbp), %eax	# i, tmp182
+	movslq	%eax, %rdx	# tmp182, _23
+	movq	%rdx, %rax	# _23, tmp183
+	salq	$2, %rax	#, tmp183
+	addq	%rdx, %rax	# _23, tmp183
+	salq	$3, %rax	#, tmp184
+	movq	%rax, %rdx	# tmp183, _24
+	movq	-40(%rbp), %rax	# page, tmp185
+	addq	%rdx, %rax	# _24, _25
 # main.c:89:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
 	.loc 3 89 9 discriminator 3
-	movq	8(%rax), %rcx	# _27->PHY_address, _28
+	movq	8(%rax), %rcx	# _25->PHY_address, _26
 # main.c:89:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
 	.loc 3 89 89 discriminator 3
-	movl	-20(%rbp), %eax	# i, tmp187
-	movslq	%eax, %rdx	# tmp187, _29
-	movq	%rdx, %rax	# _29, tmp188
-	salq	$2, %rax	#, tmp188
-	addq	%rdx, %rax	# _29, tmp188
-	salq	$3, %rax	#, tmp189
-	movq	%rax, %rdx	# tmp188, _30
-	movq	-40(%rbp), %rax	# page, tmp190
-	addq	%rdx, %rax	# _30, _31
+	movl	-20(%rbp), %eax	# i, tmp186
+	movslq	%eax, %rdx	# tmp186, _27
+	movq	%rdx, %rax	# _27, tmp187
+	salq	$2, %rax	#, tmp187
+	addq	%rdx, %rax	# _27, tmp187
+	salq	$3, %rax	#, tmp188
+	movq	%rax, %rdx	# tmp187, _28
+	movq	-40(%rbp), %rax	# page, tmp189
+	addq	%rdx, %rax	# _28, _29
 # main.c:89:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
 	.loc 3 89 9 discriminator 3
-	movq	16(%rax), %rdx	# _31->attribute, _32
-	movl	-20(%rbp), %eax	# i, tmp191
-	movq	%rcx, %r9	# _28,
-	movq	%rdx, %r8	# _32,
-	movl	%eax, %ecx	# tmp191,
-	movabsq	$.LC5@GOTOFF, %rax	#, tmp193
-	leaq	(%rbx,%rax), %rax	#, tmp192
-	movq	%rax, %rdx	# tmp192,
+	movq	16(%rax), %rdx	# _29->attribute, _30
+	movl	-20(%rbp), %eax	# i, tmp190
+	movq	%rcx, %r9	# _26,
+	movq	%rdx, %r8	# _30,
+	movl	%eax, %ecx	# tmp190,
+	movabsq	$.LC5@GOTOFF, %rax	#, tmp192
+	leaq	(%rbx,%rax), %rax	#, tmp191
+	movq	%rax, %rdx	# tmp191,
 	movl	$0, %esi	#,
 	movl	$65535, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %r10	#, tmp194
-	addq	%rbx, %r10	# tmp82, tmp194
-	call	*%r10	# tmp194
+	movabsq	$color_printk@PLTOFF, %r10	#, tmp193
+	addq	%rbx, %r10	# tmp82, tmp193
+	call	*%r10	# tmp193
 .LVL10:
 # main.c:86:     for(i=0;i<16;i++){
 	.loc 3 86 19 discriminator 3
@@ -3677,70 +3673,70 @@ Start_Kernel:
 	jle	.L8	#,
 # main.c:91:     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
 	.loc 3 91 99
-	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp195
-	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _33
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp194
+	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _31
 # main.c:91:     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
 	.loc 3 91 5
-	movq	(%rax), %rax	# *_33, _34
-	movq	%rax, %rcx	# _34,
-	movabsq	$.LC3@GOTOFF, %rax	#, tmp197
-	leaq	(%rbx,%rax), %rax	#, tmp196
-	movq	%rax, %rdx	# tmp196,
+	movq	(%rax), %rax	# *_31, _32
+	movq	%rax, %rcx	# _32,
+	movabsq	$.LC3@GOTOFF, %rax	#, tmp196
+	leaq	(%rbx,%rax), %rax	#, tmp195
+	movq	%rax, %rdx	# tmp195,
 	movl	$0, %esi	#,
 	movl	$16711680, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %r8	#, tmp198
-	addq	%rbx, %r8	# tmp82, tmp198
-	call	*%r8	# tmp198
+	movabsq	$color_printk@PLTOFF, %r8	#, tmp197
+	addq	%rbx, %r8	# tmp82, tmp197
+	call	*%r8	# tmp197
 .LVL11:
 # main.c:92:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
 	.loc 3 92 102
-	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp199
-	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _35
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp198
+	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _33
 # main.c:92:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
 	.loc 3 92 111
-	addq	$8, %rax	#, _36
+	addq	$8, %rax	#, _34
 # main.c:92:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
 	.loc 3 92 5
-	movq	(%rax), %rax	# *_36, _37
-	movq	%rax, %rcx	# _37,
-	movabsq	$.LC4@GOTOFF, %rax	#, tmp201
-	leaq	(%rbx,%rax), %rax	#, tmp200
-	movq	%rax, %rdx	# tmp200,
+	movq	(%rax), %rax	# *_34, _35
+	movq	%rax, %rcx	# _35,
+	movabsq	$.LC4@GOTOFF, %rax	#, tmp200
+	leaq	(%rbx,%rax), %rax	#, tmp199
+	movq	%rax, %rdx	# tmp199,
 	movl	$0, %esi	#,
 	movl	$16711680, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %r8	#, tmp202
-	addq	%rbx, %r8	# tmp82, tmp202
-	call	*%r8	# tmp202
+	movabsq	$color_printk@PLTOFF, %r8	#, tmp201
+	addq	%rbx, %r8	# tmp82, tmp201
+	call	*%r8	# tmp201
 .LVL12:
 # main.c:93:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
 	.loc 3 93 5
-	movabsq	$.LC6@GOTOFF, %rax	#, tmp204
-	leaq	(%rbx,%rax), %rax	#, tmp203
-	movq	%rax, %rdx	# tmp203,
+	movabsq	$.LC6@GOTOFF, %rax	#, tmp203
+	leaq	(%rbx,%rax), %rax	#, tmp202
+	movq	%rax, %rdx	# tmp202,
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp205
-	addq	%rbx, %rcx	# tmp82, tmp205
-	call	*%rcx	# tmp205
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp204
+	addq	%rbx, %rcx	# tmp82, tmp204
+	call	*%rcx	# tmp204
 .LVL13:
 # main.c:95:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
 	.loc 3 95 5
-	movabsq	$.LC7@GOTOFF, %rax	#, tmp207
-	leaq	(%rbx,%rax), %rax	#, tmp206
-	movq	%rax, %rdx	# tmp206,
+	movabsq	$.LC7@GOTOFF, %rax	#, tmp206
+	leaq	(%rbx,%rax), %rax	#, tmp205
+	movq	%rax, %rdx	# tmp205,
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp208
-	addq	%rbx, %rcx	# tmp82, tmp208
-	call	*%rcx	# tmp208
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp207
+	addq	%rbx, %rcx	# tmp82, tmp207
+	call	*%rcx	# tmp207
 .LVL14:
 .L9:
 # main.c:96:     while (1)
@@ -3761,22 +3757,22 @@ Start_Kernel:
 	.byte	0x8
 	.long	.Ldebug_abbrev0
 	.uleb128 0x12
-	.long	.LASF76
+	.long	.LASF77
 	.byte	0x1d
 	.long	.LASF0
 	.long	.LASF1
 	.quad	.Ltext0
 	.quad	.Letext0-.Ltext0
 	.long	.Ldebug_line0
-	.uleb128 0x7
+	.uleb128 0x8
 	.byte	0x8
 	.byte	0x5
 	.long	.LASF2
-	.uleb128 0x7
+	.uleb128 0x8
 	.byte	0x8
 	.byte	0x7
 	.long	.LASF3
-	.uleb128 0x7
+	.uleb128 0x8
 	.byte	0x4
 	.byte	0x7
 	.long	.LASF4
@@ -3790,7 +3786,7 @@ Start_Kernel:
 	.long	0x35
 	.byte	0xf
 	.byte	0
-	.uleb128 0x7
+	.uleb128 0x8
 	.byte	0x1
 	.byte	0x8
 	.long	.LASF5
@@ -3887,7 +3883,7 @@ Start_Kernel:
 	.long	0x35
 	.value	0xfff
 	.byte	0
-	.uleb128 0x7
+	.uleb128 0x8
 	.byte	0x1
 	.byte	0x6
 	.long	.LASF15
@@ -3908,7 +3904,7 @@ Start_Kernel:
 	.long	0x35
 	.byte	0x19
 	.byte	0
-	.uleb128 0x8
+	.uleb128 0x9
 	.long	.LASF16
 	.byte	0x1
 	.byte	0xf
@@ -4226,69 +4222,76 @@ Start_Kernel:
 	.uleb128 0x9
 	.byte	0x3
 	.quad	memory_management_struct
-	.uleb128 0x8
+	.uleb128 0x9
 	.long	.LASF58
 	.byte	0x3
 	.byte	0x10
 	.byte	0xd
 	.long	0x11d
-	.uleb128 0x8
+	.uleb128 0x9
 	.long	.LASF59
 	.byte	0x3
 	.byte	0x11
 	.byte	0xd
 	.long	0x11d
-	.uleb128 0x8
+	.uleb128 0x9
 	.long	.LASF60
 	.byte	0x3
 	.byte	0x12
 	.byte	0xd
 	.long	0x11d
-	.uleb128 0x8
+	.uleb128 0x9
 	.long	.LASF61
 	.byte	0x3
 	.byte	0x13
 	.byte	0xd
 	.long	0x11d
 	.uleb128 0x10
-	.long	.LASF65
-	.byte	0x55
-	.long	0xeb
-	.long	0x41c
-	.uleb128 0x9
-	.byte	0
-	.uleb128 0x11
 	.long	.LASF62
 	.byte	0x2
-	.byte	0xfc
-	.long	0x429
-	.uleb128 0x9
+	.byte	0xfb
+	.byte	0xe
+	.long	0x312
+	.long	0x42c
+	.uleb128 0x7
+	.long	0xeb
+	.uleb128 0x7
+	.long	0xeb
+	.uleb128 0x7
+	.long	0x35
 	.byte	0
-	.uleb128 0x18
-	.long	.LASF77
+	.uleb128 0x11
+	.long	.LASF64
+	.byte	0x2
+	.byte	0xfc
+	.long	0x439
+	.uleb128 0xd
+	.byte	0
+	.uleb128 0x10
+	.long	.LASF63
 	.byte	0x4
 	.byte	0x3b
 	.byte	0x5
 	.long	0xeb
-	.long	0x44a
-	.uleb128 0xd
+	.long	0x45a
+	.uleb128 0x7
 	.long	0x3c
-	.uleb128 0xd
+	.uleb128 0x7
 	.long	0x3c
+	.uleb128 0x7
+	.long	0x45a
 	.uleb128 0xd
-	.long	0x44a
-	.uleb128 0x9
 	.byte	0
 	.uleb128 0x6
 	.long	0x124
 	.uleb128 0x11
-	.long	.LASF63
+	.long	.LASF65
 	.byte	0x6
 	.byte	0x28
-	.long	0x45c
-	.uleb128 0x9
+	.long	0x46c
+	.uleb128 0xd
 	.byte	0
-	.uleb128 0x19
+	.uleb128 0x18
 	.long	.LASF78
 	.byte	0x3
 	.byte	0x16
@@ -4316,8 +4319,8 @@ Start_Kernel:
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -36
-	.uleb128 0x1a
-	.long	.LASF64
+	.uleb128 0x19
+	.long	.LASF66
 	.byte	0x3
 	.byte	0x52
 	.byte	0x12
@@ -4325,60 +4328,53 @@ Start_Kernel:
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
-	.uleb128 0x10
-	.long	.LASF65
-	.byte	0x55
-	.long	0xeb
-	.long	0x4b5
-	.uleb128 0x9
-	.byte	0
 	.uleb128 0x3
 	.quad	.LVL0
 	.long	0x5ab
 	.uleb128 0x3
 	.quad	.LVL1
-	.long	0x44f
+	.long	0x45f
 	.uleb128 0x3
 	.quad	.LVL2
-	.long	0x429
+	.long	0x439
 	.uleb128 0x3
 	.quad	.LVL3
-	.long	0x429
+	.long	0x439
 	.uleb128 0x3
 	.quad	.LVL4
-	.long	0x429
+	.long	0x439
 	.uleb128 0x3
 	.quad	.LVL5
-	.long	0x41c
+	.long	0x42c
 	.uleb128 0x3
 	.quad	.LVL6
-	.long	0x429
+	.long	0x439
 	.uleb128 0x3
 	.quad	.LVL7
-	.long	0x429
+	.long	0x439
 	.uleb128 0x3
 	.quad	.LVL8
 	.long	0x40c
 	.uleb128 0x3
 	.quad	.LVL9
-	.long	0x429
+	.long	0x439
 	.uleb128 0x3
 	.quad	.LVL10
-	.long	0x429
+	.long	0x439
 	.uleb128 0x3
 	.quad	.LVL11
-	.long	0x429
+	.long	0x439
 	.uleb128 0x3
 	.quad	.LVL12
-	.long	0x429
+	.long	0x439
 	.uleb128 0x3
 	.quad	.LVL13
-	.long	0x429
+	.long	0x439
 	.uleb128 0x3
 	.quad	.LVL14
-	.long	0x429
+	.long	0x439
 	.byte	0
-	.uleb128 0x1b
+	.uleb128 0x1a
 	.long	.LASF79
 	.byte	0x2
 	.byte	0x88
@@ -4399,7 +4395,7 @@ Start_Kernel:
 	.byte	0x91
 	.sleb128 -24
 	.byte	0
-	.uleb128 0x1c
+	.uleb128 0x1b
 	.long	.LASF80
 	.byte	0x1
 	.byte	0x94
@@ -4409,7 +4405,7 @@ Start_Kernel:
 	.uleb128 0x1
 	.byte	0x9c
 	.uleb128 0x4
-	.long	.LASF66
+	.long	.LASF67
 	.byte	0x94
 	.byte	0x1e
 	.long	0x35
@@ -4417,7 +4413,7 @@ Start_Kernel:
 	.byte	0x91
 	.sleb128 -24
 	.uleb128 0x4
-	.long	.LASF67
+	.long	.LASF68
 	.byte	0x94
 	.byte	0x31
 	.long	0x35
@@ -4425,7 +4421,7 @@ Start_Kernel:
 	.byte	0x91
 	.sleb128 -32
 	.uleb128 0x4
-	.long	.LASF68
+	.long	.LASF69
 	.byte	0x94
 	.byte	0x44
 	.long	0x35
@@ -4433,7 +4429,7 @@ Start_Kernel:
 	.byte	0x91
 	.sleb128 -40
 	.uleb128 0x4
-	.long	.LASF69
+	.long	.LASF70
 	.byte	0x94
 	.byte	0x57
 	.long	0x35
@@ -4441,7 +4437,7 @@ Start_Kernel:
 	.byte	0x91
 	.sleb128 -48
 	.uleb128 0x4
-	.long	.LASF70
+	.long	.LASF71
 	.byte	0x94
 	.byte	0x6a
 	.long	0x35
@@ -4449,7 +4445,7 @@ Start_Kernel:
 	.byte	0x91
 	.sleb128 -56
 	.uleb128 0x4
-	.long	.LASF71
+	.long	.LASF72
 	.byte	0x94
 	.byte	0x7d
 	.long	0x35
@@ -4457,7 +4453,7 @@ Start_Kernel:
 	.byte	0x91
 	.sleb128 -64
 	.uleb128 0x4
-	.long	.LASF72
+	.long	.LASF73
 	.byte	0x95
 	.byte	0xf
 	.long	0x35
@@ -4465,7 +4461,7 @@ Start_Kernel:
 	.byte	0x91
 	.sleb128 0
 	.uleb128 0x4
-	.long	.LASF73
+	.long	.LASF74
 	.byte	0x95
 	.byte	0x22
 	.long	0x35
@@ -4473,7 +4469,7 @@ Start_Kernel:
 	.byte	0x91
 	.sleb128 8
 	.uleb128 0x4
-	.long	.LASF74
+	.long	.LASF75
 	.byte	0x95
 	.byte	0x35
 	.long	0x35
@@ -4481,7 +4477,7 @@ Start_Kernel:
 	.byte	0x91
 	.sleb128 16
 	.uleb128 0x4
-	.long	.LASF75
+	.long	.LASF76
 	.byte	0x95
 	.byte	0x48
 	.long	0x35
@@ -4584,6 +4580,13 @@ Start_Kernel:
 	.byte	0
 	.byte	0
 	.uleb128 0x7
+	.uleb128 0x5
+	.byte	0
+	.uleb128 0x49
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x8
 	.uleb128 0x24
 	.byte	0
 	.uleb128 0xb
@@ -4594,7 +4597,7 @@ Start_Kernel:
 	.uleb128 0xe
 	.byte	0
 	.byte	0
-	.uleb128 0x8
+	.uleb128 0x9
 	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
@@ -4611,11 +4614,6 @@ Start_Kernel:
 	.uleb128 0x19
 	.uleb128 0x3c
 	.uleb128 0x19
-	.byte	0
-	.byte	0
-	.uleb128 0x9
-	.uleb128 0x18
-	.byte	0
 	.byte	0
 	.byte	0
 	.uleb128 0xa
@@ -4655,10 +4653,8 @@ Start_Kernel:
 	.byte	0
 	.byte	0
 	.uleb128 0xd
-	.uleb128 0x5
+	.uleb128 0x18
 	.byte	0
-	.uleb128 0x49
-	.uleb128 0x13
 	.byte	0
 	.byte	0
 	.uleb128 0xe
@@ -4706,13 +4702,13 @@ Start_Kernel:
 	.uleb128 0x3
 	.uleb128 0xe
 	.uleb128 0x3a
-	.uleb128 0x21
-	.sleb128 3
+	.uleb128 0xb
 	.uleb128 0x3b
 	.uleb128 0xb
 	.uleb128 0x39
-	.uleb128 0x21
-	.sleb128 10
+	.uleb128 0xb
+	.uleb128 0x27
+	.uleb128 0x19
 	.uleb128 0x49
 	.uleb128 0x13
 	.uleb128 0x3c
@@ -4836,29 +4832,6 @@ Start_Kernel:
 	.uleb128 0xb
 	.uleb128 0x27
 	.uleb128 0x19
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x3c
-	.uleb128 0x19
-	.uleb128 0x1
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x19
-	.uleb128 0x2e
-	.byte	0x1
-	.uleb128 0x3f
-	.uleb128 0x19
-	.uleb128 0x3
-	.uleb128 0xe
-	.uleb128 0x3a
-	.uleb128 0xb
-	.uleb128 0x3b
-	.uleb128 0xb
-	.uleb128 0x39
-	.uleb128 0xb
-	.uleb128 0x27
-	.uleb128 0x19
 	.uleb128 0x11
 	.uleb128 0x1
 	.uleb128 0x12
@@ -4871,7 +4844,7 @@ Start_Kernel:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x1a
+	.uleb128 0x19
 	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
@@ -4888,7 +4861,7 @@ Start_Kernel:
 	.uleb128 0x18
 	.byte	0
 	.byte	0
-	.uleb128 0x1b
+	.uleb128 0x1a
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3
@@ -4913,7 +4886,7 @@ Start_Kernel:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x1c
+	.uleb128 0x1b
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -4970,17 +4943,17 @@ Start_Kernel:
 	.string	"Page"
 .LASF14:
 	.string	"font_ascii"
-.LASF77:
+.LASF63:
 	.string	"color_printk"
 .LASF56:
 	.string	"Global_CR3"
-.LASF71:
+.LASF72:
 	.string	"ist3"
 .LASF60:
 	.string	"_edata"
-.LASF76:
+.LASF77:
 	.string	"GNU C17 11.4.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
-.LASF74:
+.LASF75:
 	.string	"ist6"
 .LASF45:
 	.string	"attribute"
@@ -4988,7 +4961,7 @@ Start_Kernel:
 	.string	"start_code"
 .LASF28:
 	.string	"bits_map"
-.LASF63:
+.LASF65:
 	.string	"sys_vector_init"
 .LASF52:
 	.string	"GMD_struct"
@@ -5004,7 +4977,7 @@ Start_Kernel:
 	.string	"zone_start_address"
 .LASF10:
 	.string	"XCharSize"
-.LASF62:
+.LASF64:
 	.string	"init_memory"
 .LASF27:
 	.string	"e820_length"
@@ -5030,9 +5003,9 @@ Start_Kernel:
 	.string	"unsigned char"
 .LASF13:
 	.string	"FB_length"
-.LASF67:
-	.string	"rsp1"
 .LASF68:
+	.string	"rsp1"
+.LASF69:
 	.string	"rsp2"
 .LASF22:
 	.string	"address"
@@ -5064,15 +5037,15 @@ Start_Kernel:
 	.string	"PHY_address"
 .LASF6:
 	.string	"XResolution"
-.LASF69:
-	.string	"ist1"
 .LASF70:
+	.string	"ist1"
+.LASF71:
 	.string	"ist2"
 .LASF39:
 	.string	"end_data"
-.LASF72:
-	.string	"ist4"
 .LASF73:
+	.string	"ist4"
+.LASF74:
 	.string	"ist5"
 .LASF3:
 	.string	"long unsigned int"
@@ -5088,7 +5061,7 @@ Start_Kernel:
 	.string	"bits_size"
 .LASF80:
 	.string	"set_tss64"
-.LASF65:
+.LASF62:
 	.string	"alloc_page"
 .LASF79:
 	.string	"Get_gdt"
@@ -5098,11 +5071,11 @@ Start_Kernel:
 	.string	"e820"
 .LASF20:
 	.string	"position"
-.LASF66:
+.LASF67:
 	.string	"rsp0"
 .LASF47:
 	.string	"Zone"
-.LASF64:
+.LASF66:
 	.string	"page"
 .LASF43:
 	.string	"zone_struct"
@@ -5110,7 +5083,7 @@ Start_Kernel:
 	.string	"pages_length"
 .LASF59:
 	.string	"_etext"
-.LASF75:
+.LASF76:
 	.string	"ist7"
 	.section	.debug_line_str,"MS",@progbits,1
 .LASF0:
