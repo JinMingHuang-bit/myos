@@ -5,7 +5,7 @@ main.o:     file format elf64-x86-64
 Disassembly of section .text:
 
 0000000000000000 <set_tss64>:
-   0:	f3 0f 1e fa          	endbr64
+   0:	f3 0f 1e fa          	endbr64 
    4:	55                   	push   %rbp
    5:	48 89 e5             	mov    %rsp,%rbp
    8:	48 8d 05 f9 ff ff ff 	lea    -0x7(%rip),%rax        # 8 <set_tss64+0x8>
@@ -80,10 +80,10 @@ Disassembly of section .text:
  12b:	48 89 10             	mov    %rdx,(%rax)
  12e:	90                   	nop
  12f:	5d                   	pop    %rbp
- 130:	c3                   	ret
+ 130:	c3                   	ret    
 
 0000000000000131 <Get_gdt>:
- 131:	f3 0f 1e fa          	endbr64
+ 131:	f3 0f 1e fa          	endbr64 
  135:	55                   	push   %rbp
  136:	48 89 e5             	mov    %rsp,%rbp
  139:	48 8d 05 f9 ff ff ff 	lea    -0x7(%rip),%rax        # 139 <Get_gdt+0x8>
@@ -94,10 +94,10 @@ Disassembly of section .text:
  150:	48 89 45 f8          	mov    %rax,-0x8(%rbp)
  154:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
  158:	5d                   	pop    %rbp
- 159:	c3                   	ret
+ 159:	c3                   	ret    
 
 000000000000015a <Start_Kernel>:
- 15a:	f3 0f 1e fa          	endbr64
+ 15a:	f3 0f 1e fa          	endbr64 
  15e:	55                   	push   %rbp
  15f:	48 89 e5             	mov    %rsp,%rbp
  162:	41 57                	push   %r15
@@ -151,12 +151,12 @@ Disassembly of section .text:
  236:	8b 44 03 04          	mov    0x4(%rbx,%rax,1),%eax
  23a:	0f af c2             	imul   %edx,%eax
  23d:	c1 e0 02             	shl    $0x2,%eax
- 240:	48 98                	cltq
+ 240:	48 98                	cltq   
  242:	48 ba 00 00 00 00 00 	movabs $0x0,%rdx
  249:	00 00 00 
  24c:	48 89 44 13 20       	mov    %rax,0x20(%rbx,%rdx,1)
  251:	b8 40 00 00 00       	mov    $0x40,%eax
- 256:	0f 00 d8             	ltr    %eax
+ 256:	0f 00 d8             	ltr    %ax
  259:	68 00 7c 00 00       	push   $0x7c00
  25e:	c7 44 24 04 00 80 ff 	movl   $0xffff8000,0x4(%rsp)
  265:	ff 
@@ -318,7 +318,7 @@ Disassembly of section .text:
  4f9:	00 00 00 
  4fc:	48 01 d9             	add    %rbx,%rcx
  4ff:	ff d1                	call   *%rcx
- 501:	48 98                	cltq
+ 501:	48 98                	cltq   
  503:	48 89 45 d8          	mov    %rax,-0x28(%rbp)
  507:	c7 45 ec 00 00 00 00 	movl   $0x0,-0x14(%rbp)
  50e:	e9 0c 01 00 00       	jmp    61f <Start_Kernel+0x4c5>
@@ -459,5 +459,4 @@ Disassembly of section .text:
  71f:	00 00 00 
  722:	48 01 d9             	add    %rbx,%rcx
  725:	ff d1                	call   *%rcx
- 727:	90                   	nop
- 728:	eb fd                	jmp    727 <Start_Kernel+0x5cd>
+ 727:	eb fe                	jmp    727 <Start_Kernel+0x5cd>

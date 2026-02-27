@@ -2,31 +2,31 @@
      2 00000000 E9(0000)                	jmp	Label_Start
      3                                  
      4                                  %include	"fat12.inc"
-     1                              <1> RootDirSectors	equ	14
-     2                              <1> SectorNumOfRootDirStart	equ	19
-     3                              <1> SectorNumOfFAT1Start	equ	1
-     4                              <1> SectorBalance	equ	17	
-     5                              <1> 
-     6 00000003 6D796F73626F6F74    <1> 	BS_OEMName	db	'myosboot'
-     7 0000000B 0002                <1> 	BPB_BytesPerSec	dw	512
-     8 0000000D 01                  <1> 	BPB_SecPerClus	db	1
-     9 0000000E 0100                <1> 	BPB_RsvdSecCnt	dw	1
-    10 00000010 02                  <1> 	BPB_NumFATs	db	2
-    11 00000011 E000                <1> 	BPB_RootEntCnt	dw	224
-    12 00000013 400B                <1> 	BPB_TotSec16	dw	2880
-    13 00000015 F0                  <1> 	BPB_Media	db	0xf0
-    14 00000016 0900                <1> 	BPB_FATSz16	dw	9
-    15 00000018 1200                <1> 	BPB_SecPerTrk	dw	18
-    16 0000001A 0200                <1> 	BPB_NumHeads	dw	2
-    17 0000001C 00000000            <1> 	BPB_hiddSec	dd	0
-    18 00000020 00000000            <1> 	BPB_TotSec32	dd	0
-    19 00000024 00                  <1> 	BS_DrvNum	db	0
-    20 00000025 00                  <1> 	BS_Reserved1	db	0
-    21 00000026 29                  <1> 	BS_BootSig	db	29h
-    22 00000027 00000000            <1> 	BS_VolID	dd	0
-    23 0000002B 626F6F74206C6F6164- <1> 	BS_VolLab	db	'boot loader'
-    23 00000034 6572                <1>
-    24 00000036 4641543132202020    <1> 	BS_FileSysType	db	'FAT12   '
+     5                              <1> RootDirSectors	equ	14
+     6                              <1> SectorNumOfRootDirStart	equ	19
+     7                              <1> SectorNumOfFAT1Start	equ	1
+     8                              <1> SectorBalance	equ	17	
+     9                              <1> 
+    10 00000003 6D796F73626F6F74    <1> 	BS_OEMName	db	'myosboot'
+    11 0000000B 0002                <1> 	BPB_BytesPerSec	dw	512
+    12 0000000D 01                  <1> 	BPB_SecPerClus	db	1
+    13 0000000E 0100                <1> 	BPB_RsvdSecCnt	dw	1
+    14 00000010 02                  <1> 	BPB_NumFATs	db	2
+    15 00000011 E000                <1> 	BPB_RootEntCnt	dw	224
+    16 00000013 400B                <1> 	BPB_TotSec16	dw	2880
+    17 00000015 F0                  <1> 	BPB_Media	db	0xf0
+    18 00000016 0900                <1> 	BPB_FATSz16	dw	9
+    19 00000018 1200                <1> 	BPB_SecPerTrk	dw	18
+    20 0000001A 0200                <1> 	BPB_NumHeads	dw	2
+    21 0000001C 00000000            <1> 	BPB_hiddSec	dd	0
+    22 00000020 00000000            <1> 	BPB_TotSec32	dd	0
+    23 00000024 00                  <1> 	BS_DrvNum	db	0
+    24 00000025 00                  <1> 	BS_Reserved1	db	0
+    25 00000026 29                  <1> 	BS_BootSig	db	29h
+    26 00000027 00000000            <1> 	BS_VolID	dd	0
+    27 0000002B 626F6F74206C6F6164- <1> 	BS_VolLab	db	'boot loader'
+    27 00000034 6572                <1>
+    28 00000036 4641543132202020    <1> 	BS_FileSysType	db	'FAT12   '
      5                                  
      6                                  BaseOfKernelFile	equ	0x00
      7                                  OffsetOfKernelFile	equ	0x100000

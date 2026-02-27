@@ -10,7 +10,7 @@ sudo sync
 sudo umount /media/
 
 for bochs:
-bochs -f ./bochsrc
+bochs -f ./myos/bochsrc
 
 for kernel.bin
 cd ~
@@ -36,7 +36,7 @@ bochs configure:./configure --with-x11  --enable-debugger
 bochs configure:./configure --with-x11  --enable-gdb-stub
 --enable-disasm --enable-all-optimizations --enable-readline 
 --enable-long-phy-address --enable-ltdl-install --enable-idle-hack 
---enable-plugins --enable-a20-pin --enable-x86-64 --enable-smp 
+--enable-plugins --enable-a20-pin --enable-x86-64 
 --enable-cpu-level=6 --enable-large-ramfile --enable-repeat-speedups 
 --enable-fast-function-calls  --enable-handlers-chaining  --enable-trace-linking 
 --enable-configurable-msrs --enable-show-ips  --enable-debugger-gui 

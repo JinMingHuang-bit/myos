@@ -5,7 +5,7 @@ GAS LISTING head.s 			page 1
    2              	# 0 "<built-in>"
    3              	# 0 "<command-line>"
    4              	# 1 "/usr/include/stdc-predef.h" 1 3 4
-   1              	/* Copyright (C) 1991-2024 Free Software Foundation, Inc.
+   1              	/* Copyright (C) 1991-2022 Free Software Foundation, Inc.
    0              	
    1              	//The code section (_start) is located at the low memory address. 
    2              	//The page table structure follows the code and starts at 0x1000. 
@@ -79,11 +79,11 @@ GAS LISTING head.s 			page 1
   60              	entry64:
   61 0052 48C7C010 		movq	$0x10,	%rax
   61      000000
-  62 0059 8ED8     		movq	%rax,	%ds
-  63 005b 8EC0     		movq	%rax,	%es
-  64 005d 8EE8     		movq	%rax,	%gs
-  65 005f 8ED0     		movq	%rax,	%ss
-  66 0061 48BC007E 		movq	$0xffff800000007E00,	%rsp		/* rsp address */
+  62 0059 488ED8   		movq	%rax,	%ds
+  63 005c 488EC0   		movq	%rax,	%es
+  64 005f 488EE8   		movq	%rax,	%gs
+  65 0062 488ED0   		movq	%rax,	%ss
+  66 0065 48BC007E 		movq	$0xffff800000007E00,	%rsp		/* rsp address */
   66      00000080 
   66      FFFF
   67              	
@@ -93,16 +93,16 @@ GAS LISTING head.s 			page 1
   71              		// lretq
   72              	
   73              	setup_IDT:
-  74 006b 488D15A6 	    leaq ignore_int(%rip),%rdx
+  74 006f 488D15A6 	    leaq ignore_int(%rip),%rdx
   74      000000
-  75 0072 48C7C000 		movq	$(0x08 << 16),%rax
+  75 0076 48C7C000 		movq	$(0x08 << 16),%rax
   75      000800
-  76 0079 6689D0   		movw    %dx,%ax
-  77 007c 48B90000 		movq    $(0x8E00 << 32),%rcx
+  76 007d 6689D0   		movw    %dx,%ax
+  77 0080 48B90000 		movq    $(0x8E00 << 32),%rcx
   77      0000008E 
   77      0000
-  78 0086 4801C8   		addq    %rcx,%rax
-  79 0089 89D1     		movl    %edx,%ecx
+  78 008a 4801C8   		addq    %rcx,%rax
+  79 008d 89D1     		movl    %edx,%ecx
   80              		/*
   81              		RAX = 已包含中断门描述符的部分内容：
   82              	低16位：函数地址的低16位
@@ -110,147 +110,147 @@ GAS LISTING head.s 			page 1
   84              	32-47位：门属性(0x8E00)
   85              		*/
   86              		//提取函数地址的16-31位
-  87 008b C1E910   		shrl    $16,%ecx
+  87 008f C1E910   		shrl    $16,%ecx
   88              		//将地址的16-31位移到描述符的48-63位位置
-  89 008e 48C1E130 		shlq	$48,%rcx
+  89 0092 48C1E130 		shlq	$48,%rcx
   90              		//将地址的16-31位合并到中断门描述符中
-  91 0092 4801C8   		addq	%rcx,%rax
-  92 0095 48C1EA20 		shrq	$32,%rdx
-  93 0099 488D3D00 		leaq    IDT_Table(%rip),%rdi
+  91 0096 4801C8   		addq	%rcx,%rax
+  92 0099 48C1EA20 		shrq	$32,%rdx
+  93 009d 488D3D00 		leaq    IDT_Table(%rip),%rdi
   93      000000
 GAS LISTING head.s 			page 3
 
 
-  94 00a0 48C7C100 		movq    $256,%rcx
+  94 00a4 48C7C100 		movq    $256,%rcx
   94      010000
   95              	
   96              	//将中断描述符（由RAX和RDX组成，共128位）填充到IDT（中断描述符表）中
   97              	rp_sidt:
-  98 00a7 488907   		movq    %rax,(%rdi)
+  98 00ab 488907   		movq    %rax,(%rdi)
   99              		//8(%rdi)：这是一个内存寻址表达式，表示以 %rdi 寄存器中存储的地址为基�
- 100 00aa 48895708 		movq    %rdx,8(%rdi)
- 101 00ae 4883C710 		addq    $0x10,%rdi
- 102 00b2 48FFC9   		dec 	%rcx
- 103 00b5 75F0     		jne	rp_sidt
+ 100 00ae 48895708 		movq    %rdx,8(%rdi)
+ 101 00b2 4883C710 		addq    $0x10,%rdi
+ 102 00b6 48FFC9   		dec 	%rcx
+ 103 00b9 75F0     		jne	rp_sidt
  104              	
  105              	setup_TSS64:
- 106 00b7 488D1500 		leaq	TSS64_Table(%rip),%rdx
+ 106 00bb 488D1500 		leaq	TSS64_Table(%rip),%rdx
  106      000000
- 107 00be 4831C0   		xorq	%rax,%rax
- 108 00c1 4831C9   		xorq	%rcx,%rcx
- 109 00c4 48C7C089 		movq    $0x89,%rax
+ 107 00c2 4831C0   		xorq	%rax,%rax
+ 108 00c5 4831C9   		xorq	%rcx,%rcx
+ 109 00c8 48C7C089 		movq    $0x89,%rax
  109      000000
- 110 00cb 48C1E028 		shlq	$40,%rax
- 111 00cf 89D1     		movl    %edx,%ecx
- 112 00d1 C1E918   		shrl	$24,%ecx
+ 110 00cf 48C1E028 		shlq	$40,%rax
+ 111 00d3 89D1     		movl    %edx,%ecx
+ 112 00d5 C1E918   		shrl	$24,%ecx
  113              		// change here
- 114 00d4 48C1E138 		shlq    $56,%rcx
- 115 00d8 4801C8   		addq	%rcx,%rax
- 116 00db 4831C9   		xorq	%rcx,%rcx
- 117 00de 89D1     		movl    %edx,%ecx
- 118 00e0 81E1FFFF 		andl    $0xffffff,%ecx
+ 114 00d8 48C1E138 		shlq    $56,%rcx
+ 115 00dc 4801C8   		addq	%rcx,%rax
+ 116 00df 4831C9   		xorq	%rcx,%rcx
+ 117 00e2 89D1     		movl    %edx,%ecx
+ 118 00e4 81E1FFFF 		andl    $0xffffff,%ecx
  118      FF00
- 119 00e6 48C1E110 		shlq	$16,%rcx
- 120 00ea 4801C8   		addq	%rcx,%rax
- 121 00ed 4883C067 		addq    $103,%rax
- 122 00f1 488D3D00 		leaq	GDT_Table(%rip),%rdi
+ 119 00ea 48C1E110 		shlq	$16,%rcx
+ 120 00ee 4801C8   		addq	%rcx,%rax
+ 121 00f1 4883C067 		addq    $103,%rax
+ 122 00f5 488D3D00 		leaq	GDT_Table(%rip),%rdi
  122      000000
- 123 00f8 48894740 		movq    %rax,64(%rdi)
- 124 00fc 48C1EA20 		shrq	$32,%rdx
- 125 0100 48895748 		movq    %rdx,72(%rdi)
+ 123 00fc 48894740 		movq    %rax,64(%rdi)
+ 124 0100 48C1EA20 		shrq	$32,%rdx
+ 125 0104 48895748 		movq    %rdx,72(%rdi)
  126              		
  127              		//Load the TSS segment selector
  128              		//mov     $0x40,%ax
  129              		//ltr     %ax
  130              	
- 131 0104 488B0505 		movq    go_to_kernel(%rip),%rax
+ 131 0108 488B0505 		movq    go_to_kernel(%rip),%rax
  131      000000
- 132 010b 6A08     		pushq	$0x08
- 133 010d 50       		pushq	%rax
- 134 010e 48CB     		lretq
+ 132 010f 6A08     		pushq	$0x08
+ 133 0111 50       		pushq	%rax
+ 134 0112 48CB     		lretq
  135              	
  136              	go_to_kernel:
- 137 0110 00000000 		.quad	Start_Kernel
+ 137 0114 00000000 		.quad	Start_Kernel
  137      00000000 
  138              	
  139              	ignore_int:
- 140 0118 FC       		cld
+ 140 011c FC       		cld
  141              		//清除方向标志位（Direction Flag），确保后续的操作不会因为方向标志位而�
- 142 0119 50       		pushq %rax
- 143 011a 53       		pushq %rbx
+ 142 011d 50       		pushq %rax
+ 143 011e 53       		pushq %rbx
 GAS LISTING head.s 			page 4
 
 
- 144 011b 51       		pushq %rcx
- 145 011c 52       		pushq %rdx
- 146 011d 55       		pushq %rbp
- 147 011e 57       		pushq %rdi
- 148 011f 56       		pushq %rsi
- 149 0120 4150     		pushq %r8
- 150 0122 4151     		pushq %r9
- 151 0124 4152     		pushq %r10
- 152 0126 4153     		pushq %r11
- 153 0128 4154     		pushq %r12
- 154 012a 4155     		pushq %r13
- 155 012c 4156     		pushq %r14
- 156 012e 4157     		pushq %r15
+ 144 011f 51       		pushq %rcx
+ 145 0120 52       		pushq %rdx
+ 146 0121 55       		pushq %rbp
+ 147 0122 57       		pushq %rdi
+ 148 0123 56       		pushq %rsi
+ 149 0124 4150     		pushq %r8
+ 150 0126 4151     		pushq %r9
+ 151 0128 4152     		pushq %r10
+ 152 012a 4153     		pushq %r11
+ 153 012c 4154     		pushq %r12
+ 154 012e 4155     		pushq %r13
+ 155 0130 4156     		pushq %r14
+ 156 0132 4157     		pushq %r15
  157              	
- 158 0130 8CC0     		movq	%es,	%rax
- 159 0132 50       		pushq	%rax
- 160 0133 8CD8     		movq	%ds,	%rax
- 161 0135 50       		pushq	%rax
+ 158 0134 488CC0   		movq	%es,	%rax
+ 159 0137 50       		pushq	%rax
+ 160 0138 488CD8   		movq	%ds,	%rax
+ 161 013b 50       		pushq	%rax
  162              		//Set the new segment register value,so that it can go to kernel 
- 163 0136 48C7C010 		movq	$0x10,	%rax
+ 163 013c 48C7C010 		movq	$0x10,	%rax
  163      000000
- 164 013d 8ED8     		movq 	%rax,	%ds
- 165 013f 8EC0     		movq	%rax,	%es
+ 164 0143 488ED8   		movq 	%rax,	%ds
+ 165 0146 488EC0   		movq	%rax,	%es
  166              	
- 167 0141 488D0543 		leaq	int_msg(%rip),	%rax
+ 167 0149 488D0545 		leaq	int_msg(%rip),	%rax
  167      000000
- 168 0148 50       		pushq	%rax
+ 168 0150 50       		pushq	%rax
  169              		//调用约定
- 170 0149 4889C2   		movq	%rax,%rdx
- 171 014c 48C7C600 		movq	$0x00000000,%rsi
+ 170 0151 4889C2   		movq	%rax,%rdx
+ 171 0154 48C7C600 		movq	$0x00000000,%rsi
  171      000000
- 172 0153 48C7C700 		movq	$0x00ff0000,%rdi
+ 172 015b 48C7C700 		movq	$0x00ff0000,%rdi
  172      00FF00
- 173 015a 48C7C000 		movq	$0,%rax
+ 173 0162 48C7C000 		movq	$0,%rax
  173      000000
- 174 0161 E8000000 		callq   color_printk
+ 174 0169 E8000000 		callq   color_printk
  174      00
  175              		// x86-64架构中，每个通用寄存器都是64位的，即8字节，所以在64位模式下，
- 176 0166 4883C408 		addq	$0x8,%rsp
+ 176 016e 4883C408 		addq	$0x8,%rsp
  177              	
  178              	
  179              	Loop:
- 180 016a EBFE     		jmp	Loop
- 181 016c 58       		popq	%rax
- 182 016d 8ED8     		movq	%rax,	%ds
- 183 016f 58       		popq	%rax
- 184 0170 8EC0     		movq	%rax,	%es
- 185 0172 415F     		popq    %r15
- 186 0174 415E     		popq	%r14
- 187 0176 415D     		popq	%r13
- 188 0178 415C     		popq	%r12
- 189 017a 415B     		popq	%r11
- 190 017c 415A     		popq	%r10
- 191 017e 4159     		popq	%r9
- 192 0180 4158     		popq	%r8
- 193 0182 5E       		popq	%rsi
- 194 0183 5F       		popq	%rdi
+ 180 0172 EBFE     		jmp	Loop
+ 181 0174 58       		popq	%rax
+ 182 0175 488ED8   		movq	%rax,	%ds
+ 183 0178 58       		popq	%rax
+ 184 0179 488EC0   		movq	%rax,	%es
+ 185 017c 415F     		popq    %r15
+ 186 017e 415E     		popq	%r14
+ 187 0180 415D     		popq	%r13
+ 188 0182 415C     		popq	%r12
+ 189 0184 415B     		popq	%r11
+ 190 0186 415A     		popq	%r10
+ 191 0188 4159     		popq	%r9
+ 192 018a 4158     		popq	%r8
+ 193 018c 5E       		popq	%rsi
+ 194 018d 5F       		popq	%rdi
 GAS LISTING head.s 			page 5
 
 
- 195 0184 5D       		popq	%rbp
- 196 0185 5A       		popq	%rdx
- 197 0186 59       		popq	%rcx
- 198 0187 5B       		popq	%rbx
- 199 0188 58       		popq	%rax
- 200 0189 48CF     		iretq
+ 195 018e 5D       		popq	%rbp
+ 196 018f 5A       		popq	%rdx
+ 197 0190 59       		popq	%rcx
+ 198 0191 5B       		popq	%rbx
+ 199 0192 58       		popq	%rax
+ 200 0193 48CF     		iretq
  201              	int_msg:
  202              	// This command allocates and stores a string at the current position indicated by the position cou
  203              	// automatic put NULL at the end of the string
- 204 018b 556E6B6F 		.asciz	"Unkown Interrupt or fault at Rip,are you serious?\n"
+ 204 0195 556E6B6F 		.asciz	"Unkown Interrupt or fault at Rip,are you serious?\n"
  204      776E2049 
  204      6E746572 
  204      72757074 
@@ -258,9 +258,9 @@ GAS LISTING head.s 			page 1
  205              	
  206              	
  207              	//=======	init page
- 208 01be 9090     	.align 8
+ 208              	.align 8
  209              	
- 210 01c0 00000000 	.org	0x1000
+ 210 01c8 00000000 	.org	0x1000
  210      00000000 
  210      00000000 
  210      00000000 
@@ -414,16 +414,16 @@ DEFINED SYMBOLS
               head.S:276    .data:0000000000001092 IDT_POINTER
               head.S:57     .text:000000000000004a switch_seg
               head.S:60     .text:0000000000000052 entry64
-              head.S:73     .text:000000000000006b setup_IDT
-              head.S:139    .text:0000000000000118 ignore_int
+              head.S:73     .text:000000000000006f setup_IDT
+              head.S:139    .text:000000000000011c ignore_int
               head.S:272    .data:0000000000000092 IDT_Table
-              head.S:97     .text:00000000000000a7 rp_sidt
-              head.S:105    .text:00000000000000b7 setup_TSS64
+              head.S:97     .text:00000000000000ab rp_sidt
+              head.S:105    .text:00000000000000bb setup_TSS64
               head.S:284    .data:000000000000109c TSS64_Table
               head.S:251    .data:0000000000000000 GDT_Table
-              head.S:136    .text:0000000000000110 go_to_kernel
-              head.S:201    .text:000000000000018b int_msg
-              head.S:179    .text:000000000000016a Loop
+              head.S:136    .text:0000000000000114 go_to_kernel
+              head.S:201    .text:0000000000000195 int_msg
+              head.S:179    .text:0000000000000172 Loop
               head.S:212    .text:0000000000001000 __PML4E
               head.S:221    .text:0000000000002000 __PDPTE
               head.S:228    .text:0000000000003000 __PDE

@@ -1,6 +1,6 @@
 	.file	"memory.c"
-# GNU C17 (Ubuntu 13.3.0-6ubuntu2~24.04) version 13.3.0 (x86_64-linux-gnu)
-#	compiled by GNU C version 13.3.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version isl-0.26-GMP
+# GNU C17 (Ubuntu 11.4.0-1ubuntu1~22.04.3) version 11.4.0 (x86_64-linux-gnu)
+#	compiled by GNU C version 11.4.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.24-GMP
 
 # GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 # options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection
@@ -3324,7 +3324,7 @@ page_init:
 	movq	-8(%rbp), %rdx	# page, tmp148
 	movq	8(%rdx), %rdx	# page_64(D)->PHY_address, _3
 # memory.c:7: 		*(memory_management_struct.bits_map+((page->PHY_address>>PAGE_2M_SHIFT)>>6)) |= 1UL << (page->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 7 3
+	.loc 3 7 80
 	shrq	$27, %rdx	#, _4
 	salq	$3, %rdx	#, _5
 	addq	%rcx, %rdx	# _2, _6
@@ -3354,12 +3354,10 @@ page_init:
 	movq	-8(%rbp), %rax	# page, tmp152
 	movq	8(%rax), %rax	# page_64(D)->PHY_address, _14
 # memory.c:7: 		*(memory_management_struct.bits_map+((page->PHY_address>>PAGE_2M_SHIFT)>>6)) |= 1UL << (page->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 7 3
+	.loc 3 7 80
 	shrq	$27, %rax	#, _15
 	salq	$3, %rax	#, _16
 	addq	%rdx, %rax	# _13, _17
-# memory.c:7: 		*(memory_management_struct.bits_map+((page->PHY_address>>PAGE_2M_SHIFT)>>6)) |= 1UL << (page->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 7 80
 	orq	%rcx, %rsi	# _12, _7
 	movq	%rsi, %rdx	# _7, _18
 	movq	%rdx, (%rax)	# _18, *_17
@@ -3452,11 +3450,9 @@ page_init:
 	je	.L16	#,
 .L15:
 # memory.c:19: 		page->attribute |= flags;
-	.loc 3 19 7
+	.loc 3 19 19
 	movq	-8(%rbp), %rax	# page, tmp164
 	movq	16(%rax), %rax	# page_64(D)->attribute, _36
-# memory.c:19: 		page->attribute |= flags;
-	.loc 3 19 19
 	orq	-16(%rbp), %rax	# flags, _36
 	movq	%rax, %rdx	# _36, _37
 	movq	-8(%rbp), %rax	# page, tmp165
@@ -3492,7 +3488,7 @@ page_init:
 	movq	-8(%rbp), %rdx	# page, tmp170
 	movq	8(%rdx), %rdx	# page_64(D)->PHY_address, _44
 # memory.c:23: 		*(memory_management_struct.bits_map+((page->PHY_address>>PAGE_2M_SHIFT)>>6)) |= 1UL << (page->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 23 3
+	.loc 3 23 80
 	shrq	$27, %rdx	#, _45
 	salq	$3, %rdx	#, _46
 	addq	%rcx, %rdx	# _43, _47
@@ -3522,21 +3518,17 @@ page_init:
 	movq	-8(%rbp), %rax	# page, tmp174
 	movq	8(%rax), %rax	# page_64(D)->PHY_address, _55
 # memory.c:23: 		*(memory_management_struct.bits_map+((page->PHY_address>>PAGE_2M_SHIFT)>>6)) |= 1UL << (page->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 23 3
+	.loc 3 23 80
 	shrq	$27, %rax	#, _56
 	salq	$3, %rax	#, _57
 	addq	%rdx, %rax	# _54, _58
-# memory.c:23: 		*(memory_management_struct.bits_map+((page->PHY_address>>PAGE_2M_SHIFT)>>6)) |= 1UL << (page->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 23 80
 	orq	%rcx, %rsi	# _53, _48
 	movq	%rsi, %rdx	# _48, _59
 	movq	%rdx, (%rax)	# _59, *_58
 # memory.c:24: 		page->attribute |= flags;
-	.loc 3 24 7
+	.loc 3 24 19
 	movq	-8(%rbp), %rax	# page, tmp175
 	movq	16(%rax), %rax	# page_64(D)->attribute, _60
-# memory.c:24: 		page->attribute |= flags;
-	.loc 3 24 19
 	orq	-16(%rbp), %rax	# flags, _60
 	movq	%rax, %rdx	# _60, _61
 	movq	-8(%rbp), %rax	# page, tmp176
@@ -3689,7 +3681,7 @@ init_memory:
 	addq	%rax, -32(%rbp)	# _5, TotalMem
 .L21:
 # memory.c:45: 		memory_management_struct.e820[i].address+=p->address;
-	.loc 3 45 35
+	.loc 3 45 43
 	movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp278
 	movl	-44(%rbp), %eax	# i, tmp280
 	movslq	%eax, %rdx	# tmp280, tmp279
@@ -3718,7 +3710,7 @@ init_memory:
 	addq	%rsi, %rax	# tmp290, tmp294
 	movq	%rcx, (%rax)	# _8, memory_management_struct.e820[i_197].address
 # memory.c:46: 		memory_management_struct.e820[i].length+=p->length;
-	.loc 3 46 35
+	.loc 3 46 42
 	movabsq	$memory_management_struct@GOTOFF, %rcx	#, tmp295
 	movl	-44(%rbp), %eax	# i, tmp297
 	movslq	%eax, %rdx	# tmp297, tmp296
@@ -3751,20 +3743,20 @@ init_memory:
 # memory.c:47: 		memory_management_struct.e820[i].type=p->type;
 	.loc 3 47 42
 	movq	-40(%rbp), %rax	# p, tmp312
-	movl	16(%rax), %ecx	# p_196->type, _12
+	movl	16(%rax), %edx	# p_196->type, _12
 # memory.c:47: 		memory_management_struct.e820[i].type=p->type;
 	.loc 3 47 40
 	movabsq	$memory_management_struct@GOTOFF, %rsi	#, tmp313
 	movl	-44(%rbp), %eax	# i, tmp315
-	movslq	%eax, %rdx	# tmp315, tmp314
+	movslq	%eax, %rcx	# tmp315, tmp314
 	addq	%rbx, %rsi	# tmp82, tmp316
-	movq	%rdx, %rax	# tmp314, tmp317
+	movq	%rcx, %rax	# tmp314, tmp317
 	salq	$2, %rax	#, tmp317
-	addq	%rdx, %rax	# tmp314, tmp317
+	addq	%rcx, %rax	# tmp314, tmp317
 	salq	$2, %rax	#, tmp318
 	addq	%rsi, %rax	# tmp316, tmp319
 	addq	$16, %rax	#, tmp320
-	movl	%ecx, (%rax)	# _12, memory_management_struct.e820[i_197].type
+	movl	%edx, (%rax)	# _12, memory_management_struct.e820[i_197].type
 # memory.c:48: 		memory_management_struct.e820_length =i;
 	.loc 3 48 40
 	movl	-44(%rbp), %eax	# i, tmp321
@@ -3941,8 +3933,8 @@ init_memory:
 # memory.c:67: 		if(end<=start){
 	.loc 3 67 5
 	movq	-128(%rbp), %rax	# end, tmp373
-	cmpq	%rax, -120(%rbp)	# tmp373, start
-	jnb	.L44	#,
+	cmpq	-120(%rbp), %rax	# start, tmp373
+	jbe	.L44	#,
 # memory.c:70: 		TotalMem+=(end-start)>>PAGE_2M_SHIFT;
 	.loc 3 70 17
 	movq	-128(%rbp), %rax	# end, tmp374
@@ -3972,15 +3964,15 @@ init_memory:
 # memory.c:60: 	for(i=0;i<=memory_management_struct.e820_length;i++){
 	.loc 3 60 11 discriminator 1
 	movl	-20(%rbp), %eax	# i, tmp375
-	cltq
+	movslq	%eax, %rdx	# tmp375, _26
 # memory.c:60: 	for(i=0;i<=memory_management_struct.e820_length;i++){
 	.loc 3 60 37 discriminator 1
-	movabsq	$memory_management_struct@GOTOFF, %rdx	#, tmp376
-	movq	640(%rbx,%rdx), %rdx	# memory_management_struct.e820_length, _27
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp376
+	movq	640(%rbx,%rax), %rax	# memory_management_struct.e820_length, _27
 # memory.c:60: 	for(i=0;i<=memory_management_struct.e820_length;i++){
 	.loc 3 60 11 discriminator 1
-	cmpq	%rax, %rdx	# _26, _27
-	jnb	.L28	#,
+	cmpq	%rax, %rdx	# _27, _26
+	jbe	.L28	#,
 # memory.c:72: 	color_printk(ORANGE,BLACK,"OS Can Used Total 2M PAGEs:%#010x=%010d\n",TotalMem,TotalMem);
 	.loc 3 72 2
 	movq	-32(%rbp), %rdx	# TotalMem, tmp377
@@ -4302,8 +4294,8 @@ init_memory:
 # memory.c:134: 	if(end<=start){
 	.loc 3 134 4
 	movq	-104(%rbp), %rax	# end, tmp463
-	cmpq	%rax, -96(%rbp)	# tmp463, start
-	jnb	.L46	#,
+	cmpq	-96(%rbp), %rax	# start, tmp463
+	jbe	.L46	#,
 # memory.c:138: 	z=memory_management_struct.zones_struct+memory_management_struct.zones_size;
 	.loc 3 138 28
 	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp464
@@ -4427,80 +4419,78 @@ init_memory:
 	jmp	.L33	#
 .L34:
 # memory.c:157: 		p->zone_struct=z;
-	.loc 3 157 17
+	.loc 3 157 17 discriminator 3
 	movq	-56(%rbp), %rax	# p, tmp494
 	movq	-112(%rbp), %rdx	# z, tmp495
 	movq	%rdx, (%rax)	# tmp495, p_198->zone_struct
 # memory.c:158: 		p->PHY_address=start+PAGE_2M_SIZE*j;
-	.loc 3 158 36
+	.loc 3 158 36 discriminator 3
 	movl	-24(%rbp), %eax	# j, tmp496
 	cltq
 	salq	$21, %rax	#, _89
 	movq	%rax, %rdx	# _89, _90
 # memory.c:158: 		p->PHY_address=start+PAGE_2M_SIZE*j;
-	.loc 3 158 23
+	.loc 3 158 23 discriminator 3
 	movq	-96(%rbp), %rax	# start, tmp497
 	addq	%rax, %rdx	# tmp497, _91
 # memory.c:158: 		p->PHY_address=start+PAGE_2M_SIZE*j;
-	.loc 3 158 17
+	.loc 3 158 17 discriminator 3
 	movq	-56(%rbp), %rax	# p, tmp498
 	movq	%rdx, 8(%rax)	# _91, p_198->PHY_address
 # memory.c:159: 		p->attribute=0;
-	.loc 3 159 15
+	.loc 3 159 15 discriminator 3
 	movq	-56(%rbp), %rax	# p, tmp499
 	movq	$0, 16(%rax)	#, p_198->attribute
 # memory.c:160: 		p->reference_count=0;
-	.loc 3 160 21
+	.loc 3 160 21 discriminator 3
 	movq	-56(%rbp), %rax	# p, tmp500
 	movq	$0, 24(%rax)	#, p_198->reference_count
 # memory.c:161: 		p->age=0;
-	.loc 3 161 9
+	.loc 3 161 9 discriminator 3
 	movq	-56(%rbp), %rax	# p, tmp501
 	movq	$0, 32(%rax)	#, p_198->age
 # memory.c:163: 		*(memory_management_struct.bits_map+((p->PHY_address>>PAGE_2M_SHIFT)>>6))^=1UL <<(p->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 163 29
+	.loc 3 163 29 discriminator 3
 	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp502
 	movq	648(%rbx,%rax), %rdx	# memory_management_struct.bits_map, _92
 # memory.c:163: 		*(memory_management_struct.bits_map+((p->PHY_address>>PAGE_2M_SHIFT)>>6))^=1UL <<(p->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 163 42
+	.loc 3 163 42 discriminator 3
 	movq	-56(%rbp), %rax	# p, tmp503
 	movq	8(%rax), %rax	# p_198->PHY_address, _93
 # memory.c:163: 		*(memory_management_struct.bits_map+((p->PHY_address>>PAGE_2M_SHIFT)>>6))^=1UL <<(p->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 163 3
+	.loc 3 163 76 discriminator 3
 	shrq	$27, %rax	#, _94
 	salq	$3, %rax	#, _95
 	addq	%rdx, %rax	# _92, _96
 	movq	(%rax), %rdx	# *_96, _97
 # memory.c:163: 		*(memory_management_struct.bits_map+((p->PHY_address>>PAGE_2M_SHIFT)>>6))^=1UL <<(p->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 163 86
+	.loc 3 163 86 discriminator 3
 	movq	-56(%rbp), %rax	# p, tmp504
 	movq	8(%rax), %rax	# p_198->PHY_address, _98
 # memory.c:163: 		*(memory_management_struct.bits_map+((p->PHY_address>>PAGE_2M_SHIFT)>>6))^=1UL <<(p->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 163 99
+	.loc 3 163 99 discriminator 3
 	shrq	$21, %rax	#, _99
 # memory.c:163: 		*(memory_management_struct.bits_map+((p->PHY_address>>PAGE_2M_SHIFT)>>6))^=1UL <<(p->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 163 115
+	.loc 3 163 115 discriminator 3
 	andl	$63, %eax	#, _101
 # memory.c:163: 		*(memory_management_struct.bits_map+((p->PHY_address>>PAGE_2M_SHIFT)>>6))^=1UL <<(p->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 163 82
+	.loc 3 163 82 discriminator 3
 	movl	$1, %esi	#, tmp505
 	movl	%eax, %ecx	# _101, tmp618
 	salq	%cl, %rsi	# tmp618, _102
 # memory.c:163: 		*(memory_management_struct.bits_map+((p->PHY_address>>PAGE_2M_SHIFT)>>6))^=1UL <<(p->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 163 29
+	.loc 3 163 29 discriminator 3
 	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp506
 	movq	648(%rbx,%rax), %rcx	# memory_management_struct.bits_map, _103
 # memory.c:163: 		*(memory_management_struct.bits_map+((p->PHY_address>>PAGE_2M_SHIFT)>>6))^=1UL <<(p->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 163 42
+	.loc 3 163 42 discriminator 3
 	movq	-56(%rbp), %rax	# p, tmp507
 	movq	8(%rax), %rax	# p_198->PHY_address, _104
 # memory.c:163: 		*(memory_management_struct.bits_map+((p->PHY_address>>PAGE_2M_SHIFT)>>6))^=1UL <<(p->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 163 3
+	.loc 3 163 76 discriminator 3
 	shrq	$27, %rax	#, _105
 	salq	$3, %rax	#, _106
 	addq	%rcx, %rax	# _103, _107
-# memory.c:163: 		*(memory_management_struct.bits_map+((p->PHY_address>>PAGE_2M_SHIFT)>>6))^=1UL <<(p->PHY_address>>PAGE_2M_SHIFT)%64;
-	.loc 3 163 76
 	xorq	%rsi, %rdx	# _102, _108
 	movq	%rdx, (%rax)	# _108, *_107
 # memory.c:156: 	for(j=0;j<z->pages_length;j++,p++){
@@ -4541,15 +4531,15 @@ init_memory:
 # memory.c:125: for(i=0;i<=memory_management_struct.e820_length;i++){
 	.loc 3 125 10 discriminator 1
 	movl	-20(%rbp), %eax	# i, tmp510
-	cltq
+	movslq	%eax, %rdx	# tmp510, _111
 # memory.c:125: for(i=0;i<=memory_management_struct.e820_length;i++){
 	.loc 3 125 36 discriminator 1
-	movabsq	$memory_management_struct@GOTOFF, %rdx	#, tmp511
-	movq	640(%rbx,%rdx), %rdx	# memory_management_struct.e820_length, _112
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp511
+	movq	640(%rbx,%rax), %rax	# memory_management_struct.e820_length, _112
 # memory.c:125: for(i=0;i<=memory_management_struct.e820_length;i++){
 	.loc 3 125 10 discriminator 1
-	cmpq	%rax, %rdx	# _111, _112
-	jnb	.L35	#,
+	cmpq	%rax, %rdx	# _112, _111
+	jbe	.L35	#,
 # memory.c:166: memory_management_struct.pages_struct->zone_struct=memory_management_struct.zones_struct;
 	.loc 3 166 25
 	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp512
@@ -4740,11 +4730,11 @@ init_memory:
 # memory.c:186: 	if(z->zone_start_address==0x100000000){
 	.loc 3 186 6
 	movq	-88(%rbp), %rax	# z, tmp555
-	movq	16(%rax), %rdx	# z_273->zone_start_address, _140
+	movq	16(%rax), %rax	# z_273->zone_start_address, _140
 # memory.c:186: 	if(z->zone_start_address==0x100000000){
 	.loc 3 186 4
-	movabsq	$4294967296, %rax	#, tmp556
-	cmpq	%rax, %rdx	# tmp556, _140
+	movabsq	$4294967296, %rdx	#, tmp556
+	cmpq	%rdx, %rax	# tmp556, _140
 	jne	.L37	#,
 # memory.c:187: 		ZONE_UNMAPED_INDEX=i;
 	.loc 3 187 21
@@ -4843,11 +4833,11 @@ init_memory:
 	jmp	.L39	#
 .L40:
 # memory.c:199: 	page_init(memory_management_struct.pages_struct+j,PG_PTable_Maped|PG_Kernel_Init|PG_Active|PG_Kernel);
-	.loc 3 199 36
+	.loc 3 199 36 discriminator 3
 	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp574
 	movq	672(%rbx,%rax), %rcx	# memory_management_struct.pages_struct, _157
 # memory.c:199: 	page_init(memory_management_struct.pages_struct+j,PG_PTable_Maped|PG_Kernel_Init|PG_Active|PG_Kernel);
-	.loc 3 199 49
+	.loc 3 199 49 discriminator 3
 	movl	-24(%rbp), %eax	# j, tmp575
 	movslq	%eax, %rdx	# tmp575, _158
 	movq	%rdx, %rax	# _158, tmp576
@@ -4855,7 +4845,7 @@ init_memory:
 	addq	%rdx, %rax	# _158, tmp576
 	salq	$3, %rax	#, tmp577
 # memory.c:199: 	page_init(memory_management_struct.pages_struct+j,PG_PTable_Maped|PG_Kernel_Init|PG_Active|PG_Kernel);
-	.loc 3 199 2
+	.loc 3 199 2 discriminator 3
 	addq	%rcx, %rax	# _157, _160
 	movl	$147, %esi	#,
 	movq	%rax, %rdi	# _160,
@@ -4880,7 +4870,7 @@ init_memory:
 	call	*%rdx	# tmp581
 .LVL15:
 # memory.c:201: 	Global_CR3 = Get_gdt();
-	.loc 3 201 13 discriminator 1
+	.loc 3 201 13
 	movabsq	$Global_CR3@GOTOFF, %rdx	#, tmp583
 	movq	%rax, (%rbx,%rdx)	# _161, Global_CR3
 # memory.c:202: 	color_printk(INDIGO,BLACK,"Global_CR3\t:%#018lx\n",Global_CR3);
@@ -4959,7 +4949,7 @@ init_memory:
 	jmp	.L41	#
 .L42:
 # memory.c:206: 		*(Phy_To_Virt(Global_CR3)+i)=0UL;
-	.loc 3 206 28
+	.loc 3 206 28 discriminator 3
 	movl	-20(%rbp), %eax	# i, tmp599
 	cltq
 	leaq	0(,%rax,8), %rdx	#, _179
@@ -4969,7 +4959,7 @@ init_memory:
 	movabsq	$-140737488355328, %rax	#, tmp601
 	addq	%rdx, %rax	# _182, _183
 # memory.c:206: 		*(Phy_To_Virt(Global_CR3)+i)=0UL;
-	.loc 3 206 31
+	.loc 3 206 31 discriminator 3
 	movq	$0, (%rax)	#, *_184
 # memory.c:205: 	for(i=0;i<10;i++){
 	.loc 3 205 16 discriminator 3
@@ -5222,17 +5212,17 @@ alloc_page:
 # memory.c:260: 		unsigned long *p=memory_management_struct.bits_map+(j>>6);
 	.loc 3 260 44
 	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp159
-	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _17
+	movq	648(%rbx,%rax), %rdx	# memory_management_struct.bits_map, _17
 # memory.c:260: 		unsigned long *p=memory_management_struct.bits_map+(j>>6);
 	.loc 3 260 56
-	movq	-40(%rbp), %rdx	# j, tmp160
-	shrq	$6, %rdx	#, _18
+	movq	-40(%rbp), %rax	# j, tmp160
+	shrq	$6, %rax	#, _18
 # memory.c:260: 		unsigned long *p=memory_management_struct.bits_map+(j>>6);
 	.loc 3 260 53
-	salq	$3, %rdx	#, _19
+	salq	$3, %rax	#, _19
 # memory.c:260: 		unsigned long *p=memory_management_struct.bits_map+(j>>6);
 	.loc 3 260 18
-	addq	%rdx, %rax	# _19, tmp161
+	addq	%rdx, %rax	# _17, tmp161
 	movq	%rax, -112(%rbp)	# tmp161, p
 # memory.c:261: 		unsigned long shift=j%64;
 	.loc 3 261 17
@@ -5325,11 +5315,11 @@ alloc_page:
 .L64:
 .LBB11:
 # memory.c:279: 					struct Page *x=memory_management_struct.pages_struct+page+l;
-	.loc 3 279 45
+	.loc 3 279 45 discriminator 3
 	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp177
 	movq	672(%rbx,%rax), %rcx	# memory_management_struct.pages_struct, _32
 # memory.c:279: 					struct Page *x=memory_management_struct.pages_struct+page+l;
-	.loc 3 279 63
+	.loc 3 279 63 discriminator 3
 	movq	-64(%rbp), %rdx	# page, tmp178
 	movq	-56(%rbp), %rax	# l, tmp179
 	addq	%rax, %rdx	# tmp179, _33
@@ -5338,11 +5328,11 @@ alloc_page:
 	addq	%rdx, %rax	# _33, tmp180
 	salq	$3, %rax	#, tmp181
 # memory.c:279: 					struct Page *x=memory_management_struct.pages_struct+page+l;
-	.loc 3 279 19
+	.loc 3 279 19 discriminator 3
 	addq	%rcx, %rax	# _32, tmp182
 	movq	%rax, -128(%rbp)	# tmp182, x
-# memory.c:280: 					page_init(x,page_flags);
-	.loc 3 280 6
+# memory.c:281: 					page_init(x,page_flags);
+	.loc 3 281 6 discriminator 3
 	movq	-144(%rbp), %rdx	# page_flags, tmp183
 	movq	-128(%rbp), %rax	# x, tmp184
 	movq	%rdx, %rsi	# tmp183,
@@ -5362,19 +5352,19 @@ alloc_page:
 	cltq
 	cmpq	%rax, -56(%rbp)	# _35, l
 	jb	.L64	#,
-# memory.c:282: 				return (struct Page*)(memory_management_struct.pages_struct+page);
-	.loc 3 282 51
+# memory.c:283: 				return (struct Page*)(memory_management_struct.pages_struct+page);
+	.loc 3 283 51
 	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp188
 	movq	672(%rbx,%rax), %rcx	# memory_management_struct.pages_struct, _36
-# memory.c:282: 				return (struct Page*)(memory_management_struct.pages_struct+page);
-	.loc 3 282 64
+# memory.c:283: 				return (struct Page*)(memory_management_struct.pages_struct+page);
+	.loc 3 283 64
 	movq	-64(%rbp), %rdx	# page, tmp189
 	movq	%rdx, %rax	# tmp189, tmp190
 	salq	$2, %rax	#, tmp190
 	addq	%rdx, %rax	# tmp189, tmp190
 	salq	$3, %rax	#, tmp191
-# memory.c:282: 				return (struct Page*)(memory_management_struct.pages_struct+page);
-	.loc 3 282 12
+# memory.c:283: 				return (struct Page*)(memory_management_struct.pages_struct+page);
+	.loc 3 283 12
 	addq	%rcx, %rax	# _36, _46
 	jmp	.L54	#
 .L62:
@@ -5416,8 +5406,8 @@ alloc_page:
 # memory.c:259: 	for(j=start;j<=end;j+= j%64 ? tmp : 64){
 	.loc 3 259 15 discriminator 6
 	movq	-40(%rbp), %rax	# j, tmp194
-	cmpq	%rax, -88(%rbp)	# tmp194, end
-	jnb	.L68	#,
+	cmpq	-88(%rbp), %rax	# end, tmp194
+	jbe	.L68	#,
 	jmp	.L57	#
 .L70:
 # memory.c:251: 		continue;
@@ -5434,12 +5424,12 @@ alloc_page:
 	movl	-20(%rbp), %eax	# i, tmp195
 	cmpl	-28(%rbp), %eax	# zone_end, tmp195
 	jle	.L69	#,
-# memory.c:287: return NULL;
-	.loc 3 287 8
+# memory.c:288: return NULL;
+	.loc 3 288 8
 	movl	$0, %eax	#, _46
 .L54:
-# memory.c:288: }
-	.loc 3 288 1
+# memory.c:289: }
+	.loc 3 289 1
 	subq	$-128, %rsp	#,
 	popq	%rbx	#
 	popq	%r15	#
@@ -7016,6 +7006,8 @@ alloc_page:
 	.string	"Global_CR3"
 .LASF59:
 	.string	"page_flags"
+.LASF75:
+	.string	"GNU C17 11.4.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
 .LASF32:
 	.string	"attribute"
 .LASF24:
@@ -7096,8 +7088,6 @@ alloc_page:
 	.string	"ZONE_UNMAPED_INDEX"
 .LASF56:
 	.string	"char"
-.LASF75:
-	.string	"GNU C17 13.3.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
 .LASF41:
 	.string	"page_free_count"
 .LASF42:
@@ -7155,7 +7145,7 @@ alloc_page:
 	.string	"/home/student/myos/kernel"
 .LASF0:
 	.string	"memory.c"
-	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
+	.ident	"GCC: (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"
 	.align 8

@@ -1,6 +1,6 @@
 	.file	"main.c"
-# GNU C17 (Ubuntu 13.3.0-6ubuntu2~24.04) version 13.3.0 (x86_64-linux-gnu)
-#	compiled by GNU C version 13.3.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version isl-0.26-GMP
+# GNU C17 (Ubuntu 11.4.0-1ubuntu1~22.04.3) version 11.4.0 (x86_64-linux-gnu)
+#	compiled by GNU C version 11.4.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.24-GMP
 
 # GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 # options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection
@@ -3567,11 +3567,9 @@ Start_Kernel:
 	addq	%rbx, %rcx	# tmp82, tmp170
 	call	*%rcx	# tmp170
 .LVL8:
-# main.c:85:     page=alloc_page(ZONE_NORMAL,64,PG_PTable_Maped |PG_Active|PG_Kernel);
-	.loc 3 85 10 is_stmt 0 discriminator 1
 	cltq
 # main.c:85:     page=alloc_page(ZONE_NORMAL,64,PG_PTable_Maped |PG_Active|PG_Kernel);
-	.loc 3 85 9 is_stmt 1 discriminator 1
+	.loc 3 85 9
 	movq	%rax, -40(%rbp)	# _16, page
 # main.c:86:     for(i=0;i<16;i++){
 	.loc 3 86 10
@@ -3581,7 +3579,7 @@ Start_Kernel:
 	jmp	.L7	#
 .L8:
 # main.c:87:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-	.loc 3 87 109
+	.loc 3 87 109 discriminator 3
 	movl	-20(%rbp), %eax	# i, tmp171
 	movslq	%eax, %rdx	# tmp171, _17
 	movq	%rdx, %rax	# _17, tmp172
@@ -3592,10 +3590,10 @@ Start_Kernel:
 	movq	-40(%rbp), %rax	# page, tmp174
 	addq	%rdx, %rax	# _18, _19
 # main.c:87:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-	.loc 3 87 9
+	.loc 3 87 9 discriminator 3
 	movq	8(%rax), %rcx	# _19->PHY_address, _20
 # main.c:87:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-	.loc 3 87 89
+	.loc 3 87 89 discriminator 3
 	movl	-20(%rbp), %eax	# i, tmp175
 	movslq	%eax, %rdx	# tmp175, _21
 	movq	%rdx, %rax	# _21, tmp176
@@ -3606,7 +3604,7 @@ Start_Kernel:
 	movq	-40(%rbp), %rax	# page, tmp178
 	addq	%rdx, %rax	# _22, _23
 # main.c:87:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-	.loc 3 87 9
+	.loc 3 87 9 discriminator 3
 	movq	16(%rax), %rdx	# _23->attribute, _24
 	movl	-20(%rbp), %eax	# i, tmp179
 	movq	%rcx, %r9	# _20,
@@ -3624,10 +3622,10 @@ Start_Kernel:
 	call	*%r10	# tmp182
 .LVL9:
 # main.c:88:         i++;
-	.loc 3 88 10
+	.loc 3 88 10 discriminator 3
 	addl	$1, -20(%rbp)	#, i
 # main.c:89:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-	.loc 3 89 109
+	.loc 3 89 109 discriminator 3
 	movl	-20(%rbp), %eax	# i, tmp183
 	movslq	%eax, %rdx	# tmp183, _25
 	movq	%rdx, %rax	# _25, tmp184
@@ -3638,10 +3636,10 @@ Start_Kernel:
 	movq	-40(%rbp), %rax	# page, tmp186
 	addq	%rdx, %rax	# _26, _27
 # main.c:89:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-	.loc 3 89 9
+	.loc 3 89 9 discriminator 3
 	movq	8(%rax), %rcx	# _27->PHY_address, _28
 # main.c:89:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-	.loc 3 89 89
+	.loc 3 89 89 discriminator 3
 	movl	-20(%rbp), %eax	# i, tmp187
 	movslq	%eax, %rdx	# tmp187, _29
 	movq	%rdx, %rax	# _29, tmp188
@@ -3652,7 +3650,7 @@ Start_Kernel:
 	movq	-40(%rbp), %rax	# page, tmp190
 	addq	%rdx, %rax	# _30, _31
 # main.c:89:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-	.loc 3 89 9
+	.loc 3 89 9 discriminator 3
 	movq	16(%rax), %rdx	# _31->attribute, _32
 	movl	-20(%rbp), %eax	# i, tmp191
 	movq	%rcx, %r9	# _28,
@@ -3746,8 +3744,7 @@ Start_Kernel:
 .LVL14:
 .L9:
 # main.c:96:     while (1)
-	.loc 3 96 11
-	nop	
+	.loc 3 96 11 discriminator 1
 	jmp	.L9	#
 	.cfi_endproc
 .LFE40:
@@ -4981,6 +4978,8 @@ Start_Kernel:
 	.string	"ist3"
 .LASF60:
 	.string	"_edata"
+.LASF76:
+	.string	"GNU C17 11.4.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
 .LASF74:
 	.string	"ist6"
 .LASF45:
@@ -5057,8 +5056,6 @@ Start_Kernel:
 	.string	"YResolution"
 .LASF15:
 	.string	"char"
-.LASF76:
-	.string	"GNU C17 13.3.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
 .LASF54:
 	.string	"page_free_count"
 .LASF55:
@@ -5120,7 +5117,7 @@ Start_Kernel:
 	.string	"main.c"
 .LASF1:
 	.string	"/home/student/myos/kernel"
-	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
+	.ident	"GCC: (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"
 	.align 8

@@ -1,6 +1,6 @@
 	.file	"trap.c"
-# GNU C17 (Ubuntu 13.3.0-6ubuntu2~24.04) version 13.3.0 (x86_64-linux-gnu)
-#	compiled by GNU C version 13.3.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version isl-0.26-GMP
+# GNU C17 (Ubuntu 11.4.0-1ubuntu1~22.04.3) version 11.4.0 (x86_64-linux-gnu)
+#	compiled by GNU C version 11.4.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.24-GMP
 
 # GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 # options passed: -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection
@@ -43,9 +43,10 @@ set_intr_gate:
 	movabsq	$IDT_Table@GOT, %rdx	#, tmp97
 	movq	(%rax,%rdx), %rax	#, tmp98
 	leaq	(%rcx,%rax), %rdi	#, _7
-	movq	-32(%rbp), %rdx	# addr, addr.0_8
+	movq	-32(%rbp), %rax	# addr, addr.0_8
 	movl	$524288, %r8d	#, tmp101
 	movzbl	-24(%rbp), %ecx	# ist, tmp102
+	movq	%rax, %rdx	# addr.0_8, __d1
 	movl	%r8d, %eax	# tmp101, __d0
 #APP
 # 104 "gate.h" 1
@@ -112,9 +113,10 @@ set_trap_gate:
 	movabsq	$IDT_Table@GOT, %rdx	#, tmp97
 	movq	(%rax,%rdx), %rax	#, tmp98
 	leaq	(%rcx,%rax), %rdi	#, _7
-	movq	-32(%rbp), %rdx	# addr, addr.2_8
+	movq	-32(%rbp), %rax	# addr, addr.2_8
 	movl	$524288, %r8d	#, tmp101
 	movzbl	-24(%rbp), %ecx	# ist, tmp102
+	movq	%rax, %rdx	# addr.2_8, __d1
 	movl	%r8d, %eax	# tmp101, __d0
 #APP
 # 135 "gate.h" 1
@@ -181,9 +183,10 @@ set_system_gate:
 	movabsq	$IDT_Table@GOT, %rdx	#, tmp97
 	movq	(%rax,%rdx), %rax	#, tmp98
 	leaq	(%rcx,%rax), %rdi	#, _7
-	movq	-32(%rbp), %rdx	# addr, addr.1_8
+	movq	-32(%rbp), %rax	# addr, addr.1_8
 	movl	$524288, %r8d	#, tmp101
 	movzbl	-24(%rbp), %ecx	# ist, tmp102
+	movq	%rax, %rdx	# addr.1_8, __d1
 	movl	%r8d, %eax	# tmp101, __d0
 #APP
 # 140 "gate.h" 1
@@ -3468,8 +3471,7 @@ do_divide_error:
 .LVL0:
 .L10:
 # trap.c:11:     while (1);
-	.loc 2 11 11
-	nop	
+	.loc 2 11 11 discriminator 1
 	jmp	.L10	#
 	.cfi_endproc
 .LFE39:
@@ -3532,8 +3534,7 @@ do_debug:
 .LVL1:
 .L13:
 # trap.c:19: 	while(1);
-	.loc 2 19 7
-	nop	
+	.loc 2 19 7 discriminator 1
 	jmp	.L13	#
 	.cfi_endproc
 .LFE40:
@@ -3596,8 +3597,7 @@ do_nmi:
 .LVL2:
 .L16:
 # trap.c:31: 	while(1);
-	.loc 2 31 7
-	nop	
+	.loc 2 31 7 discriminator 1
 	jmp	.L16	#
 	.cfi_endproc
 .LFE41:
@@ -3660,8 +3660,7 @@ do_int3:
 .LVL3:
 .L19:
 # trap.c:43: 	while(1);
-	.loc 2 43 7
-	nop	
+	.loc 2 43 7 discriminator 1
 	jmp	.L19	#
 	.cfi_endproc
 .LFE42:
@@ -3724,8 +3723,7 @@ do_overflow:
 .LVL4:
 .L22:
 # trap.c:55: 	while(1);
-	.loc 2 55 7
-	nop	
+	.loc 2 55 7 discriminator 1
 	jmp	.L22	#
 	.cfi_endproc
 .LFE43:
@@ -3788,8 +3786,7 @@ do_bounds:
 .LVL5:
 .L25:
 # trap.c:67: 	while(1);
-	.loc 2 67 7
-	nop	
+	.loc 2 67 7 discriminator 1
 	jmp	.L25	#
 	.cfi_endproc
 .LFE44:
@@ -3852,8 +3849,7 @@ do_undefined_opcode:
 .LVL6:
 .L28:
 # trap.c:79: 	while(1);
-	.loc 2 79 7
-	nop	
+	.loc 2 79 7 discriminator 1
 	jmp	.L28	#
 	.cfi_endproc
 .LFE45:
@@ -3916,8 +3912,7 @@ do_dev_not_available:
 .LVL7:
 .L31:
 # trap.c:91: 	while(1);
-	.loc 2 91 7
-	nop	
+	.loc 2 91 7 discriminator 1
 	jmp	.L31	#
 	.cfi_endproc
 .LFE46:
@@ -3980,8 +3975,7 @@ do_double_fault:
 .LVL8:
 .L34:
 # trap.c:103: 	while(1);
-	.loc 2 103 7
-	nop	
+	.loc 2 103 7 discriminator 1
 	jmp	.L34	#
 	.cfi_endproc
 .LFE47:
@@ -4044,8 +4038,7 @@ do_coprocessor_segment_overrun:
 .LVL9:
 .L37:
 # trap.c:115: 	while(1);
-	.loc 2 115 7
-	nop	
+	.loc 2 115 7 discriminator 1
 	jmp	.L37	#
 	.cfi_endproc
 .LFE48:
@@ -4248,8 +4241,7 @@ do_invalid_TSS:
 .LVL16:
 .L45:
 # trap.c:140: 	while(1);
-	.loc 2 140 7
-	nop	
+	.loc 2 140 7 discriminator 1
 	jmp	.L45	#
 	.cfi_endproc
 .LFE49:
@@ -4434,8 +4426,7 @@ do_segment_not_present:
 .LVL23:
 .L53:
 # trap.c:169: 	while(1);
-	.loc 2 169 7
-	nop	
+	.loc 2 169 7 discriminator 1
 	jmp	.L53	#
 	.cfi_endproc
 .LFE50:
@@ -4620,8 +4611,7 @@ do_stack_segment_fault:
 .LVL30:
 .L61:
 # trap.c:198: 	while(1);
-	.loc 2 198 7
-	nop	
+	.loc 2 198 7 discriminator 1
 	jmp	.L61	#
 	.cfi_endproc
 .LFE51:
@@ -4806,8 +4796,7 @@ do_general_protection:
 .LVL37:
 .L69:
 # trap.c:227: 	while(1);
-	.loc 2 227 7
-	nop	
+	.loc 2 227 7 discriminator 1
 	jmp	.L69	#
 	.cfi_endproc
 .LFE52:
@@ -5070,8 +5059,7 @@ do_page_fault:
 .LVL47:
 .L79:
 # trap.c:268: 	while(1);
-	.loc 2 268 7
-	nop	
+	.loc 2 268 7 discriminator 1
 	jmp	.L79	#
 	.cfi_endproc
 .LFE53:
@@ -5134,8 +5122,7 @@ do_x87_FPU_error:
 .LVL48:
 .L82:
 # trap.c:277: 	while(1);
-	.loc 2 277 7
-	nop	
+	.loc 2 277 7 discriminator 1
 	jmp	.L82	#
 	.cfi_endproc
 .LFE54:
@@ -5198,8 +5185,7 @@ do_alignment_check:
 .LVL49:
 .L85:
 # trap.c:289: 	while(1);
-	.loc 2 289 7
-	nop	
+	.loc 2 289 7 discriminator 1
 	jmp	.L85	#
 	.cfi_endproc
 .LFE55:
@@ -5262,8 +5248,7 @@ do_machine_check:
 .LVL50:
 .L88:
 # trap.c:301: 	while(1);
-	.loc 2 301 7
-	nop	
+	.loc 2 301 7 discriminator 1
 	jmp	.L88	#
 	.cfi_endproc
 .LFE56:
@@ -5326,8 +5311,7 @@ do_SIMD_exception:
 .LVL51:
 .L91:
 # trap.c:313: 	while(1);
-	.loc 2 313 7
-	nop	
+	.loc 2 313 7 discriminator 1
 	jmp	.L91	#
 	.cfi_endproc
 .LFE57:
@@ -5390,8 +5374,7 @@ do_virtualization_exception:
 .LVL52:
 .L94:
 # trap.c:325: 	while(1);
-	.loc 2 325 7
-	nop	
+	.loc 2 325 7 discriminator 1
 	jmp	.L94	#
 	.cfi_endproc
 .LFE58:
@@ -7774,6 +7757,8 @@ sys_vector_init:
 	.string	"divide_error"
 .LASF77:
 	.string	"color_printk"
+.LASF76:
+	.string	"GNU C17 11.4.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
 .LASF42:
 	.string	"do_machine_check"
 .LASF27:
@@ -7856,8 +7841,6 @@ sys_vector_init:
 	.string	"char"
 .LASF45:
 	.string	"do_page_fault"
-.LASF76:
-	.string	"GNU C17 13.3.0 -mcmodel=large -m64 -mtune=generic -march=x86-64 -g -fno-builtin -fno-stack-protector -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection"
 .LASF72:
 	.string	"__d0"
 .LASF58:
@@ -7915,7 +7898,7 @@ sys_vector_init:
 	.string	"trap.c"
 .LASF1:
 	.string	"/home/student/myos/kernel"
-	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
+	.ident	"GCC: (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"
 	.align 8
