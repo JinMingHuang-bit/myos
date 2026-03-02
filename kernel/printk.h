@@ -26,6 +26,7 @@ so in the binary representation of each constant, only one bit is 1 and the rest
 #define BLUE    0x000000ff      //蓝
 #define INDIGO  0x0000ffff      //靛
 #define PURPLE  0x008000ff      //紫
+#define CYAN    0x0000ffff      //青
 
 #define is_digit(c)((c)>='0'&&(c)<='9')
 

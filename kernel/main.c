@@ -11,6 +11,7 @@ The kernel is typically mapped to the Higher Half.
 #include "gate.h"
 #include "trap.h"
 #include "memory.h"
+#include "process.h"
 
 
 extern char _text;
@@ -91,6 +92,13 @@ void Start_Kernel(void)
     }
     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
+    
+    // Initialize process subsystem
+    process_init();
+    
+    // Test process creation
+    process_test();
+    
     // clear_screen(YELLOW,BLACK);
     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
     while (1)
