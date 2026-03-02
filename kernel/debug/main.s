@@ -3274,7 +3274,7 @@ memory_management_struct:
 	.zero	760
 	.section	.rodata
 .LC0:
-	.string	"hello\t\t kernel!\n"
+	.string	"myos kernel 0.01\n"
 .LC1:
 	.string	"hello,User\n"
 	.align 8
@@ -3282,16 +3282,16 @@ memory_management_struct:
 	.string	"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n"
 	.align 8
 .LC3:
-	.string	"memory_management_struct.bitsmap:%#018lx\n"
+	.string	"I am the royal daughter who has broken the law!\n"
 	.align 8
 .LC4:
-	.string	"memory_management_struct.bitsmap+1:%#018lx\n"
+	.string	"memory_management_struct.bitsmap:%#018lx\n"
 	.align 8
 .LC5:
-	.string	"page%d\tattribute:%#018lx\taddress:%#018lx\t"
+	.string	"memory_management_struct.bitsmap+1:%#018lx\n"
 	.align 8
 .LC6:
-	.string	"I am the royal daughter who has broken the law!\n"
+	.string	"page%d\tattribute:%#018lx\taddress:%#018lx\t"
 	.align 8
 .LC7:
 	.string	"Hmm,there is still a problem here?"
@@ -3465,7 +3465,7 @@ Start_Kernel:
 	.loc 3 56 38
 	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp149
 	movq	%rdx, 744(%rbx,%rax)	# _end.3_9, memory_management_struct.end_brk
-# main.c:57:     color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
+# main.c:57:     color_printk(YELLOW,BLACK,"myos kernel 0.01\n");
 	.loc 3 57 5
 	movabsq	$.LC0@GOTOFF, %rax	#, tmp151
 	leaq	(%rbx,%rax), %rax	#, tmp150
@@ -3504,226 +3504,226 @@ Start_Kernel:
 	addq	%rbx, %rcx	# tmp82, tmp158
 	call	*%rcx	# tmp158
 .LVL4:
-# main.c:81:     init_memory();
-	.loc 3 81 5
-	movq	%rbx, %r15	# tmp82,
-	movl	$0, %eax	#,
-	movabsq	$init_memory@PLTOFF, %rdx	#, tmp159
-	addq	%rbx, %rdx	# tmp82, tmp159
-	call	*%rdx	# tmp159
-.LVL5:
-# main.c:82:     struct Page *page=NULL;
-	.loc 3 82 18
-	movq	$0, -40(%rbp)	#, page
-# main.c:83:     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
-	.loc 3 83 99
-	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp160
-	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _10
-# main.c:83:     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
-	.loc 3 83 5
-	movq	(%rax), %rax	# *_10, _11
-	movq	%rax, %rcx	# _11,
-	movabsq	$.LC3@GOTOFF, %rax	#, tmp162
-	leaq	(%rbx,%rax), %rax	#, tmp161
-	movq	%rax, %rdx	# tmp161,
-	movl	$0, %esi	#,
-	movl	$16711680, %edi	#,
-	movq	%rbx, %r15	# tmp82,
-	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %r8	#, tmp163
-	addq	%rbx, %r8	# tmp82, tmp163
-	call	*%r8	# tmp163
-.LVL6:
-# main.c:84:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
-	.loc 3 84 102
-	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp164
-	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _12
-# main.c:84:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
-	.loc 3 84 111
-	addq	$8, %rax	#, _13
-# main.c:84:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
-	.loc 3 84 5
-	movq	(%rax), %rax	# *_13, _14
-	movq	%rax, %rcx	# _14,
-	movabsq	$.LC4@GOTOFF, %rax	#, tmp166
-	leaq	(%rbx,%rax), %rax	#, tmp165
-	movq	%rax, %rdx	# tmp165,
-	movl	$0, %esi	#,
-	movl	$16711680, %edi	#,
-	movq	%rbx, %r15	# tmp82,
-	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %r8	#, tmp167
-	addq	%rbx, %r8	# tmp82, tmp167
-	call	*%r8	# tmp167
-.LVL7:
-# main.c:85:     page=alloc_page(ZONE_NORMAL,64,PG_PTable_Maped |PG_Active|PG_Kernel);
-	.loc 3 85 10
-	movl	$145, %edx	#,
-	movl	$64, %esi	#,
-	movl	$2, %edi	#,
-	movq	%rbx, %r15	# tmp82,
-	movabsq	$alloc_page@PLTOFF, %rax	#, tmp168
-	addq	%rbx, %rax	# tmp82, tmp168
-	call	*%rax	# tmp168
-.LVL8:
-	movq	%rax, -40(%rbp)	# tmp169, page
-# main.c:86:     for(i=0;i<16;i++){
-	.loc 3 86 10
-	movl	$0, -20(%rbp)	#, i
-# main.c:86:     for(i=0;i<16;i++){
-	.loc 3 86 5
-	jmp	.L7	#
-.L8:
-# main.c:87:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-	.loc 3 87 109 discriminator 3
-	movl	-20(%rbp), %eax	# i, tmp170
-	movslq	%eax, %rdx	# tmp170, _15
-	movq	%rdx, %rax	# _15, tmp171
-	salq	$2, %rax	#, tmp171
-	addq	%rdx, %rax	# _15, tmp171
-	salq	$3, %rax	#, tmp172
-	movq	%rax, %rdx	# tmp171, _16
-	movq	-40(%rbp), %rax	# page, tmp173
-	addq	%rdx, %rax	# _16, _17
-# main.c:87:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-	.loc 3 87 9 discriminator 3
-	movq	8(%rax), %rcx	# _17->PHY_address, _18
-# main.c:87:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-	.loc 3 87 89 discriminator 3
-	movl	-20(%rbp), %eax	# i, tmp174
-	movslq	%eax, %rdx	# tmp174, _19
-	movq	%rdx, %rax	# _19, tmp175
-	salq	$2, %rax	#, tmp175
-	addq	%rdx, %rax	# _19, tmp175
-	salq	$3, %rax	#, tmp176
-	movq	%rax, %rdx	# tmp175, _20
-	movq	-40(%rbp), %rax	# page, tmp177
-	addq	%rdx, %rax	# _20, _21
-# main.c:87:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-	.loc 3 87 9 discriminator 3
-	movq	16(%rax), %rdx	# _21->attribute, _22
-	movl	-20(%rbp), %eax	# i, tmp178
-	movq	%rcx, %r9	# _18,
-	movq	%rdx, %r8	# _22,
-	movl	%eax, %ecx	# tmp178,
-	movabsq	$.LC5@GOTOFF, %rax	#, tmp180
-	leaq	(%rbx,%rax), %rax	#, tmp179
-	movq	%rax, %rdx	# tmp179,
-	movl	$0, %esi	#,
-	movl	$65535, %edi	#,
-	movq	%rbx, %r15	# tmp82,
-	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %r10	#, tmp181
-	addq	%rbx, %r10	# tmp82, tmp181
-	call	*%r10	# tmp181
-.LVL9:
-# main.c:88:         i++;
-	.loc 3 88 10 discriminator 3
-	addl	$1, -20(%rbp)	#, i
-# main.c:89:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-	.loc 3 89 109 discriminator 3
-	movl	-20(%rbp), %eax	# i, tmp182
-	movslq	%eax, %rdx	# tmp182, _23
-	movq	%rdx, %rax	# _23, tmp183
-	salq	$2, %rax	#, tmp183
-	addq	%rdx, %rax	# _23, tmp183
-	salq	$3, %rax	#, tmp184
-	movq	%rax, %rdx	# tmp183, _24
-	movq	-40(%rbp), %rax	# page, tmp185
-	addq	%rdx, %rax	# _24, _25
-# main.c:89:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-	.loc 3 89 9 discriminator 3
-	movq	8(%rax), %rcx	# _25->PHY_address, _26
-# main.c:89:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-	.loc 3 89 89 discriminator 3
-	movl	-20(%rbp), %eax	# i, tmp186
-	movslq	%eax, %rdx	# tmp186, _27
-	movq	%rdx, %rax	# _27, tmp187
-	salq	$2, %rax	#, tmp187
-	addq	%rdx, %rax	# _27, tmp187
-	salq	$3, %rax	#, tmp188
-	movq	%rax, %rdx	# tmp187, _28
-	movq	-40(%rbp), %rax	# page, tmp189
-	addq	%rdx, %rax	# _28, _29
-# main.c:89:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-	.loc 3 89 9 discriminator 3
-	movq	16(%rax), %rdx	# _29->attribute, _30
-	movl	-20(%rbp), %eax	# i, tmp190
-	movq	%rcx, %r9	# _26,
-	movq	%rdx, %r8	# _30,
-	movl	%eax, %ecx	# tmp190,
-	movabsq	$.LC5@GOTOFF, %rax	#, tmp192
-	leaq	(%rbx,%rax), %rax	#, tmp191
-	movq	%rax, %rdx	# tmp191,
-	movl	$0, %esi	#,
-	movl	$65535, %edi	#,
-	movq	%rbx, %r15	# tmp82,
-	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %r10	#, tmp193
-	addq	%rbx, %r10	# tmp82, tmp193
-	call	*%r10	# tmp193
-.LVL10:
-# main.c:86:     for(i=0;i<16;i++){
-	.loc 3 86 19 discriminator 3
-	addl	$1, -20(%rbp)	#, i
-.L7:
-# main.c:86:     for(i=0;i<16;i++){
-	.loc 3 86 14 discriminator 1
-	cmpl	$15, -20(%rbp)	#, i
-	jle	.L8	#,
-# main.c:91:     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
-	.loc 3 91 99
-	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp194
-	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _31
-# main.c:91:     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
-	.loc 3 91 5
-	movq	(%rax), %rax	# *_31, _32
-	movq	%rax, %rcx	# _32,
-	movabsq	$.LC3@GOTOFF, %rax	#, tmp196
-	leaq	(%rbx,%rax), %rax	#, tmp195
-	movq	%rax, %rdx	# tmp195,
-	movl	$0, %esi	#,
-	movl	$16711680, %edi	#,
-	movq	%rbx, %r15	# tmp82,
-	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %r8	#, tmp197
-	addq	%rbx, %r8	# tmp82, tmp197
-	call	*%r8	# tmp197
-.LVL11:
-# main.c:92:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
-	.loc 3 92 102
-	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp198
-	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _33
-# main.c:92:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
-	.loc 3 92 111
-	addq	$8, %rax	#, _34
-# main.c:92:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
-	.loc 3 92 5
-	movq	(%rax), %rax	# *_34, _35
-	movq	%rax, %rcx	# _35,
-	movabsq	$.LC4@GOTOFF, %rax	#, tmp200
-	leaq	(%rbx,%rax), %rax	#, tmp199
-	movq	%rax, %rdx	# tmp199,
-	movl	$0, %esi	#,
-	movl	$16711680, %edi	#,
-	movq	%rbx, %r15	# tmp82,
-	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %r8	#, tmp201
-	addq	%rbx, %r8	# tmp82, tmp201
-	call	*%r8	# tmp201
-.LVL12:
-# main.c:93:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
-	.loc 3 93 5
-	movabsq	$.LC6@GOTOFF, %rax	#, tmp203
-	leaq	(%rbx,%rax), %rax	#, tmp202
-	movq	%rax, %rdx	# tmp202,
+# main.c:60:     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
+	.loc 3 60 5
+	movabsq	$.LC3@GOTOFF, %rax	#, tmp160
+	leaq	(%rbx,%rax), %rax	#, tmp159
+	movq	%rax, %rdx	# tmp159,
 	movl	$0, %esi	#,
 	movl	$16776960, %edi	#,
 	movq	%rbx, %r15	# tmp82,
 	movl	$0, %eax	#,
-	movabsq	$color_printk@PLTOFF, %rcx	#, tmp204
-	addq	%rbx, %rcx	# tmp82, tmp204
-	call	*%rcx	# tmp204
+	movabsq	$color_printk@PLTOFF, %rcx	#, tmp161
+	addq	%rbx, %rcx	# tmp82, tmp161
+	call	*%rcx	# tmp161
+.LVL5:
+# main.c:82:     init_memory();
+	.loc 3 82 5
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$init_memory@PLTOFF, %rdx	#, tmp162
+	addq	%rbx, %rdx	# tmp82, tmp162
+	call	*%rdx	# tmp162
+.LVL6:
+# main.c:83:     struct Page *page=NULL;
+	.loc 3 83 18
+	movq	$0, -40(%rbp)	#, page
+# main.c:84:     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
+	.loc 3 84 99
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp163
+	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _10
+# main.c:84:     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
+	.loc 3 84 5
+	movq	(%rax), %rax	# *_10, _11
+	movq	%rax, %rcx	# _11,
+	movabsq	$.LC4@GOTOFF, %rax	#, tmp165
+	leaq	(%rbx,%rax), %rax	#, tmp164
+	movq	%rax, %rdx	# tmp164,
+	movl	$0, %esi	#,
+	movl	$16711680, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %r8	#, tmp166
+	addq	%rbx, %r8	# tmp82, tmp166
+	call	*%r8	# tmp166
+.LVL7:
+# main.c:85:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
+	.loc 3 85 102
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp167
+	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _12
+# main.c:85:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
+	.loc 3 85 111
+	addq	$8, %rax	#, _13
+# main.c:85:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
+	.loc 3 85 5
+	movq	(%rax), %rax	# *_13, _14
+	movq	%rax, %rcx	# _14,
+	movabsq	$.LC5@GOTOFF, %rax	#, tmp169
+	leaq	(%rbx,%rax), %rax	#, tmp168
+	movq	%rax, %rdx	# tmp168,
+	movl	$0, %esi	#,
+	movl	$16711680, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %r8	#, tmp170
+	addq	%rbx, %r8	# tmp82, tmp170
+	call	*%r8	# tmp170
+.LVL8:
+# main.c:86:     page=alloc_page(ZONE_NORMAL,64,PG_PTable_Maped |PG_Active|PG_Kernel);
+	.loc 3 86 10
+	movl	$145, %edx	#,
+	movl	$64, %esi	#,
+	movl	$2, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movabsq	$alloc_page@PLTOFF, %rax	#, tmp171
+	addq	%rbx, %rax	# tmp82, tmp171
+	call	*%rax	# tmp171
+.LVL9:
+	movq	%rax, -40(%rbp)	# tmp172, page
+# main.c:87:     for(i=0;i<16;i++){
+	.loc 3 87 10
+	movl	$0, -20(%rbp)	#, i
+# main.c:87:     for(i=0;i<16;i++){
+	.loc 3 87 5
+	jmp	.L7	#
+.L8:
+# main.c:88:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+	.loc 3 88 109 discriminator 3
+	movl	-20(%rbp), %eax	# i, tmp173
+	movslq	%eax, %rdx	# tmp173, _15
+	movq	%rdx, %rax	# _15, tmp174
+	salq	$2, %rax	#, tmp174
+	addq	%rdx, %rax	# _15, tmp174
+	salq	$3, %rax	#, tmp175
+	movq	%rax, %rdx	# tmp174, _16
+	movq	-40(%rbp), %rax	# page, tmp176
+	addq	%rdx, %rax	# _16, _17
+# main.c:88:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+	.loc 3 88 9 discriminator 3
+	movq	8(%rax), %rcx	# _17->PHY_address, _18
+# main.c:88:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+	.loc 3 88 89 discriminator 3
+	movl	-20(%rbp), %eax	# i, tmp177
+	movslq	%eax, %rdx	# tmp177, _19
+	movq	%rdx, %rax	# _19, tmp178
+	salq	$2, %rax	#, tmp178
+	addq	%rdx, %rax	# _19, tmp178
+	salq	$3, %rax	#, tmp179
+	movq	%rax, %rdx	# tmp178, _20
+	movq	-40(%rbp), %rax	# page, tmp180
+	addq	%rdx, %rax	# _20, _21
+# main.c:88:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+	.loc 3 88 9 discriminator 3
+	movq	16(%rax), %rdx	# _21->attribute, _22
+	movl	-20(%rbp), %eax	# i, tmp181
+	movq	%rcx, %r9	# _18,
+	movq	%rdx, %r8	# _22,
+	movl	%eax, %ecx	# tmp181,
+	movabsq	$.LC6@GOTOFF, %rax	#, tmp183
+	leaq	(%rbx,%rax), %rax	#, tmp182
+	movq	%rax, %rdx	# tmp182,
+	movl	$0, %esi	#,
+	movl	$65535, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %r10	#, tmp184
+	addq	%rbx, %r10	# tmp82, tmp184
+	call	*%r10	# tmp184
+.LVL10:
+# main.c:89:         i++;
+	.loc 3 89 10 discriminator 3
+	addl	$1, -20(%rbp)	#, i
+# main.c:90:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+	.loc 3 90 109 discriminator 3
+	movl	-20(%rbp), %eax	# i, tmp185
+	movslq	%eax, %rdx	# tmp185, _23
+	movq	%rdx, %rax	# _23, tmp186
+	salq	$2, %rax	#, tmp186
+	addq	%rdx, %rax	# _23, tmp186
+	salq	$3, %rax	#, tmp187
+	movq	%rax, %rdx	# tmp186, _24
+	movq	-40(%rbp), %rax	# page, tmp188
+	addq	%rdx, %rax	# _24, _25
+# main.c:90:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+	.loc 3 90 9 discriminator 3
+	movq	8(%rax), %rcx	# _25->PHY_address, _26
+# main.c:90:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+	.loc 3 90 89 discriminator 3
+	movl	-20(%rbp), %eax	# i, tmp189
+	movslq	%eax, %rdx	# tmp189, _27
+	movq	%rdx, %rax	# _27, tmp190
+	salq	$2, %rax	#, tmp190
+	addq	%rdx, %rax	# _27, tmp190
+	salq	$3, %rax	#, tmp191
+	movq	%rax, %rdx	# tmp190, _28
+	movq	-40(%rbp), %rax	# page, tmp192
+	addq	%rdx, %rax	# _28, _29
+# main.c:90:         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+	.loc 3 90 9 discriminator 3
+	movq	16(%rax), %rdx	# _29->attribute, _30
+	movl	-20(%rbp), %eax	# i, tmp193
+	movq	%rcx, %r9	# _26,
+	movq	%rdx, %r8	# _30,
+	movl	%eax, %ecx	# tmp193,
+	movabsq	$.LC6@GOTOFF, %rax	#, tmp195
+	leaq	(%rbx,%rax), %rax	#, tmp194
+	movq	%rax, %rdx	# tmp194,
+	movl	$0, %esi	#,
+	movl	$65535, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %r10	#, tmp196
+	addq	%rbx, %r10	# tmp82, tmp196
+	call	*%r10	# tmp196
+.LVL11:
+# main.c:87:     for(i=0;i<16;i++){
+	.loc 3 87 19 discriminator 3
+	addl	$1, -20(%rbp)	#, i
+.L7:
+# main.c:87:     for(i=0;i<16;i++){
+	.loc 3 87 14 discriminator 1
+	cmpl	$15, -20(%rbp)	#, i
+	jle	.L8	#,
+# main.c:92:     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
+	.loc 3 92 99
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp197
+	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _31
+# main.c:92:     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
+	.loc 3 92 5
+	movq	(%rax), %rax	# *_31, _32
+	movq	%rax, %rcx	# _32,
+	movabsq	$.LC4@GOTOFF, %rax	#, tmp199
+	leaq	(%rbx,%rax), %rax	#, tmp198
+	movq	%rax, %rdx	# tmp198,
+	movl	$0, %esi	#,
+	movl	$16711680, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %r8	#, tmp200
+	addq	%rbx, %r8	# tmp82, tmp200
+	call	*%r8	# tmp200
+.LVL12:
+# main.c:93:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
+	.loc 3 93 102
+	movabsq	$memory_management_struct@GOTOFF, %rax	#, tmp201
+	movq	648(%rbx,%rax), %rax	# memory_management_struct.bits_map, _33
+# main.c:93:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
+	.loc 3 93 111
+	addq	$8, %rax	#, _34
+# main.c:93:     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
+	.loc 3 93 5
+	movq	(%rax), %rax	# *_34, _35
+	movq	%rax, %rcx	# _35,
+	movabsq	$.LC5@GOTOFF, %rax	#, tmp203
+	leaq	(%rbx,%rax), %rax	#, tmp202
+	movq	%rax, %rdx	# tmp202,
+	movl	$0, %esi	#,
+	movl	$16711680, %edi	#,
+	movq	%rbx, %r15	# tmp82,
+	movl	$0, %eax	#,
+	movabsq	$color_printk@PLTOFF, %r8	#, tmp204
+	addq	%rbx, %r8	# tmp82, tmp204
+	call	*%r8	# tmp204
 .LVL13:
 # main.c:95:     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
 	.loc 3 95 5
@@ -4322,7 +4322,7 @@ Start_Kernel:
 	.uleb128 0x19
 	.long	.LASF66
 	.byte	0x3
-	.byte	0x52
+	.byte	0x53
 	.byte	0x12
 	.long	0x312
 	.uleb128 0x2
@@ -4345,19 +4345,19 @@ Start_Kernel:
 	.long	0x439
 	.uleb128 0x3
 	.quad	.LVL5
-	.long	0x42c
+	.long	0x439
 	.uleb128 0x3
 	.quad	.LVL6
-	.long	0x439
+	.long	0x42c
 	.uleb128 0x3
 	.quad	.LVL7
 	.long	0x439
 	.uleb128 0x3
 	.quad	.LVL8
-	.long	0x40c
+	.long	0x439
 	.uleb128 0x3
 	.quad	.LVL9
-	.long	0x439
+	.long	0x40c
 	.uleb128 0x3
 	.quad	.LVL10
 	.long	0x439
