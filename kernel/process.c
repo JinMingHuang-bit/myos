@@ -43,6 +43,7 @@ void process_init(void)
 {
     struct Page *page;
     unsigned long *stack_ptr;
+    unsigned long virt_addr;
     
     color_printk(YELLOW, BLACK, "Initializing process subsystem...\n");
     
@@ -63,11 +64,19 @@ void process_init(void)
         return;
     }
     
-    init_task = (struct Task_Struct *)Phy_To_Virt(page->PHY_address);
-    color_printk(GREEN, BLACK, "Init task allocated at: %#018lx\n", (unsigned long)init_task);
+    color_printk(GREEN, BLACK, "Physical page allocated at: %#018lx\n", page->PHY_address);
+    
+    // Map the physical page to a virtual address in kernel space
+    // Use a virtual address in the kernel's direct mapping region
+    virt_addr = PAGE_OFFSET + page->PHY_address;
+    map_page(page->PHY_address, virt_addr, PAGE_KERNEL_FLAGS);
+    
+    init_task = (struct Task_Struct *)virt_addr;
+    color_printk(GREEN, BLACK, "Init task mapped at: %#018lx\n", virt_addr);
     
     // Zero out the task structure
     Cmemset(init_task, 0, sizeof(struct Task_Struct));
+    color_printk(GREEN, BLACK, "Task structure zeroed\n");
     
     // IMPORTANT: Set task[0] early so current macro works
     task[0] = init_task;
@@ -98,9 +107,15 @@ void process_init(void)
         return;
     }
     
-    stack_ptr = (unsigned long *)Phy_To_Virt(page->PHY_address);
+    color_printk(GREEN, BLACK, "Stack physical page at: %#018lx\n", page->PHY_address);
+    
+    // Map stack page
+    virt_addr = PAGE_OFFSET + page->PHY_address;
+    map_page(page->PHY_address, virt_addr, PAGE_KERNEL_FLAGS);
+    
+    stack_ptr = (unsigned long *)virt_addr;
     init_task->stack = (void *)stack_ptr;
-    color_printk(GREEN, BLACK, "Kernel stack allocated at: %#018lx\n", (unsigned long)init_task->stack);
+    color_printk(GREEN, BLACK, "Kernel stack mapped at: %#018lx\n", virt_addr);
     
     // Set up thread context
     // Use the top of the 2MB page as stack
@@ -145,6 +160,7 @@ struct Task_Struct *create_task(const char *name, int (*fn)(void *), void *arg)
     struct Page *page;
     unsigned long *stack;
     struct Task_Struct *parent_task;
+    unsigned long virt_addr;
 
     color_printk(GREEN, BLACK, "create_task: Starting to create task '%s'\n", name);
 
@@ -161,8 +177,12 @@ struct Task_Struct *create_task(const char *name, int (*fn)(void *), void *arg)
         return NULL;
     }
 
-    tsk = (struct Task_Struct *)Phy_To_Virt(page->PHY_address);
-    color_printk(GREEN, BLACK, "create_task: Task struct at %#018lx\n", (unsigned long)tsk);
+    // Map the physical page to virtual address
+    virt_addr = PAGE_OFFSET + page->PHY_address;
+    map_page(page->PHY_address, virt_addr, PAGE_KERNEL_FLAGS);
+    
+    tsk = (struct Task_Struct *)virt_addr;
+    color_printk(GREEN, BLACK, "create_task: Task struct at %#018lx\n", virt_addr);
 
     Cmemset(tsk, 0, sizeof(struct Task_Struct));
 
@@ -206,9 +226,13 @@ struct Task_Struct *create_task(const char *name, int (*fn)(void *), void *arg)
         return NULL;
     }
     
-    color_printk(GREEN, BLACK, "create_task: Stack page at %#018lx\n", (unsigned long)page->PHY_address);
+    color_printk(GREEN, BLACK, "create_task: Stack page at %#018lx\n", page->PHY_address);
 
-    stack = (unsigned long *)Phy_To_Virt(page->PHY_address);
+    // Map stack page
+    virt_addr = PAGE_OFFSET + page->PHY_address;
+    map_page(page->PHY_address, virt_addr, PAGE_KERNEL_FLAGS);
+    
+    stack = (unsigned long *)virt_addr;
     tsk->stack = (void *)stack;
 
     // Set up thread context - use 2MB page size

@@ -261,17 +261,17 @@ for(i=zone_start;i<=zone_end;i++){
 		unsigned long shift=j%64;
 		unsigned long k;
 		for(k=shift;k<64-shift;k++){
-			//Determine whether the bit segment of length number starting from the kth bit in the consecutive memory starting from p is all zeros. 
+			//Determine whether the bit segment of length number starting from the kth bit in the consecutive memory starting from p is all zeros.
 		    /*
 			The entire expression can be decomposed into：
               A = (*p >> k) | (*(p+1) << (64-k)) - Extract the segments across the border
               B = (number == 64 ? 0xffffffffffffffffUL : ((1UL << number) - 1)) - Generate mask  **
-            When the value of number is 64, shifting it 64 bits will result in undefined behavior 
+            When the value of number is 64, shifting it 64 bits will result in undefined behavior
 			(since 1UL is 64 bits and shifting 64 bits will move all the bits out), so special handling is required.
 			**
 			C = A & B - Use mask to filter the bit segments
               if (!C) - Check whether the filtered segments are all zeros.
-			*/  
+			*/
 			  if(!(((*p>>k)|(*(p+1)<<(64-k)))&(number == 64 ? 0xffffffffffffffffUL : ((1UL << number) - 1)))){
 		      	unsigned long l;
 				page=j+k-1;
@@ -286,4 +286,206 @@ for(i=zone_start;i<=zone_end;i++){
 	}
 }
 return NULL;
+}
+
+/*
+ * Page table mapping functions for x86_64
+ * Virtual address layout (48-bit canonical form):
+ * Bits 47-39: PML4 index (9 bits)
+ * Bits 38-30: PDPT index (9 bits)
+ * Bits 29-21: PD index (9 bits)
+ * Bits 20-12: PT index (9 bits)
+ * Bits 11-0:  Offset within page (12 bits)
+ */
+
+/*
+ * Get PML4 entry for a virtual address
+ */
+static inline unsigned long *get_pml4_entry(unsigned long virt_addr)
+{
+    unsigned long *pml4 = (unsigned long *)0xffff800000007c00;  // PML4 base (from boot)
+    unsigned long pml4_index = (virt_addr >> 39) & 0x1FF;
+    return pml4 + pml4_index;
+}
+
+/*
+ * Get PDPT entry for a virtual address
+ */
+static inline unsigned long *get_pdpt_entry(unsigned long *pml4_entry, unsigned long virt_addr)
+{
+    unsigned long pdpt_phys = *pml4_entry & PAGE_2M_MASK;
+    if (!pdpt_phys)
+        return NULL;
+    unsigned long *pdpt = (unsigned long *)Phy_To_Virt(pdpt_phys);
+    unsigned long pdpt_index = (virt_addr >> 30) & 0x1FF;
+    return pdpt + pdpt_index;
+}
+
+/*
+ * Get PD entry for a virtual address
+ */
+static inline unsigned long *get_pd_entry(unsigned long *pdpt_entry, unsigned long virt_addr)
+{
+    unsigned long pd_phys = *pdpt_entry & PAGE_2M_MASK;
+    if (!pd_phys)
+        return NULL;
+    unsigned long *pd = (unsigned long *)Phy_To_Virt(pd_phys);
+    unsigned long pd_index = (virt_addr >> 21) & 0x1FF;
+    return pd + pd_index;
+}
+
+/*
+ * Get PT entry for a virtual address
+ */
+static inline unsigned long *get_pt_entry(unsigned long *pd_entry, unsigned long virt_addr)
+{
+    unsigned long pt_phys = *pd_entry & PAGE_2M_MASK;
+    if (!pt_phys)
+        return NULL;
+    unsigned long *pt = (unsigned long *)Phy_To_Virt(pt_phys);
+    unsigned long pt_index = (virt_addr >> 12) & 0x1FF;
+    return pt + pt_index;
+}
+
+/*
+ * Allocate a new page table page (4KB)
+ */
+static unsigned long *alloc_page_table_page(void)
+{
+    struct Page *page = alloc_page(ZONE_NORMAL, 1, PG_PTable_Maped | PG_Active | PG_Kernel);
+    if (!page)
+        return NULL;
+    
+    // Zero out the page
+    unsigned long *pt = (unsigned long *)Phy_To_Virt(page->PHY_address);
+    Cmemset(pt, 0, PAGE_4K_SIZE);
+    
+    return pt;
+}
+
+/*
+ * Map a physical page to a virtual address
+ * flags: page flags (PAGE_PRESENT, PAGE_RW, etc.)
+ */
+void map_page(unsigned long phy_addr, unsigned long virt_addr, unsigned long flags)
+{
+    unsigned long *pml4_entry, *pdpt_entry, *pd_entry, *pt_entry;
+    unsigned long *new_table;
+    
+    // Get PML4 entry
+    pml4_entry = get_pml4_entry(virt_addr);
+    
+    // Check if PDPT exists
+    pdpt_entry = get_pdpt_entry(pml4_entry, virt_addr);
+    if (!pdpt_entry) {
+        // Allocate new PDPT
+        new_table = alloc_page_table_page();
+        if (!new_table)
+            return;
+        
+        // Set PML4 entry to point to new PDPT
+        *pml4_entry = Virt_To_Phy(new_table) | PAGE_KERNEL_FLAGS;
+        
+        // Get the new PDPT entry
+        pdpt_entry = get_pdpt_entry(pml4_entry, virt_addr);
+    }
+    
+    // Check if PD exists
+    pd_entry = get_pd_entry(pdpt_entry, virt_addr);
+    if (!pd_entry) {
+        // Allocate new PD
+        new_table = alloc_page_table_page();
+        if (!new_table)
+            return;
+        
+        // Set PDPT entry to point to new PD
+        *pdpt_entry = Virt_To_Phy(new_table) | PAGE_KERNEL_FLAGS;
+        
+        // Get the new PD entry
+        pd_entry = get_pd_entry(pdpt_entry, virt_addr);
+    }
+    
+    // Check if PT exists
+    pt_entry = get_pt_entry(pd_entry, virt_addr);
+    if (!pt_entry) {
+        // Allocate new PT
+        new_table = alloc_page_table_page();
+        if (!new_table)
+            return;
+        
+        // Set PD entry to point to new PT
+        *pd_entry = Virt_To_Phy(new_table) | PAGE_KERNEL_FLAGS;
+        
+        // Get the new PT entry
+        pt_entry = get_pt_entry(pd_entry, virt_addr);
+    }
+    
+    // Set the page table entry
+    *pt_entry = phy_addr | flags;
+    
+    // Flush TLB
+    flush_tlb();
+}
+
+/*
+ * Unmap a virtual address
+ */
+void unmap_page(unsigned long virt_addr)
+{
+    unsigned long *pml4_entry, *pdpt_entry, *pd_entry, *pt_entry;
+    
+    pml4_entry = get_pml4_entry(virt_addr);
+    pdpt_entry = get_pdpt_entry(pml4_entry, virt_addr);
+    if (!pdpt_entry)
+        return;
+    
+    pd_entry = get_pd_entry(pdpt_entry, virt_addr);
+    if (!pd_entry)
+        return;
+    
+    pt_entry = get_pt_entry(pd_entry, virt_addr);
+    if (!pt_entry)
+        return;
+    
+    // Clear the page table entry
+    *pt_entry = 0;
+    
+    // Flush TLB
+    flush_tlb();
+}
+
+/*
+ * Find page table entry for a virtual address
+ */
+unsigned long *page_virt_to_page_table(unsigned long virt_addr)
+{
+    unsigned long *pml4_entry, *pdpt_entry, *pd_entry, *pt_entry;
+    
+    pml4_entry = get_pml4_entry(virt_addr);
+    if (!(*pml4_entry & PAGE_PRESENT))
+        return NULL;
+    
+    pdpt_entry = get_pdpt_entry(pml4_entry, virt_addr);
+    if (!pdpt_entry || !(*pdpt_entry & PAGE_PRESENT))
+        return NULL;
+    
+    pd_entry = get_pd_entry(pdpt_entry, virt_addr);
+    if (!pd_entry || !(*pd_entry & PAGE_PRESENT))
+        return NULL;
+    
+    pt_entry = get_pt_entry(pd_entry, virt_addr);
+    if (!pt_entry)
+        return NULL;
+    
+    return pt_entry;
+}
+
+/*
+ * Find page table entry for a physical address
+ */
+unsigned long *page_phy_to_page_table(unsigned long phy_addr)
+{
+    // Convert physical to virtual and find page table entry
+    unsigned long virt_addr = (unsigned long)phy_addr + PAGE_OFFSET;
+    return page_virt_to_page_table(virt_addr);
 }

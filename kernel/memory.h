@@ -133,6 +133,15 @@ do { \
     ); \
 } while (0)
 
+// Page table flags for map_page()
+#define PAGE_PRESENT    (1UL << 0)
+#define PAGE_RW         (1UL << 1)
+#define PAGE_USER       (1UL << 2)
+#define PAGE_ACCESSED   (1UL << 5)
+#define PAGE_DIRTY      (1UL << 6)
+#define PAGE_GLOBAL     (1UL << 8)
+#define PAGE_KERNEL_FLAGS (PAGE_PRESENT | PAGE_RW | PAGE_ACCESSED | PAGE_DIRTY | PAGE_GLOBAL)
+
 static unsigned long *Get_gdt(){
 	unsigned long * tmp;
 	__asm__ __volatile__ ("movq %%cr3, %0  \n\t"			
@@ -243,6 +252,11 @@ struct Zone{
 
 	unsigned long total_pages_link;
 };
+
+unsigned long * page_virt_to_page_table(unsigned long virt_addr);
+unsigned long * page_phy_to_page_table(unsigned long phy_addr);
+void map_page(unsigned long phy_addr, unsigned long virt_addr, unsigned long flags);
+void unmap_page(unsigned long virt_addr);
 
 unsigned long * Global_CR3 = NULL;
 
