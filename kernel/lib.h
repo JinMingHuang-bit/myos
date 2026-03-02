@@ -14,7 +14,7 @@ typedef unsigned long size_t;
 // #define NULL 0
 #undef NULL
 #define NULL ((void *)0)
-
+#include"printk.h"
 #define offsetof(TYPE,MEMBER)(((size_t)&(TYPE*)0)->MEMBER)
 //linux version
 
@@ -303,6 +303,7 @@ static inline void * Cmemset(void *Address, unsigned char C, long Count)
     pattern |= (pattern << 16);
     pattern |= (pattern << 32);
     
+    color_printk(BLUE,WHITE,"Cmemset is running1\n");
     long remaining = Count;
     
     // 先按8字节块填充（64位）
@@ -311,7 +312,7 @@ static inline void * Cmemset(void *Address, unsigned char C, long Count)
         ptr += 8;
         remaining -= 8;
     }
-    
+    color_printk(BLUE,WHITE,"Cmemset is running2\n");
     // 检查是否需要填充4字节
     if (remaining & 4) {
         *((unsigned int *)ptr) = (unsigned int)pattern;
