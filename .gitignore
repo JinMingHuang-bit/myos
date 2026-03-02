@@ -4,3 +4,7 @@ kernel/debug
 *.a
 *.so
 *.d
+kernel/*.bin
+kernel/*.o
+kernel/system
+kernel/system.debug
