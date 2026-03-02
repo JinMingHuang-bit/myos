@@ -1,1 +1,6 @@
 kernel/debug
+*.bin
+*.o
+*.a
+*.so
+*.d
