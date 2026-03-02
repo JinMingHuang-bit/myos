@@ -206,18 +206,17 @@ void process_test(void);
 /*
  * Stack helpers
  */
-static inline unsigned long *get_free_page(void)
+static inline struct Page *alloc_task_page(void)
 {
     struct Page *page = alloc_page(ZONE_NORMAL, 1, PG_PTable_Maped | PG_Active | PG_Kernel);
     if (!page)
         return NULL;
-    return (unsigned long *)Phy_To_Virt(page->PHY_address);
+    return page;
 }
 
-static inline void free_page(unsigned long *addr)
+static inline unsigned long *get_task_stack(struct Page *page)
 {
-    // TODO: Implement page free
-    // For now, just leak the page (will be implemented later)
+    return (unsigned long *)Phy_To_Virt(page->PHY_address);
 }
 
 #endif
