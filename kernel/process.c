@@ -44,21 +44,22 @@ static long get_new_pid(void)
 void process_init(void)
 {
     color_printk(YELLOW, BLACK, "Initializing process subsystem...\n");
-    
+    color_printk(GREEN, BLACK, "start init\n");
     // Initialize runqueue
     list_init(&runqueue);
     list_init(&wait_queue);
     
+    color_printk(GREEN, BLACK, "PID allocator initialized.\n");
     // Create init task (idle process, PID 0)
     init_task = (struct Task_Struct *)get_free_page();
     if (!init_task) {
         color_printk(RED, BLACK, "Failed to create init task!\n");
         return;
     }
-    
+    color_printk(GREEN, BLACK, "Init task allocated.\n");
     // Zero out the task structure
     Cmemset(init_task, 0, THREAD_SIZE);
-    
+    color_printk(GREEN, BLACK, "Task structure initializing.\n");
     // Initialize init_task
     init_task->pid = 0;
     init_task->ppid = -1;
@@ -69,7 +70,7 @@ void process_init(void)
     init_task->counter = 1;
     init_task->need_resched = 0;
     init_task->usage = 1;
-    
+    color_printk(GREEN, BLACK, "Task structure initialized finish.\n");
     // Initialize list heads
     list_init(&init_task->children);
     list_init(&init_task->sibling);
@@ -80,12 +81,12 @@ void process_init(void)
         color_printk(RED, BLACK, "Failed to allocate kernel stack for init!\n");
         return;
     }
-    
+    color_printk(GREEN, BLACK, "Kernel stack allocated.\n");
     // Set up thread context
     init_task->thread.rsp0 = (unsigned long)init_task->stack + THREAD_SIZE;
     init_task->thread.rsp = init_task->thread.rsp0;
     init_task->thread.rip = 0;
-    
+    color_printk(GREEN, BLACK, "Thread context set up.\n");
     // Add to task table and runqueue
     task[0] = init_task;
     nr_tasks = 1;
@@ -147,6 +148,7 @@ struct Task_Struct *create_task(const char *name, int (*fn)(void *), void *arg)
     tsk->parent = current;
     
     // Copy name
+    color_printk(GREEN, BLACK, "Prepare to strncpy\n");  
     Cstrncpy(tsk->name, (char *)name, TASK_NAME_LEN - 1);
     tsk->name[TASK_NAME_LEN - 1] = '\0';
     
@@ -166,12 +168,14 @@ struct Task_Struct *create_task(const char *name, int (*fn)(void *), void *arg)
     list_init(&tsk->children);
     list_init(&tsk->sibling);
     
+    color_printk(GREEN, BLACK, "Prepare to allocate page\n");
     // Allocate kernel stack
     page = alloc_page(ZONE_NORMAL, 1, PG_PTable_Maped | PG_Active | PG_Kernel);
     if (!page) {
         color_printk(RED, BLACK, "create_task: Failed to allocate kernel stack\n");
         return NULL;
     }
+    color_printk(GREEN, BLACK, "allocate page finish\n");  
     
     stack = (unsigned long *)Phy_To_Virt(page->PHY_address);
     tsk->stack = (void *)stack;

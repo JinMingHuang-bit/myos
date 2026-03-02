@@ -84,7 +84,7 @@ void Start_Kernel(void)
     struct Page *page=NULL;
     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
-    page=alloc_page(ZONE_NORMAL,64,PG_PTable_Maped |PG_Active|PG_Kernel);
+    page=alloc_page(ZONE_NORMAL,18,PG_PTable_Maped |PG_Active|PG_Kernel);
     for(i=0;i<16;i++){
         color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
         i++;
