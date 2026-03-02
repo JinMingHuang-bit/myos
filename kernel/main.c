@@ -54,9 +54,10 @@ void Start_Kernel(void)
 	memory_management_struct.end_code   = (unsigned long)& _etext;
 	memory_management_struct.end_data   = (unsigned long)& _edata;
 	memory_management_struct.end_brk    = (unsigned long)& _end;
-    color_printk(YELLOW,BLACK,"hello\t\t kernel!\n");
+    color_printk(YELLOW,BLACK,"myos kernel 0.01\n");
     color_printk(YELLOW,BLACK,"hello,User\n");
     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
+    color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
     // i=1/0;
     /*
     0xffff80000aa00000 是一个高半内核地址（canonical form）
@@ -90,7 +91,6 @@ void Start_Kernel(void)
     }
     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
-    color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
     // clear_screen(YELLOW,BLACK);
     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
     while (1)
