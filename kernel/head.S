@@ -6,24 +6,23 @@
 .globl _start
 
 _start:
-/*2. 为什么是 0x10 ？
-0x10 （二进制 0001_0000 ）的解析如下：
-
-Index： 0001_0 （即 2 ），表示选择 GDT 中的第 3 个描述符（索引从 0 开始）。
-TI： 0 ，表示使用 GDT。
-RPL： 00 ，表示内核模式（最高特权）。
-在操作系统的启动阶段，GDT 通常被初始化为包含以下条目：
-
-NULL 描述符（索引 0）：保留，通常为全 0。
-内核代码段描述符（索引 1）：用于内核代码执行。
-内核数据段描述符（索引 2）：用于内核数据访问。
-因此， 0x10 选择的是 GDT 中的 内核数据段描述符，确保内核代码可以正确访问数据。
+/*Why is it 0x10?
+The interpretation of 0x10 (binary 0001_0000) is as follows: 
+Index: 0001_0 (i.e. 2), indicating the selection of the 3rd descriptor in the GDT (the index starts from 0).
+TI: 0, indicating the use of GDT.
+RPL: 00, indicating kernel mode (highest privilege).
+During the startup phase of the operating system, the GDT is usually initialized to contain the following entries: 
+NULL descriptor (index 0): Reserved, usually all 0.
+Kernel code segment descriptor (index 1): Used for kernel code execution.
+Kernel data segment descriptor (index 2): Used for accessing kernel data.
+Therefore, 0x10 selects the kernel data segment descriptor in the GDT, ensuring that the kernel code can correctly access the data.
 */
 	mov	$0x10,	%ax
 	mov	%ax,	%ds
 	mov	%ax,	%es
 	mov	%ax,	%fs
 	mov	%ax,	%ss
+//Define the starting address (top of the stack) of the stack
 	mov	$0x7E00,	%esp
 
 //=======	load GDTR
@@ -45,13 +44,17 @@ NULL 描述符（索引 0）：保留，通常为全 0。
 
 //=======	load	cr3
 
-	movq	$0x101000,	%rax
-	movq	%rax,		%cr3
-	movq	switch_seg(%rip),	%rax
-	pushq	$0x08
-	pushq	%rax
-	lretq
+/* Segment Selector Explanation:
+0x08 (Binary 0000_1000): Index = 1 (points to the 2nd descriptor of the GDT, which is the kernel code segment), TI = 0 (using GDT), RPL = 00 (kernel privilege level).
+0x10 (Binary 0001_0000): Index = 2 (points to the 3rd descriptor of the GDT, which is the kernel data segment), TI = 0, RPL = 00. 
+*/
 
+	movq	$0x101000,	%rax  // Load the physical address of the page table, 0x101000, into RAX
+	movq	%rax,		%cr3   // Set the CR3 register to point to the base address of the page table
+	movq	switch_seg(%rip),	%rax  // Obtain the address of entry64
+	pushq	$0x08			// 将代码段选择子(0x08)压栈
+	pushq	%rax			// 将entry64地址压栈
+	lretq					// 长返回，跳转到64位代码,lretq的处理逻辑如下：从栈顶依次弹出RIP和CS,跳转到CS:RIP
 //=======	64-bit mode code
 
 switch_seg:
@@ -246,8 +249,28 @@ __PDE:
 
 .section .data
 
-.globl GDT_Table
 
+/*
+GDT expalin:
+.quad 0x0020980000000000
+Type byte: 0x98 = 10011000b
+P = 1 (Segment exists)
+DPL = 00 (Kernel privilege level)
+S = 1 (Code/Data segment)
+Type = 1000 (Executable, unreadable (the executability of code is controlled by the page table))
+Flag byte: 0x20 = 00100000b
+L = 1 (64-bit code segment)
+D = 0 (Ignored) 
+Corresponding selector: 0x08 (Index 1, TI = 0, RPL = 0)
+.quad 0x0000920000000000
+Type byte: 0x92 = 10010010b
+P = 1 (Segment exists)
+DPL = 00 (Kernel privilege level)
+S = 1 (Code/Data segment)
+Type = 0010 (Readable/writable, upward expandable)
+Corresponding selector: 0x10 (Index 2, TI = 0, RPL = 0)
+*/
+.globl GDT_Table
 GDT_Table:
 	.quad	0x0000000000000000			/*0	NULL descriptor		       	00*/
 	.quad	0x0020980000000000			/*1	KERNEL	Code	64-bit	Segment	08*/
