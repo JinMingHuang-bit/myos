@@ -81,10 +81,10 @@ setup_IDT:
 	addq    %rcx,%rax
 	movl    %edx,%ecx
 	/*
-	RAX = 已包含中断门描述符的部分内容：
-低16位：函数地址的低16位
-16-31位：段选择子(0x08)
-32-47位：门属性(0x8E00)
+RAX = Part of the interrupt gate descriptor that has been included:
+Low 16 bits: The low 16 bits of the function address
+16-31 bits: Segment selector (0x08)
+32-47 bits: Gate attribute (0x8E00)
 	*/
 	//提取函数地址的16-31位
 	shrl    $16,%ecx
@@ -96,10 +96,10 @@ setup_IDT:
 	leaq    IDT_Table(%rip),%rdi
 	movq    $256,%rcx
 
-//将中断描述符（由RAX和RDX组成，共128位）填充到IDT（中断描述符表）中
+//Fill the interrupt descriptor (consisting of RAX and RDX, totaling 128 bits) into the IDT (Interrupt Descriptor Table)
 rp_sidt:
 	movq    %rax,(%rdi)
-	//8(%rdi)：这是一个内存寻址表达式，表示以 %rdi 寄存器中存储的地址为基址，然后加上8字节的偏移量。
+	//8(%rdi): This is a memory addressing expression, indicating that the base address is the one stored in the %rdi register, and then an offset of 8 bytes is added.
 	movq    %rdx,8(%rdi)
 	addq    $0x10,%rdi
 	dec 	%rcx

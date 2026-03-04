@@ -1,0 +1,188 @@
+     1                                  ; 大模式（Unreal Mode）测试程序
+     2                                  ; 用于 Bochs 模拟器测试
+     3                                  ; NASM 语法
+     4                                  
+     5                                  org 0x7c00                  ; BIOS 加载地址
+     6                                  
+     7                                  [BITS 16]
+     8                                  start:
+     9                                      ; 设置段寄存器
+    10 00000000 FA                          cli
+    11 00000001 31C0                        xor ax, ax
+    12 00000003 8ED8                        mov ds, ax
+    13 00000005 8EC0                        mov es, ax
+    14 00000007 8ED0                        mov ss, ax
+    15 00000009 BC007C                      mov sp, 0x7c00
+    16                                  
+    17                                      ; 显示进入实模式消息
+    18 0000000C BE[C500]                    mov si, msg_real
+    19 0000000F E88800                      call print_string
+    20                                  
+    21                                      ; 测试访问 1MB 以上内存（应该失败，因为实模式只能访问 1MB）
+    22 00000012 BE[E000]                    mov si, msg_try_high
+    23 00000015 E88200                      call print_string
+    24                                      
+    25                                      ; 尝试读取 1MB 处的内存（实模式下会环绕到 0xFFFF:0x10 之类的地址）
+    26 00000018 6631C0                      xor eax, eax
+    27 0000001B B80010                      mov ax, 0x1000          ; 段
+    28 0000001E 8ED8                        mov ds, ax
+    29 00000020 BB0000                      mov bx, 0               ; 偏移
+    30 00000023 3E8A07                      mov al, [ds:bx]         ; 尝试读取，但实际读的是 0x10000 处
+    31                                      
+    32 00000026 BE[0501]                    mov si, msg_done
+    33 00000029 E86E00                      call print_string
+    34                                      
+    35 0000002C 8CC8                        mov ax, cs          ; 或者直接 xor ax, ax
+    36 0000002E 8ED8                        mov ds, ax 
+    37                                      ; 进入大模式
+    38 00000030 BE[2F01]                    mov si, msg_unreal
+    39 00000033 E86400                      call print_string
+    40                                      
+    41 00000036 E82800                      call enter_unreal       ; 切换到 Unreal Mode
+    42                                  
+    43                                      ; 现在处于大模式，可以访问 4GB 空间
+    44                                      ; 设置一个测试标记到 2MB 处
+    45 00000039 66B800002000                mov eax, 0x200000       ; 2MB 地址
+    46 0000003F 3E67C60055                  mov byte [ds:eax], 0x55 ; 写入测试值
+    47                                      
+    48                                      ; 再从 2MB 处读取并显示
+    49 00000044 66B800002000                mov eax, 0x200000
+    50 0000004A 3E678A18                    mov bl, [ds:eax]
+    51                                      
+    52                                      ; 显示结果
+    53 0000004E BE[4C01]                    mov si, msg_success
+    54 00000051 E84600                      call print_string
+    55                                      
+    56                                      ; 读取并显示写入的值
+    57 00000054 BE[6501]                    mov si, msg_value
+    58 00000057 E84000                      call print_string
+    59 0000005A 88D8                        mov al, bl
+    60 0000005C E84700                      call print_hex_byte
+    61                                      
+    62                                      ; 无限循环
+    63 0000005F EBFE                        jmp $
+    64                                  
+    65                                  ; 进入大模式函数
+    66                                  enter_unreal:
+    67 00000061 FA                          cli
+    68                                      
+    69                                      ; 保存原 DS
+    70 00000062 1E                          push ds
+    71                                      
+    72                                      ; 加载 GDT
+    73 00000063 0F0116[9801]                lgdt [gdt_ptr]
+    74                                      
+    75                                      ; 进入保护模式
+    76 00000068 0F20C0                      mov eax, cr0
+    77 0000006B 0C01                        or al, 1
+    78 0000006D 0F22C0                      mov cr0, eax
+    79                                      
+    80                                      ; 跳转刷新流水线
+    81 00000070 EA[7500]0800                jmp 0x08:protect_mode
+    82                                  
+    83                                  [BITS 32]
+    84                                  protect_mode:
+    85                                      ; 加载 4GB 数据段
+    86 00000075 66B81000                    mov ax, 0x10
+    87 00000079 8ED8                        mov ds, ax
+    88 0000007B 8EC0                        mov es, ax
+    89 0000007D 8EE0                        mov fs, ax
+    90 0000007F 8EE8                        mov gs, ax
+    91                                      
+    92                                      ; 返回实模式
+    93 00000081 0F20C0                      mov eax, cr0
+    94 00000084 24FE                        and al, 0xFE
+    95 00000086 0F22C0                      mov cr0, eax
+    96                                      
+    97                                      ; 跳回实模式
+    98 00000089 EA[90000000]0000            jmp 0:real_mode_back
+    99                                  
+   100                                  [BITS 16]
+   101                                  ;为什么会无效啊?
+   102                                  real_mode_back:
+   103                                      ; 恢复 SS 和 SP
+   104 00000090 31C0                        xor ax, ax
+   105 00000092 8ED0                        mov ss, ax
+   106 00000094 BC007C                      mov sp, 0x7c00
+   107                                      
+   108                                      ; 恢复 DS 为 0（但缓存保留 4GB 属性）
+   109 00000097 1F                          pop ds                  ; 原来的 DS=0
+   110                                      
+   111 00000098 FB                          sti
+   112 00000099 C3                          ret
+   113                                  
+   114                                  ; 打印字符串函数
+   115                                  print_string:
+   116 0000009A AC                          lodsb
+   117 0000009B 08C0                        or al, al
+   118 0000009D 7406                        jz .done
+   119 0000009F B40E                        mov ah, 0x0E
+   120 000000A1 CD10                        int 0x10
+   121 000000A3 EBF5                        jmp print_string
+   122                                  .done:
+   123 000000A5 C3                          ret
+   124                                  
+   125                                  ; 打印十六进制字节
+   126                                  print_hex_byte:
+   127 000000A6 50                          push ax
+   128 000000A7 88C4                        mov ah, al
+   129 000000A9 C0E804                      shr al, 4
+   130 000000AC E80900                      call print_hex_digit
+   131 000000AF 88E0                        mov al, ah
+   132 000000B1 240F                        and al, 0x0F
+   133 000000B3 E80200                      call print_hex_digit
+   134 000000B6 58                          pop ax
+   135 000000B7 C3                          ret
+   136                                      
+   137                                  print_hex_digit:
+   138 000000B8 0430                        add al, '0'
+   139 000000BA 3C39                        cmp al, '9'
+   140 000000BC 7E02                        jle .print
+   141 000000BE 0407                        add al, 7
+   142                                  .print:
+   143 000000C0 B40E                        mov ah, 0x0E
+   144 000000C2 CD10                        int 0x10
+   145 000000C4 C3                          ret
+   146                                  
+   147                                  ; 数据段
+   148 000000C5 312E20496E20526561-     msg_real    db '1. In Real Mode (16-bit)', 13, 10, 0
+   148 000000CE 6C204D6F6465202831-
+   148 000000D7 362D626974290D0A00 
+   149 000000E0 322E20547279696E67-     msg_try_high db '2. Trying to access >1MB memory...', 13, 10, 0
+   149 000000E9 20746F206163636573-
+   149 000000F2 73203E314D42206D65-
+   149 000000FB 6D6F72792E2E2E0D0A-
+   149 00000104 00                 
+   150 00000105 202020285468697320-     msg_done    db '   (This will wrap around in real mode)', 13, 10, 0
+   150 0000010E 77696C6C2077726170-
+   150 00000117 2061726F756E642069-
+   150 00000120 6E207265616C206D6F-
+   150 00000129 6465290D0A00       
+   151 0000012F 332E20456E74657269-     msg_unreal  db '3. Entering Unreal Mode...', 13, 10, 0
+   151 00000138 6E6720556E7265616C-
+   151 00000141 204D6F64652E2E2E0D-
+   151 0000014A 0A00               
+   152 0000014C 342E20556E7265616C-     msg_success db '4. Unreal Mode active!', 13, 10, 0
+   152 00000155 204D6F646520616374-
+   152 0000015E 697665210D0A00     
+   153 00000165 20202056616C756520-     msg_value   db '   Value at 2MB: 0x', 0
+   153 0000016E 617420324D423A2030-
+   153 00000177 7800               
+   154                                  
+   155                                  ; 全局描述符表
+   156 00000179 90<rep 7h>              align 8
+   157                                  gdt:
+   158                                      ; NULL 描述符
+   159 00000180 0000000000000000            dw 0, 0, 0, 0
+   160                                      ; 代码段描述符 (基址0, 限长4GB)
+   161 00000188 FFFF0000009ACF00            dw 0xFFFF, 0, 0x9A00, 0xCF
+   162                                      ; 数据段描述符 (基址0, 限长4GB)
+   163 00000190 FFFF00000092CF00            dw 0xFFFF, 0, 0x9200, 0xCF
+   164                                  
+   165                                  gdt_ptr:
+   166 00000198 1700                        dw $ - gdt - 1
+   167 0000019A [80010000]                  dd gdt
+   168                                  
+   169                                  ; 填充到510字节，并以引导扇区标志结束
+   170 0000019E 00<rep 60h>             times 510-($-$$) db 0
+   171 000001FE 55AA                    dw 0xAA55
