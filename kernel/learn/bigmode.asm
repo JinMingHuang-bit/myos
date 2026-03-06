@@ -66,7 +66,7 @@ enter_unreal:
     cli
     
     ; Keep the original DS
-    push ds
+    ; push ds
     
     ; Load GDT
     lgdt [gdt_ptr]
@@ -77,27 +77,31 @@ enter_unreal:
     mov cr0, eax
     
     ; Switch to the refresh pipeline
-    jmp 0x08:protect_mode
+    jmp 0x08:protect_mode_32
 
 [BITS 32]
-protect_mode:
-    ; Loading 4GB data segment
+protect_mode_32:
+    ; 加载 4GB 数据段
     mov ax, 0x10
     mov ds, ax
     mov es, ax
     mov fs, ax
     mov gs, ax
-    
-    ; Return to real mode
+
+    ; 现在切换到 16 位保护模式，以刷新 CS 缓存中的 D 标志
+    jmp 0x18:protect_mode_16    ; 0x18 指向 GDT 中的 16 位代码段描述符
+[BITS 16]
+protect_mode_16:
+    ; 在 16 位保护模式下，CS 缓存中的 D=0，确保后续返回实模式后指令解码正确
+    ; 此时仍然可以访问 4GB 数据（因为 DS 等仍是 4GB 段）
+    ; 返回实模式
     mov eax, cr0
     and al, 0xFE
     mov cr0, eax
-    
-    ; Return to the real mode
+
+    ; 远跳转回实模式，CS 缓存将保持 D=0（因为是从 16 位保护模式来的）
     jmp 0:real_mode_back
 
-;The declare below have no effect ,why?
-[BITS 16]
 real_mode_back:
     ; Restore SS and SP
     xor ax, ax
@@ -105,7 +109,7 @@ real_mode_back:
     mov sp, 0x7c00
     
     ; Restore DS to 0 (but retain the 4GB attribute of the cache)
-    pop ds                  ; The original DS = 0
+    ; pop ds                  ; The original DS = 0
     
     sti
     ret
@@ -161,6 +165,8 @@ gdt:
     dw 0xFFFF, 0, 0x9A00, 0xCF
     ; Data segment descriptor (base address 0, limit 4GB)
     dw 0xFFFF, 0, 0x9200, 0xCF
+    ; 16 位代码段描述符 (基址0, 限长64KB, D=0) —— 用于返回前刷新 CS 缓存
+    dw 0xFFFF, 0, 0x9E00, 0x00   ; 注意：限长可设为 64KB，因为不需要访问大内存，只是为了切换模式
 
 gdt_ptr:
     dw $ - gdt - 1
