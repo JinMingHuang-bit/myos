@@ -104,9 +104,9 @@ protect_mode_16:
 
 real_mode_back:
     ; Restore SS and SP
-    xor ax, ax
-    mov ss, ax
-    mov sp, 0x7c00
+    ; xor ax, ax
+    ; mov ss, ax
+    ; mov sp, 0x7c00
     
     ; Restore DS to 0 (but retain the 4GB attribute of the cache)
     ; pop ds                  ; The original DS = 0
