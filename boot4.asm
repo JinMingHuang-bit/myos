@@ -17,34 +17,57 @@ SectorNumOfFAT1Start	equ	1
 ; Conversion base value from cluster number to physical sector:
 SectorBalance	equ	17	
 
-	jmp	short Label_Start
-	nop
-	BS_OEMName	db	'myosboot'
-	BPB_BytesPerSec	dw	512
-	BPB_SecPerClus	db	1
-	BPB_RsvdSecCnt	dw	1
-	BPB_NumFATs	db	2
-	BPB_RootEntCnt	dw	224
-	BPB_TotSec16	dw	2880
-	BPB_Media	db	0xf0
-	BPB_FATSz16	dw	9
-	BPB_SecPerTrk	dw	18
-	BPB_NumHeads	dw	2
-	BPB_HiddSec	dd	0
-	BPB_TotSec32	dd	0
-	BS_DrvNum	db	0
-	BS_Reserved1	db	0
-	BS_BootSig	db	0x29
-	BS_VolID	dd	0
-	BS_VolLab	db	'boot loader'
-	BS_FileSysType	db	'FAT12   '
-
+	; 跳转到启动标签
+		jmp	short Label_Start
+	; 空操作指令
+		nop
+		; BIOS参数块(BPB)和引导扇区数据结构定义
+		; OEM名称标识符
+		BS_OEMName	db	'myosboot'
+		; 每扇区字节数
+		BPB_BytesPerSec	dw	512
+		; 每簇扇区数
+		BPB_SecPerClus	db	1
+		; 保留扇区数
+		BPB_RsvdSecCnt	dw	1
+		; FAT表数量
+		BPB_NumFATs	db	2
+		; 根目录项数
+		BPB_RootEntCnt	dw	224
+		; 总扇区数(16位)
+		BPB_TotSec16	dw	2880
+		; 媒体描述符
+		BPB_Media	db	0xf0
+		; FAT大小(16位)
+		BPB_FATSz16	dw	9
+		; 每磁道扇区数
+		BPB_SecPerTrk	dw	18
+		; 磁头数
+		BPB_NumHeads	dw	2
+		; 隐藏扇区数
+		BPB_HiddSec	dd	0
+		; 总扇区数(32位)
+		BPB_TotSec32	dd	0
+		; 驱动器号
+		BS_DrvNum	db	0
+		; 保留字段1
+		BS_Reserved1	db	0
+		; 引导签名
+		BS_BootSig	db	0x29
+		; 卷ID
+		BS_VolID	dd	0
+		; 卷标
+		BS_VolLab	db	'boot loader'
+		; 文件系统类型
+		BS_FileSysType	db	'FAT12   '
+	
 Label_Start:
-
+	;Make the data segment and the additional segment point to the same memory segment as the code segment.
 	mov	ax,	cs
 	mov	ds,	ax
 	mov	es,	ax
 	mov	ss,	ax
+	;init stack
 	mov	sp,	BaseOfStack
 
 ;=======	clear screen
