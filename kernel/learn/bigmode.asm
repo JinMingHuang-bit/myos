@@ -81,25 +81,25 @@ enter_unreal:
 
 [BITS 32]
 protect_mode_32:
-    ; 加载 4GB 数据段
+    ; Load a 4GB data segment
     mov ax, 0x10
     mov ds, ax
     mov es, ax
     mov fs, ax
     mov gs, ax
 
-    ; 现在切换到 16 位保护模式，以刷新 CS 缓存中的 D 标志
-    jmp 0x18:protect_mode_16    ; 0x18 指向 GDT 中的 16 位代码段描述符
+    ; Now switch to 16-bit protected mode to refresh the D flag in the CS cache.
+    jmp 0x18:protect_mode_16    ; 0x18 points to the 16-bit code segment descriptor in the GDT.
 [BITS 16]
 protect_mode_16:
-    ; 在 16 位保护模式下，CS 缓存中的 D=0，确保后续返回实模式后指令解码正确
-    ; 此时仍然可以访问 4GB 数据（因为 DS 等仍是 4GB 段）
-    ; 返回实模式
+    ;In 16-bit protected mode, the D value in the CS cache is 0, ensuring that the instruction decoding is correct when returning to real mode subsequently.
+    ; At this point, 4GB of data can still be accessed (as DS and others are still in the 4GB segment)
+    ; Return to real mode
     mov eax, cr0
     and al, 0xFE
     mov cr0, eax
 
-    ; 远跳转回实模式，CS 缓存将保持 D=0（因为是从 16 位保护模式来的）
+    ; Jump back to the real mode. The CS cache will maintain D=0 (because it came from the 16-bit protected mode)
     jmp 0:real_mode_back
 
 real_mode_back:
@@ -116,6 +116,7 @@ real_mode_back:
 
 ;Print string function
 print_string:
+    cld
     lodsb
     or al, al
     jz .done
@@ -127,6 +128,7 @@ print_string:
 
 ; Print hexadecimal bytes
 print_hex_byte:
+    cld
     push ax
     mov ah, al
     shr al, 4
@@ -165,8 +167,8 @@ gdt:
     dw 0xFFFF, 0, 0x9A00, 0xCF
     ; Data segment descriptor (base address 0, limit 4GB)
     dw 0xFFFF, 0, 0x9200, 0xCF
-    ; 16 位代码段描述符 (基址0, 限长64KB, D=0) —— 用于返回前刷新 CS 缓存
-    dw 0xFFFF, 0, 0x9E00, 0x00   ; 注意：限长可设为 64KB，因为不需要访问大内存，只是为了切换模式
+    ; 16-bit code segment descriptor (base address 0, limit 64KB, D=0) —— used to return and refresh the CS cache before execution
+    dw 0xFFFF, 0, 0x9E00, 0x00   
 
 gdt_ptr:
     dw $ - gdt - 1
