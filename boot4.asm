@@ -17,48 +17,48 @@ SectorNumOfFAT1Start	equ	1
 ; Conversion base value from cluster number to physical sector:
 SectorBalance	equ	17	
 
-	; 跳转到启动标签
+	;Jump to the startup tab
 		jmp	short Label_Start
-	; 空操作指令
+	; no-operation
 		nop
-		; BIOS参数块(BPB)和引导扇区数据结构定义
-		; OEM名称标识符
+		; BIOS Parameter Block (BPB) and Boot Sector Data Structure Definition
+		; OEM Name Identifier
 		BS_OEMName	db	'myosboot'
-		; 每扇区字节数
+		; The number of bytes for each sector
 		BPB_BytesPerSec	dw	512
-		; 每簇扇区数
+		; The number of sectors per cluster
 		BPB_SecPerClus	db	1
-		; 保留扇区数
+		; The number of reserved sectors
 		BPB_RsvdSecCnt	dw	1
-		; FAT表数量
+		; Number of FAT tables
 		BPB_NumFATs	db	2
-		; 根目录项数
+		; Number of root directory items
 		BPB_RootEntCnt	dw	224
-		; 总扇区数(16位)
+		; Total sector count (16 bits)
 		BPB_TotSec16	dw	2880
-		; 媒体描述符
+		; Media descriptor
 		BPB_Media	db	0xf0
-		; FAT大小(16位)
+		; FAT size (16-bit)
 		BPB_FATSz16	dw	9
-		; 每磁道扇区数
+		; Number of sectors per track
 		BPB_SecPerTrk	dw	18
-		; 磁头数
+		; Number of magnetic heads
 		BPB_NumHeads	dw	2
-		; 隐藏扇区数
+		; Number of hidden sectors
 		BPB_HiddSec	dd	0
-		; 总扇区数(32位)
+		; Total sector count (32 bits)
 		BPB_TotSec32	dd	0
-		; 驱动器号
+		; Drive number
 		BS_DrvNum	db	0
-		; 保留字段1
+		; Reserved field 1
 		BS_Reserved1	db	0
-		; 引导签名
+		; Boot signature
 		BS_BootSig	db	0x29
-		; 卷ID
+		; Volume ID
 		BS_VolID	dd	0
-		; 卷标
+		; Volume label
 		BS_VolLab	db	'boot loader'
-		; 文件系统类型
+		; File system type
 		BS_FileSysType	db	'FAT12   '
 	
 Label_Start:
@@ -108,19 +108,27 @@ Label_Start:
 	mov	word	[SectorNo],	SectorNumOfRootDirStart
 
 Lable_Search_In_Root_Dir_Begin:
-
+	;RootDirSizeForLoop is RootDirSectors
+	;比较变量 RootDirSizeForLoop（表示待搜索的根目录扇区数）是否为 0。此变量在之前应被初始化为根目录的总扇区数。
 	cmp	word	[RootDirSizeForLoop],	0
+	;没有,错误处理
 	jz	Label_No_LoaderBin
+	;搜索一个扇区
 	dec	word	[RootDirSizeForLoop]	
 	mov	ax,	00h
 	mov	es,	ax
+	;将 BX 设置为 0x8000。结合 ES=0，目标地址为物理地址 0x0000:0x8000 = 0x8000。这是用于存放从磁盘读取的根目录扇区的内存缓冲区。
 	mov	bx,	8000h
+	;将变量 SectorNo的值（当前要读取的根目录扇区号）加载到 AX 中
 	mov	ax,	[SectorNo]
+	;将 CL 设置为 1，表示要读取 1 个扇区。
 	mov	cl,	1
 	call	Func_ReadOneSector
 	mov	si,	LoaderFileName
+	;将目标索引寄存器 DI 指向 0x8000，即刚刚读取的根目录扇区缓冲区的起始地址。
 	mov	di,	8000h
 	cld
+	;将 DX 设置为 0x10（十进制 16）。在 FAT12 中，每个根目录条目为 32 字节，一个扇区（512 字节）包含 16 个条目。DX 将用于计数，表示当前扇区内要比较的目录条目数量。
 	mov	dx,	10h
 	
 Label_Search_For_LoaderBin:
