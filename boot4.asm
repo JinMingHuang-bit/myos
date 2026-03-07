@@ -109,26 +109,28 @@ Label_Start:
 
 Lable_Search_In_Root_Dir_Begin:
 	;RootDirSizeForLoop is RootDirSectors
-	;比较变量 RootDirSizeForLoop（表示待搜索的根目录扇区数）是否为 0。此变量在之前应被初始化为根目录的总扇区数。
+	;Compare whether the variable RootDirSizeForLoop (representing the number of root directory sectors to be searched) is equal to 0.
 	cmp	word	[RootDirSizeForLoop],	0
-	;没有,错误处理
+	;No, error handling
 	jz	Label_No_LoaderBin
-	;搜索一个扇区
+	;Search for a sector
 	dec	word	[RootDirSizeForLoop]	
 	mov	ax,	00h
 	mov	es,	ax
-	;将 BX 设置为 0x8000。结合 ES=0，目标地址为物理地址 0x0000:0x8000 = 0x8000。这是用于存放从磁盘读取的根目录扇区的内存缓冲区。
+	;Set BX to 0x8000. Combined with ES = 0, the target address is the physical address 0x0000:0x8000 = 0x8000. 
+	;This is the memory buffer used to store the root directory sectors read from the disk.
 	mov	bx,	8000h
-	;将变量 SectorNo的值（当前要读取的根目录扇区号）加载到 AX 中
+	;Load the value of the variable SectorNo (the current sector number of the root directory to be read) into AX
 	mov	ax,	[SectorNo]
-	;将 CL 设置为 1，表示要读取 1 个扇区。
+	;Set CL to 1, indicating that one sector is to be read.
 	mov	cl,	1
 	call	Func_ReadOneSector
 	mov	si,	LoaderFileName
-	;将目标索引寄存器 DI 指向 0x8000，即刚刚读取的根目录扇区缓冲区的起始地址。
+	;Set the target index register DI to point to 0x8000, which is the starting address of the root directory sector buffer that was just read.
 	mov	di,	8000h
 	cld
-	;将 DX 设置为 0x10（十进制 16）。在 FAT12 中，每个根目录条目为 32 字节，一个扇区（512 字节）包含 16 个条目。DX 将用于计数，表示当前扇区内要比较的目录条目数量。
+	;Set DX to 0x10 (decimal 16). In FAT12, each root directory entry is 32 bytes, and one sector (512 bytes) contains 16 entries. 
+	;DX will be used for counting, indicating the number of directory entries to be compared within the current sector.
 	mov	dx,	10h
 	
 Label_Search_For_LoaderBin:
