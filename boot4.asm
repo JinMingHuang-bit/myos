@@ -24,27 +24,27 @@ SectorBalance	equ	17
 		; BIOS Parameter Block (BPB) and Boot Sector Data Structure Definition
 		; OEM Name Identifier
 		BS_OEMName	db	'myosboot'
-		; The number of bytes for each sector
+		; The number of bytes for each sector is 512, which is the standard value.
 		BPB_BytesPerSec	dw	512
-		; The number of sectors per cluster
+		; The number of sectors in each cluster is typically 1 for floppy disks.
 		BPB_SecPerClus	db	1
-		; The number of reserved sectors
+		; The number of reserved sectors (from the beginning of the volume to the point before the first FAT table) is usually 1, which is the boot sector itself.
 		BPB_RsvdSecCnt	dw	1
 		; Number of FAT tables
 		BPB_NumFATs	db	2
-		; Number of root directory items
+		; The maximum number of directory entries (files/folders) that can be contained in the root directory, typically 224.
 		BPB_RootEntCnt	dw	224
-		; Total sector count (16 bits)
+		; Total sector count (16 bits), 2880 corresponds to the standard 1.44MB floppy disk capacity.
 		BPB_TotSec16	dw	2880
-		; Media descriptor
+		; Media descriptor, 0xF0 indicates a 3.5-inch high-density floppy disk.
 		BPB_Media	db	0xf0
-		; FAT size (16-bit)
+		; Sector count per FAT table, typically 9.
 		BPB_FATSz16	dw	9
-		; Number of sectors per track
+		; Sectors per track, typically 18.
 		BPB_SecPerTrk	dw	18
-		; Number of magnetic heads
+		; Number of heads, typically 2.
 		BPB_NumHeads	dw	2
-		; Number of hidden sectors
+		; Hidden sectors before the volume start, usually 0 for floppy disks.
 		BPB_HiddSec	dd	0
 		; Total sector count (32 bits)
 		BPB_TotSec32	dd	0
@@ -52,7 +52,7 @@ SectorBalance	equ	17
 		BS_DrvNum	db	0
 		; Reserved field 1
 		BS_Reserved1	db	0
-		; Boot signature
+		; Extend the signature, with the value 0x29 indicating that the following three fields (volume ID, label, file system type) are valid.。
 		BS_BootSig	db	0x29
 		; Volume ID
 		BS_VolID	dd	0
@@ -67,7 +67,7 @@ Label_Start:
 	mov	ds,	ax
 	mov	es,	ax
 	mov	ss,	ax
-	;init stack
+	;init stack,for call and return
 	mov	sp,	BaseOfStack
 
 ;=======	clear screen
