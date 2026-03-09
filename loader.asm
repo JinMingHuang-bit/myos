@@ -12,15 +12,19 @@ OffsetTmpOfKernelFile	equ	0x7E00
 MemoryStructBufferAddr	equ	0x7E00
 
 [SECTION gdt]
-
+; The first descriptor of GDT must be empty (all zeros), which is a requirement set by Intel.
 LABEL_GDT:		dd	0,0
+; A 32-bit code segment (base address 0, limit 4GB, privilege level 0, executable and readable)
 LABEL_DESC_CODE32:	dd	0x0000FFFF,0x00CF9A00
+; A 32-bit data segment (base address 0, limit 4GB, privilege level 0, readable and writable)
 LABEL_DESC_DATA32:	dd	0x0000FFFF,0x00CF9200
-
+; Calculate the byte length of GDT, $= current address, LABEL_GDT= start address of GDT, 
+;the difference is the total bytes of GDT (3 descriptors × 8 bytes = 24 bytes)
 GdtLen	equ	$ - LABEL_GDT
 GdtPtr	dw	GdtLen - 1
 	dd	LABEL_GDT	
-
+;Subtract the addresses to obtain the offset. Each data occupies 8 bytes, 
+;so the first one is 0x08 and the second one is 0x10 (which is 16)
 SelectorCode32	equ	LABEL_DESC_CODE32 - LABEL_GDT
 SelectorData32	equ	LABEL_DESC_DATA32 - LABEL_GDT
 
@@ -63,26 +67,30 @@ Label_Start:
 	int	10h
 
 ;=======	open address A20
+;By using the fast A20 gate of the keyboard controller (port 0x92), the A20 address line is enabled.
 	push	ax
 	in	al,	92h
 	or	al,	00000010b
 	out	92h,	al
 	pop	ax
-
+	;Disable interrupts to prevent exceptions during mode switch
 	cli
 
 	lgdt	[GdtPtr]	
 
 	mov	eax,	cr0
 	or	eax,	1
+	;Set the PE bit (the 0th bit) of the CR0 register to 1, and the CPU enters the protected mode.
 	mov	cr0,	eax
-
+	;SelectorData32 is a pointer to a 32-bit data segment descriptor in the GDT.
 	mov	ax,	SelectorData32
+	;Set the FS segment register to this 32-bit data segment selector
 	mov	fs,	ax
+	;Clear the PE bit (the 0th bit) of the CR0 register, and the CPU returns to real mode
 	mov	eax,	cr0
 	and	al,	11111110b
 	mov	cr0,	eax
-
+	;turn on interrupt
 	sti
 
 ;=======	reset floppy
@@ -275,15 +283,20 @@ KillMotor:
 	mov	di,	MemoryStructBufferAddr	
 
 Label_Get_Mem_Struct:
-
+	;Set the eax register to 0xE820. This is the E820 sub-function of interrupt 15h.
 	mov	eax,	0x0E820
+	;Set ecx to 20, indicating the buffer size we request (each memory descriptor is 20 bytes)
 	mov	ecx,	20
+	;Set edx to 0x534D4150, which is the ASCII code for the signature "SMAP", used for verification
 	mov	edx,	0x534D4150
 	int	15h
+	;If the interrupt call generates a carry flag (CF=1, indicating an error), jump to the failure handling
 	jc	Label_Get_Mem_Fail
+	; Each time a descriptor is successfully obtained, the buffer pointer is moved backward by 20 bytes.0字节。
 	add	di,	20
+	;Increment the value of the memory structure count (MemStructNumber) by 1
 	inc	dword	[MemStructNumber]
-
+	;Compare ebx to 0. If it is not zero, it means there are still more memory descriptors to be retrieved. Continue the loop.；
 	cmp	ebx,	0
 	jne	Label_Get_Mem_Struct
 	jmp	Label_Get_Mem_OK
