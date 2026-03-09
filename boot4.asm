@@ -250,22 +250,32 @@ Label_Go_On_Loading_File:
 	int	10h
 	pop	bx
 	pop	ax
-
+	;Set CL = 1 (Read 1 sector)
 	mov	cl,	1
 	call	Func_ReadOneSector
+	;Based on the current cluster number, search for the next cluster number in the FAT table, and the result is returned in AX.
 	pop	ax
 	call	Func_GetFATEntry
 	cmp	ax,	0fffh
+	;Compare whether AX is equal to 0xFFF. If they are equal, it indicates that this is the end cluster of the file, 
+	;and then jump to Label_File_Loaded (file loading completed)
 	jz	Label_File_Loaded
+	;Push the next cluster number onto the stack for storage. This value will be used in the "pop ax" instruction in the next loop.
 	push	ax
+	;Calculate the physical sector number corresponding to the next cluster. 
+	;The formula is: Sector number = Cluster number + RootDirSectors + SectorBalance
 	mov	dx,	RootDirSectors
 	add	ax,	dx
 	add	ax,	SectorBalance
+	;Updating the memory pointer increments the value of BX by the size of one sector (512 bytes)
+	;In this way, the next sector to be read will be placed after the current sector, 
+	;and the ES remains unchanged. Therefore, the file is continuously loaded into the memory.
 	add	bx,	[BPB_BytesPerSec]
+	;continue loading the next sector of the file
 	jmp	Label_Go_On_Loading_File
 
 Label_File_Loaded:
-	
+	;long jump to the loader program, transferring control to the loaded loader.bin
 	jmp	BaseOfLoader:OffsetOfLoader
 
 ;=======	read one sector from floppy
@@ -307,18 +317,24 @@ Label_Go_On_Reading:
 ;=======	get FAT Entry
 
 Func_GetFATEntry:
-
+	;Save the values of the ES, BX, and AX registers, as they will be modified later.
 	push	es
 	push	bx
 	push	ax
+	;Set ES to 0, as the FAT table will be read to the memory address 0:8000h
 	mov	ax,	00
 	mov	es,	ax
 	pop	ax
 	mov	byte	[Odd],	0
+	;Calculate the byte offset of the FAT entry:
+	;Multiply by 3: ax = cluster number × 3
+	;Divide by 2: ax ÷ 2, quotient in AX, remainder in DX
+	;Result: AX = byte offset, DX = remainder (0 or 1)
 	mov	bx,	3
 	mul	bx
 	mov	bx,	2
 	div	bx
+	;Determine the parity (odd or even)
 	cmp	dx,	0
 	jz	Label_Even
 	mov	byte	[Odd],	1
@@ -327,6 +343,7 @@ Label_Even:
 
 	xor	dx,	dx
 	mov	bx,	[BPB_BytesPerSec]
+	;Calculate: byte offset ÷ bytes per sector, quotient in AX, remainder in DX
 	div	bx
 	push	dx
 	mov	bx,	8000h
@@ -336,13 +353,17 @@ Label_Even:
 	call	Func_ReadOneSector
 	
 	pop	dx
+	;Restore the sector internal offset to DX
 	add	bx,	dx
 	mov	ax,	[es:bx]
 	cmp	byte	[Odd],	1
 	jnz	Label_Even_2
+	;If the cluster number is odd ([Odd] = 1), shift AX right by 4 bits
+	;Because odd cluster numbers occupy the high 12 bits of a 2-byte entry, we need to shift right by 4 bits to align them
 	shr	ax,	4
 
 Label_Even_2:
+	;Extract the 12-bit FAT entry using AND AX, 0xFFF to get the lower 12 bits, resulting in the next cluster number
 	and	ax,	0fffh
 	pop	bx
 	pop	es
