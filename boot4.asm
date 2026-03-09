@@ -136,18 +136,26 @@ Lable_Search_In_Root_Dir_Begin:
 Label_Search_For_LoaderBin:
 
 	cmp	dx,	0
+	;If the comparison of the 16 items is completed, then move on to read the next sector.
 	jz	Label_Goto_Next_Sector_In_Root_Dir
+	;The item counter is decremented by 1.
 	dec	dx
+	; Each file name is 11 bytes in length (in 8.3 format)
 	mov	cx,	11
 
 Label_Cmp_FileName:
 
 	cmp	cx,	0
+	; If all 11 bytes match, then the file is found.
 	jz	Label_FileName_Found
 	dec	cx
-	lodsb	
+	; Take a byte (the target file name) from SI
+	lodsb
+	; Compare with the bytes in the current directory item
 	cmp	al,	byte	[es:di]
+	;Compare with the bytes in the current directory item
 	jz	Label_Go_On
+	; If the condition is not met, proceed to handle the next directory item.
 	jmp	Label_Different
 
 Label_Go_On:
@@ -156,47 +164,81 @@ Label_Go_On:
 	jmp	Label_Cmp_FileName
 
 Label_Different:
-
+	 ;Clear the lower 5 bits of DI to zero, so that it points to the beginning of the current directory entry (32-byte alignment)
 	and	di,	0ffe0h
+	; Add 32 bytes and point to the next directory entry
 	add	di,	20h
 	mov	si,	LoaderFileName
 	jmp	Label_Search_For_LoaderBin
 
 Label_Goto_Next_Sector_In_Root_Dir:
-	
+	;All directory entries of the current sector have been compared. Read the next sector.
+	; Increment the sector number by 1
 	add	word	[SectorNo],	1
+	;loop
 	jmp	Lable_Search_In_Root_Dir_Begin
 	
 ;=======	display on screen : ERROR:No LOADER Found
 
 Label_No_LoaderBin:
-
+	;Set AH to 13h and AL to 01h. AH = 13h represents the "display string" function of BIOS interrupt int 10h; 
+	;AL = 01h indicates that after displaying the string, the cursor moves to the end of the string, 
+	;and the character attributes are provided by the BL register.
 	mov	ax,	1301h
+	;BH = 00h (usually for displaying page numbers, here it is 0), BL = 0Ch. BL stores character attributes.
+	; 0Ch corresponds to bright red foreground and black background (color attributes in text mode).
 	mov	bx,	000ch
+	;DH = 01h (line number, counting starts from 0, so it's the 2nd line), DL = 00h (column number, the 1st column). 
+	;The string will be displayed starting from the 1st column of the 2nd line on the screen.
 	mov	dx,	0100h
+	;Set the length of the string to be displayed to 21 characters.
 	mov	cx,	21
+	;Push the value of AX onto the stack for later use, as we will be modifying AX next.
 	push	ax
+	;Copy the value of the data segment register DS to the AX register.
 	mov	ax,	ds
+	;Copy the value of AX to the extra segment register ES, making ES point to the same segment as DS. 
+	;This is required by the int 10h AH=13h function, which requires the string to be pointed to by ES:BP.
 	mov	es,	ax
+	;Restore the original value of AX (which is 1301h) from the stack.
 	pop	ax
+	;Store the offset address of the string NoLoaderMessage in BP. At this time, ES:BP points to the memory location where the string is stored.
 	mov	bp,	NoLoaderMessage
+	;Invoke the int 10h interrupt of the BIOS to execute the string display operation.
 	int	10h
+	;dead loop
 	jmp	$
 
 ;=======	found loader.bin name in root director struct
 
 Label_FileName_Found:
-
+	;Load the total number of sectors occupied by the root directory area (a previously calculated constant) into the AX register.
 	mov	ax,	RootDirSectors
+	;Align DI to the starting address of the current directory entry (32-byte boundary), 
+	;ensuring that DI points to the beginning of the directory entry.
 	and	di,	0ffe0h
+	;In the directory entry, the offset 0x1A represents the starting cluster number of the file (2 bytes). 
+	;Increase DI by 0x1A to make it point to this field.
 	add	di,	01ah
+	;Read a word (2 bytes) from the memory address pointed to by ES:DI into CX, which is to obtain the starting cluster number of loader.bin.
 	mov	cx,	word	[es:di]
+	;Push the starting cluster number onto the stack for later use,
+	; in case it is needed to traverse multiple clusters occupied by the file (if the file size exceeds one cluster) 
+	;through the FAT table.
 	push	cx
+	;Add the cluster number and the number of root directory sectors。
 	add	cx,	ax
+	;Add a balance value (SectorBalance), after this step, in CX, 
+	;it will be the actual logical sector number (LBA) corresponding to this cluster.
 	add	cx,	SectorBalance
+	;The BaseOfLoader is the constant 0x1000, which means it is loaded at 0x1000 * 16 + 0x00 = 0x10000.
 	mov	ax,	BaseOfLoader
+	;Set the segment address BaseOfLoader to the extra segment register ES, preparing for data loading.
 	mov	es,	ax
+	;OffsetOfLoader is a constant (e.g., 0x0100), representing the offset address of the loader program within the segment.
+	;At this time, ES:BX together point to the starting address of the loader program in memory.
 	mov	bx,	OffsetOfLoader
+	;Store the calculated logical sector number in AX, as a parameter for the subsequent disk reading function (starting sector number).
 	mov	ax,	cx
 
 Label_Go_On_Loading_File:
