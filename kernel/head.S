@@ -74,8 +74,11 @@ entry64:
 	// lretq
 
 setup_IDT:
+	//A program for simple interrupt handling
     leaq ignore_int(%rip),%rdx
+	//RAX is initialized to 0x0008 0000 0000 0000 (segment selector 0x08 shifted 16 bits to the left)
 	movq	$(0x08 << 16),%rax
+	//Store the low 16 bits of the ignore_int address (DX) into the low 16 bits of RAX.
 	movw    %dx,%ax
 	movq    $(0x8E00 << 32),%rcx
 	addq    %rcx,%rax
@@ -86,13 +89,20 @@ Low 16 bits: The low 16 bits of the function address
 16-31 bits: Segment selector (0x08)
 32-47 bits: Gate attribute (0x8E00)
 	*/
-	//提取函数地址的16-31位
+	//Extract the 16-31 bits of the function address
 	shrl    $16,%ecx
-	//将地址的16-31位移到描述符的48-63位位置
+	//Move the 16th to 31st bits of the address to the 48th to 63rd positions of the descriptor.
 	shlq	$48,%rcx
-	//将地址的16-31位合并到中断门描述符中
+	//Merge the 16th to 31st bits of the address into the interrupt gate descriptor.
 	addq	%rcx,%rax
 	shrq	$32,%rdx
+	/*
+At this point, an interrupt gate descriptor has been constructed:
+RAX: The lower 64 bits of the descriptor (bits 0-63)
+RDX: The upper 64 bits of the descriptor (bits 64-127), where:
+Bits 64-95: The high 32 bits of the handler function address
+Bits 96-127: Reserved (0)
+	*/
 	leaq    IDT_Table(%rip),%rdi
 	movq    $256,%rcx
 
@@ -283,21 +293,24 @@ GDT_Table:
 GDT_END:
 
 GDT_POINTER:
-//界限是从0开始计数的，类似于数组的索引，所以这里的界限是GDT_END - GDT_Table - 1
-//GDT_END - GDT_Table 是GDT_Table的长度，减1是因为GDT_Table的长度是8的倍数，所以减1是为了让界限是8的倍数
+//The boundaries are counted starting from 0, similar to the indices of an array. Therefore, the boundaries here are GDT_END - GDT_Table - 1.
+//GDT_END - GDT_Table It is the length of GDT_Table, minus 1 because the length of GDT_Table is a multiple of 8, so subtracting 1 is done to ensure the boundary is a multiple of 8.
 GDT_LIMIT:	.word	GDT_END - GDT_Table - 1
 GDT_BASE:	.quad	GDT_Table
 
 //=======	IDT_Table
-
+//Declare IDT_Table as a global symbol, allowing other assembly files or the linker to access it.。
 .globl IDT_Table
 
 IDT_Table:
+	//Allocate 512 entries, each occupying 8 bytes, and initialize all of them to 0.
+	//Each entry corresponds to an interrupt vector (such as exceptions, hardware interrupts, system calls).
 	.fill  512,8,0
 IDT_END:
 
 IDT_POINTER:
 IDT_LIMIT:	.word	IDT_END - IDT_Table - 1
+//In 64-bit mode, the base address of the IDT is 64 bits, so quad needs to be used to define IDT_BASE
 IDT_BASE:	.quad	IDT_Table
 
 //=======	TSS64_Table
