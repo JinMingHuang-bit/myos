@@ -31,14 +31,19 @@ SelectorData32	equ	LABEL_DESC_DATA32 - LABEL_GDT
 [SECTION gdt64]
 
 LABEL_GDT64:		dq	0x0000000000000000
+;P (Existence Bit) = 1, DPL (Descriptor Privilege Level) = 0
+;S (Descriptor Type) = 1 (Code/Data Segment), Type = 1000 (Executable, Non-Consistent, Non-readable),
+; L (64-bit Code Segment Flag) = 1, D = 0 (In long mode, for code segments, the D bit should be set to 0)
 LABEL_DESC_CODE64:	dq	0x0020980000000000
+;P = 1, DPL = 0, S = 1, Type = 0010 (read/write, upward expansion), L = 0 (in long mode, the L bit of the data segment must be 0)
 LABEL_DESC_DATA64:	dq	0x0000920000000000
 
 GdtLen64	equ	$ - LABEL_GDT64
 GdtPtr64	dw	GdtLen64 - 1
 		dd	LABEL_GDT64
-
+;0x08
 SelectorCode64	equ	LABEL_DESC_CODE64 - LABEL_GDT64
+;0x10
 SelectorData64	equ	LABEL_DESC_DATA64 - LABEL_GDT64
 
 [SECTION .s16]
@@ -276,8 +281,10 @@ KillMotor:
 	pop	ax
 	mov	bp,	StartGetMemStructMessage
 	int	10h
-
+	;Set the EBX register to zero. In the E820 function, EBX acts as the "continuation value" and must be
 	mov	ebx,	0
+	;Set the ES (Extended Segment) register to 0x0000. 
+	;In real mode, ES:DI points to the buffer stored in the memory descriptor.
 	mov	ax,	0x00
 	mov	es,	ax
 	mov	di,	MemoryStructBufferAddr	
@@ -348,7 +355,8 @@ Label_Get_Mem_OK:
 	mov	ax,	4F00h
 
 	int	10h
-
+	; Check whether the return value indicates support for VBE. According to the VBE specification: 
+	;If the function is supported, AX should return 0x004F.
 	cmp	ax,	004Fh
 
 	jz	.KO
@@ -394,12 +402,13 @@ Label_Get_Mem_OK:
 	mov	bp,	StartGetSVGAModeInfoMessage
 	int	10h
 
-
+	;Set ES:SI to point to the mode list pointer in the previously obtained VBE information block
 	mov	ax,	0x00
 	mov	es,	ax
 	mov	si,	0x800e
-
+	;Read the mode list pointer from the VBE information block and set the address of the mode information buffer
 	mov	esi,	dword	[es:si]
+	;Set EDI to 0x8200. This is the storage address of the mode information block.
 	mov	edi,	0x8200
 
 Label_SVGA_Mode_Info_Get:
@@ -421,7 +430,8 @@ Label_SVGA_Mode_Info_Get:
 	pop	ax
 
 ;=======
-	
+	;Check whether each pattern is available.
+	;0xFFFF is the end tag of the list of VESA patterns, indicating that the list is terminated
 	cmp	cx,	0FFFFh
 	jz	Label_SVGA_Mode_Info_Finish
 
@@ -580,13 +590,24 @@ GO_TO_TMP_Protect:
 support_long_mode:
 
 	mov	eax,	0x80000000
+	;The CPUID command returns the following value:
+	;EAX = maximum supported extension number (e.g., EAX >= 0x80000001 if 0x80000001 is supported
 	cpuid
 	cmp	eax,	0x80000001
+	;;Set if Not Below
 	setnb	al	
+	;If EAX >= 0x80000001 (that is, extended functionality is supported), AL=1.
+	;Otherwise AL is equal to 0.
+	;bt (Bit Test) :
+	;The 29th Bit (counting from 0) of the EDX register is tested, which is the long mode support bit (LM Bit).
+	;The result is stored in CF (Carry Flag).
 	jb	support_long_mode_done
 	mov	eax,	0x80000001
 	cpuid
 	bt	edx,	29
+	;Set if Carry):
+	;If CF=1 (that is, EDX[29]=1, long mode is supported), then AL=1.
+	;Otherwise AL is equal to 0.
 	setc	al
 support_long_mode_done:
 	
