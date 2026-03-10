@@ -52,9 +52,9 @@ Therefore, 0x10 selects the kernel data segment descriptor in the GDT, ensuring 
 	movq	$0x101000,	%rax  // Load the physical address of the page table, 0x101000, into RAX
 	movq	%rax,		%cr3   // Set the CR3 register to point to the base address of the page table
 	movq	switch_seg(%rip),	%rax  // Obtain the address of entry64
-	pushq	$0x08			// 将代码段选择子(0x08)压栈
-	pushq	%rax			// 将entry64地址压栈
-	lretq					// 长返回，跳转到64位代码,lretq的处理逻辑如下：从栈顶依次弹出RIP和CS,跳转到CS:RIP
+	pushq	$0x08			// Push the code segment selector (0x08) onto the stack
+	pushq	%rax			// Push the entry64 address onto the stack
+	lretq					// Return to the 64-bit code. The processing logic of lretq is as follows: Pop RIP and CS from the stack top one by one, and then jump to CS:RIP.
 //=======	64-bit mode code
 
 switch_seg:
@@ -116,27 +116,67 @@ rp_sidt:
 	jne	rp_sidt
 
 setup_TSS64:
+	/Load the base address of TSS (TSS64_Table) into the RDX register.
+	//Reset the RAX and RCX registers for subsequent descriptor construction.
 	leaq	TSS64_Table(%rip),%rdx
 	xorq	%rax,%rax
 	xorq	%rcx,%rcx
+	/*
+	0x89 = 10001001b is the type field of the TSS descriptor:
+P = 1 (Segment exists)
+DPL = 00 (Descriptor privilege level 0)
+Type = 1001 (64-bit TSS available state)
+	*/
 	movq    $0x89,%rax
+	//Shift left by 40 positions and place this byte at positions 40 to 47.
 	shlq	$40,%rax
+	/*
+	Extract the high 8 bits (bits 24-31) of the TSS base address.
+Shift left by 56 bits and place it in positions 56-63 (the 7th byte of the descriptor).
+Merge it into RAX.
+*/
 	movl    %edx,%ecx
 	shrl	$24,%ecx
-	// change here
 	shlq    $56,%rcx
 	addq	%rcx,%rax
+	/*
+	Extract the low 24 bits (bits 0-23) of the TSS base address.
+Shift left by 16 bits and place it at positions 16-39 (the 2nd-4th bytes of the descriptor).
+Merge it into RAX.
+	*/
 	xorq	%rcx,%rcx
 	movl    %edx,%ecx
 	andl    $0xffffff,%ecx
 	shlq	$16,%rcx
 	addq	%rcx,%rax
+	//The boundary for adding TSS is 103 (104 bytes - 1). The boundary is placed in bits 0-15.
 	addq    $103,%rax
+	/*
+At this point, RAX contains the lower 64 bits of the TSS descriptor:
+Bits 0-15: Limit 103
+Bits 16-39: Lower 24 bits of the TSS base address
+Bits 40-47: Type 0x89
+Bits 48-55: Upper 4 bits of the limit + flag bit (here it is 0)
+Bits 56-63: 24-31 bits of the TSS base address
+	*/
+	/*
+	Load the base address of GDT into RDI.
+Write the lower 64 bits of the descriptor into the GDT offset 64 bytes.
+In the GDT, each descriptor is 8 bytes, and the offset 64 bytes corresponds to the 8th descriptor (counting from 0).
+	*/
 	leaq	GDT_Table(%rip),%rdi
 	movq    %rax,64(%rdi)
+	/*
+	Shift the TSS base address 32 bits to the right to obtain the high 32 bits.
+Write it at the offset of 72 bytes in the GDT, serving as the high 64 bits of the descriptor.
+	*/
 	shrq	$32,%rdx
 	movq    %rdx,72(%rdi)
-	
+	/*
+A 16-byte TSS descriptor has been successfully created:
+Addresses 64-71: The lower 64 bits (including the lower 32 bits of the base address, the limit, and the type)
+Addresses 72-79: The upper 64 bits (including the upper 32 bits of the base address)
+	*/
 	//Load the TSS segment selector
 	//mov     $0x40,%ax
 	//ltr     %ax
@@ -220,13 +260,13 @@ int_msg:
 //=======	init page
 .align 8
 
-.org	0x1000
+.org	0x1000 //Tell the assembler that the subsequent code should be stored starting from the physical address 0x1000, that is, 0x101000.
 
 __PML4E:
-
-	.quad	0x102007
-	.fill	255,8,0
-	.quad	0x102007
+	//The existence bit P = 1, the readable and writable bit RW = 1, and the user-accessible bit US = 1.
+	.quad	0x102007 //This is the data for writing to the first entry (index 0) and the 257th entry (index 256) of the PML4 table
+	.fill	255,8,0  // Fill 255 entries (each 8 bytes) with 0. This makes the entries with indices 1-255 empty.
+	.quad	0x102007 // Map the high half of the kernel address (starting from virtual address 0xffff800000000000) to the same physical memory
 	.fill	255,8,0
 
 .org	0x2000
@@ -241,12 +281,12 @@ __PDPTE:
 __PDE:
 
 	.quad	0x000083	
-	.quad	0x200083
-	.quad	0x400083
+	.quad	0x200083		//0x000000- 0x1FFFFF(2MB)
+	.quad	0x400083		//0x200000- 0x3FFFFF(2MB)
 	.quad	0x600083
 	.quad	0x800083
-	.quad	0xe0000083		/*0x a00000*/
-	.quad	0xe0200083
+	.quad	0xe0000083		/*0x a00000,video memory*/
+	.quad	0xe0200083		
 	.quad	0xe0400083
 	.quad	0xe0600083		/*0x1000000*/
 	.quad	0xe0800083
@@ -316,7 +356,14 @@ IDT_BASE:	.quad	IDT_Table
 //=======	TSS64_Table
 
 .globl	TSS64_Table
-
+/*
+Allocate 13 8-byte entries and initialize all of them to 0. The total size is 13 × 8 = 104 bytes.
+In 64-bit mode, the TSS structure must contain at least the following key fields:
+RSP0, RSP1, RSP2: Stack pointers for different privilege levels (each 8 bytes)
+IST1 ~ IST7: Interrupt stack table pointers (each 8 bytes)
+I/O mapping base address, etc.
+This allocation of 104 bytes space complies with the minimum requirements of the x86-64 long mode TSS.
+*/
 TSS64_Table:
 	.fill  13,8,0
 TSS64_END:
