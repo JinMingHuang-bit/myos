@@ -526,27 +526,30 @@ GO_TO_TMP_Protect:
 	jz	no_support
 
 ;=======	init temporary page table 0x90000
+;PML4 Table (Level 4 Page Table) - Located at 0x9000
+	mov	dword	[0x90000],	0x91007 ;Points to the physical address 0x91000 of the next-level PDPT table, with the attribute set to 0x7 (Present = 1, Read/Write = 1, User/Supervisor = 1)
+	mov	dword	[0x90800],	0x91007	;In the second entry of PML4 (index 1), write the same value, mapping the higher half to the same physical memory
 
-	mov	dword	[0x90000],	0x91007
-	mov	dword	[0x90800],	0x91007		
+	mov	dword	[0x91000],	0x92007 ;Points to the physical address 0x92000 of the next-level PDT table, with the attribute set to 0x7
+	;PDT Table (Level 2 Page Table) - Located at 0x92000, this table based on the implementation of xv6, it uses the 2MB large page mode and directly maps the physical memory.：
+	mov	dword	[0x92000],	0x000083 ;Maps the physical address 0x00000000-0x001FFFFF (first 2MB)
 
-	mov	dword	[0x91000],	0x92007
+	;Attribute 0x83: Present = 1, Read/Write = 1, Page Size = 1 (2MB page) ; 
+	;Ultimately, such a mapping relationship will be formed: virtual address 0x0000000000000000 - 0x00000000001FFFFF → physical address 0x000000 - 0x1FFFFF (the first 2MB page)
+	mov	dword	[0x92008],	0x200083 ;Maps the physical address 0x00200000-0x003FFFFF (second 2MB)
+	;
+	mov	dword	[0x92010],	0x400083;Maps the physical address 0x00400000-0x005FFFFF (third 2MB)
 
-	mov	dword	[0x92000],	0x000083
+	mov	dword	[0x92018],	0x600083;Maps the physical address 0x00600000-0x007FFFFF (fourth 2MB)
 
-	mov	dword	[0x92008],	0x200083
+	mov	dword	[0x92020],	0x800083;Maps the physical address 0x00800000-0x009FFFFF (fifth 2MB)
 
-	mov	dword	[0x92010],	0x400083
-
-	mov	dword	[0x92018],	0x600083
-
-	mov	dword	[0x92020],	0x800083
-
-	mov	dword	[0x92028],	0xa00083
+	mov	dword	[0x92028],	0xa00083;Maps the physical address 0x00A00000-0x00BFFFFF (sixth 2MB)
 	
 ;=======	load GDTR
 	
 	lgdt	[GdtPtr64]
+	;set data segment selector to 0x10, which is the offset of the 64-bit data segment descriptor in the GDT.
 	mov	ax,	0x10
 	mov	ds,	ax
 	mov	es,	ax
@@ -556,32 +559,37 @@ GO_TO_TMP_Protect:
 
 	mov	esp,	7E00h
 	
-;=======	open PAE
+;Enable PAE (Physical Address Extension). 
+;PAE is a necessary condition for entering long mode, allowing access to more than 4GB of physical memory.
 
 	mov	eax,	cr4
 	bts	eax,	5
 	mov	cr4,	eax
 
-;=======	load	cr3
-
+;Load the physical address of the page table, 0x90000, into the CR3 register.
+;The CPU begins the conversion from virtual addresses to physical addresses from this address.
 	mov	eax,	0x90000
 	mov	cr3,	eax
 
 ;=======	enable long-mode
-
-	mov	ecx,	0C0000080h		;IA32_EFER
+	;Enable long mode through the IA32_EFER MSR (Model Specific Register)
+	mov	ecx,	0C0000080h		; IA32_EFER number
+	; Read MSR into EDX:EAX
 	rdmsr
-
+	; Set the 8th bit (LME bit)
 	bts	eax,	8
+	; Reply to MSR
 	wrmsr
 
 ;=======	open PE and paging
 
-	mov	eax,	cr0
-	bts	eax,	0
-	bts	eax,	31
+	mov	eax,	cr0 
+	bts	eax,	0 ; Set the 0th bit (the PE bit, enabling the protected mode)
+	bts	eax,	31 ; Set the 31st bit (the PG bit, page enable)
+	;Both of these bits must be set simultaneously,
+	;because when switching from protected mode to long mode, paging must be enabled immediately.
 	;0x10430
-	mov	cr0,	eax
+	mov	cr0,	eax ; write to cr0
 	;0x10433
 	jmp	SelectorCode64:OffsetOfKernelFile
 
