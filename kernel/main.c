@@ -25,11 +25,11 @@ void Start_Kernel(void)
     //the loader.asm now using 640×480;
     // if there is a problem,try 640*20,otherwise use 1440*20
     //(1440*900)
-    // 启用SSE异常处理
+    // Enable SSE exception handling
     unsigned long cr4;
     asm volatile("mov %%cr4, %0" : "=r"(cr4));
-    cr4 |= (1 << 9);  // 设置OSXMMEXCPT位
-    cr4 |= (1 << 10); // 设置OSXSAVE位（如果需要）
+    cr4 |= (1 << 9);  // Set OSXMMSAVE bit
+    cr4 |= (1 << 10); // Set OSXSAVE bit
     asm volatile("mov %0, %%cr4" : : "r"(cr4));
     
     // int *addr=(int *)0xffff800000a00000;
@@ -40,7 +40,7 @@ void Start_Kernel(void)
     Pos.YPosition=0;
     Pos.XCharSize=8;
     Pos.YCharSize=16;
-    //帧缓存的物理基地址
+    //The physical base address of the frame cache
     Pos.FB_addr=(int *)0xffff800000a00000;
     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
     load_TR(8);

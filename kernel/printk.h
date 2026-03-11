@@ -5,7 +5,7 @@
 #include "font.h"
 #include "linkage.h"
 /*
-位掩码（bitmask）
+bitmask
 These constants are all powers of 2 (1, 2, 4, 8, 16, 32, 64), 
 so in the binary representation of each constant, only one bit is 1 and the rest are 0.
 */
@@ -17,15 +17,28 @@ so in the binary representation of each constant, only one bit is 1 and the rest
 #define SPECIAL 32      /* 0x */
 #define SMALL   64      /* use 'abcdef' instead of 'ABCDEF' */
 
-#define WHITE   0x00ffffff      //白
-#define BLACK   0x00000000      //黑
-#define RED     0x00ff0000      //红
-#define ORANGE  0x00ff8000      //橙
-#define YELLOW  0x00ffff00      //黄
-#define GREEN   0x0000ff00      //绿
-#define BLUE    0x000000ff      //蓝
-#define INDIGO  0x0000ffff      //靛
-#define PURPLE  0x008000ff      //紫
+/*
+These values are in the 32-bit format of 0xAARRGGBB:
+These values are in the 32-bit format of 0xAARRGGBB:
+AA (the first two digits): Alpha (transparency) channel
+AA (the first two bits): Alpha (transparency) channel
+RR (the middle two digits): Red channel
+RR (the middle two bits): Red channel
+GG (the middle two digits): Green channel
+GG (the middle two bits): Green channel
+BB (the last two digits): Blue channel
+BB (the last two bits): Blue channel
+Each channel is represented by a 2-digit hexadecimal number, ranging from 00 (0) to FF (255)
+*/
+#define WHITE   0x00ffffff      //white
+#define BLACK   0x00000000      //black
+#define RED     0x00ff0000      //red
+#define ORANGE  0x00ff8000      //orange
+#define YELLOW  0x00ffff00      //yellow
+#define GREEN   0x0000ff00      //green
+#define BLUE    0x000000ff      //blue
+#define INDIGO  0x0000ffff      //deep blue
+#define PURPLE  0x008000ff      //purple
 
 #define is_digit(c)((c)>='0'&&(c)<='9')
 

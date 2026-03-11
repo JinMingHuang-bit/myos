@@ -9,14 +9,26 @@ void putchar(unsigned int *fb,int Xsize,int x,int y,unsigned int FRcolor,unsigne
 	unsigned int *addr = NULL;
 	unsigned char *fontp = NULL;
 	int testval=0;
-	 //获取字符点阵数据
+	 //Obtain character dot matrix data
 	fontp=font_ascii[font];
+	//Loop 16 times: The height of the 16 lines corresponding to the characters
 	for(i=0;i<16;i++){
 	//Shift the mask one position to the right. After the first cycle, it becomes 0x80, then 0x40, 0x20, ... until 0x01.
+	/*Xsize * (y + i): Calculates the offset of the current row on the screen
+fb: Starting address of the frame buffer
+y: Y coordinate of the top of the character
+i: Offset of the current row within the character (0-15)
++ x: Adds the X coordinate of the character's left side
+addr points to the position of the first pixel of the current row in memory*/
 		addr=fb+Xsize*(y+i)+x;
 		testval =0x100;
 		for(j=0;j<8;j++){
 			testval =testval >>1;
+			/*
+			Bitwise AND (&) operation: Detect whether the specific bit of the bitmap data is 1
+If the result is non-zero → This pixel needs to be drawn in the foreground color
+If the result is zero → This pixel needs to be drawn in the background color
+			*/
 			if(*fontp & testval){
 				*addr =FRcolor;
 			}else{
@@ -155,6 +167,7 @@ int skip_atoi(const char **s){
 // }
 
 static char *number(char *str,long num,int base,int size,int precision,int type){
+	//存放转换后数字的逆序字符串
 	char c,sign,tmp[50];
 	const char *digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	int i=0;
