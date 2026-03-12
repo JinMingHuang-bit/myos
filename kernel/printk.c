@@ -166,8 +166,13 @@ int skip_atoi(const char **s){
 //     return sign * result;
 // }
 
+//Function for formatting numbers to string format
 static char *number(char *str,long num,int base,int size,int precision,int type){
-	//存放转换后数字的逆序字符串
+	//Store the reversed string of the converted number.
+	//The reason for reversing the order is that when we don't know the number of digits, 
+	//we cannot predict in advance what the most significant digit is. By continuously dividing by the base, 
+	//we can obtain each digit starting from the least significant digit. 
+	//Therefore, we store the least significant digits first, and then the most significant digits.
 	char c,sign,tmp[50];
 	const char *digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	int i=0;
@@ -175,10 +180,11 @@ static char *number(char *str,long num,int base,int size,int precision,int type)
 		digits="0123456789abcdefghijklmnopqrstuvwxyz";
 	}
 	if(type & LEFT){
+		//Disable zero padding when left-aligned.
 		type &=~ZEROPAD;
 	}
 	if(base<2 || base>36){
-		return 0;	
+		return 0;//Returning a null pointer indicates an error.
 	}
 	c=(type & ZEROPAD) ? '0' : ' ';
 	sign=0;
@@ -194,21 +200,26 @@ static char *number(char *str,long num,int base,int size,int precision,int type)
 	}
 	if(type&SPECIAL){
 		if(base==16){
+			// The 0x prefix occupies 2 characters.
 			size=size-2;
+			//The 0 prefix occupies 1characters.
 		}else if(base==8){
 			size=size-1;
 		}
 	}
 	if(num==0){
+		// For the case of 0, convert the digits from the lowest position to the highest position, and store the result in reverse order in the variable tmp.
 		tmp[i++]='0';
 	}else while (num!=0){
-		// do_div(num,base) 返回num除以base的余数
+		//do_div(num, base) returns the remainder of num divided by base
 		tmp[i++]=digits[do_div2(num,base)];
 	}
 	if(i>precision){
+		//  The precision must not be less than the actual number of digits.
 		precision=i;
 	}
 	size-=precision;
+	//Right-aligned and zero-padded: Leading spaces
 	if(!(type&(ZEROPAD+LEFT))){
 		while(size-- >0){
 			*str++=' ';
@@ -225,15 +236,19 @@ static char *number(char *str,long num,int base,int size,int precision,int type)
 			*str++=digits[33];
 		}
 		}
+		// If it is not left-aligned
 	if(!(type&LEFT)){
 		while(size-- >0){
 			*str++=c;
 		}
 	}
 	while(i<precision--){
+		/*If the actual number of digits is less than the precision, pad with zeros at the beginning
+For example: Precision is 5, number is 123 → Output "00123" */
 		*str++='0';
 	}
 	while(i-- >0){
+		//Reverse output, output the digits in tmp from high to low
 		*str++=tmp[i];
 	}
 	while(size-- >0){
@@ -244,19 +259,21 @@ static char *number(char *str,long num,int base,int size,int precision,int type)
 
 
 int vsprintf(char *buf,const char *fmt,va_list args){
-	char *str;
-	char *s;
-	int flags;
-	int field_width;
-	int precision;
-	int len;
-	int i;
-	int qualifier;
+	char *str;      // Pointer pointing to the output buffer
+	char *s;        // Temporary string pointer
+	int flags;      // Format flags
+	int field_width; // Field width
+	int precision;   // Precision
+	int len;         // Length
+	int i;           // Temporary variable
+	int qualifier;   // Length modifier
+	//Iterate over each character of the format string "fmt"
+	//str pointer moves in buf, writing the formatted content
 	for (str=buf;*fmt;fmt++)
 	{
 		if (*fmt !='%')
 		{
-			*str++ =*fmt;
+			*str++ =*fmt;// Directly copy ordinary characters
 			continue;
 		}
 		flags=0;
@@ -321,6 +338,7 @@ int vsprintf(char *buf,const char *fmt,va_list args){
 			qualifier =*fmt;
 			fmt++;
 	}
+	//根据格式字符（如%c、%s、%d等）执行相应的格式化操作
 	switch (*fmt){
 			case 'c':
 				if(!(flags &LEFT)){
