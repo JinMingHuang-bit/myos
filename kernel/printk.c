@@ -338,7 +338,7 @@ int vsprintf(char *buf,const char *fmt,va_list args){
 			qualifier =*fmt;
 			fmt++;
 	}
-	//根据格式字符（如%c、%s、%d等）执行相应的格式化操作
+	//Perform the corresponding formatting operations based on format characters (such as %c, %s, %d, etc.)
 	switch (*fmt){
 			case 'c':
 				if(!(flags &LEFT)){
