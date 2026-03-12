@@ -2,10 +2,11 @@
 #include "gate.h"
 #include "printk.h"
 #include "trap.h"
+//rsp: Pointer pointing to the top of the kernel stack, which is the starting address of the interrupt frame.
 void do_divide_error(unsigned long rsp,unsigned long error_code) {
     unsigned long *p=NULL;
-    //将栈指针寄存器RSP(异常处理模块将栈指针寄存器RSP的值作为参数传入RDI寄存器中)的值向上索引0x98个字节,以获取被中断现场的RIP寄存器的值.
-    //这是产生异常指令的地址值.
+	// The value of the stack pointer register RSP (which is passed as a parameter to the RDI register by the exception handling module) is indexed upward by 0x98 bytes to obtain the value of the RIP register at the interrupted state.
+	// This is the address value of the exception instruction..
     p=(unsigned long *)(rsp+0x98);
     color_printk(RED,BLACK,"do_divide_error(0):ERROR_CODE:%#018lx,RSP:%#018lx,RIP:%#018lx\n",error_code,rsp,*p);
     while (1);

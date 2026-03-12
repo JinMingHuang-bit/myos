@@ -1,5 +1,6 @@
 #include "linkage.h"
 
+//Offset on the stack
 R15 = 0x00
 R14 = 0x08
 R13 = 0x10
@@ -26,6 +27,8 @@ OLDRSP=0xB0
 OLDSS=0xB8
 
 RESTORE_ALL:
+    //Since it cannot be directly pushed into the segment registers (ds, es), 
+    //the code uses the temporary register %rax for intermediate transfer.。
     popq %r15;
     popq %r14;
     popq %r13;
@@ -62,6 +65,8 @@ SP用以指示栈顶的偏移地址，而BP可 作为堆栈区中的一个基地
 */
 
 error_code:
+    //Since it cannot be directly pushed into the segment registers (ds, es),
+    // the code uses the temporary register %rax for intermediate transfer.。
     pushq %rax
     movq  %es,%rax
     pushq %rax
@@ -85,21 +90,27 @@ error_code:
     pushq %r15
 
     /*
-    将错误码和栈指针分别存入RSI和RDX,供异常处理函数使用
+    Store the error code and the stack pointer separately into RSI and RDX, for use by the exception handling function.
     */
-
+//Clear the direction flag to ensure string operations proceed forward
     cld
+//Retrieve the error code from the stack -> The second parameter (rsi)
     movq ERRCODE(%rsp),%rsi
+//Retrieve the function pointer from the stack -> The third parameter (rdx)
     movq FUNC(%rsp),%rdx
-
+// Kernel data segment selector (0x10)
     movq $0x10,%rdi
+    //Set the data segment
     movq %rdi,%ds
+    //Set the extra segment
     movq %rdi,%es
+    //Stack pointer (interrupt frame address) -> First parameter (rdi)
     movq %rsp,%rdi
+    //Call the exception handling function
     callq *%rdx
     jmp ret_from_exception
 
-// 还原被中断程序的现场
+// Restore the state of the interrupted program
 ret_from_exception:
 ENTRY(ret_from_intr)
     jmp RESTORE_ALL
@@ -111,8 +122,11 @@ ENTRY(debug)
     xchgq   %rax,   (%rsp)
     jmp error_code
 
-//NMI不可屏蔽中断是一个特殊的中断，它不携带任何参数，也不返回任何值，
-//NMI中断的处理程序可以通过执行一条指令来结束，也可以通过执行一条指令来继续执行。
+/*
+The NMI non-maskable interrupt is a special type of interrupt. 
+It does not carry any parameters and does not return any values.
+The handler for the NMI interrupt can be ended by executing one instruction or can continue execution by executing another instruction.
+*/
 ENTRY(nmi)
     pushq %rax
     cld
@@ -139,9 +153,9 @@ ENTRY(nmi)
     pushq %r14
     pushq %r15
 
-    movq $0x10,%rdx   // # 0x10通常是内核数据段选择子
-    movq %rdx,%ds    // # 设置DS为内核数据段
-    movq %rdx,%es    //# 设置ES为内核数据段
+    movq $0x10,%rdx   // #0x10 is usually the selector for the kernel data segment.
+    movq %rdx,%ds    // # Set DS as the kernel data segment
+    movq %rdx,%es    //# Set ES as the kernel data segment
 
     movq $0,%rdi
     movq %rsp,%rsi

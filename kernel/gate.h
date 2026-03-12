@@ -15,16 +15,15 @@ extern struct gate_struct IDT_Table[];
 extern unsigned int TSS64_Table[26];
 // set the interrupt gate
 /*
-这个宏函数用于设置x86-64架构的中断门描述符(Interrupt Gate Descriptor)
-参数说明：
-- gate_selector_addr: 中断门描述符的内存地址
-- attr: 中断门的属性位
-- ist: 中断栈表索引
-- code_addr: 中断处理程序的代码地址
-
-x86-64中断门描述符格式（16字节）：
-+0-7字节：低64位 - 包含代码地址的0-31位、段选择子、IST等
-+8-15字节：高64位 - 包含代码地址的32-63位、属性等
+This macro function is used to set the interrupt gate descriptor for the x86-64 architecture.
+Parameter descriptions:
+- gate_selector_addr: The memory address of the interrupt gate descriptor
+- attr: The attribute bits of the interrupt gate
+- ist: The index of the interrupt stack table
+- code_addr: The code address of the interrupt handler 
+x86-64 interrupt gate descriptor format (16 bytes):
++0-7 bytes: Low 64 bits - including the 0-31 bits of the code address, segment selector, IST, etc.
++8-15 bytes: High 64 bits - including the 32-63 bits of the code address, attributes, etc.
 */
 
 #define _set_gate(gate_selector_addr, attr, ist, code_addr) \
@@ -32,22 +31,22 @@ do \
 { \
     unsigned long __d0, __d1; \
     __asm__ __volatile__( \
-        "movw %%dx, %%ax  \n\t"          /* 将dx(段选择子)移到ax */ \
-        "andq $0x7, %%rcx \n\t"          /* 保留IST的低3位 */ \
+        "movw %%dx, %%ax  \n\t"          /* Move the dx (segment selector) to ax */ \
+        "andq $0x7, %%rcx \n\t"          /* Keep the last three bits of IST */ \
         "addq %4, %%rcx   \n\t"           \
-        "shlq $32, %%rcx  \n\t"          /* 左移32位准备高位 */ \
-        "addq %%rcx, %%rax \n\t"         /* 合并到rax */ \
-        "xorq %%rcx, %%rcx \n\t"         /* 清空rcx */ \
-        "movl %%edx, %%ecx \n\t"         /* 将edx低32位移到ecx */ \
-        "shrq $16, %%rcx  \n\t"          /* 右移16位获取高16位 */ \
-        "shlq $48, %%rcx  \n\t"          /* 左移48位到最高位 */ \
-        "addq %%rcx, %%rax \n\t"         /* 添加到rax */ \
-        "movq %%rax, %0    \n\t"         /* 存储低64位 */ \
-        "shrq $32, %%rdx  \n\t"          /* 将rdx右移32位 */ \
-        "movq %%rdx, %1    \n\t"         /* 存储高64位 */ \
-        : "=m"(*((unsigned long*)(gate_selector_addr))),  /*=m：内存操作数，可写*/ \
-          "=m"(*(1 + (unsigned long *)(gate_selector_addr))),   /*&a：使用rax/eax寄存器，早期破坏约束
-          &d：使用rdx/edx寄存器，早期破坏约束*/\ 
+        "shlq $32, %%rcx  \n\t"          /* Left shift 32 bits for high portion */ \
+        "addq %%rcx, %%rax \n\t"         /* Combine into rax */ \
+        "xorq %%rcx, %%rcx \n\t"         /* Clear rcx */ \
+        "movl %%edx, %%ecx \n\t"         /* Move low 32 bits of edx to ecx */ \
+        "shrq $16, %%rcx  \n\t"          /* Right shift 16 bits to get the high 16 bits */ \
+        "shlq $48, %%rcx  \n\t"          /* Left shift 48 bits to the most significant bits */ \
+        "addq %%rcx, %%rax \n\t"         /* Add to rax */ \
+        "movq %%rax, %0    \n\t"         /* Store the low 64 bits */ \
+        "shrq $32, %%rdx  \n\t"          /* Right shift rdx by 32 bits */ \
+        "movq %%rdx, %1    \n\t"         /* Store the high 64 bits */ \
+        : "=m"(*((unsigned long*)(gate_selector_addr))),  /*=m：Memory operand, writable*/ \
+          "=m"(*(1 + (unsigned long *)(gate_selector_addr))),   /*&a：Using the rax/eax registers, early breaking of constraints
+          &d：Using the rdx/edx registers, early breaking of constraints*/\ 
           "=&a"(__d0), "=&d"(__d1) \
         : "i"(attr << 8), \
           "3"((unsigned long)(code_addr)), \
@@ -57,24 +56,15 @@ do \
 } while(0)
 
 /*
-输入0："i"(attr << 8)
-
-i：立即数
-
-attr << 8：属性左移8位，为后续位操作做准备
-
-输入1："3"((unsigned long)(code_addr))
-
-3：匹配第3个输出操作数（"=&d"(__d1)）
-
-代码地址放入rdx寄存器
-
-输入2："2"(0x8 << 16)
-
-2：匹配第2个输出操作数（"=&a"(__d0)）
-
-0x8 << 16：内核代码段选择子左移16位
-
+Input 0: "i" (attr << 8)
+i: Immediate value
+attr << 8: Shift the attribute 8 bits to the left, preparing for subsequent bit operations
+Input 1: "3" ((unsigned long)(code_addr))
+3: Matches the 3rd output operand ("=&d"(__d1))
+The code address is placed in the rdx register
+Input 2: "2" (0x8 << 16)
+2: Matches the 2nd output operand ("=&a"(__d0))
+0x8 << 16: Kernel code segment selector shifted 16 bits to the left
 */ 
 
 
