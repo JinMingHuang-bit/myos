@@ -29,9 +29,8 @@
       47-39            38-30             29-21             20-12            11-0
 
 	因此,为了从64位虚拟地址中提取出最高9位（PML4索引），需要右移39位来去掉所有低级别的索引和偏移量。
-	下面的代码类似
 */
-#define PAGE_GDT_SHIFT 39
+#define PAGE_PML4_SHIFT 39
 #define PAGE_1G_SHIFT 30
 #define PAGE_2M_SHIFT 21
 //2的12次方 4096,即4k,这些是每种页表项代表的物理页容量
@@ -143,15 +142,24 @@ static unsigned long *Get_gdt(){
 	return tmp;
 }
 
+static unsigned long *Get_cr3(){
+	unsigned long * tmp;
+	__asm__ __volatile__ ("movq %%cr3, %0  \n\t"			
+	                      : "=r"(tmp)				
+	                      : 							
+	                      : "memory"
+	                     );								
+	return tmp;
+}
 
-struct Memory_E820_Formate
-{
-	unsigned int address1;
-	unsigned int address2;
-	unsigned int length1;
-	unsigned int length2;
-	unsigned int type;
-};
+// struct Memory_E820_Formate
+// {
+// 	unsigned int address1;
+// 	unsigned int address2;
+// 	unsigned int length1;
+// 	unsigned int length2;
+// 	unsigned int type;
+// };
 
 // 使用 packed：禁止填充
 struct E820
