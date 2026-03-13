@@ -35,8 +35,8 @@
 #define PAGE_2M_SHIFT 21
 //2的12次方 4096,即4k,这些是每种页表项代表的物理页容量
 #define PAGE_4K_SHIFT 12
-//1UL：无符号长整型常量1（64位）
-//2,097,152,即2M
+//1UL：Unsigned long integer constant 1 (64 bits)
+//2,097,152,which is 2M
 #define PAGE_2M_SIZE (1UL << PAGE_2M_SHIFT)
 //1UL << 12 = 4,096 = 4KB。
 #define PAGE_4K_SIZE (1UL << PAGE_4K_SHIFT)
