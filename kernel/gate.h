@@ -46,9 +46,9 @@ do \
         "movq %%rdx, %1    \n\t"         /* Store the high 64 bits */ \
         : "=m"(*((unsigned long*)(gate_selector_addr))),  /*=m：Memory operand, writable*/ \
           "=m"(*(1 + (unsigned long *)(gate_selector_addr))),   /*&a：Using the rax/eax registers, early breaking of constraints
-          &d：Using the rdx/edx registers, early breaking of constraints*/\ 
+          &d：Using the rdx/edx registers, early breaking of constraints,Write the high 64 bits of the door descriptor to the memory location of gate_selector_addr + 8.*/\ 
           "=&a"(__d0), "=&d"(__d1) \
-        : "i"(attr << 8), \
+        : "i"(attr << 8), /*Shift the attribute field to the left by 8 bits. In the final 64-bit gate descriptor, the segment selector must be located in bits 16 to 31.*/\ 
           "3"((unsigned long)(code_addr)), \
           "2"(0x8 << 16), \
           "c"(ist)     /*rcx */ \
@@ -119,17 +119,52 @@ GCC：inline 函数默认具有外部链接，除非被声明为 static
 
 
 */
-
+/*
+Attribute Analysis: 0x8F
+Binary: 1000 1111
+Decomposition:
+Bit 7 (P): 1 = Descriptor exists
+Bits 6-5 (DPL): 00 = Privilege level 0 (Kernel mode)
+Bit 4: 0 = Always 0 (32-bit gate is 0, 64-bit gate is 0)
+Bits 3-0 (TYPE): 1111 = 0xF = 64-bit trap gate Purpose
+Traps (exceptions) for the kernel privilege level
+DPL = 0, only kernel code can call
+Mainly used for exception handling (such as division by zero, page error, breakpoint exception, etc.)
+*/
 static inline void set_trap_gate(unsigned int n, unsigned char ist,void * addr){
 
     _set_gate(IDT_Table+n, 0x8F, ist, addr);
 
 }
-
+/*
+Attribute Analysis: 0xEF
+Binary: 1110 1111
+Decomposition:
+Bit 7 (P): 1 = Descriptor exists
+Bits 6-5 (DPL): 11 = Privilege level 3 (User mode)
+Bit 4: 0 = Fixed as 0
+Bits 3-0 (TYPE): 1111 = 0xF = 64-bit trap gate Purpose
+Trap gates accessible to user privilege level
+DPL = 3, user programs can directly call (for example, through the INT instruction)
+Mainly used for system calls or exceptions that can be triggered by user mode
+*/
 static inline void set_system_gate(unsigned int n, unsigned char ist,void * addr){
     _set_gate(IDT_Table+n, 0xEF, ist, addr);
 }
-
+/*
+Attribute Analysis: 0xEE
+Binary: 1110 1110
+Decomposition:
+Bit 7 (P): 1 = Descriptor exists
+Bits 6-5 (DPL): 11 = Privilege level 3 (User mode)
+Bit 4: 0 = Fixed as 0
+Bits 3-0 (TYPE): 1110 = 0xE = 64-bit Interrupt Gate Purpose
+Interrupt gate accessible to user privilege level
+DPL = 3, user program can directly call it
+The difference between interrupt gate and trap gate:
+Interrupt gate: When executed, the IF flag will be cleared (interrupts are disabled)
+Trap gate: When executed, the IF flag remains unchanged (interrupts may be allowed)
+*/
 static inline void set_system_intr_gate(unsigned int n,unsigned char ist,void * addr)	//int3
 {
 	_set_gate(IDT_Table + n , 0xEE , ist , addr);	//P,DPL=3,TYPE=E
