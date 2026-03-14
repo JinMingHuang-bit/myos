@@ -2,49 +2,52 @@
 #define _MEMORY_H_
 
 #include "lib.h"
-//页表项个数,在64位模式下每个页表项占用8个字节,所以一个页表最多可以容纳512个页表项
+// Number of page table entries. In 64-bit mode, 
+//each page table entry occupies 8 bytes, so a page table can accommodate a maximum of 512 page table entries.
 #define PTRS_PER_PAGE 512
 /*
-这个宏定义了内核空间的起始虚拟地址。在x86_64架构中，通常将高地址空间分配给内核。
-0xffff800000000000 是一个典型的直接映射区域的起始地址，用于将物理内存直接映射到内核虚拟地址空间
+This macro defines the starting virtual address of the kernel space. On the x86_64 architecture, the high address space is typically allocated to the kernel.
+0xffff800000000000 is a typical direct mapping area's starting address, which is used to directly map physical memory to the kernel's virtual address space.
 */
 #define PAGE_OFFSET ((unsigned long)0xffff800000000000)
 /* 
-地址翻译流程：
-1. CR3寄存器 → PML4物理基址
-2. PML4索引 → 在PML4中找到PDPT的物理地址
-3. PDPT索引 → 在PDPT中找到PD的物理地址  
-4. PD索引 → 在PD中找到PT的物理地址
-5. PT索引 → 在PT中找到物理页框地址
-6. 偏移量 → 物理地址中的具体位置
+Address translation process:
+1. CR3 register → PML4 physical base address
+2. PML4 index → Find the physical address of the PDPT in the PML4
+3. PDPT index → Find the physical address of the PD in the PDPT
+4. PD index → Find the physical address of the PT in the PD
+5. PT index → Find the physical page frame address in the PT
+6. Offset → Specific position in the physical address
 
-在x86_64架构中，标准的48位虚拟地址布局如下：
+In the x86_64 architecture, the standard 48-bit virtual address layout is as follows:
 
 47               39 38               30 29               21 20               12 11        0
 ┌────────────────┬────────────────┬────────────────┬────────────────┬─────────────────┐
-│    PML4索引    │    PDPT索引     │     PD索引     │     PT索引     │     偏移量      │
+│    PML4 index   │    PDPT index     │     PD index     │     PT index     │     offset      │
 │    (9 bits)    │    (9 bits)    │    (9 bits)    │    (9 bits)    │    (12 bits)    │
 └────────────────┴────────────────┴────────────────┴────────────────┴─────────────────┘
        ↑                 ↑                 ↑                 ↑                ↑
       47-39            38-30             29-21             20-12            11-0
 
-	因此,为了从64位虚拟地址中提取出最高9位（PML4索引），需要右移39位来去掉所有低级别的索引和偏移量。
+	Therefore, to extract the highest 9 bits (PML4 index) from a 64-bit virtual address, we need to right shift by 39 bits to remove all lower-level indices and the offset.
 */
 #define PAGE_PML4_SHIFT 39
 #define PAGE_1G_SHIFT 30
 #define PAGE_2M_SHIFT 21
-//2的12次方 4096,即4k,这些是每种页表项代表的物理页容量
+// 2 raised to the power of 12 equals 4096, which is 4k. These are the physical page capacities represented by each page table entry.
 #define PAGE_4K_SHIFT 12
 //1UL：Unsigned long integer constant 1 (64 bits)
 //2,097,152,which is 2M
 #define PAGE_2M_SIZE (1UL << PAGE_2M_SHIFT)
 //1UL << 12 = 4,096 = 4KB。
 #define PAGE_4K_SIZE (1UL << PAGE_4K_SHIFT)
-//这个掩码与任何地址进行“与”操作，都会将地址的低21位清零，从而得到该地址所在的2MB页的起始地址（2MB对齐）。
+/* 
+This mask, when used with any address in a "AND" operation, will clear the lowest 21 bits, thus obtaining the starting address of the 2MB page to which the address belongs (2MB alignment).
+*/
 #define PAGE_2M_MASK (~(PAGE_2M_SIZE - 1))
 #define PAGE_4K_MASK (~(PAGE_4K_SIZE - 1))
-/* 
-设 a = q·s + r，其中 0 ≤ r < s（r 是余数）
+/* 设 a 为原地址，s 为页大小
+a = q·s + r，其中 0 ≤ r < s（r 是余数）
 情况 1: r = 0（已对齐）
 (a + s - 1) & ~(s-1) 
 = (q·s + s - 1) & ~(s-1)
@@ -161,13 +164,14 @@ static unsigned long *Get_cr3(){
 // 	unsigned int type;
 // };
 
-// 使用 packed：禁止填充
+// Use packed: Disable padding. 
+//Only in this way can the memory mapping table entry at the linear address 0xffff800000007e00 be correctly indexed.
 struct E820
 {
-    unsigned long address;  // 内存区域的起始地址
-    unsigned long length;   // 内存区域的长度
-    unsigned int type;     // 内存区域的类型
-}__attribute__((packed));   // 强制为12字节，无填充
+    unsigned long address;  // The starting address of the memory area
+    unsigned long length;   // The length of the memory area
+    unsigned int type;     // The type of the memory area
+}__attribute__((packed));   // Force it to be 12 bytes, no padding
 
 struct Global_Memory_Descriptor
 {

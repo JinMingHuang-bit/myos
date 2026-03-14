@@ -36,7 +36,8 @@ void init_memory(){
 	p=(struct E820 *)0xffff800000007e00;
 	for (int i = 0; i < 32; i++)
 	{
-		//以0x开头的16进制形式输出，总宽度为18个字符，左补零，长整型（unsigned long）
+		//Output in hexadecimal format starting with 0x, with a total width of 18 characters, 
+		//left-padded with zeros, long integer (unsigned long)
 		color_printk(ORANGE,BLACK,"address:%#018lx\tLength:%#018lx\tType:%#010x\n",p->address,p->length,p->type);
 		unsigned long tmp =0;
 		if(p->type==1){
