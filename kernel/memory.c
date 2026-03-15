@@ -60,14 +60,19 @@ void init_memory(){
 	TotalMem=0;
 	for(i=0;i<=memory_management_struct.e820_length;i++){
 		unsigned long start,end;
+		//Only process the available RAM segments.
 		if(memory_management_struct.e820[i].type!=1){
 			continue;
 		}
+		// Align the starting address to the 2MB boundary.
 		start=PAGE_2M_ALIGN(memory_management_struct.e820[i].address);
+		// Align the end address to the 2MB boundary.
 		end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].length)>>PAGE_2M_SHIFT)<<PAGE_2M_SHIFT;
 		if(end<=start){
+			//There is not enough space after alignment to accommodate a 2MB page.
 			continue;
 		}
+		//Sum up the number of 2MB pages within the aligned range.
 		TotalMem+=(end-start)>>PAGE_2M_SHIFT;
 	}
 	color_printk(ORANGE,BLACK,"OS Can Used Total 2M PAGEs:%#010x=%010d\n",TotalMem,TotalMem);
