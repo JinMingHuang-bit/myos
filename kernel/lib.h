@@ -286,45 +286,54 @@ static inline void * memset(void *Address,unsigned char C,long Count){
     return Address;
 }
 static inline void * Cmemset(void *Address, unsigned char C, long Count)
-{
+{   //The pointer points to the memory address where the data is to be written.
     unsigned char *ptr = (unsigned char *)Address;
+    //The pattern is initially set to C (with only the lower 8 bits being valid, and the remaining bits being 0).
     unsigned long pattern = C;
     
-    // 扩展单字节到8字节模式（0x0101010101010101乘法效果）
-    //这样可以用64位写入代替逐字节写入
-    //按位或运算符（|）
+    // Expand single-byte to 8-byte mode (0x0101010101010101 multiplication effect)
+    // This way, 64-bit writes can be used instead of byte-by-byte writes
+    // Bitwise OR operator (|)
     /*
     0 | 0 = 0
     0 | 1 = 1
     1 | 0 = 1
     1 | 1 = 1
     */
+   /*
+  By shifting left and performing bitwise OR operations, the single-byte value is copied to all byte positions.
+For example, if C = 0x12, after the first operation pattern |= (pattern << 8), the lower 16 bits of pattern become 0x1212;
+After the second left shift by 16 bits, the lower 32 bits become 0x12121212; after the third left shift by 32 bits, the entire 64 bits become 0x1212121212121212.
+   */
     pattern |= (pattern << 8);
     pattern |= (pattern << 16);
     pattern |= (pattern << 32);
     
     long remaining = Count;
     
-    // 先按8字节块填充（64位）
+// First, fill in in 8-byte blocks (64 bits)
+
     while (remaining >= 8) {
+        /*Force ptr to be converted to unsigned long*, write 8 bytes at a time, then advance the pointer by 8 bytes, and subtract 8 from the remaining bytes.
+This utilizes 64-bit write operations to reduce the number of loops.*/
         *((unsigned long *)ptr) = pattern;
         ptr += 8;
         remaining -= 8;
     }
     
-    // 检查是否需要填充4字节
+// Check if 4 bytes need to be filled
     if (remaining & 4) {
         *((unsigned int *)ptr) = (unsigned int)pattern;
         ptr += 4;
     }
     
-    // 检查是否需要填充2字节
+// Check if 2-byte padding is required
     if (remaining & 2) {
         *((unsigned short *)ptr) = (unsigned short)pattern;
         ptr += 2;
     }
     
-    // 检查是否需要填充1字节
+// Check if 1-byte padding is required
     if (remaining & 1) {
         *ptr = C;
     }

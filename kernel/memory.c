@@ -76,6 +76,7 @@ void init_memory(){
 		TotalMem+=(end-start)>>PAGE_2M_SHIFT;
 	}
 	color_printk(ORANGE,BLACK,"OS Can Used Total 2M PAGEs:%#010x=%010d\n",TotalMem,TotalMem);
+
 	TotalMem=memory_management_struct.e820[memory_management_struct.e820_length].address+memory_management_struct.e820[memory_management_struct.e820_length].length;
 		//bits map contruction init
 	//Place the bitmap at the end of the kernel data segment and align it to a 4KB boundary.。
@@ -91,7 +92,12 @@ void init_memory(){
 	//
 	//	TotalMem >> 21(PAGE_2M_SHIFT = 21） 
 
-
+	/*
+	 The `sizeof(long)` is used for byte alignment.
+The total number of pages is TotalMem >> PAGE_2M_SHIFT. 
+Each page requires 1 bit, so the total number of bits is the number of pages. 
+Convert it to bytes: (number of pages + 8 - 1) / 8, rounded up.
+	*/
 	memory_management_struct.bits_size=TotalMem>>PAGE_2M_SHIFT;	
 	memory_management_struct.bits_length=(((unsigned long)(TotalMem>>PAGE_2M_SHIFT)+sizeof(long)*8-1)/8)&(~(sizeof(long)-1));
 	Cmemset(memory_management_struct.bits_map,0xff,memory_management_struct.bits_length);
@@ -112,7 +118,18 @@ void init_memory(){
 */
 //The operating system uses 2MB pages instead of the usual 4kb pages, which can reduce TLB misses: the same TLB entries can cover a larger amount of memory.
 //pages construct start
+/*
+Function: Calculate the starting virtual address of the page structure array and convert it to the type of struct Page*. 
+Principle: The end address of bits_map is bits_map + bits_length. To ensure that pages_struct starts from a 4KB aligned boundary,
+the formula for up-rounding alignment is used: (addr + 4095) & ~0xFFF. Here, PAGE_4K_SIZE = 4096 and PAGE_4K_MASK = ~0xFFF.
+In this way, even if the end address of bits_map is not aligned, it will jump to the next 4KB boundary.
+*/
 memory_management_struct.pages_struct=(struct Page *)(((unsigned long)memory_management_struct.bits_map+memory_management_struct.bits_length+PAGE_4K_SIZE-1)&PAGE_4K_MASK);
+/*
+作用：记录需要管理的 2MB 页面总数。
+含义：TotalMem 是之前计算出的物理地址空间上限（字节），右移 PAGE_2M_SHIFT（通常为 21）即得到 2MB 页面个数。
+这个值决定了页结构数组的大小，因为每个 2MB 页面对应一个 struct Page 元数据。
+*/
 memory_management_struct.pages_size=TotalMem>>PAGE_2M_SHIFT;
 /*
 // example (64-bit system)：
@@ -204,7 +221,7 @@ i=Virt_To_Phy(memory_management_struct.end_of_struct)>>PAGE_2M_SHIFT;
 for(j=0;j<=i;j++){
 	page_init(memory_management_struct.pages_struct+j,PG_PTable_Maped|PG_Kernel_Init|PG_Active|PG_Kernel);
 }
-	Global_CR3 = Get_gdt();
+	Global_CR3 = Get_cr3();
 	color_printk(INDIGO,BLACK,"Global_CR3\t:%#018lx\n",Global_CR3);
 	color_printk(INDIGO,BLACK,"*Global_CR3\t:%#018lx\n",*Phy_To_Virt(Global_CR3));
 	color_printk(INDIGO,BLACK,"**Global_CR3\t:%#018lx\n",*Phy_To_Virt(*Phy_To_Virt(Global_CR3)&(~0xff))&(~0xff));
@@ -213,7 +230,6 @@ for(j=0;j<=i;j++){
 	}
 	color_printk(INDIGO,BLACK,"I am OK!\n");
 	flush_tlb();
-
 }
 
 /*	
