@@ -230,22 +230,32 @@ for(i=0;i<memory_management_struct.zones_size;i++){
 		ZONE_UNMAPED_INDEX=i;
 	}
 	}
-	//Reserve some space to prevent unauthorized access:+ sizeof(long) * 32.
 	/*
-	Align downward to the "long" boundary & (~(sizeof(long) - 1))
-	Make sure the address is a multiple of sizeof(long) 64-bit system: 8-byte alignment
-	 */
+Calculate the end address of the virtual address space occupied by the kernel memory management data structures (including bitmaps, page structure arrays, region arrays, etc.), 
+and align it to the machine word length (sizeof(long), 8 bytes for a 64-bit system).
+	*/
+	//Additionally, add sizeof(long) * 32 (i.e., 256 bytes) as a safety margin to prevent out-of-bounds access in subsequent operations.
 memory_management_struct.end_of_struct=(unsigned long)((unsigned long)memory_management_struct.zones_struct+memory_management_struct.zones_length+sizeof(long)*32)&(~(sizeof(long)-1));
 color_printk(ORANGE,BLACK,"start_code:%#018lx,end_code:%#018lx,end_data:%#018lx,end_brk:%#018lx,end_of_struct:%#018lx\n",memory_management_struct.start_code,memory_management_struct.end_code,memory_management_struct.end_data,memory_management_struct.end_brk,memory_management_struct.end_of_struct);
+//Right shift PAGE_2M_SHIFT (usually 21) to get the global index of the 2MB page where this physical address resides (starting from 0). 
+//This index i represents the number of the last 2MB page occupied from physical address 0 to end_of_struct.
 i=Virt_To_Phy(memory_management_struct.end_of_struct)>>PAGE_2M_SHIFT;
 for(j=0;j<=i;j++){
+	/*
+PG_PTable_Maped: Indicates that the page has been mapped by the page table.
+PG_Kernel_Init: Indicates that it was initialized by the kernel.
+PG_Active: Indicates that the page is in an active state.
+PG_Kernel: Indicates that the page belongs to the kernel.
+	*/
 	page_init(memory_management_struct.pages_struct+j,PG_PTable_Maped|PG_Kernel_Init|PG_Active|PG_Kernel);
 }
+	//Read the CR3 register of the current CPU. It stores the physical address of the top-level page table (in x86_64 architecture, it is the PML4).
 	Global_CR3 = Get_cr3();
 	color_printk(INDIGO,BLACK,"Global_CR3\t:%#018lx\n",Global_CR3);
 	color_printk(INDIGO,BLACK,"*Global_CR3\t:%#018lx\n",*Phy_To_Virt(Global_CR3));
 	color_printk(INDIGO,BLACK,"**Global_CR3\t:%#018lx\n",*Phy_To_Virt(*Phy_To_Virt(Global_CR3)&(~0xff))&(~0xff));
 	for(i=0;i<10;i++){
+		//Clear the first 10 entries of the PML4 table pointed to by CR3, in order to re-establish or adjust the page table mapping of the kernel in the future.
 		*(Phy_To_Virt(Global_CR3)+i)=0UL;
 	}
 	color_printk(INDIGO,BLACK,"I am OK!\n");
@@ -289,34 +299,59 @@ for(i=zone_start;i<=zone_end;i++){
 	unsigned long j;
 	unsigned long start,end,length;
 	unsigned long tmp;
+	// If the total number of idle pages in this Zone is less than the required amount, skip.
 	if((memory_management_struct.zones_struct+i)->page_free_count<number){
 		continue;
 	}
-	z = memory_management_struct.zones_struct + i;
-	start = z->zone_start_address >>PAGE_2M_SHIFT;
-	end = z->zone_end_address >> PAGE_2M_SHIFT;
-	length = z->zone_length>>PAGE_2M_SHIFT;
-	tmp=64-start%64;
-	//将索引变量j调整到对齐处
+	z = memory_management_struct.zones_struct + i; //Obtain the current Zone pointer
+	start = z->zone_start_address >>PAGE_2M_SHIFT; //Initial page index
+	end = z->zone_end_address >> PAGE_2M_SHIFT;		// End-page index (excluding)
+	length = z->zone_length>>PAGE_2M_SHIFT;			//The total number of pages included in the Zone
+	tmp=64-start%64;	 // The remaining bits in the first 64-bit word
+	//Outer loop: Traverse the bitmap character by character in a row-wise manner
+	/*
+j represents the index of the current scanned page (relative to the entire physical address space).
+Stepping strategy: If j is not a multiple of 64 (i.e., not at the starting position of an unsigned long), then step by tmp (the previously calculated 64 - start % 64),
+so that the next j jumps to the next multiple of 64;
+If j is a multiple of 64, then step by 64, that is, directly jump to the next word。
+	*/
 	for(j=start;j<=end;j+= j%64 ? tmp : 64){
+		//According to the global page index j, locate the corresponding unsigned long array element in the bitmap.
+		/*
+The "memory_management_struct.bits_map" is the starting address of the bitmap array.
+The global page index "j" starts from 0 and increments sequentially. To find the element of the corresponding bitmap for it, one needs to calculate the quotient of "j" divided by 64 (that is, "j >> 6").
+This gives the index of the array where the page is located. "memory_management_struct.bits_map" is the starting address of the bitmap array.
+After adding the index ("j >> 6") to it, "p" points to the "unsigned long" element that contains the corresponding bit of the j-th page.
+		*/
 		unsigned long *p=memory_management_struct.bits_map+(j>>6);
 		unsigned long shift=j%64;
 		unsigned long k;
+		//Inner loop: Traverse each bit offset in the current word
 		for(k=shift;k<64-shift;k++){
 			//Determine whether the bit segment of length number starting from the kth bit in the consecutive memory starting from p is all zeros. 
 		    /*
 			The entire expression can be decomposed into：
               A = (*p >> k) | (*(p+1) << (64-k)) - Extract the segments across the border
+			 *p >> k: Shift the current word to the right by k positions, obtaining the lower part starting from the k-th position (the original high part is now in the lower position).
+			*(p+1) << (64 - k): Shift the next word to the left by 64 - k positions, obtaining the bit segment starting from the lower part of the next word, and appending it to the high part.
+			Perform a bitwise OR operation on the two, obtaining a 64-bit number. 
+			The lower 64 - k bits come from the high part of the current word, and the high k bits come from the lower part of the next word. 
+			Thus, this extracts a continuous 64 bits starting from the k-th position of the current word (crossing the boundaries of the two words).
               B = (number == 64 ? 0xffffffffffffffffUL : ((1UL << number) - 1)) - Generate mask  **
             When the value of number is 64, shifting it 64 bits will result in undefined behavior 
 			(since 1UL is 64 bits and shifting 64 bits will move all the bits out), so special handling is required.
+			Therefore, if number is equal to 64, the mask is all 1s; otherwise, the mask is (1UL << number) - 1, 
+			which means the lower number bits are 1 and the rest are 0.
 			**
 			C = A & B - Use mask to filter the bit segments
+			Perform a bitwise AND operation between the constructed bit segment and the mask, 
+			obtaining a sequence of number consecutive bits starting from the k-th bit. 
+			If the result is 0, then all these bits are considered as idle.
               if (!C) - Check whether the filtered segments are all zeros.
 			*/  
 			  if(!(((*p>>k)|(*(p+1)<<(64-k)))&(number == 64 ? 0xffffffffffffffffUL : ((1UL << number) - 1)))){
 		      	unsigned long l;
-				page=j+k-1;
+				page=j+k-1;//计算第一个页面的索引
 				for(l=0;l<number;l++){
 					struct Page *x=memory_management_struct.pages_struct+page+l;
 					page_init(x,page_flags);

@@ -79,7 +79,7 @@ trap.o:trap.c lib.h gate.h printk.h trap.h
 	$(CC) $(CFLAGSO3) -S -fverbose-asm trap.c -o trap.s
 	$(OBJDUMP) -d trap.o > trap.asm
 	$(AS) $(ASFLAGS) -o trap.o trap.s -ahls > trap.lst
-# 为最终系统文件生成反汇编
+# Generate disassembly for the final system file
 system.asm: system
 	$(OBJDUMP) -d system > system.asm
 
