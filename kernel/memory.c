@@ -126,9 +126,9 @@ In this way, even if the end address of bits_map is not aligned, it will jump to
 */
 memory_management_struct.pages_struct=(struct Page *)(((unsigned long)memory_management_struct.bits_map+memory_management_struct.bits_length+PAGE_4K_SIZE-1)&PAGE_4K_MASK);
 /*
-作用：记录需要管理的 2MB 页面总数。
-含义：TotalMem 是之前计算出的物理地址空间上限（字节），右移 PAGE_2M_SHIFT（通常为 21）即得到 2MB 页面个数。
-这个值决定了页结构数组的大小，因为每个 2MB 页面对应一个 struct Page 元数据。
+Function: Records the total number of 2MB pages that need to be managed.
+Meaning: TotalMem is the upper limit of the physical address space (in bytes) calculated previously. Shifting it right by PAGE_2M_SHIFT (usually 21) gives the number of 2MB pages.
+This value determines the size of the page structure array because each 2MB page corresponds to a struct Page metadata.
 */
 memory_management_struct.pages_size=TotalMem>>PAGE_2M_SHIFT;
 /*
@@ -139,12 +139,17 @@ memory_management_struct.pages_size=TotalMem>>PAGE_2M_SHIFT;
 memory_management_struct.pages_length=((TotalMem>>PAGE_2M_SHIFT)*sizeof(struct Page)+sizeof(long)-1)&(~(sizeof(long)-1));
 // Zero out and initialize the Page array
 Cmemset(memory_management_struct.pages_struct,0x00,memory_management_struct.pages_length);
-
+//Calculate the starting address of the region structure array, also aligned at 4KB. It follows immediately after the pages_struct.
 memory_management_struct.zones_struct=(struct Zone*)(((unsigned long)memory_management_struct.pages_struct+memory_management_struct.pages_length+PAGE_4K_SIZE-1)&PAGE_4K_MASK);
 
 memory_management_struct.zones_size=0;
+//Allocate fixed-sized space for the region structure array. Here, 5 spaces for struct Zone have been pre-allocated and aligned according to sizeof(long).
 memory_management_struct.zones_length=(5*sizeof(struct Zone)+sizeof(long)-1)&(~(sizeof(long)-1));
 Cmemset(memory_management_struct.zones_struct,0x00,memory_management_struct.zones_length);
+/*
+Loop through all e820 entries (where e820_length is the index of the last valid entry).
+Only process the entries of type 1 (available RAM), and skip those of other types (reserved, ACPI, etc.).
+*/
 for(i=0;i<=memory_management_struct.e820_length;i++){
 	unsigned long start, end;
 	struct Zone *z;
@@ -152,6 +157,12 @@ for(i=0;i<=memory_management_struct.e820_length;i++){
 	if(memory_management_struct.e820[i].type!=1){
 		continue;
 	}
+	/*
+	Starting address aligned upwards: PAGE_2M_ALIGN rounds the address up to the nearest 2MB boundary (for example, if PAGE_2M_SHIFT = 21, it aligns to 2MB).
+Ending address aligned downwards: Shift the sum of the starting address and length 21 bits to the right (divided by 2MB) and then shift it 21 bits to the left to obtain the 2MB-aligned ending address.
+If the aligned end is less than or equal to the starting address, it means there are no complete 2MB pages within this segment, so skip it.
+After alignment, the interval [start, end) is a 2MB-aligned region completely contained within the original segment, and subsequent memory management will be based on this unit.
+	*/
 	start=PAGE_2M_ALIGN(memory_management_struct.e820[i].address);
 	end=((memory_management_struct.e820[i].address+memory_management_struct.e820[i].length)>>PAGE_2M_SHIFT)<<PAGE_2M_SHIFT;
 	if(end<=start){
@@ -182,7 +193,14 @@ for(i=0;i<=memory_management_struct.e820_length;i++){
 		p->attribute=0;
 		p->reference_count=0;
 		p->age=0;
-
+		/*
+Update bitmap: Flip the bit corresponding to the page in the bitmap from 1 (initially fully occupied) to 0 (free).
+p->PHY_address >> PAGE_2M_SHIFT obtains the global index of the page (starting from 0).
+>> 6 is equivalent to division by 64, obtaining the index's subscript in the bitmap array (unsigned long array), because each unsigned long has 64 bits.
+% 64 obtains the offset within 64 bits (0-63).
+1UL << Offset constructs a mask.
+Use the operation ^= to flip the bit. Since the bitmap was initialized with all 1s, the XOR operation will clear this bit (1 ^ 1 = 0), indicating that the page becomes available.
+		*/
 		*(memory_management_struct.bits_map+((p->PHY_address>>PAGE_2M_SHIFT)>>6))^=1UL <<(p->PHY_address>>PAGE_2M_SHIFT)%64;
 	}
 }
@@ -191,7 +209,9 @@ memory_management_struct.pages_struct->PHY_address=0UL;
 memory_management_struct.pages_struct->attribute=0;
 memory_management_struct.pages_struct->reference_count=0;
 memory_management_struct.pages_struct->age=0;
-
+/*Previously, fixed spaces were pre-allocated (such as 5 Zones). Now, based on the actual number of used Zones (zones_size), the required byte count is recalculated,
+and then aligned upwards to sizeof(long) (the machine word length, 8 bytes for 64-bit systems).
+*/
 memory_management_struct.zones_length=(memory_management_struct.zones_size*sizeof(struct Zone)+sizeof(long)-1)&(~(sizeof(long)-1));
 
 color_printk(ORANGE,BLACK,"bits_map:%#018lx,bits_size:%#018lx,bits_length:%#018lx\n",memory_management_struct.bits_map,memory_management_struct.bits_size,memory_management_struct.bits_length);
@@ -205,7 +225,7 @@ ZONE_NORMAL_INDEX = 0;	//need rewrite in the future
 for(i=0;i<memory_management_struct.zones_size;i++){
 	struct Zone *z=memory_management_struct.zones_struct+i;
 	color_printk(ORANGE,BLACK,"zone_start_address:%#018lx,zone_end_address:%#018lx,zone_length:%#018lx,pages_group:%#018lx,pages_length:%#018lx\n",z->zone_start_address,z->zone_end_address,z->zone_length,z->pages_group,z->pages_length);
-
+	//Mark high-end memory
 	if(z->zone_start_address==0x100000000){
 		ZONE_UNMAPED_INDEX=i;
 	}
@@ -299,7 +319,6 @@ for(i=zone_start;i<=zone_end;i++){
 				page=j+k-1;
 				for(l=0;l<number;l++){
 					struct Page *x=memory_management_struct.pages_struct+page+l;
-					//error here
 					page_init(x,page_flags);
 				}
 				return (struct Page*)(memory_management_struct.pages_struct+page);
