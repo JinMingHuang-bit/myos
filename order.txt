@@ -32,7 +32,7 @@ bochs configure:./configure --with-x11  --enable-debugger
 --enable-evex --enable-x86-debugger --enable-pci --enable-voodoo
 
 
-
+with gdb:
 bochs configure:./configure --with-x11  --enable-gdb-stub
 --enable-disasm --enable-all-optimizations --enable-readline 
 --enable-long-phy-address --enable-ltdl-install --enable-idle-hack 
