@@ -57,26 +57,26 @@ entry.o:entry.S
 	$(OBJDUMP) -d entry.o > entry.asm
 
 main.o: main.c
-	$(CC) $(CFLAGSO3) -c main.c -o main.o
-	$(CC) $(CFLAGSO3) -S -fverbose-asm main.c -o main.s
+	$(CC) $(CFLAGS) -c main.c -o main.o
+	$(CC) $(CFLAGS) -S -fverbose-asm main.c -o main.s
 	$(OBJDUMP) -d main.o > main.asm
 	$(AS) $(ASFLAGS) -o main.o main.s -ahls > main.lst
 memory.o: memory.c  memory.h lib.h printk.h
-	$(CC) $(CFLAGSO3) -c memory.c -o memory.o
-	$(CC) $(CFLAGSO3) -S -fverbose-asm memory.c -o memory.s
+	$(CC) $(CFLAGS) -c memory.c -o memory.o
+	$(CC) $(CFLAGS) -S -fverbose-asm memory.c -o memory.s
 	$(OBJDUMP) -d memory.o > memory.asm
 	$(AS) $(ASFLAGS) -o memory.o memory.s -ahls > memory.lst
 
 
 printk.o: printk.c printk.h lib.h
-	$(CC) $(CFLAGSO3) -c printk.c -o printk.o
-	$(CC) $(CFLAGSO3) -S -fverbose-asm printk.c -o printk.s
+	$(CC) $(CFLAGS) -c printk.c -o printk.o
+	$(CC) $(CFLAGS) -S -fverbose-asm printk.c -o printk.s
 	$(OBJDUMP) -d printk.o > printk.asm
 	$(AS) $(ASFLAGS) -o printk.o printk.s -ahls > printk.lst
 
 trap.o:trap.c lib.h gate.h printk.h trap.h
-	$(CC) $(CFLAGSO3) -c trap.c -o trap.o
-	$(CC) $(CFLAGSO3) -S -fverbose-asm trap.c -o trap.s
+	$(CC) $(CFLAGS) -c trap.c -o trap.o
+	$(CC) $(CFLAGS) -S -fverbose-asm trap.c -o trap.s
 	$(OBJDUMP) -d trap.o > trap.asm
 	$(AS) $(ASFLAGS) -o trap.o trap.s -ahls > trap.lst
 # Generate disassembly for the final system file
