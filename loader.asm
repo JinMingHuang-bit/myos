@@ -80,9 +80,7 @@ Label_Start:
 	pop	ax
 	;Disable interrupts to prevent exceptions during mode switch
 	cli
-
 	lgdt	[GdtPtr]	
-
 	mov	eax,	cr0
 	or	eax,	1
 	;Set the PE bit (the 0th bit) of the CR0 register to 1, and the CPU enters the protected mode.
@@ -558,19 +556,15 @@ GO_TO_TMP_Protect:
 	mov	ss,	ax
 
 	mov	esp,	7E00h
-	
 ;Enable PAE (Physical Address Extension). 
 ;PAE is a necessary condition for entering long mode, allowing access to more than 4GB of physical memory.
-
 	mov	eax,	cr4
 	bts	eax,	5
 	mov	cr4,	eax
-
 ;Load the physical address of the page table, 0x90000, into the CR3 register.
 ;The CPU begins the conversion from virtual addresses to physical addresses from this address.
 	mov	eax,	0x90000
 	mov	cr3,	eax
-
 ;=======	enable long-mode
 	;Enable long mode through the IA32_EFER MSR (Model Specific Register)
 	mov	ecx,	0C0000080h		; IA32_EFER number
@@ -580,9 +574,7 @@ GO_TO_TMP_Protect:
 	bts	eax,	8
 	; Reply to MSR
 	wrmsr
-
 ;=======	open PE and paging
-
 	mov	eax,	cr0 
 	bts	eax,	0 ; Set the 0th bit (the PE bit, enabling the protected mode)
 	bts	eax,	31 ; Set the 31st bit (the PG bit, page enable)

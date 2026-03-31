@@ -68,8 +68,8 @@ int color_printk(unsigned int FRcolor,unsigned int BKcolor,const char *fmt,...){
 			//
 			putchar(Pos.FB_addr,Pos.XResolution,Pos.XPosition*Pos.XCharSize,Pos.YPosition*Pos.YCharSize,FRcolor,BKcolor,' ');			
 		}else if((unsigned char)*(buf+count)=='\t'){
-			//~7 的二进制是 11111000（假设8位）
-			//清除低3位（因为8=2³），实现8字节边界对齐
+			//The binary representation of -7 (assuming an 8-bit system) is 11111000.
+			//Clear the lower 3 bits (since 8 = 2³) to achieve 8-byte boundary alignment.
 				line =((Pos.XPosition+8)& ~(8-1))-Pos.XPosition;
 			Label_tab:
 				line--;

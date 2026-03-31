@@ -55,7 +55,7 @@ ENTRY(divide_error)
     pushq $0
     pushq %rax
     leaq do_divide_error(%rip), %rax
-    //(%rsp) is a pointer,point to 栈顶指针 RSP 寄存器所指向的内存地址中的内容
+    //(%rsp) is a pointer,point to The content of the memory address pointed to by the stack top pointer RSP register
     xchgq %rax, (%rsp)
     jmp error_code
 /*

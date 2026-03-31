@@ -68,7 +68,6 @@ Input 2: "2" (0x8 << 16)
 */ 
 
 
-
 #define load_TR(n) \
 do {              \
   __asm__ __volatile__( "ltr %%ax" \
