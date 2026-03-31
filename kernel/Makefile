@@ -1,4 +1,4 @@
-# 工具定义
+# Tool Definition
 AS = as
 CC = gcc
 LD = ld
@@ -7,7 +7,7 @@ OBJDUMP = objdump
 MKDIR = mkdir
 MV = mv
 
-# 目录定义
+# Directory Definition
 DEBUG_DIR = debug
 # Compilation Options
 # -mcmodel=large uses the large code model, allowing code and data to be placed anywhere in the 64-bit address space without size limitations.
@@ -28,13 +28,13 @@ LDFLAGS = -b elf64-x86-64 -z muldefs
 # -I specifies the input file format as elf64-x86-64, -O specifies the output file format as binary
 #OBJCOPYFLAGS = -I elf64-x86-64 -S -R ".eh_frame" -R ".comment" -O binary
 OBJCOPYFLAGS = -I elf64-x86-64 -O binary
-# 目标文件
+# Target file
 OBJS = head.o main.o printk.o trap.o entry.o memory.o
 
-# 默认目标
+# Default target
 all: system kernel.bin move_debug system.debug 
 
-# 创建debug目录并移动调试文件
+# Create the "debug" directory and move the debugging files.
 move_debug: system.asm
 	@$(MKDIR) -p $(DEBUG_DIR)
 	@$(MV) -f *.s *.asm *.lst $(DEBUG_DIR)/ 2>/dev/null || true
@@ -45,7 +45,7 @@ system: $(OBJS) kernel.lds
 kernel.bin: system
 	$(OBJCOPY) $(OBJCOPYFLAGS) system kernel.bin
 
-# 生成汇编预处理文件、目标文件和反汇编文件
+# Generate assembly preprocessing files, object files and disassembly files
 head.o: head.S
 	$(CC) -E head.S > head.s
 	$(AS) $(ASFLAGS) -o head.o head.s -ahls > head.lst
@@ -84,7 +84,7 @@ system.asm: system
 	$(OBJDUMP) -d system > system.asm
 
 
-# 调试目标：显示debug目录内容
+# Debugging objective: Display the contents of the debug directory
 debug-info:
 	@echo "Debug files in $(DEBUG_DIR):"
 	@ls -la $(DEBUG_DIR)/ || echo "Debug directory is empty"

@@ -43,13 +43,38 @@ void Start_Kernel(void)
     //The physical base address of the frame cache
     Pos.FB_addr=(int *)0xffff800000a00000;
     Pos.FB_length=(Pos.XResolution*Pos.YResolution*4);
+    //test dispaly
+    int *addr=(int *)0xffff800000a00000;
+    for ( i = 0; i < 1440*20; i++)
+    {
+        *((char *)addr+0)=(char)0x00;
+        *((char *)addr+1)=(char)0x00;
+        *((char *)addr+2)=(char)0xff;
+        *((char *)addr+3)=(char)0x00;
+        addr++;
+    }
+    i=1;
+    color_printk(YELLOW,BLACK,"the number is:%d\n",i);
+    color_printk(YELLOW,BLACK,"the address is:%p\n", &i);
     load_TR(8);
     //set_tss64(0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00);
     set_tss64(0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,
 0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00);
     sys_vector_init();
     // struct  Global_Memory_Descriptor memory_management_struct={{0},0};
-
+    // i=1/0;
+        /*
+0xffff80000aa00000 is a high-half kernel address (in canonical form) 
+This address is located in the kernel space (the area above 0xffff80000000000) 
+At the initial stage of startup, the kernel only mapped the necessary memory areas: 
+Kernel code segment, data segment 
+Frame buffer (0xffff800000a00000) 
+Some possible system data structures 
+However, 0xffff80000aa00000 has not been mapped to any physical memory.
+Frame buffers usually only map a small section (for example, 1440×900×4 ≈ 5.2MB). 
+0xffff80000aa00000 exceeds the mapped range of the frame buffer
+    */
+    // i=*(int*)0xffff80000aa00000; 
     memory_management_struct.start_code = (unsigned long)& _text;
 	memory_management_struct.end_code   = (unsigned long)& _etext;
 	memory_management_struct.end_data   = (unsigned long)& _edata;
@@ -58,27 +83,6 @@ void Start_Kernel(void)
     color_printk(YELLOW,BLACK,"hello,User\n");
     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
-    // i=1/0;
-    /*
-    0xffff80000aa00000 是一个高半内核地址（canonical form）
-
-这个地址位于内核空间（0xffff800000000000 以上的区域）
-
-在启动初期，内核只映射了必要的内存区域：
-
-内核代码段、数据段
-
-帧缓冲区（0xffff800000a00000）
-
-可能的一些系统数据结构
-
-但是 0xffff80000aa00000 并没有被映射到任何物理内存
-帧缓冲区通常只映射一小段（比如 1440×900×4 ≈ 5.2MB）
-
-0xffff80000aa00000 超出了帧缓冲区的映射范围
-    */
-    
-    // i=*(int*)0xffff80000aa00000; 
     init_memory();
     struct Page *page=NULL;
     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
