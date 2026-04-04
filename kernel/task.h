@@ -1,5 +1,9 @@
+#ifndef _TASK_H_
+#define _TASK_H_
+
 #include "lib.h"
 #include "memory.h"
+#include "cpu.h"
 
 #define TASK_RUNNING		(1 << 0)
 #define TASK_INTERRUPTIBLE	(1 << 1)
@@ -8,6 +12,11 @@
 #define	TASK_STOPPED		(1 << 4)
 //32kb
 #define STACK_SIZE 32768
+#define KERNEL_CS 	(0x08)
+#define	KERNEL_DS 	(0x10)
+
+#define	USER_CS		(0x28)
+#define USER_DS		(0x30)
 
 struct task_struct
 {
@@ -71,3 +80,53 @@ union task_union
     struct task_struct task;
     unsigned long stack[STACK_SIZE / sizeof(unsigned long)];
 }__attribute__((aligned(8)));
+
+struct tss_struct
+{
+    unsigned long reserved0;
+    unsigned long rsp0;
+    unsigned long rsp1;
+    unsigned long rsp2;
+    unsigned long reserved1;
+    unsigned long ist1;
+    unsigned long ist2;
+    unsigned long ist3;
+    unsigned long ist4;
+    unsigned long ist5;
+    unsigned long ist6;
+    unsigned long ist7;
+    unsigned long reserved2;
+    unsigned short reserved3;
+    unsigned short iomapbaseaddr;
+}__attribute__((packed));//紧凑结构体,不进行内存对齐
+
+#define PF_KTHREAD	(1 << 0)
+struct mm_struct init_mm={0};
+#define INIT_TASK(tsk)  \
+{   \
+    .state = TASK_UNINTERRUPTIBLE,      \
+    .flags = PF_KTHREAD,             \
+    .mm = &init_mm,       \
+    .thread = &init_thread,  \
+    .addr_limit = 0xffff800000000000,   \
+    .pid = 0,   \
+    .priority = 0, \
+    .counter = 1,   \
+    .signal = 0,    \
+}
+union task_union init_task_union __attribute__((__section__(".data.init_task"))) = {INIT_TASK(init_task_union.task)};
+struct task_struct *init_task[NR_CPUS] ={&init_task_union.task,0};
+struct thread_struct init_thread={
+    //init_task_union.stack + 元素个数 得到数组末尾的下一个位置（即 base + STACK_SIZE），也就是栈区域的最高地址 + 1,
+    //这样第一次执行 push 时，RSP 先减 8,正好指向第一个元素的地址.
+    .rsp0=(unsigned long)(init_task_union.stack + STACK_SIZE / sizeof(unsigned long)),
+    .rsp=(unsigned long)(init_task_union.stack + STACK_SIZE / sizeof(unsigned long)), //内核栈顶地址
+    //设置为 KERNEL_DS（内核数据段选择子），因为 idle 进程始终运行在内核态
+    .fs=KERNEL_DS,
+    .gs=KERNEL_DS,
+    .cr2=0,
+    .trap_nr=0,
+    .error_code=0
+};
+
+#endif
