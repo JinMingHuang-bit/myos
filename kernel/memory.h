@@ -123,6 +123,8 @@ int ZONE_DMA_INDEX	= 0;
 int ZONE_NORMAL_INDEX	= 0;	//low 1GB RAM ,was mapped in pagetable
 int ZONE_UNMAPED_INDEX	= 0;
 
+typedef struct {unsigned long pml4t;} pml4t_t;
+
 #define flush_tlb() \
 do { \
     unsigned long tmpreq; \
