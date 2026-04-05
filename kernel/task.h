@@ -81,6 +81,7 @@ union task_union
     unsigned long stack[STACK_SIZE / sizeof(unsigned long)];
 }__attribute__((aligned(8)));
 
+//在 64 位模式（Long Mode）下，tss其作用主要集中在 中断栈表（Interrupt Stack Table, IST）和 特权级 0 的栈指针 等关键信息的存储上。
 struct tss_struct
 {
     unsigned long reserved0;
@@ -98,7 +99,7 @@ struct tss_struct
     unsigned long reserved2;
     unsigned short reserved3;
     unsigned short iomapbaseaddr;
-}__attribute__((packed));//紧凑结构体,不进行内存对齐
+}__attribute__((packed));//紧凑结构体,不进行内存对齐,确保布局正确性
 
 #define PF_KTHREAD	(1 << 0)
 struct mm_struct init_mm={0};
@@ -114,6 +115,23 @@ struct mm_struct init_mm={0};
     .counter = 1,   \
     .signal = 0,    \
 }
+#define INIT_TSS    \
+{   .reserved0 = 0,  \
+    .rsp0 = (unsigned long)(init_task_union.stack + STACK_SIZE / sizeof(unsigned long)),  \
+    .rsp1 = (unsigned long)(init_task_union.stack + STACK_SIZE / sizeof(unsigned long)),   \
+    .rsp2 = (unsigned long)(init_task_union.stack + STACK_SIZE / sizeof(unsigned long)),   \
+    .reserved1 = 0,  \
+    .ist1 = 0xffff800000007c00,   \
+    .ist2 = 0xffff800000007c00,   \
+    .ist3 = 0xffff800000007c00,   \
+    .ist4 = 0xffff800000007c00,   \
+    .ist5 = 0xffff800000007c00,   \
+    .ist6 = 0xffff800000007c00,   \
+    .ist7 = 0xffff800000007c00,   \
+    .reserved2 = 0,  \
+    .reserved3 = 0,  \
+    .iomapbaseaddr = 0  \
+}
 union task_union init_task_union __attribute__((__section__(".data.init_task"))) = {INIT_TASK(init_task_union.task)};
 struct task_struct *init_task[NR_CPUS] ={&init_task_union.task,0};
 struct thread_struct init_thread={
@@ -128,5 +146,8 @@ struct thread_struct init_thread={
     .trap_nr=0,
     .error_code=0
 };
+struct tss_struct init_tss[NR_CPUS]={[0 ... NR_CPUS-1]=INIT_TSS};
+
+
 
 #endif
