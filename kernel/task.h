@@ -74,6 +74,11 @@ struct thread_struct
 联合体中的所有成员共享同一块内存空间。这里 task 和 stack 占据相同的起始地址，大小取最大成员的大小（通常是栈数组的大小）。这样设计的目的：
 1.节省内存：每个进程既需要 task_struct（存储进程状态、调度信息等），又需要独立的内核栈（用于内核态函数调用）。将它们重叠放在一个内存块中，可以避免为两者单独分配内存。
 2.方便管理：内核只需分配一个 task_union 大小的连续物理页（通常 8KB 或 16KB），该内存块的底部（或顶部）放 task_struct，其余部分作为栈使用。
+一段连续的内存块   
+--------------------   
+|内核层栈空间(约31kb)| 
+---------------------
+| task_struct(大约1kb) |      
 */
 union task_union
 {
@@ -130,7 +135,7 @@ struct mm_struct init_mm={0};
     .ist7 = 0xffff800000007c00,   \
     .reserved2 = 0,  \
     .reserved3 = 0,  \
-    .iomapbaseaddr = 0  \
+    .iomapbaseaddr = 0  /*I/O 许可位图基地址。用于控制进程对 I/O 端口的访问权限（在 IOPL 不足时检查位图）*/\
 }
 union task_union init_task_union __attribute__((__section__(".data.init_task"))) = {INIT_TASK(init_task_union.task)};
 struct task_struct *init_task[NR_CPUS] ={&init_task_union.task,0};
@@ -148,6 +153,26 @@ struct thread_struct init_thread={
 };
 struct tss_struct init_tss[NR_CPUS]={[0 ... NR_CPUS-1]=INIT_TSS};
 
+//linux原版实现,算法解读:
+/*
+每个进程的内核栈大小是 STACK_SIZE（必须是 2 的幂，例如 8192 或 16384）。
+栈的起始地址（最低地址）就是联合体的起始地址，也就是 task_struct 的地址。
+当前 CPU 的 rsp 寄存器指向当前进程内核栈的某个位置（可能在栈的高地址处，因为栈向下增长）。
+由于栈大小是 2 的幂，栈的起始地址一定是 STACK_SIZE 的整数倍。因此，将 rsp 的低 log2(STACK_SIZE) 位清零，就能得到栈的起始地址，即 task_struct 的地址。
+输入部分："0" (~(STACK_SIZE - 1)) —— 使用与输出相同的寄存器（操作数编号 0）作为输入，初始值为 ~(STACK_SIZE - 1)。
+这是一个掩码，例如若 STACK_SIZE = 8192，则 STACK_SIZE - 1 = 8191（二进制 0x1FFF），
+取反后高位全 1，低 13 位全 0（...1111111111111111111111111111111111111111111111111110000000000000）。这个掩码用于清零 rsp 的低 13 位。
+*/
+static inline struct task_struct *get_current()
+{
+    struct task_struct *current;
+    __asm__ __volatile__("andq %%rsp,%0 \n\t":"=r"(current):"0"(~(STACK_SIZE - 1)));
+    return current;
+}
 
+#define current get_current()
+#define GET_CURRENT() \
+"movq %rsp, %rbx \n\t" \
+"andq $-32768, %rbx \n\t" 
 
 #endif
