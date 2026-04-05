@@ -200,7 +200,7 @@ Label_Go_On_Loading_File:
 	call	Func_ReadOneSector
 	pop	ax
 
-
+;Using the FS register: large mode addressing
 	push	cx
 	push	eax
 	push	fs

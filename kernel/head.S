@@ -278,6 +278,7 @@ __PDPTE:
 
 .org	0x3000
 //0x83 = 1(P) + 0(R/W) + 0(U/S) + 1(PWT) + 0(PCD) + 1(A) + 0(D) + 1(PS) + 0(G)
+//note:we only map 26MB memory now.
 __PDE:
 
 	.quad	0x000083	
