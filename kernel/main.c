@@ -96,7 +96,9 @@ Frame buffers usually only map a small section (for example, 1440×900×4 ≈ 5.
     color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
     color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
     // clear_screen(YELLOW,BLACK);
-    color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
+    color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?\n");
+    //present error handle function
+    i=*(int*)0xffff80000aa00000; 
     while (1)
     ;
      
