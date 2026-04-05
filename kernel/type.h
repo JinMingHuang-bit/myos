@@ -1,5 +1,5 @@
-#ifndef __TYPE_H__
-#define __TYPE_H__
+#ifndef __TYPE_H_
+#define __TYPE_H_
 
 
 #ifndef __int8_t_defined  
