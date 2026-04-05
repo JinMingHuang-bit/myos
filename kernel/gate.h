@@ -66,7 +66,12 @@ Input 2: "2" (0x8 << 16)
 2: Matches the 2nd output operand ("=&a"(__d0))
 0x8 << 16: Kernel code segment selector shifted 16 bits to the left
 */ 
-
+/*
+The `ltr` instruction is an x86 instruction that loads the Task Register (TR) with the value from the `ax` register as a segment selector. 
+The TR is used for task switching in protected mode and points to the Task State Segment (TSS) of the current task. 
+`n << 3` shifts the parameter `n` left by 3 bits (i.e., multiplies it by 8), because the index part (the number of the descriptor in the GDT/LDT) 
+needs to be multiplied by 8 (shifted left by 3 bits) to obtain the correct segment selector, as each segment descriptor occupies 8 bytes.
+*/
 
 #define load_TR(n) \
 do {              \
