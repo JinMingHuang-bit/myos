@@ -117,11 +117,11 @@ struct mm_struct init_mm={0};
 }
 #define INIT_TSS    \
 {   .reserved0 = 0,  \
-    .rsp0 = (unsigned long)(init_task_union.stack + STACK_SIZE / sizeof(unsigned long)),  \
+    .rsp0 = (unsigned long)(init_task_union.stack + STACK_SIZE / sizeof(unsigned long)), /*特权0123段栈指针*/ \
     .rsp1 = (unsigned long)(init_task_union.stack + STACK_SIZE / sizeof(unsigned long)),   \
     .rsp2 = (unsigned long)(init_task_union.stack + STACK_SIZE / sizeof(unsigned long)),   \
     .reserved1 = 0,  \
-    .ist1 = 0xffff800000007c00,   \
+    .ist1 = 0xffff800000007c00,  /*中断栈表（IST）的 7 个栈指针*/ \
     .ist2 = 0xffff800000007c00,   \
     .ist3 = 0xffff800000007c00,   \
     .ist4 = 0xffff800000007c00,   \
