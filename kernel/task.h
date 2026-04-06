@@ -18,6 +18,17 @@
 #define	USER_CS		(0x28)
 #define USER_DS		(0x30)
 
+extern char _text;
+extern char _etext;
+extern char _data;
+extern char _edata;
+extern char _rodata;
+extern char _erodata;
+extern char _bss;
+extern char _ebss;
+extern char _end;
+extern unsigned long _stack_start;
+
 struct task_struct
 {
     //双向链表,用于连接各个进程结构体
@@ -48,7 +59,7 @@ struct task_struct
 struct mm_struct
 {
     //page taable pointer,指向页表的物理地址
-    struct Page * pgd_page;
+    // struct Page * pgd_page;
     pml4t_t * pgd;
     unsigned long start_code ,end_code,start_data,end_data;
     //只读数据段空间
@@ -151,6 +162,7 @@ struct thread_struct init_thread={
     .trap_nr=0,
     .error_code=0
 };
+
 struct tss_struct init_tss[NR_CPUS]={[0 ... NR_CPUS-1]=INIT_TSS};
 
 //linux原版实现,算法解读:
@@ -174,5 +186,23 @@ static inline struct task_struct *get_current()
 #define GET_CURRENT() \
 "movq %rsp, %rbx \n\t" \
 "andq $-32768, %rbx \n\t" 
+
+#define switch_to(prev,next)    \
+do{             \
+    __asm__ __volatile__("pushq %%rbp \n\t"            \
+                          "pushq %%rax \n\t"             \
+                          "movq %%rsp, %0 \n\t"           \
+                          "movq %2, %%rsp \n\t"         \
+                          "leaq 1f(%%rip), %%rax \n\t"        \
+                          "movq %%rax, %1 \n\t"     \ 
+                          "jmp __switch_to \n\t"    \
+                          "1:   \n\t"   \
+                          "popq %%rax \n\t"     \
+                          "popq %%rbp \n\t"     \                       
+                    :"=m"(prev->thread->rsp),"=m"(next->thread->rip)     \
+                    :"m"(next->thread->rsp),"m"(next->thread->rip),"D"(prev),"S"(next)  \
+                    :"memory" \
+    );      \
+} while (0)
 
 #endif
