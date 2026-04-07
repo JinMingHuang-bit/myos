@@ -2,6 +2,7 @@
 #include"gate.h"
 #include"printk.h"
 #include"lib.h"
+#include"ptrace.h"
 
 static inline void __switch_to(struct task_struct *prev,struct task_struct *next){
     init_tss[0].rsp0=(unsigned long)(next->thread->rsp0);
@@ -52,4 +53,41 @@ unsigned long init(unsigned long arg){
 unsigned long do_exit(unsigned long arg){
     color_printk(WHITE,BLACK,"do_exit task is runing %#18lx\n",arg);
     while(1);
+}
+
+int kernel_thread(unsigned long (*fn)(unsigned long),unsigned long arg,unsigned long flags){ 
+    struct pt_regs regs;
+    Cmemset(&regs,0,sizeof(regs));
+    regs.rbx=(unsigned long)fn;
+    regs.rdx=(unsigned long)arg;
+
+    regs.ds=KERNEL_DS;
+    regs.cs=KERNEL_CS;
+    regs.es=KERNEL_DS;
+    regs.ss=KERNEL_DS;
+    regs.rflags=(1<<9);
+    //implement fork:
+    return 0;
+}
+
+unsigned long do_fork(struct pt_regs * regs,unsigned long clone_flags,unsigned long stack_start,unsigned long stack_size){
+    struct task_struct *tsk=NULL;
+    struct thread_struct *thd=NULL;
+    struct Page *p=NULL;
+
+    color_printk(WHITE,BLACK,"fork prepare to alloc_pages,bitmap:%#018lx\n",*memory_management_struct.bits_map);
+    p=alloc_page(ZONE_NORMAL,1,PG_PTable_Maped|PG_Active|PG_Kernel);
+    color_printk(WHITE,BLACK,"fork alloc_pages done,bitmap:%#018lx\n",*memory_management_struct.bits_map);
+    tsk=(struct task_struct* )Phy_To_Virt(p->PHY_address);
+    color_printk(WHITE,BLACK,"struct task_struct address:%#018lx\n",(unsigned long)tsk);
+    Cmemset(tsk,0,sizeof(*tsk));
+    *tsk=*current;
+
+    list_init(&tsk->list);
+    list_add_to_before(&init_task_union.task.list,&tsk->list);
+    tsk->pid++;
+    tsk->state=TASK_UNINTERRUPTIBLE;
+    thd=(struct thread_struct*)(tsk+1);
+    tsk->thread=thd;
+    Cmemcpy(regs,(void *)((unsigned long)tsk+STACK_SIZE-sizeof(struct pt_regs)),sizeof(struct pt_regs));
 }
