@@ -66,7 +66,7 @@ entry64:
 	movq	%rax,	%es
 	movq	%rax,	%gs
 	movq	%rax,	%ss
-	movq	$0xffff800000007E00,	%rsp		/* rsp address */
+	movq	_stack_start(%rip),	%rsp		/* rsp address */
 
 	// movq	go_to_kernel(%rip),	%rax		/* movq address */
 	// pushq	$0x08
@@ -256,6 +256,8 @@ int_msg:
 // automatic put NULL at the end of the string
 	.asciz	"Unkown Interrupt or fault at Rip,are you serious?\n"
 
+ENTRY(_stack_start)
+	.quad	init_task_union + 32768
 
 //=======	init page
 .align 8
