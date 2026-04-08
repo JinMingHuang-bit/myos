@@ -66,6 +66,7 @@ int kernel_thread(unsigned long (*fn)(unsigned long),unsigned long arg,unsigned 
     regs.es=KERNEL_DS;
     regs.ss=KERNEL_DS;
     regs.rflags=(1<<9);
+    regs.rip=(unsigned long)kernel_thread_func;
     //implement fork:
     return do_fork(&regs,flags,0,0);
 }
@@ -99,4 +100,34 @@ unsigned long do_fork(struct pt_regs * regs,unsigned long clone_flags,unsigned l
     }
     tsk->state=TASK_RUNNING;
     return 0;
+}
+//init and exit a process
+void kernel_thread_func(void){
+__asm__ __volatile__ (
+    "kernel_thread_func: \n\t"
+    "popq %r15  \n\t"
+    "popq %r14  \n\t"
+    "popq %r13  \n\t"
+    "popq %r12  \n\t"
+    "popq %r11  \n\t"
+    "popq %r10  \n\t"
+    "popq %r9  \n\t"
+    "popq %r8  \n\t"
+    "popq %rbx  \n\t"
+    "popq %rcx  \n\t"
+    "popq %rdx  \n\t"
+    "popq %rsi  \n\t"
+    "popq %rdi  \n\t"
+    "popq %rbp  \n\t"
+    "popq %rax  \n\t"
+    "movq %rax,%ds \n\t"
+    "popq %rax  \n\t"
+    "movq %rax,%es \n\t"
+    "popq %rax  \n\t"
+    "addq $0x38,%rsp \n\t"
+    "movq %rdx,,%rdi \n\t"
+    "callq *%rbx \n\t"
+    "movq %rax,%rdi \n\t"
+    "callq do_exit \n\t"
+);
 }

@@ -207,4 +207,7 @@ do{             \
     );      \
 } while (0)
 
+
+extern void kernel_thread_func(void);
+
 #endif
