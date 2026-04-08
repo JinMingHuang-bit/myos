@@ -1,7 +1,7 @@
 //The code section (_start) is located at the low memory address. 
 //The page table structure follows the code and starts at 0x1000. 
 //The data structures such as GDT, IDT and TSS are located at higher addresses (in the .data section)
-
+#include "linkage.h"
 .section .text
 .globl _start
 

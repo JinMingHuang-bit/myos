@@ -29,7 +29,7 @@ LDFLAGS = -b elf64-x86-64 -z muldefs
 #OBJCOPYFLAGS = -I elf64-x86-64 -S -R ".eh_frame" -R ".comment" -O binary
 OBJCOPYFLAGS = -I elf64-x86-64 -O binary
 # Target file
-OBJS = head.o main.o printk.o trap.o entry.o memory.o
+OBJS = head.o main.o printk.o trap.o entry.o memory.o task.o
 
 # Default target
 all: system kernel.bin move_debug system.debug 
@@ -46,7 +46,7 @@ kernel.bin: system
 	$(OBJCOPY) $(OBJCOPYFLAGS) system kernel.bin
 
 # Generate assembly preprocessing files, object files and disassembly files
-head.o: head.S
+head.o: head.S linkage.h
 	$(CC) -E head.S > head.s
 	$(AS) $(ASFLAGS) -o head.o head.s -ahls > head.lst
 	$(OBJDUMP) -d head.o > head.asm
@@ -79,6 +79,13 @@ trap.o:trap.c lib.h gate.h printk.h trap.h
 	$(CC) $(CFLAGS) -S -fverbose-asm trap.c -o trap.s
 	$(OBJDUMP) -d trap.o > trap.asm
 	$(AS) $(ASFLAGS) -o trap.o trap.s -ahls > trap.lst
+
+task.o : task.c task.h lib.h printk.h gate.h linkage.h
+	$(CC) $(CFLAGS) -c task.c -o task.o
+	$(CC) $(CFLAGS) -S -fverbose-asm task.c -o task.s
+	$(OBJDUMP) -d task.o > task.asm
+	$(AS) $(ASFLAGS) -o task.o task.s -ahls > task.lst
+
 # Generate disassembly for the final system file
 system.asm: system
 	$(OBJDUMP) -d system > system.asm

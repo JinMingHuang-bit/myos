@@ -8,3 +8,4 @@ kernel/*.bin
 kernel/*.o
 kernel/system
 kernel/system.debug
+*.lst
