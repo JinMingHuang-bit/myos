@@ -4,7 +4,7 @@
 #include"lib.h"
 #include"ptrace.h"
 #include"linkage.h"
-static inline void __switch_to(struct task_struct *prev,struct task_struct *next){
+void __switch_to(struct task_struct *prev,struct task_struct *next){
     init_tss[0].rsp0=(unsigned long)(next->thread->rsp0);
     set_tss64(init_tss[0].rsp0,init_tss[0].rsp1,init_tss[0].rsp2,init_tss[0].ist1,init_tss[0].ist2,init_tss[0].ist3,
     init_tss[0].ist4,init_tss[0].ist5,init_tss[0].ist6,init_tss[0].ist7);
@@ -26,7 +26,7 @@ void task_init(){
     init_mm.start_data=(unsigned long)&_data;
     init_mm.end_data=memory_management_struct.end_data;
     init_mm.start_rodata=(unsigned long)&_rodata;
-    init_mm.end_rodata=&_erodata;
+    init_mm.end_rodata=(unsigned long)&_erodata;
     init_mm.start_brk=0;
     init_mm.end_brk=memory_management_struct.end_brk;
     init_mm.start_stack=_stack_start;
@@ -104,7 +104,6 @@ unsigned long do_fork(struct pt_regs * regs,unsigned long clone_flags,unsigned l
 //init and exit a process
 void kernel_thread_func(void){
 __asm__ __volatile__ (
-    "kernel_thread_func: \n\t"
     "popq %r15  \n\t"
     "popq %r14  \n\t"
     "popq %r13  \n\t"
@@ -125,7 +124,7 @@ __asm__ __volatile__ (
     "movq %rax,%es \n\t"
     "popq %rax  \n\t"
     "addq $0x38,%rsp \n\t"
-    "movq %rdx,,%rdi \n\t"
+    "movq %rdx,%rdi \n\t"
     "callq *%rbx \n\t"
     "movq %rax,%rdi \n\t"
     "callq do_exit \n\t"

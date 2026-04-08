@@ -4,6 +4,7 @@
 #include "lib.h"
 #include "memory.h"
 #include "cpu.h"
+#include "ptrace.h"
 
 #define TASK_RUNNING		(1 << 0)
 #define TASK_INTERRUPTIBLE	(1 << 1)
@@ -82,6 +83,7 @@ struct thread_struct
     //异常的错误码
     unsigned long error_code;
 };
+struct thread_struct init_thread;
 //linux原版实现
 /*
 联合体中的所有成员共享同一块内存空间。这里 task 和 stack 占据相同的起始地址，大小取最大成员的大小（通常是栈数组的大小）。这样设计的目的：
@@ -119,6 +121,20 @@ struct tss_struct
     unsigned short iomapbaseaddr;
 }__attribute__((packed));//紧凑结构体,不进行内存对齐,确保布局正确性
 struct mm_struct init_mm={0};
+#define INIT_TASK(tsk)  \
+{   \
+    .state = TASK_UNINTERRUPTIBLE,      \
+    .flags = PF_KTHREAD,             \
+    .mm = &init_mm,       \
+    .thread = &init_thread,  \
+    .addr_limit = 0xffff800000000000,   \
+    .pid = 0,   \
+    .priority = 0, \
+    .counter = 1,   \
+    .signal = 0,    \
+}
+union task_union init_task_union __attribute__((__section__(".data.init_task"))) = {INIT_TASK(init_task_union.task)};
+
 struct thread_struct init_thread={
     //init_task_union.stack + 元素个数 得到数组末尾的下一个位置（即 base + STACK_SIZE），也就是栈区域的最高地址 + 1,
     //这样第一次执行 push 时，RSP 先减 8,正好指向第一个元素的地址.
@@ -132,18 +148,7 @@ struct thread_struct init_thread={
     .error_code=0
 };
 
-#define INIT_TASK(tsk)  \
-{   \
-    .state = TASK_UNINTERRUPTIBLE,      \
-    .flags = PF_KTHREAD,             \
-    .mm = &init_mm,       \
-    .thread = &init_thread,  \
-    .addr_limit = 0xffff800000000000,   \
-    .pid = 0,   \
-    .priority = 0, \
-    .counter = 1,   \
-    .signal = 0,    \
-}
+
 #define INIT_TSS    \
 {   .reserved0 = 0,  \
     .rsp0 = (unsigned long)(init_task_union.stack + STACK_SIZE / sizeof(unsigned long)), /*特权0123段栈指针*/ \
@@ -161,7 +166,6 @@ struct thread_struct init_thread={
     .reserved3 = 0,  \
     .iomapbaseaddr = 0  /*I/O 许可位图基地址。用于控制进程对 I/O 端口的访问权限（在 IOPL 不足时检查位图）*/\
 }
-union task_union init_task_union __attribute__((__section__(".data.init_task"))) = {INIT_TASK(init_task_union.task)};
 struct task_struct *init_task[NR_CPUS] ={&init_task_union.task,0};
 
 struct tss_struct init_tss[NR_CPUS]={[0 ... NR_CPUS-1]=INIT_TSS};
@@ -188,24 +192,26 @@ static inline struct task_struct *get_current()
 "movq %rsp, %rbx \n\t" \
 "andq $-32768, %rbx \n\t" 
 
+void __switch_to(struct task_struct *prev,struct task_struct *next);
 #define switch_to(prev,next)    \
 do{             \
     __asm__ __volatile__("pushq %%rbp \n\t"            \
                           "pushq %%rax \n\t"             \
                           "movq %%rsp, %0 \n\t"           \
                           "movq %2, %%rsp \n\t"         \
-                          "leaq 1f(%%rip), %%rax \n\t"        \
-                          "movq %%rax, %1 \n\t"     \ 
+                          "leaq 1f(%%rip), %%rax \n\t" \
+                          "movq %%rax, %1 \n\t"     \
                           "jmp __switch_to \n\t"    \
                           "1:   \n\t"   \
                           "popq %%rax \n\t"     \
-                          "popq %%rbp \n\t"     \                       
+                          "popq %%rbp \n\t"     \
                     :"=m"(prev->thread->rsp),"=m"(next->thread->rip)     \
                     :"m"(next->thread->rsp),"m"(next->thread->rip),"D"(prev),"S"(next)  \
                     :"memory" \
     );      \
 } while (0)
 
+unsigned long do_fork(struct pt_regs * regs,unsigned long clone_flags,unsigned long stack_start,unsigned long stack_size);
 
 extern void kernel_thread_func(void);
 
