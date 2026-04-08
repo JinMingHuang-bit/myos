@@ -3,7 +3,7 @@
 #include"printk.h"
 #include"lib.h"
 #include"ptrace.h"
-
+#include"linkage.h"
 static inline void __switch_to(struct task_struct *prev,struct task_struct *next){
     init_tss[0].rsp0=(unsigned long)(next->thread->rsp0);
     set_tss64(init_tss[0].rsp0,init_tss[0].rsp1,init_tss[0].rsp2,init_tss[0].ist1,init_tss[0].ist2,init_tss[0].ist3,
@@ -67,7 +67,7 @@ int kernel_thread(unsigned long (*fn)(unsigned long),unsigned long arg,unsigned 
     regs.ss=KERNEL_DS;
     regs.rflags=(1<<9);
     //implement fork:
-    return 0;
+    return do_fork(&regs,flags,0,0);
 }
 
 unsigned long do_fork(struct pt_regs * regs,unsigned long clone_flags,unsigned long stack_start,unsigned long stack_size){
@@ -90,4 +90,13 @@ unsigned long do_fork(struct pt_regs * regs,unsigned long clone_flags,unsigned l
     thd=(struct thread_struct*)(tsk+1);
     tsk->thread=thd;
     Cmemcpy(regs,(void *)((unsigned long)tsk+STACK_SIZE-sizeof(struct pt_regs)),sizeof(struct pt_regs));
+    thd->rsp0=(unsigned long)tsk+STACK_SIZE;
+    thd->rip=regs->rip;
+    thd->rsp=(unsigned long)tsk+STACK_SIZE-sizeof(struct pt_regs);
+    if(!(tsk->flags & PF_KTHREAD)){
+        regs->rip=(unsigned long)ret_from_intr;
+        thd->rip=regs->rip;
+    }
+    tsk->state=TASK_RUNNING;
+    return 0;
 }

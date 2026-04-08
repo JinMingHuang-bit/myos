@@ -27,7 +27,9 @@ extern char _erodata;
 extern char _bss;
 extern char _ebss;
 extern char _end;
+
 extern unsigned long _stack_start;
+extern void ret_from_intr();
 
 struct task_struct
 {
