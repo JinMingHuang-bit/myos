@@ -37,11 +37,9 @@ void task_init(){
     
     init_tss[0].rsp0=(unsigned long)(init_thread.rsp0);
     list_init(&init_task_union.task.list);
-    //implement kernel_thread to create process
-    
-    //--------------------------
     init_task_union.task.state=TASK_RUNNING;
     p=container_of(list_next(&current->list),struct task_struct,list);
+    color_printk(WHITE,BLACK,"in task init");
     switch_to(current,p);
 }
 
@@ -60,7 +58,7 @@ int kernel_thread(unsigned long (*fn)(unsigned long),unsigned long arg,unsigned 
     Cmemset(&regs,0,sizeof(regs));
     regs.rbx=(unsigned long)fn;
     regs.rdx=(unsigned long)arg;
-
+    color_printk(WHITE,BLACK, "in kernel_thread");
     regs.ds=KERNEL_DS;
     regs.cs=KERNEL_CS;
     regs.es=KERNEL_DS;

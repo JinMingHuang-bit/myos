@@ -11,7 +11,7 @@ The kernel is typically mapped to the Higher Half.
 #include "gate.h"
 #include "trap.h"
 #include "memory.h"
-
+#include "task.h"
 
 extern char _text;
 extern char _etext;
@@ -83,19 +83,22 @@ Frame buffers usually only map a small section (for example, 1440×900×4 ≈ 5.
     color_printk(YELLOW,BLACK,"hello,User\n");
     color_printk(YELLOW,BLACK,"Standing firm in the universe and cosmos, I have established the paradise of Eden.\n");
     color_printk(YELLOW,BLACK,"I am the royal daughter who has broken the law!\n");
+    color_printk(RED,BLACK,"init memory\n");
     init_memory();
-    struct Page *page=NULL;
-    color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
-    color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
-    page=alloc_page(ZONE_NORMAL,64,PG_PTable_Maped |PG_Active|PG_Kernel);
-    for(i=0;i<16;i++){
-        color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-        i++;
-        color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
-    }
-    color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
-    color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
+    color_printk(YELLOW,BLACK,"init task\n");
+    // struct Page *page=NULL;
+    // color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
+    // color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
+    // page=alloc_page(ZONE_NORMAL,64,PG_PTable_Maped |PG_Active|PG_Kernel);
+    // for(i=0;i<16;i++){
+    //     color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+    //     i++;
+    //     color_printk(INDIGO,BLACK,"page%d\tattribute:%#018lx\taddress:%#018lx\t",i,(page+i)->attribute,(page+i)->PHY_address);
+    // }
+    // color_printk(RED,BLACK,"memory_management_struct.bitsmap:%#018lx\n", *memory_management_struct.bits_map);
+    // color_printk(RED,BLACK,"memory_management_struct.bitsmap+1:%#018lx\n", *(memory_management_struct.bits_map+1));
     // clear_screen(YELLOW,BLACK);
+    task_init();
     color_printk(YELLOW,BLACK,"Hmm,there is still a problem here?");
     while (1)
     ;

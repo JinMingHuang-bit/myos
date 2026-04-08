@@ -214,5 +214,6 @@ do{             \
 unsigned long do_fork(struct pt_regs * regs,unsigned long clone_flags,unsigned long stack_start,unsigned long stack_size);
 
 extern void kernel_thread_func(void);
+void task_init();
 
 #endif
