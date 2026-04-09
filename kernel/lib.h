@@ -74,11 +74,11 @@ and consumes one instruction cycle of time.*/
 //确保所有在 mfence 指令之前发出的内存加载（load/读）和存储（store/写）操作，
 //都在 mfence 指令之后发出的任何内存操作之前完成
 #define io_mfence() 	__asm__ __volatile__ ("mfence	\n\t":::"memory")
-#define container_of(ptr,type,member)							\
-({											\
-	typeof(((type *)0)->member) * p = (ptr);					\
-	(type *)((unsigned long)p - (unsigned long)&(((type *)0)->member));		\
-})
+// #define container_of(ptr,type,member)							\
+// ({											\
+// 	typeof(((type *)0)->member) * p = (ptr);					\
+// 	(type *)((unsigned long)p - (unsigned long)&(((type *)0)->member));		\
+// })
 
 struct List
 {

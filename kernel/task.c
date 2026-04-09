@@ -16,8 +16,15 @@ void __switch_to(struct task_struct *prev,struct task_struct *next){
     
     color_printk(WHITE,BLACK,"prev->thread->rsp0:%#018lx\n",prev->thread->rsp0);
     color_printk(WHITE,BLACK,"next->thread->rsp0:%#018lx\n",next->thread->rsp0);
+    color_printk(WHITE,BLACK,"finish switch_to\n");
 }
 
+#define container_of(ptr,type,member)							\
+({	color_printk(WHITE,BLACK,"\n");										\
+	typeof(((type *)0)->member) * p = (ptr);					\
+    color_printk(WHITE,BLACK,"in container_of 2\n");\
+	(type *)((unsigned long)p - (unsigned long)&(((type *)0)->member));\
+})
 void task_init(){ 
     struct task_struct *p=NULL;
     init_mm.pgd=(pml4t_t *)Global_CR3;
@@ -37,10 +44,13 @@ void task_init(){
     set_tss64(init_thread.rsp0, init_tss[0].rsp1, init_tss[0].rsp2, init_tss[0].ist1, init_tss[0].ist2, init_tss[0].ist3, init_tss[0].ist4, init_tss[0].ist5, init_tss[0].ist6, init_tss[0].ist7);
     init_tss[0].rsp0=(unsigned long)(init_thread.rsp0);
     list_init(&init_task_union.task.list);
+    kernel_thread(init,10,CLONE_FS | CLONE_FILES | CLONE_SIGNAL);
     init_task_union.task.state=TASK_RUNNING;
+    color_printk(WHITE,BLACK,"in task init 3\n");
     p=container_of(list_next(&current->list),struct task_struct,list);
-    color_printk(WHITE,BLACK,"in task init");
+    color_printk(WHITE,BLACK,"finish container of,prepare to switch\n");
     switch_to(current,p);
+    color_printk(WHITE,BLACK,"finish switch_to\n");
 }
 
 unsigned long init(unsigned long arg){
@@ -58,7 +68,7 @@ int kernel_thread(unsigned long (*fn)(unsigned long),unsigned long arg,unsigned 
     Cmemset(&regs,0,sizeof(regs));
     regs.rbx=(unsigned long)fn;
     regs.rdx=(unsigned long)arg;
-    color_printk(WHITE,BLACK, "in kernel_thread");
+    color_printk(WHITE,BLACK, "in kernel_thread\n");
     regs.ds=KERNEL_DS;
     regs.cs=KERNEL_CS;
     regs.es=KERNEL_DS;
@@ -81,7 +91,6 @@ unsigned long do_fork(struct pt_regs * regs,unsigned long clone_flags,unsigned l
     color_printk(WHITE,BLACK,"struct task_struct address:%#018lx\n",(unsigned long)tsk);
     Cmemset(tsk,0,sizeof(*tsk));
     *tsk=*current;
-
     list_init(&tsk->list);
     list_add_to_before(&init_task_union.task.list,&tsk->list);
     tsk->pid++;
@@ -97,6 +106,7 @@ unsigned long do_fork(struct pt_regs * regs,unsigned long clone_flags,unsigned l
         thd->rip=regs->rip;
     }
     tsk->state=TASK_RUNNING;
+    color_printk(WHITE,BLACK,"fork done\n");
     return 0;
 }
 //init and exit a process

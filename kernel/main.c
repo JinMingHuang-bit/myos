@@ -57,9 +57,9 @@ void Start_Kernel(void)
     color_printk(YELLOW,BLACK,"the number is:%d\n",i);
     color_printk(YELLOW,BLACK,"the address is:%p\n", &i);
     load_TR(8);
-    //set_tss64(0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00);
-    set_tss64(_stack_start,_stack_start,_stack_start,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,
-0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00);
+//     set_tss64(_stack_start,_stack_start,_stack_start,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,
+// 0xffff800000007c00,0xffff800000007c00,0xffff800000007c00,0xffff800000007c00);
+    set_tss64(_stack_start, _stack_start, _stack_start, 0xffff800000007c00, 0xffff800000007c00, 0xffff800000007c00, 0xffff800000007c00, 0xffff800000007c00, 0xffff800000007c00, 0xffff800000007c00);
     sys_vector_init();
     // struct  Global_Memory_Descriptor memory_management_struct={{0},0};
     // i=1/0;

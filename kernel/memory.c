@@ -254,10 +254,10 @@ PG_Kernel: Indicates that the page belongs to the kernel.
 	color_printk(INDIGO,BLACK,"Global_CR3\t:%#018lx\n",Global_CR3);
 	color_printk(INDIGO,BLACK,"*Global_CR3\t:%#018lx\n",*Phy_To_Virt(Global_CR3));
 	color_printk(INDIGO,BLACK,"**Global_CR3\t:%#018lx\n",*Phy_To_Virt(*Phy_To_Virt(Global_CR3)&(~0xff))&(~0xff));
-	for(i=0;i<10;i++){
+	// for(i=0;i<10;i++){
 		//Clear the first 10 entries of the PML4 table pointed to by CR3, in order to re-establish or adjust the page table mapping of the kernel in the future.
-		*(Phy_To_Virt(Global_CR3)+i)=0UL;
-	}
+	// 	*(Phy_To_Virt(Global_CR3)+i)=0UL;
+	// }
 	color_printk(INDIGO,BLACK,"I am OK!\n");
 	flush_tlb();
 }

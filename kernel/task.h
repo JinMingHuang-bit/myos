@@ -5,6 +5,7 @@
 #include "memory.h"
 #include "cpu.h"
 #include "ptrace.h"
+#include "printk.h"
 
 #define TASK_RUNNING		(1 << 0)
 #define TASK_INTERRUPTIBLE	(1 << 1)
@@ -15,6 +16,11 @@
 #define STACK_SIZE 32768
 #define KERNEL_CS 	(0x08)
 #define	KERNEL_DS 	(0x10)
+
+
+#define CLONE_FS	(1 << 0)
+#define CLONE_FILES	(1 << 1)
+#define CLONE_SIGNAL	(1 << 2)
 
 #define	USER_CS		(0x28)
 #define USER_DS		(0x30)
@@ -180,12 +186,22 @@ struct tss_struct init_tss[NR_CPUS]={[0 ... NR_CPUS-1]=INIT_TSS};
 这是一个掩码，例如若 STACK_SIZE = 8192，则 STACK_SIZE - 1 = 8191（二进制 0x1FFF），
 取反后高位全 1，低 13 位全 0（...1111111111111111111111111111111111111111111111111110000000000000）。这个掩码用于清零 rsp 的低 13 位。
 */
-static inline struct task_struct *get_current()
-{
-    struct task_struct *current;
-    __asm__ __volatile__("andq %%rsp,%0 \n\t":"=r"(current):"0"(~(STACK_SIZE - 1)));
+struct task_struct *get_current()
+{  
+    struct task_struct *current ;   
+    __asm__ __volatile__("andq %%rsp,%0 \n\t":"=r"(current):"0"(~((unsigned long)(STACK_SIZE - 1))));
+    // __asm__ __volatile__ ("andq %%rsp,%0	\n\t":"=r"(current):"0"(~32767UL));
     return current;
 }
+
+// struct task_struct * get_current()
+// {   color_printk(WHITE,BLACK,"in get_current 1\n");
+// 	struct task_struct * current = NULL;
+//     color_printk(WHITE,BLACK,"in get_current 2\n");
+// 	__asm__ __volatile__ ("andq %%rsp,%0	\n\t":"=r"(current):"0"(~32767UL));
+//     color_printk(WHITE,BLACK,"in get_current 3\n");
+// 	return current;
+// }
 
 #define current get_current()
 #define GET_CURRENT() \
@@ -210,9 +226,10 @@ do{             \
                     :"memory" \
     );      \
 } while (0)
-
+unsigned long init(unsigned long arg);
+unsigned long do_exit(unsigned long arg);
 unsigned long do_fork(struct pt_regs * regs,unsigned long clone_flags,unsigned long stack_start,unsigned long stack_size);
-
+int kernel_thread(unsigned long (*fn)(unsigned long),unsigned long arg,unsigned long flags);
 extern void kernel_thread_func(void);
 void task_init();
 

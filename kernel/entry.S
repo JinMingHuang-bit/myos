@@ -50,7 +50,10 @@ RESTORE_ALL:
     popq %rax
     addq $0x10, %rsp
     iretq
-
+#define GET_CURRENT(reg)	\
+	movq	$-32768,reg;	\
+	andq	%rsp,	reg
+    
 ENTRY(divide_error)
     pushq $0
     pushq %rax
