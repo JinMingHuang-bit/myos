@@ -5,28 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "GDB start",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/kernel/system.debug",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${fileDirname}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerServerAddress": "localhost:1234",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty printing",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ]
+            "name": "GDB Remote (Pause on Connect)",
+            "type": "gdb",
+            "request": "attach",
+            "executable": "${workspaceFolder}/kernel/system.debug",
+            "target": "localhost:1234",
+            "remote": true,
+            "stopAtConnect": true,   // 关键：连接后立即停止目标
+            "cwd": "${workspaceRoot}",
+            "gdbpath": "gdb"
         }
-        
-        
-
     ]
+    }
+        
+        
 
-}
+    
+
