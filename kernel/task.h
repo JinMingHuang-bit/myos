@@ -211,6 +211,7 @@ struct task_struct *get_current()
 void __switch_to(struct task_struct *prev,struct task_struct *next);
 #define switch_to(prev,next)    \
 do{             \
+    color_printk(WHITE,BLACK,"in switch_to 1\n");\
     __asm__ __volatile__("pushq %%rbp \n\t"            \
                           "pushq %%rax \n\t"             \
                           "movq %%rsp, %0 \n\t"           \
@@ -225,7 +226,9 @@ do{             \
                     :"m"(next->thread->rsp),"m"(next->thread->rip),"D"(prev),"S"(next)  \
                     :"memory" \
     );      \
+    color_printk(WHITE,BLACK,"in switch_to 2\n");\
 } while (0)
+
 unsigned long init(unsigned long arg);
 unsigned long do_exit(unsigned long arg);
 unsigned long do_fork(struct pt_regs * regs,unsigned long clone_flags,unsigned long stack_start,unsigned long stack_size);

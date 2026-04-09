@@ -4,7 +4,7 @@
 #include"lib.h"
 #include"ptrace.h"
 #include"linkage.h"
-void __switch_to(struct task_struct *prev,struct task_struct *next){
+inline __attribute__((always_inline)) void __switch_to(struct task_struct *prev,struct task_struct *next){
     init_tss[0].rsp0=(unsigned long)(next->thread->rsp0);
     set_tss64(init_tss[0].rsp0,init_tss[0].rsp1,init_tss[0].rsp2,init_tss[0].ist1,init_tss[0].ist2,init_tss[0].ist3,
     init_tss[0].ist4,init_tss[0].ist5,init_tss[0].ist6,init_tss[0].ist7);
@@ -50,7 +50,7 @@ void task_init(){
     p=container_of(list_next(&current->list),struct task_struct,list);
     color_printk(WHITE,BLACK,"finish container of,prepare to switch\n");
     switch_to(current,p);
-    color_printk(WHITE,BLACK,"finish switch_to\n");
+    color_printk(WHITE,BLACK,"end of init\n");
 }
 
 unsigned long init(unsigned long arg){
