@@ -218,15 +218,15 @@ do{             \
                           "movq %2, %%rsp \n\t"         \
                           "leaq 1f(%%rip), %%rax \n\t" \
                           "movq %%rax, %1 \n\t"     \
-                          "jmp __switch_to \n\t"    \
+                          "call __switch_to \n\t"    \
                           "1:   \n\t"   \
                           "popq %%rax \n\t"     \
                           "popq %%rbp \n\t"     \
-                    :"=m"(prev->thread->rsp),"=m"(next->thread->rip)     \
+                    :"=m"(prev->thread->rsp),"=m"(prev->thread->rip)     \
                     :"m"(next->thread->rsp),"m"(next->thread->rip),"D"(prev),"S"(next)  \
-                    :"memory" \
+                    :"memory", "rax", "rcx", "rdx","r8", "r9", "r10", "r11"\
     );      \
-    color_printk(WHITE,BLACK,"in switch_to 2\n");\
+    color_printk(WHITE,BLACK,"in switch_to 21\n");\
 } while (0)
 
 unsigned long init(unsigned long arg);

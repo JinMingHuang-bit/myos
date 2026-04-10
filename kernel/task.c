@@ -4,7 +4,7 @@
 #include"lib.h"
 #include"ptrace.h"
 #include"linkage.h"
-inline __attribute__((always_inline)) void __switch_to(struct task_struct *prev,struct task_struct *next){
+void __switch_to(struct task_struct *prev,struct task_struct *next){
     init_tss[0].rsp0=(unsigned long)(next->thread->rsp0);
     set_tss64(init_tss[0].rsp0,init_tss[0].rsp1,init_tss[0].rsp2,init_tss[0].ist1,init_tss[0].ist2,init_tss[0].ist3,
     init_tss[0].ist4,init_tss[0].ist5,init_tss[0].ist6,init_tss[0].ist7);
@@ -17,6 +17,7 @@ inline __attribute__((always_inline)) void __switch_to(struct task_struct *prev,
     color_printk(WHITE,BLACK,"prev->thread->rsp0:%#018lx\n",prev->thread->rsp0);
     color_printk(WHITE,BLACK,"next->thread->rsp0:%#018lx\n",next->thread->rsp0);
     color_printk(WHITE,BLACK,"finish switch_to\n");
+    // __asm__ __volatile__("jmp *%0" : : "r"(prev->thread->rip));
 }
 
 #define container_of(ptr,type,member)							\
