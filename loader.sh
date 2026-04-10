@@ -12,7 +12,7 @@ fi
 PARENT_DIR="$(dirname "$(pwd)")"
 MOUNT_POINT="/media"l
 SOURCE_FILE="/home/student/myos/loader.bin"  # 使用完整绝对路径
-IMAGE_FILE="boot.img"
+IMAGE_FILE="myos/loader.img"
 
 # 检查boot.img是否存在
 if [ ! -f "$PARENT_DIR/$IMAGE_FILE" ]; then

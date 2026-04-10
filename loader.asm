@@ -160,7 +160,7 @@ Label_Goto_Next_Sector_In_Root_Dir:
 Label_No_LoaderBin:
 
 	mov	ax,	1301h
-	mov	bx,	008Ch
+	mov	bx,	000Ch
 	mov	dx,	0300h		;row 3
 	mov	cx,	47
 	push	ax
