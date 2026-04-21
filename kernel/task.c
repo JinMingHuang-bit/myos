@@ -16,14 +16,19 @@ void __switch_to(struct task_struct *prev,struct task_struct *next){
     
     color_printk(WHITE,BLACK,"prev->thread->rsp0:%#018lx\n",prev->thread->rsp0);
     color_printk(WHITE,BLACK,"next->thread->rsp0:%#018lx\n",next->thread->rsp0);
+    color_printk(WHITE,BLACK,"prev->thread->rip:%#018lx\n",prev->thread->rip);
+    color_printk(WHITE,BLACK,"next->thread->rip:%#018lx\n",next->thread->rip);
     color_printk(WHITE,BLACK,"finish switch_to\n");
-    // __asm__ __volatile__("jmp *%0" : : "r"(prev->thread->rip));
+    //测试伪地址
+    next->thread->rip=(unsigned long)kernel_thread_func;
+    color_printk(WHITE,BLACK,"now next->thread->rip:%#018lx\n",next->thread->rip);
+    // __asm__ __volatile__("jmp *%0" : : "r"(next->thread->rip));
+    __asm__ __volatile__("callq *%0" : : "r"(next->thread->rip));
 }
 
 #define container_of(ptr,type,member)							\
-({	color_printk(WHITE,BLACK,"\n");										\
+({										\
 	typeof(((type *)0)->member) * p = (ptr);					\
-    color_printk(WHITE,BLACK,"in container_of 2\n");\
 	(type *)((unsigned long)p - (unsigned long)&(((type *)0)->member));\
 })
 void task_init(){ 
@@ -49,7 +54,7 @@ void task_init(){
     init_task_union.task.state=TASK_RUNNING;
     color_printk(WHITE,BLACK,"in task init 3\n");
     p=container_of(list_next(&current->list),struct task_struct,list);
-    color_printk(WHITE,BLACK,"finish container of,prepare to switch\n");
+    color_printk(WHITE,BLACK,"p is %p",p);
     switch_to(current,p);
     color_printk(WHITE,BLACK,"end of init\n");
 }
@@ -68,6 +73,7 @@ int kernel_thread(unsigned long (*fn)(unsigned long),unsigned long arg,unsigned 
     struct pt_regs regs;
     Cmemset(&regs,0,sizeof(regs));
     regs.rbx=(unsigned long)fn;
+    color_printk(WHITE,BLACK,"regs.rip 0:%#018lx\n",regs.rbx);
     regs.rdx=(unsigned long)arg;
     color_printk(WHITE,BLACK, "in kernel_thread\n");
     regs.ds=KERNEL_DS;
@@ -76,6 +82,7 @@ int kernel_thread(unsigned long (*fn)(unsigned long),unsigned long arg,unsigned 
     regs.ss=KERNEL_DS;
     regs.rflags=(1<<9);
     regs.rip=(unsigned long)kernel_thread_func;
+    color_printk(WHITE,BLACK,"regs.rip 1:%#018lx\n",regs.rip);
     //implement fork:
     return do_fork(&regs,flags,0,0);
 }
@@ -95,6 +102,7 @@ unsigned long do_fork(struct pt_regs * regs,unsigned long clone_flags,unsigned l
     list_init(&tsk->list);
     list_add_to_before(&init_task_union.task.list,&tsk->list);
     tsk->pid++;
+    color_printk(WHITE,BLACK,"regs.rip 2:%#018lx\n",regs->rip);
     tsk->state=TASK_UNINTERRUPTIBLE;
     thd=(struct thread_struct*)(tsk+1);
     tsk->thread=thd;
@@ -103,15 +111,24 @@ unsigned long do_fork(struct pt_regs * regs,unsigned long clone_flags,unsigned l
     thd->rip=regs->rip;
     thd->rsp=(unsigned long)tsk+STACK_SIZE-sizeof(struct pt_regs);
     if(!(tsk->flags & PF_KTHREAD)){
-        regs->rip=(unsigned long)ret_from_intr;
-        thd->rip=regs->rip;
+        color_printk(WHITE,BLACK,"prepare to return\n");
+        thd->rip = regs->rip = (unsigned long)ret_from_intr;
+        // regs->rip=(unsigned long)ret_from_intr;
+        // thd->rip=regs->rip;
     }
     tsk->state=TASK_RUNNING;
     color_printk(WHITE,BLACK,"fork done\n");
     return 0;
 }
 //init and exit a process
-void kernel_thread_func(void){
+void test(){
+    int i=0;
+    return;
+}
+extern void kernel_thread_func(void){
+    color_printk(WHITE,BLACK,"kernel_thread_func,init address is %#018lx \n",(unsigned long)init);
+    // test();
+    //debug set
 __asm__ __volatile__ (
     "popq %r15  \n\t"
     "popq %r14  \n\t"
@@ -134,8 +151,40 @@ __asm__ __volatile__ (
     "popq %rax  \n\t"
     "addq $0x38,%rsp \n\t"
     "movq %rdx,%rdi \n\t"
-    "callq *%rbx \n\t"
+    "leaq init(%rip), %rbx \n\t"       /*init函数桩测试*/
+    "callq *%rbx \n\t"          /*这里的 rbx怎么是0?*/
     "movq %rax,%rdi \n\t"
     "callq do_exit \n\t"
 );
+color_printk(WHITE,BLACK,"kernel_thread_func end\n");
 }
+
+// extern void kernel_thread_func(void);
+// __asm__ (
+// "kernel_thread_func:	\n\t"
+// "	popq	%r15	\n\t"
+// "	popq	%r14	\n\t"	
+// "	popq	%r13	\n\t"	
+// "	popq	%r12	\n\t"	
+// "	popq	%r11	\n\t"	
+// "	popq	%r10	\n\t"	
+// "	popq	%r9	\n\t"	
+// "	popq	%r8	\n\t"	
+// "	popq	%rbx	\n\t"	
+// "	popq	%rcx	\n\t"	
+// "	popq	%rdx	\n\t"	
+// "	popq	%rsi	\n\t"	
+// "	popq	%rdi	\n\t"	
+// "	popq	%rbp	\n\t"	
+// "	popq	%rax	\n\t"	
+// "	movq	%rax,	%ds	\n\t"
+// "	popq	%rax		\n\t"
+// "	movq	%rax,	%es	\n\t"
+// "	popq	%rax		\n\t"
+// "	addq	$0x38,	%rsp	\n\t"
+// /////////////////////////////////
+// "	movq	%rdx,	%rdi	\n\t"
+// "	callq	*%rbx		\n\t"
+// "	movq	%rax,	%rdi	\n\t"
+// "	callq	do_exit		\n\t"
+// );

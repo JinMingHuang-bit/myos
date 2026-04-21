@@ -209,9 +209,9 @@ struct task_struct *get_current()
 "andq $-32768, %rbx \n\t" 
 
 void __switch_to(struct task_struct *prev,struct task_struct *next);
+
 #define switch_to(prev,next)    \
 do{             \
-    color_printk(WHITE,BLACK,"in switch_to 1\n");\
     __asm__ __volatile__("pushq %%rbp \n\t"            \
                           "pushq %%rax \n\t"             \
                           "movq %%rsp, %0 \n\t"           \
@@ -224,10 +224,40 @@ do{             \
                           "popq %%rbp \n\t"     \
                     :"=m"(prev->thread->rsp),"=m"(prev->thread->rip)     \
                     :"m"(next->thread->rsp),"m"(next->thread->rip),"D"(prev),"S"(next)  \
-                    :"memory", "rax", "rcx", "rdx","r8", "r9", "r10", "r11"\
+                    :"memory", "rax", "rcx", "rdx","r8", "r9", "r10", "r11","rbx"\
     );      \
-    color_printk(WHITE,BLACK,"in switch_to 21\n");\
+    color_printk(WHITE,BLACK,"finish switch_to \n");\
 } while (0)
+
+// #define switch_to(prev,next)                    \
+// do {                                            \
+//     color_printk(WHITE,BLACK,"in switch_to 1\n");\
+//     __asm__ __volatile__(                       \
+//         "pushq %%rbp\n\t"                       \
+//         "pushq %%rax\n\t"                       \
+//         "movq %%rsp, %0\n\t"                    \
+//         "movq %2, %%rsp\n\t"                    \
+//         "leaq 1f(%%rip), %%rax\n\t"             \
+//         "movq %%rax, %1\n\t"                    \
+//         "movq %4, %%rdi\n\t"    /* prev */      \
+//         "movq %5, %%rsi\n\t"    /* next */      \
+//         "call __switch_to\n\t"                  \
+//         "1:\n\t"                                \
+//         "popq %%rax\n\t"                        \
+//         "popq %%rbp\n\t"                        \
+//         : "=m"(prev->thread->rsp),              \
+//           "=m"(prev->thread->rip)               \
+//         : "m"(next->thread->rsp),               \
+//           "m"(next->thread->rip),               \
+//           "r"(prev),                            \
+//           "r"(next)                             \
+//         : "memory",                             \
+//           "rax", "rcx", "rdx",                  \
+//           "rsi", "rdi",                         \
+//           "r8", "r9", "r10", "r11"              \
+//     );                                          \
+//     color_printk(WHITE,BLACK,"in switch_to 21\n");\
+// } while(0)
 
 unsigned long init(unsigned long arg);
 unsigned long do_exit(unsigned long arg);
