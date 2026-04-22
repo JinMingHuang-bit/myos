@@ -121,7 +121,7 @@
     96                                  	;turn on interrupt
     97 0000004A FB                      	sti
     98                                  
-    99                                  ;=======	reset floppy
+    99                                  ;=======	reset floppy 0x100CB
    100                                  
    101 0000004B 30E4                    	xor	ah,	ah
    102 0000004D 30D2                    	xor	dl,	dl

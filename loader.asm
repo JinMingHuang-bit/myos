@@ -96,7 +96,7 @@ Label_Start:
 	;turn on interrupt
 	sti
 
-;=======	reset floppy
+;=======	reset floppy 0x100CB
 
 	xor	ah,	ah
 	xor	dl,	dl
@@ -475,7 +475,7 @@ Label_SVGA_Mode_Info_Finish:
 	pop	ax
 	mov	bp,	GetSVGAModeInfoOKMessage
 	int	10h
-;========================mode : 0x180 or 0x143
+;========================mode : 0x180 or 0x143  address:0x1034c
 ;=======	set the SVGA mode(VESA VBE)
 
 	mov	ax,	4F02h

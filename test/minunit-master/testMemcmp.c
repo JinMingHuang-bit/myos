@@ -17,8 +17,8 @@ int my_memcmp(void* FirstPart, void* SecondPart, long Count) {
         "xorl %%eax, %%eax \n\t"  // 相等
         "jmp 2f \n\t"
         "1: \n\t"
-        "movzbl -1(%%esi), %%edx \n\t"  // 第二个字符串的字符
-        "movzbl -1(%%edi), %%eax \n\t"  // 第一个字符串的字符  
+        "movzbl -1(%%rsi), %%edx \n\t"  // 第二个字符串的字符
+        "movzbl -1(%%rdi), %%eax \n\t"  // 第一个字符串的字符  
         "subl %%edx, %%eax \n\t"        // 计算差值
         "2: \n\t"
         :"=a"(__res)

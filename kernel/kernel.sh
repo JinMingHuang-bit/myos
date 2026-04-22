@@ -6,7 +6,7 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 # 明确指定 boot.img 的绝对路径（替换为实际路径）
-BOOT_IMG="/home/student/boot.img"  # 👈 修改为你的实际路径
+BOOT_IMG="/home/student/myos/boot.img"  # 👈 修改为你的实际路径
 MOUNT_POINT="/media/"
 
 # 确保挂载点存在
