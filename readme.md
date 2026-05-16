@@ -66,3 +66,12 @@ example orders:nasm -f bin loader.asm -o loader.bin
 you need to run make in each folder
 
 the system has been write into boot.img
+
+For future devopers:
+If you read my thesis ,and following the instruction to see this page ,you are chosen to be the net developer of this operation system.
+
+This system still have many function to be done,like advance memory allocated(buddy system or slab),starting process(I did't success,you can switch to the branch process and fix_process_fault to see the code) and also the gui(I guess using  LVGL is a good choice,it it platform independent)
+
+1.you need to rename the project file to myos so that the .sh script can run,the .sh script is used to compile the code and make the boot.img,but the function is limit ,so you can improve it .
+2.the system is using bochs 2.6.8 for simulation,you can see the config bochsrc in the root directory
+3.order.txt list the terminal command you may need to use to run the system
