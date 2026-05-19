@@ -1,3 +1,7 @@
+repertory:
+1.https://gitee.com/again2314/myos-in-linux.git
+2.https://github.com/JinMingHuang-bit/myos.git
+
 this software can only be compiled in linux environment because it base on gnu C and linux tools, if you want to use it in windows, please install wsl and compile it in wsl.
 
 you can change the code here in loader.asm to change the resolution 
